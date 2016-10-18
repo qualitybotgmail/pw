@@ -1,0 +1,13 @@
+<script type="text/ng-template" id="report.html">
+	<div id="modal-report">
+		<div class="modal-header">
+		    <h4 class="white bigger">{{modalOptions.headerText}}</h4>
+		</div>
+		<div class="modal-body">
+			<object id="pdf_object" name="pdf_object" data="{{modalOptions.url}}" type="application/pdf" width="99.2%" height="85%"></object>
+		</div>
+		<div class="modal-footer">
+		  	<button type="button" class="btn btn-sm" id="btn-close" ng-click="modalOptions.close()">Close</button>
+		</div>
+	</div>
+</script>

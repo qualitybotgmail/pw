@@ -1,0 +1,124 @@
+<style>
+    table.tall td, table.tall th {
+        height: 75px !important;
+        width: 75px !important;
+    }
+
+    td, th {
+        vertical-align: middle !important;
+        text-align: center !important;
+        width: 50px !important;
+        height: 50px !important;
+        background-color: white !important;
+    }
+
+    table.black td, table.black th {
+        background-color: black !important;
+        color: yellow !important;
+    }
+
+    table.black .badge {
+        color: black !important;
+    }
+
+    th {
+        font-size: 20px;
+    }
+
+    td {
+        font-weight: bolder;
+        font-size: 40px;
+    }
+
+    img {
+        width: 50px;
+        height: 55px;   
+    }
+
+    .badge {
+        border-radius: 0px;
+    }
+
+    table td.card-number {
+        font-weight: normal;
+        font-size: 15px !important;
+        height: 15px !important;
+        text-align: right !important;
+        padding: 0 2px 0 0 !important;
+    }
+
+    .bg-yellow {
+      background-color: #e0cf04 !important;
+    }
+
+    small.extension {
+        font-size: 25%;
+    }
+
+    table.black.table-bordered>thead>tr>th, table.black.table-bordered>tbody>tr>th, table.black.table-bordered>tfoot>tr>th, table.black.table-bordered>thead>tr>td, table.black.table-bordered>tbody>tr>td, table.black.table-bordered>tfoot>tr>td {
+        border: 1px solid yellow;
+    }
+
+    table.table-bordered>thead>tr>th, table.table-bordered>tbody>tr>th, table.table-bordered>tfoot>tr>th, table.table-bordered>thead>tr>td, table.table-bordered>tbody>tr>td, table.table-bordered>tfoot>tr>td {
+        border: 1px solid #676767;
+    }
+    
+</style>
+<table ng-class="{tall: tall, black: black}" class="table table-bordered" style="border: 1px solide #ddd">
+    <tbody>
+        <tr>
+            <th><span class="badge bg-blue bigger-190"><strong>{{letters.b[0]}}</strong></span></th>
+            <th><span class="badge bg-green bigger-190"><strong>{{letters.i[0]}}</strong></span></th>
+            <th><span class="badge bg-yellow bigger-190"><strong>{{letters.n[0]}}</strong></span></th>
+            <th><span class="badge bg-orange bigger-190"><strong>{{letters.g[0]}}</strong></span></th>
+            <th>
+                <strong>
+                    <span class="badge bg-purple bigger-190">
+                        {{letters.o[0].trim()}}<small class="extension" ng-show="extension">{{letters.o[1]}}</small>
+                    </span>    
+                </strong>
+                
+            </th>
+        </tr>
+        <tr>
+            <td ng-class="{ 'bg-red': selected.b[0] }">{{numbers.b[0]}}</td>
+            <td ng-class="{ 'bg-red': selected.i[0] }">{{numbers.i[0]}}</td>
+            <td ng-class="{ 'bg-red': selected.n[0] }">{{numbers.n[0]}}</td>
+            <td ng-class="{ 'bg-red': selected.g[0] }">{{numbers.g[0]}}</td>
+            <td ng-class="{ 'bg-red': selected.o[0] }">{{numbers.o[0]}}</td>
+        </tr>
+
+        <tr>
+            <td ng-class="{ 'bg-red': selected.b[1] }">{{numbers.b[1]}}</td>
+            <td ng-class="{ 'bg-red': selected.i[1] }">{{numbers.i[1]}}</td>
+            <td ng-class="{ 'bg-red': selected.n[1] }">{{numbers.n[1]}}</td>
+            <td ng-class="{ 'bg-red': selected.g[1] }">{{numbers.g[1]}}</td>
+            <td ng-class="{ 'bg-red': selected.o[1] }">{{numbers.o[1]}}</td>
+        </tr>
+
+        <tr>
+            <td ng-class="{ 'bg-red': selected.b[2] }">{{numbers.b[2]}}</td>
+            <td ng-class="{ 'bg-red': selected.i[2] }">{{numbers.i[2]}}</td>
+            <td><img src="images/logo.png"></td>
+            <td ng-class="{ 'bg-red': selected.g[2] }">{{numbers.g[2]}}</td>
+            <td ng-class="{ 'bg-red': selected.o[2] }">{{numbers.o[2]}}</td>
+        </tr>
+
+        <tr>
+            <td ng-class="{ 'bg-red': selected.b[3] }">{{numbers.b[3]}}</td>
+            <td ng-class="{ 'bg-red': selected.i[3] }">{{numbers.i[3]}}</td>
+            <td ng-class="{ 'bg-red': selected.n[3] }">{{numbers.n[3]}}</td>
+            <td ng-class="{ 'bg-red': selected.g[3] }">{{numbers.g[3]}}</td>
+            <td ng-class="{ 'bg-red': selected.o[3] }">{{numbers.o[3]}}</td>
+        </tr>
+
+        <tr>
+            <td ng-class="{ 'bg-red': selected.b[4] }">{{numbers.b[4]}}</td>
+            <td ng-class="{ 'bg-red': selected.i[4] }">{{numbers.i[4]}}</td>
+            <td ng-class="{ 'bg-red': selected.n[4] }">{{numbers.n[4]}}</td>
+            <td ng-class="{ 'bg-red': selected.g[4] }">{{numbers.g[4]}}</td>
+            <td ng-class="{ 'bg-red': selected.o[4] }">{{numbers.o[4]}}</td>
+        </tr>
+        <tr ng-show="numbers.id"><td class="card-number align-right" colspan="5"><small>Card #: </small><strong>{{numbers.id}}</strong></td></tr>
+    </tbody>
+</table>

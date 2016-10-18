@@ -1,0 +1,100 @@
+<!-- Notifications -->
+<div gritter={{gritter.notify}} gritter-options="gritter.options" gritter-remove={{gritter.remove}} gritter-remove-all={{gritter.removeAll}} gritter-ids="gritter.ids" gritter-destroy={{gritter.destroy}}>
+</div>
+
+<div focus="focus"></div>
+<div blocker="blocker"></div>
+
+<div jwerty="HOME" key-event="goto.home()" key-name="goto.home" key-bind="document"></div>
+<div jwerty="CTRL+END" key-event="goto.logout()" key-name="goto.logout" key-bind="document"></div>
+
+<div jwerty="F1" key-event="goto.thread()" key-name="goto.thread" key-bind="document"></div>
+<div jwerty="F2" key-event="goto.message()" key-name="goto.message" key-bind="document"></div>
+<!--<div jwerty="F3" key-event="goto.timeline()" key-name="goto.timeline" key-bind="document"></div>-->
+
+
+<div class="row">
+    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+        <nav class="navbar navbar-default sidebar" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                  </button>      
+                </div>
+                <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
+                  <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a ui-sref="app">
+                            Home
+                            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a ui-sref="app.thread">
+                            Threads
+                            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-th-list"></span>
+                        </a>
+                    </li>
+                    <li >
+                        <a ui-sref="app.message">
+                            Message
+                            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-envelope"></span>
+                        </a>
+                    </li>
+                  </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div ui-view="content">
+                    <section class="content-header">
+                        <h1>
+                            Talknote
+                        </h1>
+                    </section>
+                    
+                    <section class="content no-outline" tabindex="-1" id="abc">
+                        <div class="row">
+                
+                            <div class="col-md-12">
+                                <!-- Application buttons -->
+                                <div class="box box-primary">
+                                    <div class="box-header">
+                                        <h3 class="box-title">Application Shortcuts</h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <a class="btn btn-app" ui-sref="app.thread">
+                                            <span class="badge bg-aqua">F1</span>
+                                            <i class="fa fa-pencil"></i> Thread
+                                        </a>
+                
+                                        <a class="btn btn-app" ui-sref="app.message">
+                                            <span class="badge bg-aqua">F2</span>
+                                            <i class="fa fa-legal"></i> Message
+                                        </a>
+                                        
+                                        <!--<a class="btn btn-app" ui-sref="app.timeline">-->
+                                        <!--    <span class="badge bg-aqua">F3</span>-->
+                                        <!--    <i class="fa fa-legal"></i> Timeline-->
+                                        <!--</a>-->
+                
+                                        
+                                    </div><!-- /.box-body -->
+                                </div><!-- /.box -->
+                            </div><!-- /.col -->
+                        </div><!-- /.row -->
+                    </section>
+                </div>
+            </div>        
+        </div>
+    </div>
+</div>
+
+<div ng-repeat="template in templates" ng-include="template"></div>
