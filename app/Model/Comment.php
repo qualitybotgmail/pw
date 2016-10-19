@@ -3,7 +3,8 @@ App::uses('AppModel', 'Model');
 /**
  * Comment Model
  *
- * @property Category $Category
+ * @property User $User
+ * @property Thread $Thread
  */
 class Comment extends AppModel {
 
@@ -13,9 +14,29 @@ class Comment extends AppModel {
  * @var array
  */
 	public $validate = array(
-		'category_id' => array(
+		'user_id' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'thread_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+		'body' => array(
+			'notEmpty' => array(
+				'rule' => array('notEmpty'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
 				//'required' => false,
@@ -33,9 +54,16 @@ class Comment extends AppModel {
  * @var array
  */
 	public $belongsTo = array(
-		'Category' => array(
-			'className' => 'Category',
-			'foreignKey' => 'category_id',
+		'User' => array(
+			'className' => 'User',
+			'foreignKey' => 'user_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
+		'Thread' => array(
+			'className' => 'Thread',
+			'foreignKey' => 'thread_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''

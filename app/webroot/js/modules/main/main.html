@@ -36,8 +36,10 @@
                     <li>
                         <a ui-sref="app.thread">
                             Threads
-                            <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-th-list"></span>
                         </a>
+                        <button class="btn btn-sm btn-info pull-right" ng-click="addThread()" style="margin-top: -40px;margin-right: 5px;" title="Add Threads">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </button>
                     </li>
                     <li >
                         <a ui-sref="app.message">

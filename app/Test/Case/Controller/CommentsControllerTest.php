@@ -14,8 +14,12 @@ class CommentsControllerTest extends ControllerTestCase {
  */
 	public $fixtures = array(
 		'app.comment',
-		'app.category',
-		'app.url'
+		'app.user',
+		'app.thread',
+		'app.users_thread',
+		'app.like',
+		'app.message',
+		'app.groupchat'
 	);
 
 /**

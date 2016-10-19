@@ -1,5 +1,8 @@
-define(['app', 'angular'], function(app, angular)
-{
+define([
+    'app', 
+    'angular',
+    ], function(app, angular) {
+        
     //http://stackoverflow.com/questions/17648014/how-can-i-use-an-angularjs-filter-to-format-a-number-to-have-leading-zeros
     app.filter('numberFixedLen', function () {
         return function (n, len) {
@@ -15,6 +18,15 @@ define(['app', 'angular'], function(app, angular)
             return num;
         };
     });
+    
+    app.factory('MainFactory', [
+        'GLOBAL',
+        function (GLOBAL) {
+            var factory = {};
+            
+            return factory;
+        }
+    ]);
 
 	app.controller('MainController',
     [
@@ -23,20 +35,39 @@ define(['app', 'angular'], function(app, angular)
         '$timeout',
         '$state',
         '$stateParams',
+        '$templateCache',
         'modalService',
         'focusService',
-        'gritterService',
         'notifyService',
         'blockerService',
         'GLOBAL',
         'Restangular',
+        'ThreadsModel',
+        'MainFactory',
 
-        function($scope, $compile, $timeout, $state, $stateParams, Modal, Focus, Gritter, Notify, Blocker, GLOBAL, Restangular) {
+        function($scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, Factory) {
+        	
         	var start = function() {
-
                 $scope.templates = {
                     modal: GLOBAL.baseSourcePath + 'templates/modal.html?version=' + GLOBAL.version,
-                    report: GLOBAL.baseSourcePath + 'templates/report.html?version=' + GLOBAL.version
+                    report: GLOBAL.baseSourcePath + 'templates/report.html?version=' + GLOBAL.version,
+                    thread: GLOBAL.baseModulePath + 'main/modals/add_thread.html',
+                };
+                
+                
+                $scope.addThread = function () {
+                    var modalConfig = {
+                        template   : $templateCache.get("thread-modal.html"),
+                        controller : 'ThreadModalController',
+                        windowClass: 'modal-width-90 ',
+                        size       : 'lg',
+                    };
+                    
+                    Modal.showModal(modalConfig, {}).then(function (result) {
+                        // success
+                    }, function (err) {
+                        // error
+                    });
                 };
 
                 $scope.parishes = [];
@@ -48,7 +79,7 @@ define(['app', 'angular'], function(app, angular)
                 $scope.focus = Focus.init();
 
                 // Using Gritter Notification, this must be initialized
-                $scope.gritter = Gritter.init();
+                // $scope.gritter = Gritter.init();
 
                 $scope.blocker = Blocker.init();
 
@@ -68,7 +99,7 @@ define(['app', 'angular'], function(app, angular)
                 };
 
 
-        	} // end of start
+        	}; // end of start
 
         	$scope.$on('$stateChangeSuccess', 
               function(event, toState, toParams, fromState, fromParams){

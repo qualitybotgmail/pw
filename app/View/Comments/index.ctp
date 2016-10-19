@@ -19,8 +19,10 @@
 						<div class="panel-body">
 							<ul class="nav nav-pills nav-stacked">
 								<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;New Comment'), array('action' => 'add'), array('escape' => false)); ?></li>
-								<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;List Categories'), array('controller' => 'categories', 'action' => 'index'), array('escape' => false)); ?> </li>
-		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;New Category'), array('controller' => 'categories', 'action' => 'add'), array('escape' => false)); ?> </li>
+								<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;List Users'), array('controller' => 'users', 'action' => 'index'), array('escape' => false)); ?> </li>
+		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;New User'), array('controller' => 'users', 'action' => 'add'), array('escape' => false)); ?> </li>
+		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;List Threads'), array('controller' => 'threads', 'action' => 'index'), array('escape' => false)); ?> </li>
+		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;New Thread'), array('controller' => 'threads', 'action' => 'add'), array('escape' => false)); ?> </li>
 							</ul>
 						</div><!-- end body -->
 				</div><!-- end panel -->
@@ -32,9 +34,9 @@
 				<thead>
 					<tr>
 						<th><?php echo $this->Paginator->sort('id'); ?></th>
-						<th><?php echo $this->Paginator->sort('comment'); ?></th>
-						<th><?php echo $this->Paginator->sort('status'); ?></th>
-						<th><?php echo $this->Paginator->sort('category_id'); ?></th>
+						<th><?php echo $this->Paginator->sort('user_id'); ?></th>
+						<th><?php echo $this->Paginator->sort('thread_id'); ?></th>
+						<th><?php echo $this->Paginator->sort('body'); ?></th>
 						<th><?php echo $this->Paginator->sort('created'); ?></th>
 						<th><?php echo $this->Paginator->sort('modified'); ?></th>
 						<th class="actions"></th>
@@ -44,11 +46,13 @@
 				<?php foreach ($comments as $comment): ?>
 					<tr>
 						<td><?php echo h($comment['Comment']['id']); ?>&nbsp;</td>
-						<td><?php echo h($comment['Comment']['comment']); ?>&nbsp;</td>
-						<td><?php echo h($comment['Comment']['status']); ?>&nbsp;</td>
 								<td>
-			<?php echo $this->Html->link($comment['Category']['name'], array('controller' => 'categories', 'action' => 'view', $comment['Category']['id'])); ?>
+			<?php echo $this->Html->link($comment['User']['id'], array('controller' => 'users', 'action' => 'view', $comment['User']['id'])); ?>
 		</td>
+								<td>
+			<?php echo $this->Html->link($comment['Thread']['title'], array('controller' => 'threads', 'action' => 'view', $comment['Thread']['id'])); ?>
+		</td>
+						<td><?php echo h($comment['Comment']['body']); ?>&nbsp;</td>
 						<td><?php echo h($comment['Comment']['created']); ?>&nbsp;</td>
 						<td><?php echo h($comment['Comment']['modified']); ?>&nbsp;</td>
 						<td class="actions">

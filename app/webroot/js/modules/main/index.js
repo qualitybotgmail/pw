@@ -2,16 +2,17 @@
  * Contains all the dependecies of this module
  */
 define([
+	// import models
+	'../../models/threads',
+	
+	// import modals
+	'./modals/threadModal',
 	
 	'./MainController',
 	'./loading/LoadingController',
 	'./notify/NotifyController',
 
-	// '../../factories/socketIOFactory',
-	// '../../models/queueModel',
-	
 	'../../services/previewService',
-
 	'../../services/commonService',
 	'../../services/focusService',
 	'../../services/modalService',
@@ -21,4 +22,5 @@ define([
 	'../../services/formService',
 	'../../directives/jwertyDirective',
 	'../../directives/jqGridDirective'
+	
 ], function () {});

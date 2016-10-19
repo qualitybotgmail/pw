@@ -7,6 +7,7 @@ App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
  */
 class User extends AppModel {
 
+	//public $hasAndBelongsToMany = 'Threads';
 	public function beforeSave($options = array()) {
 	    if (isset($this->data[$this->alias]['password'])) {
 	        $passwordHasher = new BlowfishPasswordHasher();
@@ -16,4 +17,5 @@ class User extends AppModel {
 	    }
 	    return true;
 	}
+	
 }

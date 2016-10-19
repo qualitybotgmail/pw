@@ -19,8 +19,10 @@
 		<li><?php echo $this->Form->postLink(__('<span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;Delete Comment'), array('action' => 'delete', $comment['Comment']['id']), array('escape' => false), __('Are you sure you want to delete # %s?', $comment['Comment']['id'])); ?> </li>
 		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp&nbsp;List Comments'), array('action' => 'index'), array('escape' => false)); ?> </li>
 		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp&nbsp;New Comment'), array('action' => 'add'), array('escape' => false)); ?> </li>
-		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp&nbsp;List Categories'), array('controller' => 'categories', 'action' => 'index'), array('escape' => false)); ?> </li>
-		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp&nbsp;New Category'), array('controller' => 'categories', 'action' => 'add'), array('escape' => false)); ?> </li>
+		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp&nbsp;List Users'), array('controller' => 'users', 'action' => 'index'), array('escape' => false)); ?> </li>
+		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp&nbsp;New User'), array('controller' => 'users', 'action' => 'add'), array('escape' => false)); ?> </li>
+		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp&nbsp;List Threads'), array('controller' => 'threads', 'action' => 'index'), array('escape' => false)); ?> </li>
+		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp&nbsp;New Thread'), array('controller' => 'threads', 'action' => 'add'), array('escape' => false)); ?> </li>
 							</ul>
 						</div><!-- end body -->
 				</div><!-- end panel -->
@@ -38,23 +40,23 @@
 		</td>
 </tr>
 <tr>
-		<th><?php echo __('Comment'); ?></th>
+		<th><?php echo __('User'); ?></th>
 		<td>
-			<?php echo h($comment['Comment']['comment']); ?>
+			<?php echo $this->Html->link($comment['User']['id'], array('controller' => 'users', 'action' => 'view', $comment['User']['id'])); ?>
 			&nbsp;
 		</td>
 </tr>
 <tr>
-		<th><?php echo __('Status'); ?></th>
+		<th><?php echo __('Thread'); ?></th>
 		<td>
-			<?php echo h($comment['Comment']['status']); ?>
+			<?php echo $this->Html->link($comment['Thread']['title'], array('controller' => 'threads', 'action' => 'view', $comment['Thread']['id'])); ?>
 			&nbsp;
 		</td>
 </tr>
 <tr>
-		<th><?php echo __('Category'); ?></th>
+		<th><?php echo __('Body'); ?></th>
 		<td>
-			<?php echo $this->Html->link($comment['Category']['name'], array('controller' => 'categories', 'action' => 'view', $comment['Category']['id'])); ?>
+			<?php echo h($comment['Comment']['body']); ?>
 			&nbsp;
 		</td>
 </tr>

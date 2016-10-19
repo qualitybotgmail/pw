@@ -55,8 +55,9 @@ class CommentsController extends AppController {
 				$this->Session->setFlash(__('The comment could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
 			}
 		}
-		$categories = $this->Comment->Category->find('list');
-		$this->set(compact('categories'));
+		$users = $this->Comment->User->find('list');
+		$threads = $this->Comment->Thread->find('list');
+		$this->set(compact('users', 'threads'));
 	}
 
 /**
@@ -81,8 +82,9 @@ class CommentsController extends AppController {
 			$options = array('conditions' => array('Comment.' . $this->Comment->primaryKey => $id));
 			$this->request->data = $this->Comment->find('first', $options);
 		}
-		$categories = $this->Comment->Category->find('list');
-		$this->set(compact('categories'));
+		$users = $this->Comment->User->find('list');
+		$threads = $this->Comment->Thread->find('list');
+		$this->set(compact('users', 'threads'));
 	}
 
 /**
