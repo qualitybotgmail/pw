@@ -41,7 +41,7 @@ class ThreadsController extends AppController {
 		}
 		$options = array('conditions' => array('Thread.' . $this->Thread->primaryKey => $id));
 		$thread =  $this->Thread->find('first', $options);
-		print_r($thread);exit;
+		
 		$this->set('thread',$thread);
 	}
 

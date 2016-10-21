@@ -7,13 +7,26 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
         '$stateParams',
         '$templateCache',
         '$q',
-        'commonService',
-        'modalService',
         'focusService',
         'GLOBAL',
         'Restangular',
-        function($scope, $timeout, $state, $stateParams, $templateCache, $q, Focus, GLOBAL, Restangular) {
+        'ThreadsModel',
+        
+        function($scope, $timeout, $state, $stateParams, $templateCache, $q, Focus, GLOBAL, Restangular, ThreadsModel) {
         	
+        	$scope.getThreads = function () {
+        	    ThreadsModel.getList().then(function(res) {
+            	    $scope.threads = res;
+            	});    
+        	};
+        	
+        	
+        	var init = function(){
+        	    $scope.getThreads();
+        	};
+        	init();
+        	
+        
         }
 	]);
 });

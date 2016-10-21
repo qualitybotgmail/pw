@@ -5,7 +5,7 @@ define(['app'], function(app)
         'Restangular',
 
         function(Restangular) {
-            return Restangular.service('threads.json');
+            return Restangular.service('threads');
         }
     ]);
 });

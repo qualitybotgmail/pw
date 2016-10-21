@@ -2,6 +2,8 @@
  * Contains all the dependecies of this module
  */
 define([
+	// import models
+	'../../models/threads',
 	
 	'./Thread',
 
