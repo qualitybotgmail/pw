@@ -4,6 +4,10 @@
 define([
 	// import models
 	'../../models/threads',
+	'../../models/threads',
+	
+	// import modals
+	'./modals/addMemberModal',
 	
 	'./Thread',
 
@@ -13,4 +17,6 @@ define([
 	'../../services/blockerService',
 	'../../services/formService',
 	'../../directives/jwertyDirective',
+	'../../directives/selectTwoDirective',
+	'../../directives/onKeyPressDirective',
 ], function () {});

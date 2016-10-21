@@ -19,7 +19,7 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                 
                 /* Close the this modal */
 				$scope.cancel = function() {
-					if ( ! $scope.state.saving) $scope.$dismiss();
+					$scope.$dismiss();
 				};
                 
                 Modal.destroy($scope);

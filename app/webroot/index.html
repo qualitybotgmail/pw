@@ -5,6 +5,7 @@
   <title>Talknote</title>
 
   <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="vendor/select2/select2.css">
   <link rel="stylesheet" href="css/style.css">
 
 </head>
@@ -20,7 +21,7 @@
 		window.Talknote = window.Talknote || {};
     Talknote.baseSourcePath = window.location.origin+'/';
     Talknote.version = 'v.1.0';
-		Talknote.baseUrl = '';
+		Talknote.baseUrl = window.location.origin;
 	</script>
 	<script src="vendor/requirejs/require.min.js" data-main="js/main.js"></script>
 </html>

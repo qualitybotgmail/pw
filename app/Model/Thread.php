@@ -84,4 +84,18 @@ class Thread extends AppModel {
 		)
 	);
 	public $hasMany = array('Like','Comment');
+	
+	public function members($thread_id){
+		header('Content-Type: application/json;charset=utf-8');
+		$thread = $this->findById($thread_id);
+		
+		$ret = [];
+		foreach($thread['User'] as $k => $t){
+			if (is_numeric($k))
+				$ret[] = [ 'id' => $t['id'],'username' => $t['username']];
+		}
+		
+		echo json_encode(['users' => $ret]);
+		exit;
+	}
 }

@@ -33,6 +33,7 @@ class UsersController extends AppController {
  * @return void
  */
 	public function view($id = null) {
+	
 		if (!$this->User->exists($id)) {
 			throw new NotFoundException(__('Invalid user'));
 		}
@@ -115,4 +116,16 @@ class UsersController extends AppController {
 	    return $this->redirect($this->Auth->logout());
 	}	
 	
+	public function me(){ 
+		
+		$this->view = 'view'; 
+		$id = $this->Auth->user('id');
+		
+		$this->User->recursive = 0;
+        $user = $this->User->findById($id); 
+        
+        $this->set('user',$user);
+        
+	}
+	 
 }

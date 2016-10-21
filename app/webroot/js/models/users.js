@@ -1,12 +1,11 @@
 define(['app'], function(app)
 {
-    app.factory('ThreadsModel',
+    app.factory('UsersModel',
     [
         'Restangular',
 
         function(Restangular) {
-            return Restangular.service('threads');
+            return Restangular.service('users');
         }
     ]);
-    
 });

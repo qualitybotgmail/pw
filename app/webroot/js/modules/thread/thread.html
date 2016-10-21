@@ -1,3 +1,148 @@
-<div class="row">
+<style type="text/css">
+    .thread-users span.comma:last-child {
+        display: 'none';
+    }
+    .liked {
+        font-weight: bolder;
+        background: blue;
+    }
+    .badge-like,
+    .add-member {
+        cursor: pointer;
+    }
     
+</style>
+
+<!-- if there is a no specific thread show this-->
+<div class="row" ng-if="threads.length">
+    <div class="col-md-12">
+        <div class="row" ng-repeat="thread in threads">
+            <h5 class="page-header">
+                <span>
+                    <a ui-sref="app.thread({ id: thread.Thread.id })">
+                        {{thread.Thread.title}}
+                    </a>
+                </span>
+                
+                <span>
+                    <a class="badge-like" ng-click="like($index, thread)">
+                        <span class="badge {{(thread.isLike)?'liked':''}}">
+                            {{thread.currentLikes}}
+                            <i class="glyphicon glyphicon-thumbs-up"></i>
+                        </span>
+                    </a>
+                </span>
+                
+            </h5>
+            <p>
+                {{thread.Thread.head}}
+            </p>
+            <p class="thread-users">
+                <span ng-repeat="u in thread.User">
+                    <span  ng-if="! (u.id == thread.user_id)">{{ u.username }}</span>
+                    <span class="comma"  ng-if="! (u.id == thread.user_id)">,</span>
+                </span>
+            </p>
+        </div>  
+    </div>
 </div>
+
+<!-- if there is a specific thread show this-->
+<div class="row" ng-if="selectedThread">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <p class="thread-users">
+                    <span ng-repeat="u in selectedThread.User">
+                        <!--<span ng-if="! (u.id == selectedThread.Thread.user_id)">-->
+                            {{ u.username }}
+                        <!--</span>-->
+                        {{$last ? '' : ', '}}
+                        
+                    </span>
+                    <span class="badge add-member" title="Add member" ng-click="addMembers(selectedThread.Thread)">
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </span>
+                </p>
+            </div>        
+        </div>
+        
+        
+        <!--Thread -->
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="detailBox">
+                    <div class="titleBox">
+                        <h3 class="page-header">
+                            {{selectedThread.Thread.title}}
+                            <small>
+                                <span>
+                                    <a class="badge-like" ng-click="like($index, selectedThread)">
+                                        <span class="badge {{(selectedThread.isLike)?'liked':''}}">
+                                            {{selectedThread.currentLikes}}
+                                            <i class="glyphicon glyphicon-thumbs-up"></i>
+                                        </span>
+                                    </a>
+                                </span>
+                            </small>
+                        </h3>
+                        <!--<button type="button" class="close" aria-hidden="true">&times;</button>-->
+                    </div>
+                    <div class="commentBox">
+                        <p class="taskDescription">
+                             {{selectedThread.Thread.head}}
+                        </p>
+                    </div>
+                    <div class="actionBox">
+                        <ul class="commentList">
+                            <li ng-repeat="c in selectedThread.Comment">
+                                <div class="commenterImage">
+                                  <img src="http://placekitten.com/50/50" />
+                                </div>
+                                <div class="commentText">
+                                    <p>
+                                        {{c.body}}
+                                    </p> 
+                                    <span class="date sub-text">
+                                        on March 5th, 2014
+                                    </span>
+                
+                                </div>
+                            </li>
+                            <!--<li>-->
+                            <!--    <div class="commenterImage">-->
+                            <!--      <img src="http://placekitten.com/45/45" />-->
+                            <!--    </div>-->
+                            <!--    <div class="commentText">-->
+                            <!--        <p class="">Hello this is a test comment and this comment is particularly very long and it goes on and on and on.</p> <span class="date sub-text">on March 5th, 2014</span>-->
+                
+                            <!--    </div>-->
+                            <!--</li>-->
+                            <!--<li>-->
+                            <!--    <div class="commenterImage">-->
+                            <!--      <img src="http://placekitten.com/40/40" />-->
+                            <!--    </div>-->
+                            <!--    <div class="commentText">-->
+                            <!--        <p class="">Hello this is a test comment.</p> <span class="date sub-text">on March 5th, 2014</span>-->
+                
+                            <!--    </div>-->
+                            <!--</li>-->
+                        </ul>
+                        <form class="form-inline" role="form" novalidate ng-submit="sendComment()">
+                            <div class="form-group">
+                                <!--<textarea name="comment" ng-model="comment" on-enter-key-press="sendComment()"></textarea>-->
+                                <textarea name="comment" class="form-control" id="comment" placeholder="Comment Here" ng-model="user.comment" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-default">Send</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div ng-repeat="template in templates" ng-include="template"></div>

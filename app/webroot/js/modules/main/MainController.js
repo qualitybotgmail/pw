@@ -30,6 +30,7 @@ define([
 
 	app.controller('MainController',
     [
+    	'$rootScope',
     	'$scope',
         '$compile',
         '$timeout',
@@ -43,11 +44,18 @@ define([
         'GLOBAL',
         'Restangular',
         'ThreadsModel',
+        'UsersModel',
         'MainFactory',
 
-        function($scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, Factory) {
+        function($rootScope, $scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, UsersModel, Factory) {
         	
         	var start = function() {
+        	    $rootScope.loginUser = {};
+        	    
+        	    UsersModel.one('me').get().then(function(res){
+        	        $rootScope.loginUser  = res.User;
+        	    });
+        	    
                 $scope.templates = {
                     modal: GLOBAL.baseSourcePath + 'templates/modal.html?version=' + GLOBAL.version,
                     report: GLOBAL.baseSourcePath + 'templates/report.html?version=' + GLOBAL.version,

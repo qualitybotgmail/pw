@@ -4,8 +4,8 @@
 define([
 	'require',
 	'angular',
-	'app', 
-	'lteApp'
+	'app',
+	'lteApp',
 	], function (require, ng) {
 	'use strict';
 

@@ -4,6 +4,7 @@
 define([
 	// import models
 	'../../models/threads',
+	'../../models/users',
 	
 	// import modals
 	'./modals/threadModal',

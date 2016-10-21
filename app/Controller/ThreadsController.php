@@ -21,7 +21,7 @@ class ThreadsController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->Thread->recursive = 0;
+		$this->Thread->recursive = 1;
 		$this->set('threads', $this->Paginator->paginate());
 	}
 	public function beforeFilter(){
@@ -78,21 +78,29 @@ class ThreadsController extends AppController {
  */
 	public function addmember($thread_id = null,$member_id = null) {
 		header('Content-Type: application/json;charset=utf-8');
+		$ids = explode(",",$member_id);
 		try{
 			$thread = $this->Thread->findById($thread_id);
 			$users = [];
-			
+						
 			foreach($thread['User'] as $i => $u){
 				if(is_numeric($i)){
 					$users[] = $u['id'];
 				}
 			}
-			if(!in_array($member_id,$users)){
-				$users[] = $member_id;
+			
+			$oldcount = count($users);
+			$users = array_merge($ids,$users);
+			$users = array_unique($users);
+			
+			
+			if(count($users)!=$oldcount){
+				
 				$result = $this->Thread->save(array(
 					'Thread' => array('id' => $thread_id),
 					'User' => array('User' => $users)
 				));
+				
 				echo json_encode(['status' => 'OK']);
 				exit;
 			}
@@ -224,9 +232,10 @@ class ThreadsController extends AppController {
 		if ($this->request->is(array('post', 'put'))) {
 			$this->request->data['Comment']['thread_id'] = $id;
 			$this->request->data['Comment']['user_id']   = $user_id;
-			
-			if ($this->Thread->Comment->save($this->request->data)) {
-				$this->ok();
+			$data = $this->Thread->Comment->save($this->request->data);
+			if ($data) {
+				echo json_encode($data);
+				exit;
 			} else {
 				$this->failed();
 			}
@@ -253,5 +262,18 @@ class ThreadsController extends AppController {
 			$this->Session->setFlash(__('The thread could not be deleted. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
 		}
 		return $this->redirect(array('action' => 'index'));
+	}
+	
+	public function userstoadd($thread_id){
+		
+		$members = $this->Thread->members($thread_id);
+
+		
+		$users = $this->Thread->User->find("list",['conditions' => [
+			'NOT' => [
+				'id' => $members
+			]
+		]]);
+		$this->set('users' , $users);
 	}
 }

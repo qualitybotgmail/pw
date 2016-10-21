@@ -68,7 +68,7 @@ define([
 	        	
 		        // Restangular Settings
 		        RestangularProvider.setBaseUrl(Talknote.baseUrl + "/");
-		        RestangularProvider.setDefaultHeaders({'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-Token': Talknote.token});
+		        // RestangularProvider.setDefaultHeaders({'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-Token': Talknote.token});
 		        RestangularProvider.setRequestSuffix('.json');
 		        //RestangularProvider.setDefaultRequestParams({'_token': Talknote.token});
 
