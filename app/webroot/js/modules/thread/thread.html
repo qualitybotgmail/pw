@@ -109,32 +109,23 @@
                 
                                 </div>
                             </li>
-                            <!--<li>-->
-                            <!--    <div class="commenterImage">-->
-                            <!--      <img src="http://placekitten.com/45/45" />-->
-                            <!--    </div>-->
-                            <!--    <div class="commentText">-->
-                            <!--        <p class="">Hello this is a test comment and this comment is particularly very long and it goes on and on and on.</p> <span class="date sub-text">on March 5th, 2014</span>-->
-                
-                            <!--    </div>-->
-                            <!--</li>-->
-                            <!--<li>-->
-                            <!--    <div class="commenterImage">-->
-                            <!--      <img src="http://placekitten.com/40/40" />-->
-                            <!--    </div>-->
-                            <!--    <div class="commentText">-->
-                            <!--        <p class="">Hello this is a test comment.</p> <span class="date sub-text">on March 5th, 2014</span>-->
-                
-                            <!--    </div>-->
-                            <!--</li>-->
                         </ul>
-                        <form class="form-inline" role="form" novalidate ng-submit="sendComment()">
-                            <div class="form-group">
-                                <!--<textarea name="comment" ng-model="comment" on-enter-key-press="sendComment()"></textarea>-->
-                                <textarea name="comment" class="form-control" id="comment" placeholder="Comment Here" ng-model="user.comment" required></textarea>
+                        <form class="form-inline" role="form" name="commentFrm" novalidate ng-submit="sendComment()">
+                            <div class="row">
+                                <div class="form-group">
+                                    <input type="file" name="pictures" ng-file-model="comment.filename" />
+                                </div>
+                                
                             </div>
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-default">Send</button>
+                            
+                            <div class="row">
+                                <div class="form-group">
+                                    <!--<textarea name="comment" ng-model="comment" on-enter-key-press="sendComment()"></textarea>-->
+                                    <textarea name="comment" class="form-control" id="comment" placeholder="Comment Here" ng-model="comment.body"></textarea>
+                                </div>
+                                <div class="form-group">    
+                                    <button type="submit" class="btn btn-default">Send</button>
+                                </div>
                             </div>
                         </form>
                     </div>

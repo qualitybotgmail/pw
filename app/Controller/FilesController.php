@@ -25,73 +25,122 @@ class FilesController extends AppController {
        
         echo json_encode($file);
 	}
+	public function view($id = null) {
+		if (!$this->File->exists($id)) {
+			throw new NotFoundException(__('Invalid file'));
+		}	
+		$this->File->recursive = 0;
+        $file = $this->File->findById($id);
+        
+        $file = $this->set('file',$file);
+	}	
+	 
 	
-	public function addfile(){
-	header('Content-Type: application/json;charset=utf-8');
+	public function upload(){ 
+	if ($this->request->is('post')) {   
+	$path=APP.WEBROOT_DIR.DS.'uploads'.DS;
 	
-		if ($this->request->is('post')) { 
-
-		$folder_url=APP.WEBROOT_DIR.DS.'uploads'.DS;
-		$rel_url = $folder;
-			
-			$conditions=[]; 
-			
-			$comment_id=[];
-			$message_id=[];
-			$filename=[];  
-				 
-			$comment_id = $this->request->data['comment_id'];
-			$message_id = $this->request->data['message_id'];  
-			$filename = $this->request->data['filename']; 
-			
+	$files = $this->request->data['File']['files'];	
+	// $comment_id = $this->request->data['comment_id'];
+	$comment_id = 1;
+	$user_id = $this->Auth->user('id'); 
+	
+		   foreach($files as $file){	 
+		   	 $fileName = $file['name']; 
+		   	/////////rename file ///////////
+		   		ini_set('date.timezone', 'Asia/Manila');
+				$now = date('Y-m-d-His');
+				$full_url = $path.'/'.$now.$fileName;
+				$url = $path.'/'.$now.$fileName;
+				// $success = move_uploaded_file($file['tmp_name'], $url);
+		   	//////////////////////////////
+		   	 
+				$this->File->create(); 
+				$data = array('user_id' => $user_id, 'comment_id' => $comment_id, 'name' => $now.$fileName, 'path' => $path); 
+				if($this->File->save($data)){
+					
+					/////////////   UPLOADING PROCESS START   ////////////////////////// 
+						$uploadFile = $path.$fileName;  
+						if(move_uploaded_file($file['tmp_name'], $url)){ 
+							echo $now.$fileName; 
+						}else{
+							echo 'error upload ';
+						} 
+					///////////////   UPLOADING PROCESS END    ////////////////////////
+				}	
 			 
-			if(!empty($this->request->data['file']['comment_id'])){
-				$savedata=$this->request->data;
-			
-				$user_id = $this->Auth->user('id'); 
+		   }
+		} 
+	}
+	public function beforeFilter(){
+		$this->Auth->allow('files');
+	}
+	public function files(){ 
+		echo 'test';
+		print_r($_FILES);
+		echo 'test';
+		print_r($this->request->data);
+		exit;
+		
+	header('Content-Type: application/json;charset=utf-8');
+	if ($this->request->is('post')) {   
+	$path=APP.WEBROOT_DIR.DS.'uploads'.DS; 
+	
+	
+	$files = $this->request->data['filename'];
+	
+	if(count($this->request->data['comment_id'])==0){
+		$comment_id = 0;
+	}else{
+		$comment_id = $this->request->data['comment_id'];
+	}
+	
+	if(count($this->request->data['message_id'])==0){
+		$message_id = 0;
+	}else{ 
+		$message_id = $this->request->data['message_id'];
+	}
+	
+	$user_id = $this->Auth->user('id'); 
+	
+		   foreach($files as $file){	 
+		   	 $fileName = $file['name']; 
+		   	/////////rename file ///////////
+		   		ini_set('date.timezone', 'Asia/Manila');
+				$now = date('Y-m-d-His');
+				$full_url = $path.'/'.$now.$fileName;
+				$url = $path.'/'.$now.$fileName;
+				// $success = move_uploaded_file($file['tmp_name'], $url);
+		   	//////////////////////////////
+		   	 
 				$this->File->create(); 
 				
-				if(!empty($this->request->data['file']['message_id'])){
-					$data = array('user_id' => $user_id, 'message_id' => $message_id, 'name' => $filename, 'path' => $folder_url); 
-				}
-				
-				if(!empty($this->request->data['file']['comment_id'])){
-					$data = array('user_id' => $user_id, 'comment_id' => $comment_id, 'name' => $filename, 'path' => $folder_url); 
-				} 
-				
-				$this->File->save($data);
-			
-			}   
-		        // check filename already exists
-						if(!file_exists($folder_url.'/'.$filename)) {
-							// create full filename
-							$full_url = $folder_url.'/'.$filename;
-							$url = $folder_url.'/'.$filename;
-							// upload the file
-							$success = move_uploaded_file($file['tmp_name'], $url);
-						} else {
-							// create unique filename and upload file
-							ini_set('date.timezone', 'Europe/London');
-							$now = date('Y-m-d-His');
-							$full_url = $folder_url.'/'.$now.$filename;
-							$url = $folder_url.'/'.$now.$filename;
-							$success = move_uploaded_file($file['tmp_name'], $url);
-						}
-						// if upload was successful
-						if($success) {
-							// save the url of the file
-							$result['urls'][] = $url;
-						} else {
-							$result['errors'][] = "FAILED - d nagsave";
-						}
-				$file = $this->set('result',$result);
-				 
-	        echo json_encode($result); 
+				$data = array('user_id' => $user_id, 'comment_id' => $comment_id, 'name' => $now.$fileName, 'path' => $path); 
+				if($this->File->save($data)){
+					
+					/////////////   UPLOADING PROCESS START   ////////////////////////// 
+						$uploadFile = $path.$fileName;  
+						if(move_uploaded_file($file['tmp_name'], $url)){ 
+							$result = $files; 
+						}else{
+							$result = 'error upload';
+						} 
+					///////////////   UPLOADING PROCESS END    ////////////////////////
+				}	
+			 
+		   }
+	
+	
+	
+		}
+		// else{
+		// 	$result = 'FAILED - data unposted';
+		// }
 		
 		
-		}else{
-			echo json_encode('FAILED - walang post dto brad');
-		} 
-		exit;
+		 $this->set('files',$result);
+		//  echo json_encode($result);
+		 exit;
 	}
+	
 }

@@ -1,5 +1,6 @@
 <?php
-App::uses('AppController', 'Controller');
+App::uses('AppController', 'Controller'); 
+App::import('Vendor','uploadHandler');
 /**
  * Comments Controller
  *
@@ -15,6 +16,10 @@ class CommentsController extends AppController {
  */
 	public $components = array('Paginator');
 
+	public function beforeFilter(){
+		parent::beforeFilter();
+		$this->Auth->allow('upload');
+	}
 /**
  * index method
  *
@@ -107,4 +112,7 @@ class CommentsController extends AppController {
 		}
 		return $this->redirect(array('action' => 'index'));
 	}
+	
+	
+	
 }

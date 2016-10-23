@@ -85,23 +85,6 @@ define([
 	            
 	            if(config.routes !== undefined)
 	            {
-	            	var restricted = [];
-
-	            	if (Talknote.accessLevel === 1 || Talknote.accessLevel === 0) {
-	            		restricted = ['settings', 'queue', 'user', 'windows'];
-
-	            		if (Talknote.accessLevel === 0) {
-	            			restricted.push('process');
-	            		}
-
-	            		if (Talknote.accessLevel === 1) {
-	            			restricted.push('preview');
-	            		}
-	            	}
-
-	            	angular.forEach(restricted, function(value){
-            			delete config.routes[value];
-            		});
 
 	                angular.forEach(config.routes, function(route, path)
 	                {

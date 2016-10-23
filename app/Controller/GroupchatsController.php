@@ -13,8 +13,15 @@ class GroupchatsController extends AppController {
  *
  * @var array
  */
+public $uses = array(
+        'UsersGroupchat'
+    );
 	public $components = array('Paginator');
 
+	public function beforeFilter(){
+		parent::beforeFilter();
+		$this->Auth->allow('add');
+	}
 /**
  * index method
  *
@@ -46,15 +53,40 @@ class GroupchatsController extends AppController {
  * @return void
  */
 	public function add() {
-		if ($this->request->is('post')) {
-			$this->Groupchat->create();
-			if ($this->Groupchat->save($this->request->data)) {
-				$this->Session->setFlash(__('The groupchat has been saved.'), 'default', array('class' => 'alert alert-success'));
-				return $this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The groupchat could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
-			}
-		}
+		// if ($this->request->is('post')) {
+		// 	$this->Groupchat->create();
+		// 	if ($this->Groupchat->save($this->request->data)) {
+		// 		$this->Session->setFlash(__('The groupchat has been saved.'), 'default', array('class' => 'alert alert-success'));
+		// 		return $this->redirect(array('action' => 'index'));
+		// 	} else {
+		// 		$this->Session->setFlash(__('The groupchat could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
+		// 	}
+		// }
+		
+		
+	header('Content-Type: application/json;charset=utf-8');
+		// $ids = explode(",",$user_id); 
+			
+			$this->Groupchat->create(); 
+			$this->Groupchat->save();
+	 
+			// if ($data) {
+				// $groupchat_id = $this->Groupchat->getLastInsertId();
+				// foreach($ids as $id){  
+					// $this->loadModel('UsersGroupchat');
+					// $this->UsersGroupchat->create(); 
+					// // if($this->{$this->UsersGroupchat}->save(array('user_id' => $id, 'groupchat_id' => $groupchat_id))){
+					// if($this->UsersGroupchat->save(array('user_id' => $id, 'groupchat_id' => $groupchat_id))){
+						// $result = $id;
+					// }
+				// }
+				
+			// } else {
+				$result = 'failed';
+			// } 
+		$this->set('groupmembers',$result); 
+		echo json_encode($result);
+		exit;
 	}
 
 /**
@@ -100,5 +132,10 @@ class GroupchatsController extends AppController {
 			$this->Session->setFlash(__('The groupchat could not be deleted. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
 		}
 		return $this->redirect(array('action' => 'index'));
+	}
+	public function g(){
+		$this->Groupchat->create();
+		print_r($this->Groupchat->save());
+		exit;
 	}
 }

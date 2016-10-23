@@ -36,6 +36,9 @@
  */
 	CakePlugin::routes();
 	Router::mapResources('threads');
+	Router::mapResources('files');
+	Router::mapResources('posts');
+	Router::mapResources('groupmembers');
 	
 	Router::parseExtensions('json');
 

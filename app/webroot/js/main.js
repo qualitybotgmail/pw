@@ -71,6 +71,7 @@ require.config({
 		'debounce' 		: {deps: ['angular']},
 		'socketIO' 		: {deps: ['angular']},
 		'moment' 		: {deps: ['jquery']},
+		
 
 		'loadImageMeta'     : {deps: ['jquery', 'loadImage']},
 		'uploadImage' 	: {deps: ['jquery', 'uploadWidget']},

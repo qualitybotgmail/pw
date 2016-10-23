@@ -108,5 +108,31 @@ class MessagesController extends AppController {
 		return $this->redirect(array('action' => 'index'));
 	}
 	
+	public function posts(){ 
+		
+	// $this->view = 'add';
+	header('Content-Type: application/json;charset=utf-8');
+		if ($this->request->is('get')) { 
+			$params=$this->params['url'];
+			$groupchat_id = $params['data']['groupchat_id'];
+		}
+		
+		if ($this->request->is('post')) {
+			$body = $this->request->data['body'];
+		}
+		 
+		$user_id = $this->Auth->user('id'); 
+		$this->Message->create();
+		$data = array('user_id' => $user_id, 'groupchat_id' => $groupchat_id, 'body' => $body); 
+		if($this->Message->save($data)){
+			$result = 'ok'; 
+		}else{
+			$result = 'failed';
+		}
+		
+		$this->set('posts', $result);
+        exit;
+	}
 	 
 }
+ 

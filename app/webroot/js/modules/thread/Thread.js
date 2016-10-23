@@ -12,6 +12,7 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
         }
     ]);
     
+    
 	app.controller('ThreadController',[
         '$rootScope',
         '$scope',
@@ -20,6 +21,7 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
         '$stateParams',
         '$templateCache',
         '$q',
+        '$http',
         'focusService',
         'modalService',
         'UsersModel',
@@ -27,42 +29,42 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
         'ThreadFactory',
         'Restangular',
         
-        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, Focus, Modal, UsersModel, ThreadsModel, ThreadFactory, Restangular) {
+        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, Focus, Modal, UsersModel, ThreadsModel, ThreadFactory, Restangular) {
+            
+            $scope.comments = {
+                comment_id: null
+            };
+            $scope.file = null;
             
             $scope.templates = ThreadFactory.templates;
             $scope.selectedThreadId = null;
             $scope.selectedThread = null;
-            $scope.user = {};
+            $scope.comment = {};
+            $scope.comment.body = '';
             
             $scope.threads = [];
             $scope.threadLikes = [];
             $scope.currentPageNumber = 1;
             
-            // var $checkUserLikeThread = function (users){
-            //     var userId = $rootScope.loginUser.id;
+            var $checkUserLikeThread = function (likes){
+                var $userId = $rootScope.loginUser.id;
+                var $result = false;
+                angular.forEach(likes, function(like, index) {
+                    if ($userId === like.user_id) {
+                        $result = true;
+                    }
+                });
                 
-            //     angular.forEach(users, function(user, index) {
-            //         // console.log(user, 'to check');
-            //         if (typeof user === 'object') {
-            //             if (userId === user.id) {
-            //                 return true;
-            //             }   
-            //         }
-            //     });
-                
-            //     return false;
-            // };
+                return $result;
+            };
             
             var $configThreads = function(threads){
                 angular.forEach(threads, function(thread, index){
-                    // pending for likes
-                    // thread.isLike = $checkUserLikeThread(thread.User);
+                    thread.isLike = $checkUserLikeThread(thread.Like);
                     thread.currentLikes = (thread.Like.length)?thread.Like.length:0;
-                    // console.log(thread, 'thread to push');
                     $scope.threads.push(thread);
                 });   
             };
-            
             
             // add members
             $scope.addMembers = function(thread) {
@@ -81,20 +83,61 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                     };
                     
                     Modal.showModal(modalConfig, {}).then(function (selectMembers) {
+                        console.log(selectMembers, 'the selectMembers');
                         // success
-                        angular.extend($scope.selectedThread.User, selectMembers);
-                        console.log($scope.selectedThread.User, 'updated users');
+                        angular.forEach(selectMembers, function(memmber, index){
+                            $scope.selectedThread.User.push(memmber);
+                        });
                     }, function (err) {
                         // error
                     });
             };
             
+            $scope.uploadAttachment = function(){
+                var fd = new FormData();
+                
+                var data = {
+                    comment_id: $scope.comment.comment_id,
+                    filename: $scope.comment.filename
+                }
+                
+                fd.append('comment_id', new Blob([JSON.stringify({
+                    comment_id: data.comment_id,
+                })], {
+                    type: "text/json"
+                }), 'comment_id');
+                
+                fd.append('filename', new Blob([JSON.stringify({
+                    filename: data.filename,
+                })], {
+                    type: "image/png"
+                }), data.filename.name);
+                
+                // for(var key in data){
+                //     fd.append(key, $scope.comment[key]);
+                // }
+                
+                $http.post('/files/files.json', fd, {
+                    transformRequest: angular.identity,
+                    header: {'Content-Type' : undefined},
+                }).success( function(data, status, header, config){
+                    console.log(data, status, header, config, 'success');
+                }).error( function(data, status, header, config){
+                    console.log(data, status, header, config, 'failed');
+                });
+            };
+            
             $scope.sendComment = function(){
                 // posting comments
-                var postData = {'body': $scope.user.comment};
+                var postData = {'body': $scope.comment.body};
                 var id = $scope.selectedThread.Thread.id.toString();
-                ThreadsModel.one('comment').one('1').customPOST(postData).then(function(res){
+                ThreadsModel.one('comment').one(id).customPOST(postData).then(function(res){
                     $scope.selectedThread.Comment.push(angular.extend(postData, res.Comment));
+                    $scope.comment.comment_id = res.Comment.id;
+                    // if ($scope.comment.filename) {
+                        $scope.uploadAttachment();    
+                    // }
+                    // $scope.selectedThread.Comment.push(angular.extend(postData, res.Comment));
                 });
             };
         	

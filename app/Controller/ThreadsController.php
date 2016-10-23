@@ -228,7 +228,7 @@ class ThreadsController extends AppController {
 			$this->notExisting();
 		}
 		$user_id = $this->Auth->user('id');
-		
+		$this->request->data['Comment']['body'] = $this->request->data['body'];
 		if ($this->request->is(array('post', 'put'))) {
 			$this->request->data['Comment']['thread_id'] = $id;
 			$this->request->data['Comment']['user_id']   = $user_id;
@@ -265,15 +265,19 @@ class ThreadsController extends AppController {
 	}
 	
 	public function userstoadd($thread_id){
-		
+		header('Content-Type: application/json;charset=utf-8');
 		$members = $this->Thread->members($thread_id);
-
 		
-		$users = $this->Thread->User->find("list",['conditions' => [
+		$users = $this->Thread->User->find("all",['fields' => ['id','username'],'conditions' => [
 			'NOT' => [
-				'id' => $members
+				'User.id' => $members
 			]
 		]]);
-		$this->set('users' , $users);
+		
+		if(count($users) == 0){
+			$users = $this->Thread->User->find("all",['fields' => ['id','username']]);
+		}
+		echo json_encode(['users'=> $users]);
+		exit;
 	}
 }

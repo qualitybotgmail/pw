@@ -19,4 +19,5 @@ define([
 	'../../directives/jwertyDirective',
 	'../../directives/selectTwoDirective',
 	'../../directives/onKeyPressDirective',
+	'../../directives/uploadDirective',
 ], function () {});
