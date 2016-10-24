@@ -14,10 +14,12 @@ class GroupchatsControllerTest extends ControllerTestCase {
  */
 	public $fixtures = array(
 		'app.groupchat',
-		'app.message',
 		'app.user',
+		'app.users_groupchat',
+		'app.message',
 		'app.like',
 		'app.thread',
+		'app.comment',
 		'app.users_thread'
 	);
 

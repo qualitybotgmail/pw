@@ -31,6 +31,7 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
+
     public $components = array(
 	'RequestHandler',
         'Session',
@@ -72,7 +73,7 @@ class AppController extends Controller {
 		parent::beforeFilter();
 		$this->layout = 'bootstrap';
 
-		$this->Auth->allow('add','view','logout','login','findallby','findby','contains');
+		$this->Auth->allow('add','view','logout','login','findallby','findby','contains','upload');
 	}
 	public function _plural(){
 		$spl =	explode("Controller",get_class($this));

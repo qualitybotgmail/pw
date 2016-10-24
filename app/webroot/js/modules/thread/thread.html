@@ -110,18 +110,23 @@
                                 </div>
                             </li>
                         </ul>
-                        <form class="form-inline" role="form" name="commentFrm" novalidate ng-submit="sendComment()">
+                        <form class="form-inline" role="form" id="commentFrm" name="commentFrm" method="POST" enctype="multipart/form-data" novalidate ng-submit="sendComment()">
+                            <div class="row hidden">
+                                <div class="form-group hidden">
+                                    <input type="text" name="data['comment_id']" ng-model="comment.comment_id" />
+                                </div>
+                            </div>
+                            
                             <div class="row">
                                 <div class="form-group">
-                                    <input type="file" name="pictures" ng-file-model="comment.filename" />
+                                    <input type="file" name="data['File']" ng-file-model="comment.filename"  multiple />
                                 </div>
-                                
                             </div>
                             
                             <div class="row">
                                 <div class="form-group">
                                     <!--<textarea name="comment" ng-model="comment" on-enter-key-press="sendComment()"></textarea>-->
-                                    <textarea name="comment" class="form-control" id="comment" placeholder="Comment Here" ng-model="comment.body"></textarea>
+                                    <textarea name="data['body']" class="form-control" id="body" placeholder="Comment Here" ng-model="comment.body"></textarea>
                                 </div>
                                 <div class="form-group">    
                                     <button type="submit" class="btn btn-default">Send</button>

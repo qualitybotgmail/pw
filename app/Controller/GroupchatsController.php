@@ -5,6 +5,7 @@ App::uses('AppController', 'Controller');
  *
  * @property Groupchat $Groupchat
  * @property PaginatorComponent $Paginator
+ * @property SessionComponent $Session
  */
 class GroupchatsController extends AppController {
 
@@ -13,15 +14,8 @@ class GroupchatsController extends AppController {
  *
  * @var array
  */
-public $uses = array(
-        'UsersGroupchat'
-    );
-	public $components = array('Paginator');
+	public $components = array('Paginator', 'Session');
 
-	public function beforeFilter(){
-		parent::beforeFilter();
-		$this->Auth->allow('add');
-	}
 /**
  * index method
  *
@@ -52,7 +46,7 @@ public $uses = array(
  *
  * @return void
  */
-	public function add() {
+	public function addgroupmember($user_id = null) {//
 		// if ($this->request->is('post')) {
 		// 	$this->Groupchat->create();
 		// 	if ($this->Groupchat->save($this->request->data)) {
@@ -62,31 +56,40 @@ public $uses = array(
 		// 		$this->Session->setFlash(__('The groupchat could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
 		// 	}
 		// }
-		
+		// $users = $this->Groupchat->User->find('list');
+		// $users = $this->Groupchat->User->find('list');
+		// $this->set(compact('users', 'users'));
 		
 	header('Content-Type: application/json;charset=utf-8');
-		// $ids = explode(",",$user_id); 
-			
+	
+		$ids = explode(",",$user_id); 
+		 
+			$user_id = $this->Auth->user('id');  
 			$this->Groupchat->create(); 
-			$this->Groupchat->save();
+			 $data = $this->Groupchat->save(array('user_id' => $user_id));
 	 
-			// if ($data) {
-				// $groupchat_id = $this->Groupchat->getLastInsertId();
-				// foreach($ids as $id){  
-					// $this->loadModel('UsersGroupchat');
-					// $this->UsersGroupchat->create(); 
-					// // if($this->{$this->UsersGroupchat}->save(array('user_id' => $id, 'groupchat_id' => $groupchat_id))){
+			if ($data) {
+				$groupchat_id = $this->Groupchat->getLastInsertId();
+				foreach($ids as $id){  
+					$this->loadModel('UsersGroupchat');
+					$this->UsersGroupchat->create(); 
+					// if($this->{$this->UsersGroupchat}->save(array('user_id' => $id, 'groupchat_id' => $groupchat_id))){
 					// if($this->UsersGroupchat->save(array('user_id' => $id, 'groupchat_id' => $groupchat_id))){
-						// $result = $id;
+					// 	$result = $id;
 					// }
-				// }
+						$result = $this->UsersGroupchat->save(array(
+					'Groupchat' => array('id' => $groupchat_id),
+					'User' => array('User' => $id)
+				));
+				} 
 				
-			// } else {
+			} else {
 				$result = 'failed';
-			// } 
-		$this->set('groupmembers',$result); 
-		echo json_encode($result);
-		exit;
+			} 
+		$this->set('groupchats',$ids);
+		// $this->set('_serialize', array('groupchats'));
+		echo json_encode($ids);
+		exit; 
 	}
 
 /**
@@ -111,6 +114,9 @@ public $uses = array(
 			$options = array('conditions' => array('Groupchat.' . $this->Groupchat->primaryKey => $id));
 			$this->request->data = $this->Groupchat->find('first', $options);
 		}
+		$users = $this->Groupchat->User->find('list');
+		$users = $this->Groupchat->User->find('list');
+		$this->set(compact('users', 'users'));
 	}
 
 /**
@@ -132,10 +138,5 @@ public $uses = array(
 			$this->Session->setFlash(__('The groupchat could not be deleted. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
 		}
 		return $this->redirect(array('action' => 'index'));
-	}
-	public function g(){
-		$this->Groupchat->create();
-		print_r($this->Groupchat->save());
-		exit;
 	}
 }

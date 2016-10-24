@@ -14,6 +14,7 @@ class GroupchatFixture extends CakeTestFixture {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false, 'key' => 'primary'),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => null),
 		'modified' => array('type' => 'datetime', 'null' => false, 'default' => null),
+		'user_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => false),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1)
 		),
@@ -28,8 +29,9 @@ class GroupchatFixture extends CakeTestFixture {
 	public $records = array(
 		array(
 			'id' => 1,
-			'created' => '2016-10-19 11:47:23',
-			'modified' => '2016-10-19 11:47:23'
+			'created' => '2016-10-23 12:39:15',
+			'modified' => '2016-10-23 12:39:15',
+			'user_id' => 1
 		),
 	);
 

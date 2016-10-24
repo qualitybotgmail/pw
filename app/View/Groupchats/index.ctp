@@ -19,7 +19,9 @@
 						<div class="panel-body">
 							<ul class="nav nav-pills nav-stacked">
 								<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;New Groupchat'), array('action' => 'add'), array('escape' => false)); ?></li>
-								<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;List Messages'), array('controller' => 'messages', 'action' => 'index'), array('escape' => false)); ?> </li>
+								<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;List Users'), array('controller' => 'users', 'action' => 'index'), array('escape' => false)); ?> </li>
+		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;New User'), array('controller' => 'users', 'action' => 'add'), array('escape' => false)); ?> </li>
+		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;List Messages'), array('controller' => 'messages', 'action' => 'index'), array('escape' => false)); ?> </li>
 		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;New Message'), array('controller' => 'messages', 'action' => 'add'), array('escape' => false)); ?> </li>
 							</ul>
 						</div><!-- end body -->
@@ -34,6 +36,7 @@
 						<th><?php echo $this->Paginator->sort('id'); ?></th>
 						<th><?php echo $this->Paginator->sort('created'); ?></th>
 						<th><?php echo $this->Paginator->sort('modified'); ?></th>
+						<th><?php echo $this->Paginator->sort('user_id'); ?></th>
 						<th class="actions"></th>
 					</tr>
 				</thead>
@@ -43,6 +46,9 @@
 						<td><?php echo h($groupchat['Groupchat']['id']); ?>&nbsp;</td>
 						<td><?php echo h($groupchat['Groupchat']['created']); ?>&nbsp;</td>
 						<td><?php echo h($groupchat['Groupchat']['modified']); ?>&nbsp;</td>
+								<td>
+			<?php echo $this->Html->link($groupchat['User']['id'], array('controller' => 'users', 'action' => 'view', $groupchat['User']['id'])); ?>
+		</td>
 						<td class="actions">
 							<?php echo $this->Html->link('<span class="glyphicon glyphicon-search"></span>', array('action' => 'view', $groupchat['Groupchat']['id']), array('escape' => false)); ?>
 							<?php echo $this->Html->link('<span class="glyphicon glyphicon-edit"></span>', array('action' => 'edit', $groupchat['Groupchat']['id']), array('escape' => false)); ?>

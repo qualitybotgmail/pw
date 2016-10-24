@@ -20,7 +20,9 @@
 
 																<li><?php echo $this->Form->postLink(__('<span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;Delete'), array('action' => 'delete', $this->Form->value('Groupchat.id')), array('escape' => false), __('Are you sure you want to delete # %s?', $this->Form->value('Groupchat.id'))); ?></li>
 																<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;List Groupchats'), array('action' => 'index'), array('escape' => false)); ?></li>
-									<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;List Messages'), array('controller' => 'messages', 'action' => 'index'), array('escape' => false)); ?> </li>
+									<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;List Users'), array('controller' => 'users', 'action' => 'index'), array('escape' => false)); ?> </li>
+		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;New User'), array('controller' => 'users', 'action' => 'add'), array('escape' => false)); ?> </li>
+		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;List Messages'), array('controller' => 'messages', 'action' => 'index'), array('escape' => false)); ?> </li>
 		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;New Message'), array('controller' => 'messages', 'action' => 'add'), array('escape' => false)); ?> </li>
 							</ul>
 						</div>
@@ -32,6 +34,12 @@
 
 				<div class="form-group">
 					<?php echo $this->Form->input('id', array('class' => 'form-control', 'placeholder' => 'Id'));?>
+				</div>
+				<div class="form-group">
+					<?php echo $this->Form->input('user_id', array('class' => 'form-control', 'placeholder' => 'User Id'));?>
+				</div>
+				<div class="form-group">
+					<?php echo $this->Form->input('User', array('class' => 'form-control', 'placeholder' => 'User Id'));?>
 				</div>
 				<div class="form-group">
 					<?php echo $this->Form->submit(__('Submit'), array('class' => 'btn btn-default')); ?>

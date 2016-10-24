@@ -19,7 +19,9 @@
 							<ul class="nav nav-pills nav-stacked">
 
 																<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;List Groupchats'), array('action' => 'index'), array('escape' => false)); ?></li>
-									<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;List Messages'), array('controller' => 'messages', 'action' => 'index'), array('escape' => false)); ?> </li>
+									<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;List Users'), array('controller' => 'users', 'action' => 'index'), array('escape' => false)); ?> </li>
+		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;New User'), array('controller' => 'users', 'action' => 'add'), array('escape' => false)); ?> </li>
+		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-list"></span>&nbsp;&nbsp;List Messages'), array('controller' => 'messages', 'action' => 'index'), array('escape' => false)); ?> </li>
 		<li><?php echo $this->Html->link(__('<span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;New Message'), array('controller' => 'messages', 'action' => 'add'), array('escape' => false)); ?> </li>
 							</ul>
 						</div>
@@ -29,6 +31,12 @@
 		<div class="col-md-9">
 			<?php echo $this->Form->create('Groupchat', array('role' => 'form')); ?>
 
+				<div class="form-group">
+					<?php echo $this->Form->input('user_id', array('class' => 'form-control', 'placeholder' => 'User Id'));?>
+				</div>
+				<div class="form-group">
+					<?php echo $this->Form->input('User', array('class' => 'form-control', 'placeholder' => 'User Id'));?>
+				</div>
 				<div class="form-group">
 					<?php echo $this->Form->submit(__('Submit'), array('class' => 'btn btn-default')); ?>
 				</div>

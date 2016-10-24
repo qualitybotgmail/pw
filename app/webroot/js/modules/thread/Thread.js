@@ -94,30 +94,30 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
             };
             
             $scope.uploadAttachment = function(){
-                var fd = new FormData();
+                var fd = new FormData($("#commentFrm"));
                 
-                var data = {
-                    comment_id: $scope.comment.comment_id,
-                    filename: $scope.comment.filename
-                }
+                // var data = {
+                //     comment_id: $scope.comment.comment_id,
+                //     filename: $scope.comment.filename
+                // }
                 
-                fd.append('comment_id', new Blob([JSON.stringify({
-                    comment_id: data.comment_id,
-                })], {
-                    type: "text/json"
-                }), 'comment_id');
+                // fd.append('comment_id', new Blob([JSON.stringify({
+                //     comment_id: data.comment_id,
+                // })], {
+                //     type: "text/json"
+                // }), 'comment_id');
                 
-                fd.append('filename', new Blob([JSON.stringify({
-                    filename: data.filename,
-                })], {
-                    type: "image/png"
-                }), data.filename.name);
+                // fd.append('filename', new Blob([JSON.stringify({
+                //     filename: data.filename,
+                // })], {
+                //     type: "image/png"
+                // }), data.filename.name);
                 
                 // for(var key in data){
                 //     fd.append(key, $scope.comment[key]);
                 // }
                 
-                $http.post('/files/files.json', fd, {
+                $http.post('/files.json', fd, {
                     transformRequest: angular.identity,
                     header: {'Content-Type' : undefined},
                 }).success( function(data, status, header, config){
@@ -125,6 +125,7 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                 }).error( function(data, status, header, config){
                     console.log(data, status, header, config, 'failed');
                 });
+                
             };
             
             $scope.sendComment = function(){
