@@ -1,0 +1,48 @@
+<script type="text/ng-template" id="groupchat-modal.html">
+	<div id="groupchat-modal" tabindex="-1">
+	    
+		<form name="groupchatForm" novalidate>
+			<div class="modal-header">
+				<button type="button" class="close" ng-click="cancel()">&times;</button>
+			    <h4 class="white bigger">groupchat Details</h4>
+			</div>
+
+			<div class="modal-body">
+				<div class="row" >
+		            <div class="col-xs-7">
+						<div class="form-group">
+		                        <label for="title">Member</label>
+		                        <select2
+	                                id="member_search"
+	                                data="goupchat.users"
+	                                display-field="username"
+	                                ng-model="goupchat.member_ids"
+	                                placeholder="Search Member"
+	                                search="username"
+	                                selected="selected(val)"
+	                                detailed-selection="1"
+	                                allow-clear
+	                                class="width-100"
+	                                multiple="1"
+	                                name="member_ids"
+	                                required>
+	                            </select2>
+	                            
+		                        <i class="tooltips col-xs-12" ng-show="groupchatForm.member_ids.$dirty && groupchatForm.member_ids.$invalid">
+		                            <span class="red">This field is required</span>
+		                        </i>
+	                    </div>
+		    		</div>
+		    	</div>
+			</div>
+			
+			<div class="modal-footer">
+				<button type="button" class="btn btn-sm" id="btn-close" ng-click="cancel()" tabindex="-1"><i class="fa fa-ban bigger-140"></i> &nbsp;Cancel</button>
+				<button type="submit" ng-click="saveGroupChat()" class="btn btn-primary btn-sm" id="btn-ok" ng-disabled="groupchatForm.$invalid || ! groupchatForm.$dirty">
+					<i class="fa fa-save bigger-140"></i> &nbsp;<u>S</u>ave
+				</button>
+			</div>
+
+		</form>
+	</div>
+</script>

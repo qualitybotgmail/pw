@@ -1,0 +1,49 @@
+<script type="text/ng-template" id="add-thread-member-modal.html">
+	<div id="thread-modal" tabindex="-1">
+	    
+		<form name="threadForm" novalidate ng-submit="save()">
+			<div class="modal-header">
+				<button type="button" class="close" ng-click="cancel()">&times;</button>
+			    <h4 class="white bigger">Thread Member Search</h4>
+			</div>
+
+			<div class="modal-body">
+				<div class="row" >
+		            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		            	
+						<div class="form-group">
+	                        <label for="title">Member</label>
+	                        <select2
+                                id="member_search"
+                                data="members.users"
+                                display-field="username"
+                                ng-model="members.ids"
+                                placeholder="Search Member"
+                                search="username"
+                                selected="selected(val)"
+                                detailed-selection="1"
+                                allow-clear
+                                class="width-100"
+                                multiple="1"
+                                required>
+                            </select2>
+                            
+	                        <i class="tooltips col-xs-12" ng-show="threadForm.title.$dirty && threadForm.title.$invalid">
+	                            <span class="red">This field is required</span>
+	                        </i>
+	                    </div>
+		    		</div>
+		    	</div>
+
+			</div>
+			
+			<div class="modal-footer">
+				<button type="button" class="btn btn-sm" id="btn-close" ng-click="cancel()" tabindex="-1"><i class="fa fa-ban bigger-140"></i> &nbsp;Cancel</button>
+				<button type="submit" class="btn btn-primary btn-sm" id="btn-ok" ng-disabled="threadForm.$invalid || ! threadForm.$dirty || state.saving">
+					<i class="fa fa-save bigger-140"></i> &nbsp;<u>D</u>one
+				</button>
+			</div>
+
+		</form>
+	</div>
+</script>
