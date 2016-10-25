@@ -39,8 +39,8 @@
             </p>
             <p class="thread-users">
                 <span ng-repeat="u in thread.User">
-                    <span  ng-if="! (u.id == thread.user_id)">{{ u.username }}</span>
-                    <span class="comma"  ng-if="! (u.id == thread.user_id)">,</span>
+                    {{u.username}}
+                    {{$last ? '' : ', '}}
                 </span>
             </p>
         </div>  
@@ -104,29 +104,31 @@
                                         {{c.body}}
                                     </p> 
                                     <span class="date sub-text">
-                                        on March 5th, 2014
+                                        {{c.created}}
                                     </span>
                 
                                 </div>
                             </li>
                         </ul>
-                        <form class="form-inline" role="form" id="commentFrm" name="commentFrm" method="POST" enctype="multipart/form-data" novalidate ng-submit="sendComment()">
+                        <form class="form-inline" role="form" id="commentFrm" name="commentFrm" method="POST" enctype="multipart/form-data" 
+                        novalidate ng-submit="sendComment()">
+                            <div style="display:none;"><input type="hidden" name="_method" value="POST"/></div>
                             <div class="row hidden">
                                 <div class="form-group hidden">
-                                    <input type="text" name="data['comment_id']" ng-model="comment.comment_id" />
+                                    <input type="text" name="data[Upload][comment_id]" id="comment-id" ng-model="comment.comment_id" />
                                 </div>
                             </div>
                             
                             <div class="row">
                                 <div class="form-group">
-                                    <input type="file" name="data['File']" ng-file-model="comment.filename"  multiple />
+                                    <input type="file" name="data[Upload][file]" id="attachments" ng-file-model="comment.filename"  multiple />
                                 </div>
                             </div>
                             
                             <div class="row">
                                 <div class="form-group">
                                     <!--<textarea name="comment" ng-model="comment" on-enter-key-press="sendComment()"></textarea>-->
-                                    <textarea name="data['body']" class="form-control" id="body" placeholder="Comment Here" ng-model="comment.body"></textarea>
+                                    <textarea name="data[Upload][body]" class="form-control" id="body" placeholder="Comment Here" ng-model="comment.body"></textarea>
                                 </div>
                                 <div class="form-group">    
                                     <button type="submit" class="btn btn-default">Send</button>

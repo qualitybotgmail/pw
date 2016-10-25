@@ -1,1 +1,85 @@
-message html
+<style type="text/css">
+    .thread-users span.comma:last-child {
+        display: 'none';
+    }
+    .liked {
+        font-weight: bolder;
+        background: blue;
+    }
+    .badge-like,
+    .add-member {
+        cursor: pointer;
+    }
+    
+</style>
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <p class="thread-users">
+                    <span ng-repeat="u in message.User">
+                        {{ u.username }}
+                        {{$last ? '' : ', '}}
+                    </span>
+                    <span class="badge add-member" title="Add member" ng-click="addMembers(message.Groupchat)">
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </span>
+                </p>
+            </div>        
+        </div>
+        
+        
+        <!--Thread -->
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="detailBox">
+                    <div class="actionBox">
+                        <ul class="commentList">
+                            <li ng-repeat="m in message.Message">
+                                <div class="commenterImage" title="{{m.User.username}}">
+                                  <img src="http://placekitten.com/50/50" />
+                                </div>
+                                <div class="commentText">
+                                    <p>
+                                        {{m.body}}
+                                    </p> 
+                                    <span class="date sub-text">
+                                        {{m.created}}
+                                    </span>
+                
+                                </div>
+                            </li>
+                        </ul>
+                        <form class="form-inline" role="form" id="messageFrm" name="messageFrm" method="POST" enctype="multipart/form-data" 
+                        novalidate ng-submit="sendMessage()">
+                            <div style="display:none;"><input type="hidden" name="_method" value="POST"/></div>
+                            <div class="row hidden">
+                                <div class="form-group hidden">
+                                    <input type="text" name="data[Upload][message_id]" id="message-id" ng-model="message.comment.message_id" />
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="form-group">
+                                    <input type="file" name="data[Upload][file]" id="attachments"  multiple />
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="form-group">
+                                    <textarea name="data[Upload][body]" class="form-control" id="body" placeholder="Comment Here" ng-model="message.comment.body"></textarea>
+                                </div>
+                                <div class="form-group">    
+                                    <button type="submit" class="btn btn-default">Send</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div ng-repeat="template in templates" ng-include="template"></div

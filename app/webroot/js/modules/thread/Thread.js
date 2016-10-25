@@ -1,4 +1,4 @@
-define(['app', 'angular', 'underscore'], function(app, angular, _)
+define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 {
     app.factory('ThreadFactory', [
         'GLOBAL',
@@ -83,7 +83,6 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                     };
                     
                     Modal.showModal(modalConfig, {}).then(function (selectMembers) {
-                        console.log(selectMembers, 'the selectMembers');
                         // success
                         angular.forEach(selectMembers, function(memmber, index){
                             $scope.selectedThread.User.push(memmber);
@@ -93,39 +92,30 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                     });
             };
             
-            $scope.uploadAttachment = function(){
-                var fd = new FormData($("#commentFrm"));
+            $scope.uploadAttachment = function(form){
+                // var fd = new FormData($('#commentFrm')[0]);
+                var fd = new FormData();
                 
-                // var data = {
-                //     comment_id: $scope.comment.comment_id,
-                //     filename: $scope.comment.filename
-                // }
+                fd.append('_method', 'POST');
+                fd.append('comment_id', $scope.comment.comment_id);
                 
-                // fd.append('comment_id', new Blob([JSON.stringify({
-                //     comment_id: data.comment_id,
-                // })], {
-                //     type: "text/json"
-                // }), 'comment_id');
-                
-                // fd.append('filename', new Blob([JSON.stringify({
-                //     filename: data.filename,
-                // })], {
-                //     type: "image/png"
-                // }), data.filename.name);
-                
-                // for(var key in data){
-                //     fd.append(key, $scope.comment[key]);
-                // }
-                
-                $http.post('/files.json', fd, {
-                    transformRequest: angular.identity,
-                    header: {'Content-Type' : undefined},
-                }).success( function(data, status, header, config){
-                    console.log(data, status, header, config, 'success');
-                }).error( function(data, status, header, config){
-                    console.log(data, status, header, config, 'failed');
+                $.each($("#attachments")[0].files, function(i, file) {
+                    fd.append('data[Upload][file]['+i+']', file);
                 });
-                
+
+                 $.ajax({
+                   url: "/uploads.json",
+                   type: "POST",
+                   data: fd,
+                   processData: false,
+                   contentType: false,
+                   success: function(response) {
+                       // .. do something
+                   },
+                   error: function(jqXHR, textStatus, errorMessage) {
+                       console.log(errorMessage); // Optional
+                   }
+                });
             };
             
             $scope.sendComment = function(){
@@ -134,11 +124,10 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                 var id = $scope.selectedThread.Thread.id.toString();
                 ThreadsModel.one('comment').one(id).customPOST(postData).then(function(res){
                     $scope.selectedThread.Comment.push(angular.extend(postData, res.Comment));
+                    // $('#comment-id').val(res.Comment.id);
                     $scope.comment.comment_id = res.Comment.id;
-                    // if ($scope.comment.filename) {
-                        $scope.uploadAttachment();    
-                    // }
-                    // $scope.selectedThread.Comment.push(angular.extend(postData, res.Comment));
+                    $scope.uploadAttachment();
+                    
                 });
             };
         	
@@ -146,6 +135,7 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
         	// get thread information
         	$scope.getThread = function(threadId) {
         	    ThreadsModel.one(threadId.toString()).get().then(function(thread){
+        	        thread.isLike = $checkUserLikeThread(thread.Like);
         	        thread.currentLikes = (thread.Like.length)?thread.Like.length:0;
         	        $scope.selectedThread = thread;
         	    });
@@ -156,6 +146,10 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
         	    ThreadsModel.one('index').one('page:'+$scope.currentPageNumber.toString()).get().then(function(res) {
             	    $configThreads(res);
             	});
+        	};
+        	
+        	$scope.likeComment = function(index, comment){
+        	    
         	};
         	
         	// posting like/unlike

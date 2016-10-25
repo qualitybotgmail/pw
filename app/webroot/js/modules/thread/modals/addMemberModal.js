@@ -30,7 +30,8 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
 					angular.forEach($scope.members.users, function(user, index){
 						console.log(user, 'the user');
 						angular.forEach($scope.members.ids, (function(id, index) {
-						    if(user.id === id) {
+							console.log(parseInt(user.id), id, ' = ', parseInt(user.id) === id);
+						    if(parseInt(user.id) === id) {
 						    	arr.push(user);
 						    }
 						}))
@@ -45,23 +46,10 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
 					});
 				};
 				
-				// $scope.selected = function(val) {
-					// $scope.selectedMembers = [];
-					// angular.forEach($scope.members.users, function(user, index){
-					// 	angular.forEach($scope.members.ids, function(id, index){
-					// 		if (user.id === id)	 {
-					// 			$scope.selectedMembers.push(user);
-					// 		}
-					// 	});
-					// });
-				// };
-				
                 $scope.save = function() {
-                	var selectedUsers = $getSelectedUsers();
-                	console.log(selectedUsers);
-                    // ThreadsModel.one('addmember').one($scope.thread.id.toString()).post($scope.members.ids.join()).then(function(res){
-                       //$scope.$close(selectedUsers);
-                    // });
+                    ThreadsModel.one('addmember').one($scope.thread.id.toString()).post($scope.members.ids.join()).then(function(res){
+                       $scope.$close($getSelectedUsers());
+                    });
                 };
                 
                 /* Close the this modal */

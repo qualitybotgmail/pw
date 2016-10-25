@@ -15,6 +15,10 @@ class MessagesController extends AppController {
  */
 	public $components = array('Paginator');
 
+	public function beforeFilter(){
+		parent::beforeFilter();
+		$this->Auth->allow('add');
+	}
 /**
  * index method
  *
@@ -36,6 +40,7 @@ class MessagesController extends AppController {
 		if (!$this->Message->exists($id)) {
 			throw new NotFoundException(__('Invalid message'));
 		}
+		
 		$options = array('conditions' => array('Message.' . $this->Message->primaryKey => $id));
 		$this->set('message', $this->Message->find('first', $options));
 	}
@@ -45,20 +50,20 @@ class MessagesController extends AppController {
  *
  * @return void
  */
-	public function add() {
-		if ($this->request->is('post')) {
-			$this->Message->create();
-			if ($this->Message->save($this->request->data)) {
-				$this->Session->setFlash(__('The message has been saved.'), 'default', array('class' => 'alert alert-success'));
-				return $this->redirect(array('action' => 'index'));
-			} else {
-				$this->Session->setFlash(__('The message could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
-			}
-		}
-		$users = $this->Message->User->find('list');
-		$groupchats = $this->Message->Groupchat->find('list');
-		$this->set(compact('users', 'groupchats'));
-	}
+	// public function add() {
+	// 	if ($this->request->is('post')) {
+	// 		$this->Message->create();
+	// 		if ($this->Message->save($this->request->data)) {
+	// 			$this->Session->setFlash(__('The message has been saved.'), 'default', array('class' => 'alert alert-success'));
+	// 			return $this->redirect(array('action' => 'index'));
+	// 		} else {
+	// 			$this->Session->setFlash(__('The message could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
+	// 		}
+	// 	}
+	// 	$users = $this->Message->User->find('list');
+	// 	$groupchats = $this->Message->Groupchat->find('list');
+	// 	$this->set(compact('users', 'groupchats'));
+	// }
 
 /**
  * edit method
@@ -108,31 +113,37 @@ class MessagesController extends AppController {
 		return $this->redirect(array('action' => 'index'));
 	}
 	
-	public function posts(){ 
-		
-	// $this->view = 'add';
-	header('Content-Type: application/json;charset=utf-8');
-		if ($this->request->is('get')) { 
-			$params=$this->params['url'];
-			$groupchat_id = $params['data']['groupchat_id'];
-		}
+	public function add($id = null){ 
+		 
+	header('Content-Type: application/json;charset=utf-8'); 
+	
+			$groupchat_id = $id;  
 		
 		if ($this->request->is('post')) {
+			// $body = 'asd';
 			$body = $this->request->data['body'];
-		}
+	
+			$user_id = $this->Auth->user('id'); 
+			$this->Message->create();
+			
+			$data = array('user_id' => $user_id, 'groupchat_id' => $groupchat_id, 'body' => $body); 
+			$saved = $this->Message->save($data);
+			if($saved){
+				$result = $saved; 
+			}else{
+				$result = 'failed';
+			}
 		 
-		$user_id = $this->Auth->user('id'); 
-		$this->Message->create();
-		$data = array('user_id' => $user_id, 'groupchat_id' => $groupchat_id, 'body' => $body); 
-		if($this->Message->save($data)){
-			$result = 'ok'; 
-		}else{
-			$result = 'failed';
+		} else{
+			$result = 'data unposted';
 		}
+			// $message_id = $this->Message->getLastInsertId();
 		
-		$this->set('posts', $result);
+		echo json_encode($result);
+		$this->set('add', $result);
+		 
         exit;
 	}
-	 
+	
 }
  

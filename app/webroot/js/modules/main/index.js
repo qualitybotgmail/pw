@@ -5,9 +5,11 @@ define([
 	// import models
 	'../../models/threads',
 	'../../models/users',
+	'../../models/groupChats',
 	
 	// import modals
 	'./modals/threadModal',
+	'./modals/groupChatModal',
 	
 	'./MainController',
 	'./loading/LoadingController',
@@ -22,6 +24,7 @@ define([
 	'../../services/gridService',
 	'../../services/formService',
 	'../../directives/jwertyDirective',
-	'../../directives/jqGridDirective'
+	'../../directives/jqGridDirective',
+	'../../directives/selectTwoDirective',
 	
 ], function () {});

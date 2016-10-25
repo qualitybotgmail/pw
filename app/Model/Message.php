@@ -76,6 +76,7 @@ class Message extends AppModel {
  *
  * @var array
  */
+ 
 	public $hasMany = array(
 		'Like' => array(
 			'className' => 'Like',

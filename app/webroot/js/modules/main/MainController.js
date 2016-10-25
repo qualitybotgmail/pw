@@ -48,18 +48,23 @@ define([
         'MainFactory',
 
         function($rootScope, $scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, UsersModel, Factory) {
+        	$rootScope.loginUser = {};
         	
         	var start = function() {
-        	    $rootScope.loginUser = {};
         	    
         	    UsersModel.one('me').get().then(function(res){
         	        $rootScope.loginUser  = res.User;
+        	    });
+        	    
+        	    Restangular.one('groupchats').get().then(function(res){
+        	        $scope.groupchats  = res.groupchats;
         	    });
         	    
                 $scope.templates = {
                     modal: GLOBAL.baseSourcePath + 'templates/modal.html?version=' + GLOBAL.version,
                     report: GLOBAL.baseSourcePath + 'templates/report.html?version=' + GLOBAL.version,
                     thread: GLOBAL.baseModulePath + 'main/modals/add_thread.html',
+                    groupchat: GLOBAL.baseModulePath + 'main/modals/add_group_chat.html',
                 };
                 
                 
@@ -77,11 +82,26 @@ define([
                         // error
                     });
                 };
+                
+                $scope.addGroupChat = function () {
+                    var modalConfig = {
+                        template   : $templateCache.get("groupchat-modal.html"),
+                        controller : 'groupChatModalController',
+                        windowClass: 'modal-width-90 ',
+                        size       : 'sm',
+                    };
+                    
+                    Modal.showModal(modalConfig, {}).then(function (result) {
+                        // success
+                    }, function (err) {
+                        // error
+                    });
+                };
 
-                $scope.parishes = [];
-                $scope.selected = {};
+                // $scope.parishes = [];
+                // $scope.selected = {};
 
-                $scope.accessLevel = GLOBAL.accessLevel;
+                // $scope.accessLevel = GLOBAL.accessLevel;
 
                 // Initialize the global Focus service
                 $scope.focus = Focus.init();
@@ -96,7 +116,7 @@ define([
                         $state.go('app');
                     },
                     thread: function() {
-                        $state.go('app.thread');
+                        $state.go('app.threads');
                     },
                     message: function() {
                         $state.go('app.message');

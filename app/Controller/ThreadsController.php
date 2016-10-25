@@ -22,7 +22,12 @@ class ThreadsController extends AppController {
  */
 	public function index() {
 		$this->Thread->recursive = 1;
+		// $id = $this->Auth->user('id');
+		// $options = array('conditions' => array('user_id'=>$id));
+		// $this->Paginator->settings = $options;
 		$this->set('threads', $this->Paginator->paginate());
+		 
+
 	}
 	public function beforeFilter(){
 //		$this->Auth->allow('comment');
@@ -36,11 +41,12 @@ class ThreadsController extends AppController {
  * @return void
  */
 	public function view($id = null) {
+	
 		if (!$this->Thread->exists($id)) {
 			throw new NotFoundException(__('Invalid thread'));
 		}
-		$options = array('conditions' => array('Thread.' . $this->Thread->primaryKey => $id));
-		$thread =  $this->Thread->find('first', $options);
+		$this->Thread->recursive = 2;
+		$thread = $this->Thread->findById($id);
 		
 		$this->set('thread',$thread);
 	}

@@ -38,7 +38,13 @@
 	Router::mapResources('threads');
 	Router::mapResources('files');
 	Router::mapResources('posts');
-	Router::mapResources('addgroupmember');
+	Router::mapResources('uploads');
+	Router::mapResources('users');
+	// Router::mapResources('messages');
+	Router::mapResources('groupchats');
+	
+	
+	//Router::mapResources('addgroupmembers');
 	
 	Router::parseExtensions('json');
 

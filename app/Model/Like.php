@@ -45,6 +45,16 @@ class Like extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
+		'comment_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
 	);
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
@@ -72,6 +82,13 @@ class Like extends AppModel {
 		'Thread' => array(
 			'className' => 'Thread',
 			'foreignKey' => 'thread_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		), 
+		'Comment' => array(
+			'className' => 'Comment',
+			'foreignKey' => 'comment_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''

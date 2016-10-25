@@ -16,14 +16,29 @@ class GroupchatsController extends AppController {
  */
 	public $components = array('Paginator', 'Session');
 
+	public function beforeFilter(){
+		parent::beforeFilter();
+		$this->Auth->allow('add','view');
+	}
 /**
  * index method
  *
  * @return void
  */
 	public function index() {
-		$this->Groupchat->recursive = 0;
-		$this->set('groupchats', $this->Paginator->paginate());
+		$this->Groupchat->recursive = 1;
+		
+		$id = $this->Auth->user('id');
+		
+		$options = array('conditions' => array('user_id'=>$id)); 
+		$groupchats = $this->Groupchat->find('all', $options);
+		$this->set(array(
+			'groupchats' => $groupchats, 
+			'_serialize' => array('groupchats')
+			));
+			
+	//	print_r($groupchats);
+	//	exit;
 	}
 
 /**
@@ -37,8 +52,14 @@ class GroupchatsController extends AppController {
 		if (!$this->Groupchat->exists($id)) {
 			throw new NotFoundException(__('Invalid groupchat'));
 		}
-		$options = array('conditions' => array('Groupchat.' . $this->Groupchat->primaryKey => $id));
-		$this->set('groupchat', $this->Groupchat->find('first', $options));
+		$this->Groupchat->recursive = 2;
+		$options = array('conditions' => array('Groupchat.' . $this->Groupchat->primaryKey => $id)); 
+		$groupchats = $this->Groupchat>find('first', $options);
+		
+		$this->set(array(
+			'groupchats' => $groupchats, 
+			'_serialize' => array('groupchats')
+			));
 	}
 
 /**
@@ -46,22 +67,9 @@ class GroupchatsController extends AppController {
  *
  * @return void
  */
-	public function addgroupmember($user_id = null) {//
-		// if ($this->request->is('post')) {
-		// 	$this->Groupchat->create();
-		// 	if ($this->Groupchat->save($this->request->data)) {
-		// 		$this->Session->setFlash(__('The groupchat has been saved.'), 'default', array('class' => 'alert alert-success'));
-		// 		return $this->redirect(array('action' => 'index'));
-		// 	} else {
-		// 		$this->Session->setFlash(__('The groupchat could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
-		// 	}
-		// }
-		// $users = $this->Groupchat->User->find('list');
-		// $users = $this->Groupchat->User->find('list');
-		// $this->set(compact('users', 'users'));
-		
-	header('Content-Type: application/json;charset=utf-8');
-	
+	public function add($user_id = null) { 
+		header('Content-Type: application/json;charset=utf-8');
+	$this->loadModel('UsersGroupchat');
 		$ids = explode(",",$user_id); 
 		 
 			$user_id = $this->Auth->user('id');  
@@ -69,26 +77,28 @@ class GroupchatsController extends AppController {
 			 $data = $this->Groupchat->save(array('user_id' => $user_id));
 	 
 			if ($data) {
-				$groupchat_id = $this->Groupchat->getLastInsertId();
+				$groupchat_id = $this->Groupchat->getLastInsertId(); 
 				foreach($ids as $id){  
-					$this->loadModel('UsersGroupchat');
-					$this->UsersGroupchat->create(); 
-					// if($this->{$this->UsersGroupchat}->save(array('user_id' => $id, 'groupchat_id' => $groupchat_id))){
-					// if($this->UsersGroupchat->save(array('user_id' => $id, 'groupchat_id' => $groupchat_id))){
-					// 	$result = $id;
-					// }
-						$result = $this->UsersGroupchat->save(array(
-					'Groupchat' => array('id' => $groupchat_id),
-					'User' => array('User' => $id)
-				));
-				} 
-				
+					///check if user_id and groupchat_id already exists
+					$exists = $this->UsersGroupchat->find('count', array(
+    			    'conditions' => array('user_id' => $id,'groupchat_id' => $groupchat_id )
+    				));
+					
+					if($exists==0){
+					 $this->UsersGroupchat->create();  
+						 if($this->UsersGroupchat->save(array('user_id' => $id, 'groupchat_id' => $groupchat_id))){
+						 	$result = 'success add';
+						 }else{
+						 	$result = 'failed add';
+						 } 
+					}else{
+						$result = 'user already in group';
+					} 
+				}
 			} else {
-				$result = 'failed';
-			} 
-		$this->set('groupchats',$ids);
-		// $this->set('_serialize', array('groupchats'));
-		echo json_encode($ids);
+				$result = 'failed save groupchat';
+			}  
+		echo json_encode($result);
 		exit; 
 	}
 
@@ -139,4 +149,72 @@ class GroupchatsController extends AppController {
 		}
 		return $this->redirect(array('action' => 'index'));
 	}
+	
+	
+	public function userstogroupchat(){
+		header('Content-Type: application/json;charset=utf-8'); 
+		
+		$this->loadModel('User');
+		$users = $this->User->find("all", array('fields'=>array('id','username','created','modified')));
+		 
+		echo json_encode(['users'=> $users]);
+		exit;
+	}
+	public function userstoadd($gid){
+		header('Content-Type: application/json;charset=utf-8');
+		$members = $this->Groupchat->members($gid);
+		
+		$users = $this->Groupchat->User->find("all",['fields' => ['id','username'],'conditions' => [
+			'NOT' => [
+				'User.id' => $members
+			]
+		]]);
+		
+		if(count($users) == 0){
+			$users = $this->Groupchats->User->find("all",['fields' => ['id','username']]);
+		}
+		echo json_encode(['users'=> $users]);
+		exit;
+	}
+/**
+ * add method
+ *
+ * @return void
+ */
+	public function addmember($gid = null,$member_id = null) {
+		header('Content-Type: application/json;charset=utf-8');
+		$ids = explode(",",$member_id);
+		try{
+			$groupchat = $this->Groupchat->findById($gid);
+			$users = [];
+						
+			foreach($groupchat['User'] as $i => $u){
+				if(is_numeric($i)){
+					$users[] = $u['id'];
+				}
+			}
+			
+			$oldcount = count($users);
+			$users = array_merge($ids,$users);
+			$users = array_unique($users);
+			
+			
+			if(count($users)!=$oldcount){
+				
+				$result = $this->Groupchat->save(array(
+					'Groupchat' => array('id' => $gid),
+					'User' => array('User' => $users)
+				));
+				
+				echo json_encode(['status' => 'OK']);
+				exit;
+			}
+			echo json_encode(['status' => 'EXISTS']);
+			
+			exit;
+		}catch(Exception $e){
+			echo json_encode(['status' => 'FAILED']);
+			exit;
+		}
+	}	
 }

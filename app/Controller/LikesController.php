@@ -35,7 +35,7 @@ class LikesController extends AppController {
 	public function view($id = null) {
 		if (!$this->Like->exists($id)) {
 			throw new NotFoundException(__('Invalid like'));
-		}
+		} 
 		$options = array('conditions' => array('Like.' . $this->Like->primaryKey => $id));
 		$this->set('like', $this->Like->find('first', $options));
 	}
