@@ -30,12 +30,12 @@ define([], function()
             'threads': {
                 views: {
                     'content': {
-                        templateUrl: baseSourcePath + 'thread/thread.html?version=' + Talknote.version,
-                        controller: 'ThreadController'   
+                        templateUrl: baseSourcePath + 'threads/threads.html?version=' + Talknote.version,
+                        controller: 'ThreadsController'   
                     }
                 },
                 dependencies: [
-                    'modules/thread/index'
+                    'modules/threads/index'
                 ],
                 name: 'app.threads'
             },

@@ -17,4 +17,5 @@ define([
 	'../../services/blockerService',
 	'../../services/formService',
 	'../../directives/jwertyDirective',
+	'../../directives/fancyboxDirective',
 ], function () {});

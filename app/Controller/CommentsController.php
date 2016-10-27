@@ -114,5 +114,87 @@ class CommentsController extends AppController {
 	}
 	
 	
-	
+/**
+ * add method
+ *
+ * @return void
+ */
+	public function like($id = null) {
+		$this->Comment->id = $id;
+		if (!$this->Comment->exists()) {
+			throw new NotFoundException(__('Invalid comment'));
+		}
+		$user_id = $this->Auth->user('id');		
+		$like = array(
+			'Like' => array('user_id' => $user_id,'comment_id' => $id)
+		);
+		
+		if(!$this->Comment->Like->commentLikeExists($id,$user_id)){
+			$ret = $this->Comment->Like->save($like);
+			if($ret)
+				echo json_encode(['status' => 'OK']); 
+			else {
+				echo json_encode(['status' => 'FAILED']);
+			}
+			exit;
+		}
+		echo json_encode(['status' => 'EXISTS']);
+		exit;
+		
+		
+		
+// Array
+// (
+//     [Like] => Array
+//         (
+//             [user_id] => 3
+//             [message_id] => 1
+//             [comment_id] => 1
+//         )
+
+// )
+
+		return $this->redirect(array('action' => 'index'));
+	}
+/**
+ * add method
+ *
+ * @return void
+ */
+	public function unlike($id = null) {
+		$this->Comment->id = $id;
+		if (!$this->Comment->exists()) {
+			throw new NotFoundException(__('Invalid comment'));
+		}
+		$user_id = $this->Auth->user('id');		
+		
+		if($this->Comment->Like->commentLikeExists($id,$user_id)){
+			$ret = $this->Comment->Like->commentLike($id,$user_id);
+			$this->Comment->Like->id  = $ret['Like']['id'];
+			if($this->Comment->Like->delete()){
+				echo json_encode(['status' => 'OK']);
+			} else {
+				echo json_encode(['status' => 'FAILED']);
+			}
+			exit;
+		}else{
+			echo json_encode(['status' => 'NOT_EXISTING']);
+		}
+		exit;
+		
+		
+		
+// Array
+// (
+//     [Like] => Array
+//         (
+//             [user_id] => 3
+//             [message_id] => 1
+//             [comment_id] => 1
+//         )
+
+// )
+
+		return $this->redirect(array('action' => 'index'));
+	}		
 }

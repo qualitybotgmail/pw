@@ -40,8 +40,10 @@
 	Router::mapResources('posts');
 	Router::mapResources('uploads');
 	Router::mapResources('users');
-	// Router::mapResources('messages');
+	Router::mapResources('messages');
 	Router::mapResources('groupchats');
+	Router::mapResources('comments');
+	
 	
 	
 	//Router::mapResources('addgroupmembers');

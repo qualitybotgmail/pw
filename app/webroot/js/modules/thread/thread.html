@@ -13,40 +13,6 @@
     
 </style>
 
-<!-- if there is a no specific thread show this-->
-<div class="row" ng-if="threads.length">
-    <div class="col-md-12">
-        <div class="row" ng-repeat="thread in threads">
-            <h5 class="page-header">
-                <span>
-                    <a ui-sref="app.thread({ id: thread.Thread.id })">
-                        {{thread.Thread.title}}
-                    </a>
-                </span>
-                
-                <span>
-                    <a class="badge-like" ng-click="like($index, thread)">
-                        <span class="badge {{(thread.isLike)?'liked':''}}">
-                            {{thread.currentLikes}}
-                            <i class="glyphicon glyphicon-thumbs-up"></i>
-                        </span>
-                    </a>
-                </span>
-                
-            </h5>
-            <p>
-                {{thread.Thread.head}}
-            </p>
-            <p class="thread-users">
-                <span ng-repeat="u in thread.User">
-                    {{u.username}}
-                    {{$last ? '' : ', '}}
-                </span>
-            </p>
-        </div>  
-    </div>
-</div>
-
 <!-- if there is a specific thread show this-->
 <div class="row" ng-if="selectedThread">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -68,7 +34,6 @@
         </div>
         
         
-        <!--Thread -->
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <div class="detailBox">
@@ -78,15 +43,14 @@
                             <small>
                                 <span>
                                     <a class="badge-like" ng-click="like($index, selectedThread)">
-                                        <span class="badge {{(selectedThread.isLike)?'liked':''}}">
-                                            {{selectedThread.currentLikes}}
+                                        <span class="badge {{(selectedThread.Thread.isUserLiked)?'liked':''}}">
+                                            {{selectedThread.Thread.likes}}
                                             <i class="glyphicon glyphicon-thumbs-up"></i>
                                         </span>
                                     </a>
                                 </span>
                             </small>
                         </h3>
-                        <!--<button type="button" class="close" aria-hidden="true">&times;</button>-->
                     </div>
                     <div class="commentBox">
                         <p class="taskDescription">
@@ -102,9 +66,24 @@
                                 <div class="commentText">
                                     <p>
                                         {{c.body}}
+                                        <span ng-repeat="upload in c.Upload">
+                                            <a fancybox ng-href="{{upload.path}}">
+                                                <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                                            </a>
+                                        </span>
                                     </p> 
                                     <span class="date sub-text">
                                         {{c.created}}
+                                        
+                                        <span>
+                                            <a class="badge-like" ng-click="likeComment($index, c)">
+                                                <span class="badge {{(c.isUserLiked)?'liked':''}}">
+                                                    {{c.likes}}
+                                                    <i class="glyphicon glyphicon-thumbs-up"></i>
+                                                </span>
+                                            </a>
+                                        </span>
+                                        
                                     </span>
                 
                                 </div>
@@ -127,7 +106,6 @@
                             
                             <div class="row">
                                 <div class="form-group">
-                                    <!--<textarea name="comment" ng-model="comment" on-enter-key-press="sendComment()"></textarea>-->
                                     <textarea name="data[Upload][body]" class="form-control" id="body" placeholder="Comment Here" ng-model="comment.body"></textarea>
                                 </div>
                                 <div class="form-group">    

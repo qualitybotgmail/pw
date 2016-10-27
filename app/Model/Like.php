@@ -106,6 +106,19 @@ class Like extends AppModel {
 		$ret = $this->threadLike($thread_id,$user_id);
 		
 		return count($ret) > 0;
+	}
+	public function commentLike($comment_id,$user_id){
+		$ret = $this->find('first',array('conditions' => array(
+			'Like.comment_id' => $comment_id,
+			'Like.user_id'   => $user_id
+		)));
+		
+		return $ret;
+	}
+	public function commentLikeExists($comment_id,$user_id){
+		$ret = $this->commentLike($comment_id,$user_id);
+		
+		return count($ret) > 0;
 	}	
 	public function beforeSave($options = array()) {
 		

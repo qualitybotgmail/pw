@@ -98,4 +98,12 @@ class Thread extends AppModel {
 		return $ret;
 		
 	}
+	public function isLiked($tid,$uid){
+		$ret = $this->Like->findByThreadIdAndUserId($tid,$uid);
+		if($ret)
+			return true;
+			
+		return false;
+	}
+	
 }

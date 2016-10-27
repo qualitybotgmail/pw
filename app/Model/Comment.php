@@ -51,7 +51,7 @@ class Comment extends AppModel {
 	
 /**
  * belongsTo associations
- *
+ * 
  * @var array
  */
 	public $belongsTo = array(
@@ -68,9 +68,33 @@ class Comment extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		),''
+		),
 	);
 	
-	
+	public $hasMany = ['Like', 'Upload'];
+
+// 	public function afterFind($results, $primary = false) {
+// 		$ret = [];
+// 	    foreach ($results as $key => $val) {
+// 	        $val['Comment']['likes'] = $this->Like->find('count',['conditions'=>['comment_id' => $val['Comment']['id']]]);
+// 	        $list = $this->Like->find('list',[
+// 	        		'fields' => ['user_id'],
+// 	        		'conditions'=>['comment_id' => $val['Comment']['id']]]);
+	        
+// 	        $uid = CakeSession::read("Auth.User.id");
+// 	        //print_r($list);
+// 	        $val['Comment']['isUserLiked'] = in_array($uid,$list);
+// 	        $ret[$key] = $val;
+// 	    }
+	    
+//     return $ret;
+// }
+	public function isLiked($cid,$uid){
+		$ret = $this->Like->findByCommentIdAndUserId($cid,$uid);
+		if($ret)
+			return true;
+			
+		return false;
+	}
 	
 }

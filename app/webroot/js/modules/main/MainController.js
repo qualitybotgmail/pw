@@ -93,6 +93,7 @@ define([
                     
                     Modal.showModal(modalConfig, {}).then(function (result) {
                         // success
+                        $scope.groupchats.push(result);
                     }, function (err) {
                         // error
                     });

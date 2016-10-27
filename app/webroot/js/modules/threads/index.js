@@ -7,9 +7,9 @@ define([
 	'../../models/comments',
 	
 	// import modals
-	'./modals/addMemberModal',
+	// './modals/addMemberModal',
 	
-	'./Thread',
+	'./Threads',
 
 	'../../services/commonService',
 	'../../services/focusService',

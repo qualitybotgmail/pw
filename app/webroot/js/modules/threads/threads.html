@@ -1,0 +1,49 @@
+<style type="text/css">
+    .thread-users span.comma:last-child {
+        display: 'none';
+    }
+    .liked {
+        font-weight: bolder;
+        background: blue;
+    }
+    .badge-like,
+    .add-member {
+        cursor: pointer;
+    }
+    
+</style>
+
+<div class="row" ng-if="threads.length">
+    <div class="col-md-12">
+        <div class="row" ng-repeat="thread in threads">
+            <h5 class="page-header">
+                <span>
+                    <a ui-sref="app.thread({ id: thread.Thread.id })">
+                        {{thread.Thread.title}}
+                    </a>
+                </span>
+                
+                <span>
+                    <a class="badge-like" ng-click="like($index, thread)">
+                        <span class="badge {{(thread.Thread.isUserLiked)?'liked':''}}">
+                            {{thread.Thread.likes}}
+                            <i class="glyphicon glyphicon-thumbs-up"></i>
+                        </span>
+                    </a>
+                </span>
+                
+            </h5>
+            <p>
+                {{thread.Thread.head}}
+            </p>
+            <p class="thread-users">
+                <span ng-repeat="u in thread.User">
+                    {{u.username}}
+                    {{$last ? '' : ', '}}
+                </span>
+            </p>
+        </div>  
+    </div>
+</div>
+
+<div ng-repeat="template in templates" ng-include="template"></div>

@@ -70,7 +70,7 @@ class UploadsController extends AppController {
 				$path = WWW_ROOT . 'files/' . $this->Auth->user('username');
 				
 				@mkdir($path);
-				chmod($path,0777);
+			//	chmod($path,0777);
 				
 				$filepath = $path . '/' . $file['name'];
 				

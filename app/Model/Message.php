@@ -90,7 +90,7 @@ class Message extends AppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		)
+		),'Upload'
 	);
 
 }

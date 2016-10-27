@@ -33,6 +33,14 @@
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <div class="detailBox">
+                    <div class="titleBox">
+                        <h3 class="page-header">
+                            
+                        </h3>
+                    </div>
+                    <div class="commentBox">
+                        Messages
+                    </div>
                     <div class="actionBox">
                         <ul class="commentList">
                             <li ng-repeat="m in message.Message">
@@ -42,11 +50,15 @@
                                 <div class="commentText">
                                     <p>
                                         {{m.body}}
+                                        <span ng-repeat="upload in m.Upload">
+                                            <a fancybox ng-href="{{upload.path}}">
+                                                <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                                            </a>
+                                        </span>
                                     </p> 
                                     <span class="date sub-text">
                                         {{m.created}}
                                     </span>
-                
                                 </div>
                             </li>
                         </ul>

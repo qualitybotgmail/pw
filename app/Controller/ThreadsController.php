@@ -21,11 +21,33 @@ class ThreadsController extends AppController {
  * @return void
  */
 	public function index() {
-		$this->Thread->recursive = 1;
+		
+		$this->Thread->recursive = 2;
 		// $id = $this->Auth->user('id');
 		// $options = array('conditions' => array('user_id'=>$id));
-		// $this->Paginator->settings = $options;
-		$this->set('threads', $this->Paginator->paginate());
+		//$this->Paginator->settings = ['fields' => ['Thread.id']];
+		$threads = $this->Paginator->paginate();
+	//	echo ($threads['Owner']['password']);exit;
+		foreach($threads as $k => $thread){
+			
+			$tid = $thread['Thread']['id'];
+			$uid = $this->Auth->user('id');
+			$threads[$k]['Thread']['isUserLiked'] = $this->Thread->isLiked($tid,$uid);
+			$threads[$k]['Thread']['likes'] = count($thread['Like']);
+			unset($threads[$k]['Owner']['password']);
+			unset($threads[$k]['Like']);
+			
+			foreach($thread['Comment'] as $kk => $comment){
+				$threads[$k]['Comment'][$kk]['likes'] = count($comment['Like']);
+				$threads[$k]['Comment'][$kk]['isUserLiked'] = $this->Thread->Comment->isLiked($comment['id'],$uid);
+				unset($threads[$k]['Comment'][$kk]['Like']);
+				unset($threads[$k]['Comment'][$kk]['Thread']);
+				
+			}
+			//total likes of comments
+		}
+		
+		$this->set('threads', $threads);
 		 
 
 	}
@@ -45,8 +67,26 @@ class ThreadsController extends AppController {
 		if (!$this->Thread->exists($id)) {
 			throw new NotFoundException(__('Invalid thread'));
 		}
-		$this->Thread->recursive = 2;
+		$this->Thread->recursive = 3;
 		$thread = $this->Thread->findById($id);
+		$tid = $id;
+		$uid = $this->Auth->user('id');
+		
+		$thread['Thread']['isUserLiked'] = $this->Thread->isLiked($tid,$uid);
+		$thread['Thread']['likes'] = count($thread['Like']);
+		unset($thread['Owner']['password']);
+		unset($thread['Like']);
+			
+		foreach($thread['Comment'] as $kk => $comment){
+			$thread['Comment'][$kk]['likes'] = count($comment['Like']);
+			$thread['Comment'][$kk]['isUserLiked'] = $this->Thread->Comment->isLiked($comment['id'],$uid);
+			unset($thread['Comment'][$kk]['Like']);
+			unset($thread['Comment'][$kk]['Thread']);
+			
+		}
+			//total likes of comments
+		
+				
 		
 		$this->set('thread',$thread);
 	}
@@ -136,7 +176,7 @@ class ThreadsController extends AppController {
 		if(!$this->Thread->Like->threadLikeExists($id,$user_id)){
 			$ret = $this->Thread->Like->save($like);
 			if($ret)
-				echo json_encode(['status' => 'OK']);
+				echo json_encode(['status' => 'OK']); 
 			else {
 				echo json_encode(['status' => 'FAILED']);
 			}

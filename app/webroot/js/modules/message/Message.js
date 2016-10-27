@@ -63,12 +63,11 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                     });
             };
         	
-        	 $scope.uploadAttachment = function(form){
-                // var fd = new FormData($('#commentFrm')[0]);
+        	 $scope.uploadAttachment = function(message){
                 var fd = new FormData();
                 
                 fd.append('_method', 'POST');
-                fd.append('message_id', $scope.message.comment.message_id);
+                fd.append('data[Upload][message_id]', $scope.message.comment.message_id);
                 
                 $.each($("#attachments")[0].files, function(i, file) {
                     fd.append('data[Upload][file]['+i+']', file);
@@ -80,8 +79,12 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                    data: fd,
                    processData: false,
                    contentType: false,
+                   async:false,
                    success: function(response) {
-                       // .. do something
+                        // .. do something
+                        $scope.message.Message.push(angular.extend(message, {'Upload': response.Success}));
+                        $scope.message.comment = {};
+                        $scope.$apply();
                    },
                    error: function(jqXHR, textStatus, errorMessage) {
                        console.log(errorMessage); // Optional
@@ -92,17 +95,16 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
             $scope.sendMessage = function(){
                 // posting comments
                 var postData = {'body': $scope.message.comment.body};
-                var id = $scope.message.Groupchat.id.toString();
+                var id = $scope.message.Groupchat.id;
                 Restangular.one('messages').one('add').one(id).customPOST(postData).then(function(res){
-                    $scope.message.Message.push(angular.extend(postData, res.Message));
                     $scope.message.comment.message_id = res.Message.id;
-                    $scope.uploadAttachment();
+                    $scope.uploadAttachment(angular.extend(postData, res.Message));
                 });
             };
         
             $scope.getMessage = function(messageId){
         	    GroupChatModel.one(messageId.toString()).get().then(function(res){
-        	        $scope.message = res;
+        	        $scope.message = res.groupchats;
         	    });        
             };
         	

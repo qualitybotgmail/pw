@@ -45,6 +45,9 @@ require.config({
 		html2canvas:    '../vendor/html2canvas/html2canvas',
 		canvas2image:   '../vendor/canvas2image/canvas2image',
 		text:           '../vendor/requirejs/require-text',
+		
+		fancybox :  	'../vendor/fancybox/jquery.fancybox.min',
+		// ngFancybox:       '../vendor/fancybox/angular-fancybox-plus'
 
 	},
 	shim: {
@@ -72,6 +75,7 @@ require.config({
 		'socketIO' 		: {deps: ['angular']},
 		'moment' 		: {deps: ['jquery']},
 		
+		'fancybox' 		: {deps: ['jquery']},
 
 		'loadImageMeta'     : {deps: ['jquery', 'loadImage']},
 		'uploadImage' 	: {deps: ['jquery', 'uploadWidget']},

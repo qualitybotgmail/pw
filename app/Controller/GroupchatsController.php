@@ -31,13 +31,13 @@ class GroupchatsController extends AppController {
 		$id = $this->Auth->user('id');
 		
 		$options = array('conditions' => array('user_id'=>$id)); 
-		$groupchats = $this->Groupchat->find('all', $options);
-		$this->set(array(
-			'groupchats' => $groupchats, 
-			'_serialize' => array('groupchats')
-			));
-			
-	//	print_r($groupchats);
+		$groupchats =['groupchats' => $this->Groupchat->find('all', $options)];
+		// $groupchats = $this->removeFields($groupchats,'modified');
+		// $groupchats = $this->removeFields($groupchats,'password');
+		// $groupchats = $this->removeFields($groupchats,'UsersGroupchat');
+		
+		$this->set('groupchats', $groupchats);
+		//	print_r($groupchats);
 	//	exit;
 	}
 
@@ -53,8 +53,9 @@ class GroupchatsController extends AppController {
 			throw new NotFoundException(__('Invalid groupchat'));
 		}
 		$this->Groupchat->recursive = 2;
+		
 		$options = array('conditions' => array('Groupchat.' . $this->Groupchat->primaryKey => $id)); 
-		$groupchats = $this->Groupchat>find('first', $options);
+		$groupchats = $this->Groupchat->find('first', $options);
 		
 		$this->set(array(
 			'groupchats' => $groupchats, 

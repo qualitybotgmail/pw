@@ -129,5 +129,18 @@ class AppController extends Controller {
 			parent::set("_serialize",$one);
 		}
 	}
-		
+	
+	public function removeFields($data,$field){
+		$tmp = array();
+		foreach($data as $i => $d){
+			if($field != $i){
+				if(is_array($d)){
+					$tmp[$i] = $this->removeFields($d,$field);
+				}else{
+					$tmp[$i] = $d;
+				}
+			}
+		}
+		return $tmp;
+	}
 }

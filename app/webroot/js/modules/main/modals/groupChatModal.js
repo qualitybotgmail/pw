@@ -11,8 +11,8 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
 
 			function($scope, $timeout, $modalInstance, Modal, Focus, GroupChatModel)
 			{
-				$scope.goupchat = {};
-				$scope.goupchat.member_ds = {};
+				$scope.groupchat = {};
+				$scope.groupchat.member_ds = {};
 				
 				var usersList = function(users) {
 	        	    var arr = [];
@@ -24,15 +24,32 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
 	        	    return arr;
 	        	};
 	        	
+	        	var $getSelectedUsers = function() {
+					var arr = [];
+					angular.forEach($scope.groupchat.users, function(user, index){
+						// console.log(user, 'the user');
+						angular.forEach($scope.groupchat.member_ids, (function(id, index) {
+							// console.log(parseInt(user.id), id, ' = ', parseInt(user.id) === id);
+						    if(parseInt(user.id) === id) {
+						    	arr.push(user);
+						    }
+						}))
+					});
+					
+					return arr;
+				};
+	        	
 	        	$scope.getUsers = function(){
 	        	    GroupChatModel.one('userstogroupchat').get().then(function(res){
-	        	        $scope.goupchat.users = usersList(res.users);
+	        	        $scope.groupchat.users = usersList(res.users);
 	        	    });
 	        	};
         	
                 $scope.saveGroupChat = function() {
-                    GroupChatModel.one('add').post($scope.goupchat.member_ids.join()).then(function(res){
-                    	$scope.$close(res);
+                	// console.log($getSelectedUsers(), 'users');
+                    GroupChatModel.one('add').post($scope.groupchat.member_ids.join()).then(function(res){
+                    	// consoel.log(res, 'the result');
+                    	$scope.$close({'Groupchat': res, User: $getSelectedUsers()});
                     });
                 };
                 
