@@ -114,8 +114,16 @@ define([
 		]);
 	
 	talknoteApp.run(
-		['$rootScope', '$q', '$state', 'notifyService', function($rootScope, $q, $state, Notify) {
+		['$rootScope', '$q', '$state', 'notifyService', 'Restangular', function($rootScope, $q, $state, Notify, Restangular) {
 			
+			Restangular.one('users').one('me').get().then(function(res){
+        	        $rootScope.loginUser  = res.User;
+    	    });
+    	    
+    	    Restangular.one('groupchats').get().then(function(res){
+    	        $rootScope.createdGroupChats = res.groupchats;
+    	    });
+        	    
 			$rootScope.$on('$stateChangeStart', 
 				function(event, toState, toParams, fromState, fromParams) {
 					Notify.loading.show = true;

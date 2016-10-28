@@ -12,6 +12,17 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
         }
     ]);
     
+    
+    app.service('MessageService', [
+        function(){
+            var _this = this;
+            _this.scrollDown = function(){
+                var $t = $('.commentList');
+                $t.animate({"scrollTop": $('.commentList')[0].scrollHeight}, "slow");
+            };
+        }
+    ]);
+    
 	app.controller('MessageController',[
         '$rootScope',
         '$scope',
@@ -23,12 +34,13 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
         '$http',
         'modalService',
         'focusService',
+        'MessageService',
         'GLOBAL',
         'GroupChatModel',
         'Restangular',
         'MessageFactory',
         
-        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, Modal, Focus, GLOABL, GroupChatModel, Restangular, MessageFactory) {
+        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, Modal, Focus, MessageService, GLOABL, GroupChatModel, Restangular, MessageFactory) {
         	
         	$scope.templates = MessageFactory.templates;
         	
@@ -36,9 +48,20 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
         	$scope.message = {};
         	$scope.message.comment = {};
         	
+        	var $updateUserGroupChat = function(selectMembers, groupChatId){
+        	    angular.forEach($rootScope.createdGroupChats, function(groupChat, index){
+        	        console.log(groupChat, 'the groupChats');
+        	        if(groupChat.Groupchat.id == groupChatId){
+        	            angular.forEach(selectMembers, function(member, userIndex){
+        	                $scope.message.User.push(member);
+        	                $rootScope.createdGroupChats[index].User.push(member);
+        	            })
+        	        }
+        	    })
+        	};
+        	
         	// add members
             $scope.addMembers = function(groupChat) {
-                console.log(groupChat, 'the chat');
                 var modalConfig = {
                         template   : $templateCache.get("add-thread-member-modal.html"),
                         controller : 'addMemThreadMdlCtrl',
@@ -55,9 +78,7 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                     
                     Modal.showModal(modalConfig, {}).then(function (selectMembers) {
                         // success
-                        angular.forEach(selectMembers, function(memmber, index){
-                            $scope.message.User.push(memmber);
-                        });
+                        $updateUserGroupChat(selectMembers, groupChat.id);
                     }, function (err) {
                         // error
                     });
@@ -83,7 +104,6 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                    success: function(response) {
                         // .. do something
                         $scope.message.Message.push(angular.extend(message, {'Upload': response.Success}));
-                        $scope.message.comment = {};
                         $scope.$apply();
                    },
                    error: function(jqXHR, textStatus, errorMessage) {
@@ -96,15 +116,25 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                 // posting comments
                 var postData = {'body': $scope.message.comment.body};
                 var id = $scope.message.Groupchat.id;
+                var currentComment = null;
                 Restangular.one('messages').one('add').one(id).customPOST(postData).then(function(res){
                     $scope.message.comment.message_id = res.Message.id;
-                    $scope.uploadAttachment(angular.extend(postData, res.Message));
+                    currentComment = angular.extend(postData, res.Message, {likes: 0,isUserLiked: false});
+                    if ($("#attachments")[0].files.length){
+                        $scope.uploadAttachment(currentComment);
+                    } else {
+                       $scope.message.Message.push(currentComment);
+                    }
+                    $("#attachments").val('');
+                    MessageService.scrollDown();
+                    $scope.message.comment = {};
                 });
             };
         
             $scope.getMessage = function(messageId){
         	    GroupChatModel.one(messageId.toString()).get().then(function(res){
         	        $scope.message = res.groupchats;
+        	        MessageService.scrollDown();
         	    });        
             };
         	

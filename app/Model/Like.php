@@ -120,6 +120,19 @@ class Like extends AppModel {
 		
 		return count($ret) > 0;
 	}	
+	public function messageLike($message_id,$user_id){
+		$ret = $this->find('first',array('conditions' => array(
+			'Like.message_id' => $message_id,
+			'Like.user_id'   => $user_id
+		)));
+		
+		return $ret;
+	}
+	public function messageLikeExists($message_id,$user_id){
+		$ret = $this->messageLike($message_id,$user_id);
+		
+		return count($ret) > 0;
+	}		
 	public function beforeSave($options = array()) {
 		
 	    if (isset($this->data[$this->alias]['password'])) {

@@ -48,17 +48,8 @@ define([
         'MainFactory',
 
         function($rootScope, $scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, UsersModel, Factory) {
-        	$rootScope.loginUser = {};
         	
         	var start = function() {
-        	    
-        	    UsersModel.one('me').get().then(function(res){
-        	        $rootScope.loginUser  = res.User;
-        	    });
-        	    
-        	    Restangular.one('groupchats').get().then(function(res){
-        	        $scope.groupchats  = res.groupchats;
-        	    });
         	    
                 $scope.templates = {
                     modal: GLOBAL.baseSourcePath + 'templates/modal.html?version=' + GLOBAL.version,
@@ -121,9 +112,6 @@ define([
                     },
                     message: function() {
                         $state.go('app.message');
-                    },
-                    timeline: function() {
-                        $state.go('app.timeline');
                     }
                 };
 

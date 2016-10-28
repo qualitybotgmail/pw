@@ -20,9 +20,7 @@
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <p class="thread-users">
                     <span ng-repeat="u in selectedThread.User">
-                        <!--<span ng-if="! (u.id == selectedThread.Thread.user_id)">-->
-                            {{ u.username }}
-                        <!--</span>-->
+                        {{ u.username }}
                         {{$last ? '' : ', '}}
                         
                     </span>
@@ -42,7 +40,7 @@
                             {{selectedThread.Thread.title}}
                             <small>
                                 <span>
-                                    <a class="badge-like" ng-click="like($index, selectedThread)">
+                                    <a class="badge-like" ng-disabled="!selectedThread.Thread.processing" ng-click="like($index, selectedThread)">
                                         <span class="badge {{(selectedThread.Thread.isUserLiked)?'liked':''}}">
                                             {{selectedThread.Thread.likes}}
                                             <i class="glyphicon glyphicon-thumbs-up"></i>
@@ -76,7 +74,7 @@
                                         {{c.created}}
                                         
                                         <span>
-                                            <a class="badge-like" ng-click="likeComment($index, c)">
+                                            <a class="badge-like" ng-disabled="c.processing" ng-click="likeComment($index, c)">
                                                 <span class="badge {{(c.isUserLiked)?'liked':''}}">
                                                     {{c.likes}}
                                                     <i class="glyphicon glyphicon-thumbs-up"></i>
@@ -90,7 +88,7 @@
                             </li>
                         </ul>
                         <form class="form-inline" role="form" id="commentFrm" name="commentFrm" method="POST" enctype="multipart/form-data" 
-                        novalidate ng-submit="sendComment()">
+                        novalidate ng-submit="sendComment(commentFrm.$valid)">
                             <div style="display:none;"><input type="hidden" name="_method" value="POST"/></div>
                             <div class="row hidden">
                                 <div class="form-group hidden">
@@ -106,10 +104,10 @@
                             
                             <div class="row">
                                 <div class="form-group">
-                                    <textarea name="data[Upload][body]" class="form-control" id="body" placeholder="Comment Here" ng-model="comment.body"></textarea>
+                                    <textarea name="data[Upload][body]" class="form-control" id="body" placeholder="Comment Here" ng-model="comment.body" required></textarea>
                                 </div>
                                 <div class="form-group">    
-                                    <button type="submit" class="btn btn-default">Send</button>
+                                    <button type="submit" class="btn btn-default" ng-disabled="commentFrm.$invalid">Send</button>
                                 </div>
                             </div>
                         </form>

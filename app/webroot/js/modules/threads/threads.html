@@ -24,7 +24,7 @@
                 </span>
                 
                 <span>
-                    <a class="badge-like" ng-click="like($index, thread)">
+                    <a class="badge-like" ng-disabled="!thread.Thread.processing" ng-click="like($index, thread)">
                         <span class="badge {{(thread.Thread.isUserLiked)?'liked':''}}">
                             {{thread.Thread.likes}}
                             <i class="glyphicon glyphicon-thumbs-up"></i>

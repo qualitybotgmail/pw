@@ -145,5 +145,76 @@ class MessagesController extends AppController {
         exit;
 	}
 	
+/**
+ * add method
+ *
+ * @return void
+ */
+	public function like($id = null) {
+		$this->Message->id = $id;
+		if (!$this->Message->exists()) {
+			throw new NotFoundException(__('Invalid message'));
+		}
+		$user_id = $this->Auth->user('id');		
+		$like = array(
+			'Like' => array('user_id' => $user_id,'message_id' => $id)
+		);
+		
+		if(!$this->Message->Like->messageLikeExists($id,$user_id)){
+			$ret = $this->Message->Like->save($like);
+			if($ret)
+				echo json_encode(['status' => 'OK']); 
+			else {
+				echo json_encode(['status' => 'FAILED']);
+			}
+			exit;
+		}
+		echo json_encode(['status' => 'EXISTS']);
+		exit;
+		
+		
+		
+// Array
+// (
+//     [Like] => Array
+//         (
+//             [user_id] => 3
+//             [message_id] => 1
+//             [message_id] => 1
+//         )
+
+// )
+
+		return $this->redirect(array('action' => 'index'));
+	}
+/**
+ * add method
+ *
+ * @return void
+ */
+	public function unlike($id = null) {
+		$this->Message->id = $id;
+		if (!$this->Message->exists()) {
+			throw new NotFoundException(__('Invalid message'));
+		}
+		$user_id = $this->Auth->user('id');		
+		
+		if($this->Message->Like->messageLikeExists($id,$user_id)){
+			$ret = $this->Message->Like->messageLike($id,$user_id);
+			$this->Message->Like->id  = $ret['Like']['id'];
+			if($this->Message->Like->delete()){
+				echo json_encode(['status' => 'OK']);
+			} else {
+				echo json_encode(['status' => 'FAILED']);
+			}
+			exit;
+		}else{
+			echo json_encode(['status' => 'NOT_EXISTING']);
+		}
+		exit;
+
+
+	}
+	
 }
  

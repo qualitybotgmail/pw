@@ -12,6 +12,15 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         }
     ]);
     
+    app.service('ThreadService', [
+        function(){
+            var _this = this;
+            _this.scrollDown = function(){
+                var $t = $('.commentList');
+                $t.animate({"scrollTop": $('.commentList')[0].scrollHeight}, "slow");
+            };
+        }
+    ]);
     
 	app.controller('ThreadController',[
         '$rootScope',
@@ -24,13 +33,14 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         '$http',
         'focusService',
         'modalService',
+        'ThreadService',
         'UsersModel',
         'ThreadsModel',
         'ThreadFactory',
         'CommentsModel',
         'Restangular',
         
-        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, Focus, Modal, UsersModel, ThreadsModel, ThreadFactory, CommentsModel, Restangular) {
+        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, Focus, Modal, ThreadService, UsersModel, ThreadsModel, ThreadFactory, CommentsModel, Restangular) {
             
             $scope.comments = {
                 comment_id: null
@@ -44,35 +54,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             $scope.comment = {};
             $scope.comment.body = '';
             
-            $scope.threads = [];
-            $scope.threadLikes = [];
+            // $scope.threads = [];
+            // $scope.threadLikes = [];
             $scope.currentPageNumber = 1;
             
-            // var $checkUserLikeThread = function (likes){
-            //     var $userId = $rootScope.loginUser.id;
-            //     var $result = false;
-            //     angular.forEach(likes, function(like, index) {
-            //         if ($userId === like.user_id) {
-            //             $result = true;
-            //         }
-            //     });
-                
-            //     return $result;
-            // };
-            
-            // var $configThreads = function(threads){
-            //     angular.forEach(threads, function(thread, index){
-            //         thread.isLike = $checkUserLikeThread(thread.Like);
-            //         thread.currentLikes = (thread.Like.length)?thread.Like.length:0;
-                    
-            //         angular.forEach(thread.Comment, function(comment, indexComment){
-            //           thread.Comment[indexComment].currentLikes = (thread.Comment[indexComment].Like.length)?thread.Comment[indexComment].Like.length:0;
-            //           thread.Comment[indexComment].isLike = $checkUserLikeThread(thread.Comment[indexComment].Like);
-            //         });
-                    
-            //         $scope.threads.push(thread);
-            //     });   
-            // };
             
             // add members
             $scope.addMembers = function(thread) {
@@ -120,8 +105,6 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                    success: function(response) {
                        // .. do something
                        $scope.selectedThread.Comment.push(angular.extend(comment, {'Upload': response.Success}));
-                       console.log($scope.selectedThread.Comment, 'updated');
-                       $scope.comment = {};
                        $scope.$appy();
                    },
                    error: function(jqXHR, textStatus, errorMessage) {
@@ -130,13 +113,24 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 });
             };
             
-            $scope.sendComment = function(){
+            $scope.sendComment = function($formValid){
+                if(!$formValid) return;
+                
                 // posting comments
                 var postData = {'body': $scope.comment.body};
                 var id = $scope.selectedThread.Thread.id.toString();
+                var currentComment =null;
                 ThreadsModel.one('comment').one(id).customPOST(postData).then(function(res){
                     $scope.comment.comment_id = res.Comment.id;
-                    $scope.uploadAttachment(angular.extend(postData, res.Comment));
+                    currentComment = angular.extend(postData, res.Comment, {likes: 0,isUserLiked: false});
+                    if ($("#attachments")[0].files.length){
+                        $scope.uploadAttachment(currentComment);
+                    } else {
+                       $scope.selectedThread.Comment.push(currentComment); 
+                    }
+                    $("#attachments").val('');
+                    ThreadService.scrollDown();
+                    $scope.comment = {};
                 });
             };
         	
@@ -145,40 +139,48 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	$scope.getThread = function(threadId) {
         	    ThreadsModel.one(threadId.toString()).get().then(function(thread){
         	        $scope.selectedThread = thread;
+        	        ThreadService.scrollDown();
         	    });
         	};
         	
         	$scope.likeComment = function(indexComment, comment){
-        	    console.log(indexComment, 'indexComment');
-        	    console.log($scope.selectedThread.Comment, 'check');
+        	    if ($scope.selectedThread.Comment[indexComment].processing){return;};
+        	    
+        	    $scope.selectedThread.Comment[indexComment].processing = true;
+        	    
         	    // if thread was not like
         	    if (!comment.isUserLiked) {
         	        CommentsModel.one('like').one(comment.id.toString()).get().then(function(res) {
     	                $scope.selectedThread.Comment[indexComment].isUserLiked = true;
     	                $scope.selectedThread.Comment[indexComment].likes += 1;
+    	                $scope.selectedThread.Comment[indexComment].processing = false;
                 	});   
         	    } else { // if thread was already like
         	        CommentsModel.one('unlike').one(comment.id.toString()).get().then(function(res) {
     	                $scope.selectedThread.Comment[indexComment].isUserLiked = false;
     	                $scope.selectedThread.Comment[indexComment].likes -= 1;
+    	                $scope.selectedThread.Comment[indexComment].processing = false;
                 	});
         	    }
         	};
         	
         	// posting like/unlike
         	$scope.like = function(index, thread){
-        	    console.log(thread.Thread.isUserLiked, 'is like');
+        	    if ($scope.selectedThread.Thread.processing){return;};
+        	    $scope.selectedThread.Thread.processing = true;
+        	    
         	    // if thread was not like
         	    if (!thread.Thread.isUserLiked) {
         	        ThreadsModel.one('like').one(thread.Thread.id.toString()).get().then(function(res) {
     	                $scope.selectedThread.Thread.isUserLiked = true;
     	                $scope.selectedThread.Thread.likes += 1;
+    	                $scope.selectedThread.Thread.processing = false;
                 	});   
         	    } else { // if thread was already like
-        	    console.log('should go');
         	        ThreadsModel.one('unlike').one(thread.Thread.id.toString()).get().then(function(res) {
     	                $scope.selectedThread.Thread.isUserLiked = false;
     	                $scope.selectedThread.Thread.likes -= 1;
+    	                $scope.selectedThread.Thread.processing = false;
                 	});
         	    }
         	};

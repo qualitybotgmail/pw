@@ -62,7 +62,7 @@
                 <label> --- GROUP CHATS --</label>
                 
                 <br/>
-                <p ng-repeat="groupchat in groupchats">
+                <p ng-repeat="groupchat in createdGroupChats">
                     <a ui-sref="app.message({ id: groupchat.Groupchat.id })">
                         <span ng-repeat="u in groupchat.User">
                             {{u.username}}
