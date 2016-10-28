@@ -84,7 +84,8 @@ define([
                     
                     Modal.showModal(modalConfig, {}).then(function (result) {
                         // success
-                        $scope.groupchats.push(result);
+                        $rootScope.createdGroupChats.push(result);
+                        $state.go('app.message',{id: result.Groupchat.id});
                     }, function (err) {
                         // error
                     });

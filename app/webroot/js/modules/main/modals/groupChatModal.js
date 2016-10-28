@@ -49,7 +49,7 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                 	// console.log($getSelectedUsers(), 'users');
                     GroupChatModel.one('add').post($scope.groupchat.member_ids.join()).then(function(res){
                     	// consoel.log(res, 'the result');
-                    	$scope.$close({'Groupchat': res, User: $getSelectedUsers()});
+                    	$scope.$close({'Groupchat': angular.extend(res.UsersGroupchat, {'id': res.UsersGroupchat.groupchat_id}), 'User': $getSelectedUsers()});
                     });
                 };
                 

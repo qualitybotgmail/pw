@@ -41,6 +41,10 @@ class UsersController extends AppController {
 		$this->set('user', $this->User->find('first', $options));
 	}
 
+	public function talk(){
+		$this->redirect('/index.html');
+		exit;
+	}
 /**
  * add method
  *

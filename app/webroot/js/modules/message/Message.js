@@ -112,6 +112,13 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                 });
             };
             
+            $scope.fireMessageEvent = function(){
+                var timeout = $timeout(function() {
+                    MessageService.scrollDown();
+                    $timeout.cancel(timeout);
+                }, 1000);
+            };
+            
             $scope.sendMessage = function(){
                 // posting comments
                 var postData = {'body': $scope.message.comment.body};
@@ -134,7 +141,6 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
             $scope.getMessage = function(messageId){
         	    GroupChatModel.one(messageId.toString()).get().then(function(res){
         	        $scope.message = res.groupchats;
-        	        MessageService.scrollDown();
         	    });        
             };
         	

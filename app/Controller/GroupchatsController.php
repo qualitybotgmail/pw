@@ -70,7 +70,7 @@ class GroupchatsController extends AppController {
  */
 	public function add($user_id = null) { 
 		header('Content-Type: application/json;charset=utf-8');
-	$this->loadModel('UsersGroupchat');
+		$this->loadModel('UsersGroupchat');
 		$ids = explode(",",$user_id); 
 		 
 			$user_id = $this->Auth->user('id');  
@@ -86,9 +86,10 @@ class GroupchatsController extends AppController {
     				));
 					
 					if($exists==0){
-					 $this->UsersGroupchat->create();  
-						 if($this->UsersGroupchat->save(array('user_id' => $id, 'groupchat_id' => $groupchat_id))){
-						 	$result = 'success add';
+						 $this->UsersGroupchat->create();  
+						 $data = $this->UsersGroupchat->save(array('user_id' => $id, 'groupchat_id' => $groupchat_id));
+						 if($data){
+						 	$result = $data;
 						 }else{
 						 	$result = 'failed add';
 						 } 
