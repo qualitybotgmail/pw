@@ -24,6 +24,10 @@ class UsersController extends AppController {
 		$this->User->recursive = 0;
 		$this->set('users', $this->Paginator->paginate());
 	}
+	public function beforeFilter(){
+		parent::beforeFilter();
+		$this->Auth->allow('me');
+	}
 
 /**
  * view method

@@ -47,7 +47,7 @@ require.config({
 		text:           '../vendor/requirejs/require-text',
 		
 		fancybox :  	'../vendor/fancybox/jquery.fancybox.min',
-		// ngFancybox:       '../vendor/fancybox/angular-fancybox-plus'
+		ngIdleJs :		'../vendor/ngIdle/angular-idle.min',
 
 	},
 	shim: {
@@ -76,6 +76,7 @@ require.config({
 		'moment' 		: {deps: ['jquery']},
 		
 		'fancybox' 		: {deps: ['jquery']},
+		'ngIdleJs' 		: {deps: ['angular']},
 
 		'loadImageMeta'     : {deps: ['jquery', 'loadImage']},
 		'uploadImage' 	: {deps: ['jquery', 'uploadWidget']},
