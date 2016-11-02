@@ -69,6 +69,7 @@ define([
                     
                     Modal.showModal(modalConfig, {}).then(function (result) {
                         // success
+                        $state.go('app.thread',{id: result.Thread.id});
                     }, function (err) {
                         // error
                     });
