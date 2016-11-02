@@ -25,8 +25,9 @@ class ThreadsController extends AppController {
 		$this->Thread->recursive = 2;
 		// $id = $this->Auth->user('id');
 		// $options = array('conditions' => array('user_id'=>$id));
-		//$this->Paginator->settings = ['fields' => ['Thread.id']];
-		$threads = $this->Paginator->paginate();
+		//$this->Paginator->settings = ['limit' =>3000];//high limit for now
+		
+		$threads = $this->Thread->find('all',['order' => ['Thread.created DESC']]);//$this->Paginator->paginate();
 	//	echo ($threads['Owner']['password']);exit;
 		foreach($threads as $k => $thread){
 			
@@ -104,11 +105,14 @@ class ThreadsController extends AppController {
 			$this->request->data['Thread']['user_id'] = $this->Auth->user('id');
 			$data = $this->Thread->save($this->request->data);
 			if ($data) {
-				$this->Session->setFlash(__('The thread has been saved.'), 'default', array('class' => 'alert alert-success'));
-				if($this->request->is('ajax')){
+				
+				if(true){//$this->request->is('ajax')){
 					$id = $data['Thread']['id'];
-					return $this->redirect(array('action' => 'view',$id.".json"));
+					header('Content-Type: application/json;charset=utf-8');
+					echo json_encode($data);
+					exit;
 				}
+				$this->Session->setFlash(__('The thread has been saved.'), 'default', array('class' => 'alert alert-success'));
 				return $this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The thread could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
