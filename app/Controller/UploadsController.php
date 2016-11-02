@@ -55,7 +55,7 @@ class UploadsController extends AppController {
             
             $comment_id = null;
             $message_id = null;
-            
+            $thread_id = null;
             if(isset($this->request->data['Upload']['comment_id'])){
             	$comment_id = $this->request->data['Upload']['comment_id'];
             	$saved['comment_id'] = $comment_id;
@@ -66,6 +66,11 @@ class UploadsController extends AppController {
             	$saved['message_id'] = $message_id;
             }
 			
+            if(isset($this->request->data['Upload']['thread_id'])){
+            	$thread_id = $this->request->data['Upload']['thread_id'];
+            	$saved['thread_id'] = $thread_id;
+            }
+						
 			foreach($this->request->data['Upload']['file'] as $file){
 				$path = WWW_ROOT . 'files/' . $this->Auth->user('username');
 				
@@ -76,7 +81,7 @@ class UploadsController extends AppController {
 				
 			    move_uploaded_file($file['tmp_name'],$filepath);
 				$urlpath = '/files/' . $this->Auth->user('username') . '/' . $file['name'];
-				$data = ['path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'name' => $file['name']];
+				$data = ['path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'thread_id'=>$thread_id ,'name' => $file['name']];
 				$return = $this->Upload->save($data);
 				
 				if($return){
@@ -92,6 +97,7 @@ class UploadsController extends AppController {
 		}
 
 	}
+
 
 /**
  * edit method
