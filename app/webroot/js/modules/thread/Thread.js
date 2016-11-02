@@ -31,6 +31,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         '$templateCache',
         '$q',
         '$http',
+        '$interval',
         'focusService',
         'modalService',
         'ThreadService',
@@ -40,7 +41,9 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         'CommentsModel',
         'Restangular',
         
-        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, Focus, Modal, ThreadService, UsersModel, ThreadsModel, ThreadFactory, CommentsModel, Restangular) {
+        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, $interval, Focus, Modal, ThreadService, UsersModel, ThreadsModel, ThreadFactory, CommentsModel, Restangular) {
+            
+            var pendingQry;
             
             $scope.comments = {
                 comment_id: null
@@ -136,12 +139,27 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	
         	// get thread information
-        	$scope.getThread = function(threadId) {
-        	    ThreadsModel.one(threadId.toString()).get().then(function(thread){
+        	$scope.getThread = function() {
+        	    ThreadsModel.one($scope.selectedThreadId.toString()).get().then(function(thread){
         	        $scope.selectedThread = thread;
+        	    });
+        	};
+        	
+        	
+        	$scope.getLatestComment = function() {
+        	    ThreadsModel.one($scope.selectedThreadId.toString()).get().then(function(thread){
+        	        var commentLength = thread.Comment.length;
+        	        $scope.selectedThread.Comment.push(thread.Comment[commentLength - 1]);
         	        ThreadService.scrollDown();
         	    });
         	};
+        	
+        	$scope.fireMessageEvent = function(){
+                var timeout = $timeout(function() {
+                    ThreadService.scrollDown();
+                    $timeout.cancel(timeout);
+                }, 1000);
+            };
         	
         	$scope.likeComment = function(indexComment, comment){
         	    if ($scope.selectedThread.Comment[indexComment].processing){return;};
@@ -185,17 +203,24 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	    }
         	};
         	
+        	
+        	// get thread for every 7 secs
+        	pendingQry = $interval($scope.getLatestComment, 7000);
+        	
         	/**
         	 * initialize some functions
         	 * or variables
         	 */
         	var init = function(){
     	        $scope.selectedThreadId = $stateParams.id;
-    	        $scope.getThread($scope.selectedThreadId);
+    	        $scope.getThread();
         	};
         	init();
         	
-        
+            /* Destroy non-angular objectst */
+			$scope.$on('$destroy', function (event) {
+			    $interval.cancel(pendingQry);
+			});
         }
 	]);
 });

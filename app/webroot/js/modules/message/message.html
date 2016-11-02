@@ -43,7 +43,7 @@
                     </div>
                     <div class="actionBox">
                         <ul class="commentList">
-                            <li ng-repeat="m in message.Message"  ng-init="$last && fireMessageEvent()">
+                            <li ng-repeat="m in message.Message | unique : 'id'"  ng-init="$last && fireMessageEvent()">
                                 <div class="commenterImage" title="{{m.User.username}}">
                                   <img src="http://placekitten.com/50/50" />
                                 </div>

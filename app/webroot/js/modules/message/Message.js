@@ -32,6 +32,7 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
         '$templateCache',
         '$q',
         '$http',
+        '$interval',
         'modalService',
         'focusService',
         'MessageService',
@@ -40,7 +41,9 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
         'Restangular',
         'MessageFactory',
         
-        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, Modal, Focus, MessageService, GLOABL, GroupChatModel, Restangular, MessageFactory) {
+        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, $interval, Modal, Focus, MessageService, GLOABL, GroupChatModel, Restangular, MessageFactory) {
+        	
+        	var pendingQry;
         	
         	$scope.templates = MessageFactory.templates;
         	
@@ -138,17 +141,36 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                 });
             };
         
-            $scope.getMessage = function(messageId){
-        	    GroupChatModel.one(messageId.toString()).get().then(function(res){
+            $scope.getMessage = function(){
+                var messageID = $scope.selectedMessageId.toString();
+        	    GroupChatModel.one(messageID).get().then(function(res){
         	        $scope.message = res.groupchats;
-        	    });        
+        	    });
             };
+            
+            $scope.getLatestMessage = function() {
+                var messageID = $scope.selectedMessageId.toString();
+                GroupChatModel.one(messageID).get().then(function(res){
+                    var groupChat = res.groupchats;
+        	        var messageLength = groupChat.Message.length;
+        	        $scope.message.Message.push(groupChat.Message[messageLength - 1]);
+        	        MessageService.scrollDown();
+        	    });
+        	};
+            
+            // get thread for every 7 secs
+        	pendingQry = $interval($scope.getLatestMessage, 7000);
         	
         	var init = function(){
-    	        $scope.message.selected_id = $stateParams.id;
-    	        $scope.getMessage($scope.message.selected_id);
+    	        $scope.selectedMessageId = $stateParams.id;
+    	        $scope.getMessage();
         	};
         	init();
+        	
+        	/* Destroy non-angular objectst */
+			$scope.$on('$destroy', function (event) {
+			    $interval.cancel(pendingQry);
+			});
         }
 	]);
 });

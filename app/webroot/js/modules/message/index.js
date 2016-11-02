@@ -8,6 +8,8 @@ define([
 	// import modals
 	'./modals/addMemberModal',
 	
+	// import filters
+	'../../factories/filter',
 	
 	'./Message',
 

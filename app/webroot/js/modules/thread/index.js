@@ -9,6 +9,9 @@ define([
 	// import modals
 	'./modals/addMemberModal',
 	
+	// import filters
+	'../../factories/filter',
+	
 	'./Thread',
 
 	'../../services/commonService',

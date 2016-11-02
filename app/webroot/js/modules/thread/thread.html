@@ -53,11 +53,16 @@
                     <div class="commentBox">
                         <p class="taskDescription">
                              {{selectedThread.Thread.head}}
+                             <span ng-repeat="upload in selectedThread.Upload">
+                                <a fancybox ng-href="{{upload.path}}">
+                                    <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                                </a>
+                            </span>
                         </p>
                     </div>
                     <div class="actionBox">
                         <ul class="commentList">
-                            <li ng-repeat="c in selectedThread.Comment">
+                            <li ng-repeat="c in selectedThread.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
                                 <div class="commenterImage">
                                   <img src="http://placekitten.com/50/50" />
                                 </div>
@@ -104,7 +109,7 @@
                             
                             <div class="row">
                                 <div class="form-group">
-                                    <textarea name="data[Upload][body]" class="form-control" id="body" placeholder="Comment Here" ng-model="comment.body" required></textarea>
+                                    <textarea name="data[Upload][body]" class="form-control" id="body" placeholder="Comment Here" ng-model="comment.body"></textarea>
                                 </div>
                                 <div class="form-group">    
                                     <button type="submit" class="btn btn-default" ng-disabled="commentFrm.$invalid">Send</button>
