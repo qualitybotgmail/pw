@@ -75,7 +75,7 @@
                             <div style="display:none;"><input type="hidden" name="_method" value="POST"/></div>
                             <div class="row hidden">
                                 <div class="form-group hidden">
-                                    <input type="text" name="data[Upload][message_id]" id="message-id" ng-model="message.comment.message_id" />
+                                    <input type="text" name="data[Upload][message_id]" id="message-id" ng-model="comment.message_id" />
                                 </div>
                             </div>
                             
@@ -87,7 +87,7 @@
                             
                             <div class="row">
                                 <div class="form-group">
-                                    <textarea name="data[Upload][body]" class="form-control" id="body" placeholder="Comment Here" ng-model="message.comment.body" required></textarea>
+                                    <textarea name="data[Upload][body]" class="form-control" id="body" placeholder="Comment Here" ng-model="comment.body"></textarea>
                                 </div>
                                 <div class="form-group">    
                                     <button type="submit" class="btn btn-default">Send</button>

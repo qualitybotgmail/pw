@@ -116,8 +116,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 });
             };
             
-            $scope.sendComment = function($formValid){
-                if(!$formValid) return;
+            $scope.sendComment = function(){
+                if (!$("#attachments")[0].files.length && $scope.comment.body == '') return;
                 
                 // posting comments
                 var postData = {'body': $scope.comment.body};

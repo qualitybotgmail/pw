@@ -12,15 +12,18 @@ define(['app', 'angular'], function(app, angular)
           // we utilize angular's foreach function
           // this takes in our original collection and an iterator function
           angular.forEach(collection, function(item) {
-              // we check to see whether our object exists
-              var key = item[keyname];
-              // if it's not already part of our keys array
-              if(keys.indexOf(key) === -1) {
-                  // add it to our keys array
-                  keys.push(key); 
-                  // push this item to our final output array
-                  output.push(item);
-              }
+              
+            //   if(item[keyname]) {
+                // we check to see whether our object exists
+                var key = item[keyname];
+                // if it's not already part of our keys array
+                if(keys.indexOf(key) === -1) {
+                    // add it to our keys array
+                    keys.push(key); 
+                    // push this item to our final output array
+                    output.push(item);
+                }   
+            //   }
           });
           // return our array which should be devoid of
           // any duplicates

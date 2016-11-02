@@ -1,4 +1,4 @@
-define(['app', 'angular', 'underscore'], function(app, angular, _)
+define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 {
     app.factory('MessageFactory', [
         'GLOBAL',
@@ -49,11 +49,11 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
         	
         	// var for selected message
         	$scope.message = {};
-        	$scope.message.comment = {};
+        	$scope.comment = { body: '', message_id: null};
         	
         	var $updateUserGroupChat = function(selectMembers, groupChatId){
         	    angular.forEach($rootScope.createdGroupChats, function(groupChat, index){
-        	        console.log(groupChat, 'the groupChats');
+        	       // console.log(groupChat, 'the groupChats');
         	        if(groupChat.Groupchat.id == groupChatId){
         	            angular.forEach(selectMembers, function(member, userIndex){
         	                $scope.message.User.push(member);
@@ -91,7 +91,7 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                 var fd = new FormData();
                 
                 fd.append('_method', 'POST');
-                fd.append('data[Upload][message_id]', $scope.message.comment.message_id);
+                fd.append('data[Upload][message_id]', $scope.comment.message_id);
                 
                 $.each($("#attachments")[0].files, function(i, file) {
                     fd.append('data[Upload][file]['+i+']', file);
@@ -124,21 +124,26 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
             
             $scope.sendMessage = function(){
                 // posting comments
-                var postData = {'body': $scope.message.comment.body};
+                if (!$("#attachments")[0].files.length && $scope.comment.body === '') return;
+                
+                var postData = {'body': $scope.comment.body};
                 var id = $scope.message.Groupchat.id;
                 var currentComment = null;
-                Restangular.one('messages').one('add').one(id).customPOST(postData).then(function(res){
-                    $scope.message.comment.message_id = res.Message.id;
-                    currentComment = angular.extend(postData, res.Message, {likes: 0,isUserLiked: false});
-                    if ($("#attachments")[0].files.length){
-                        $scope.uploadAttachment(currentComment);
-                    } else {
-                       $scope.message.Message.push(currentComment);
-                    }
-                    $("#attachments").val('');
-                    MessageService.scrollDown();
-                    $scope.message.comment = {};
-                });
+                // if ($("#attachments")[0].files.length){ 
+                    Restangular.one('messages').one('add').one(id).customPOST(postData).then(function(res){
+                        console.log($scope.comment, 'the comment');
+                        $scope.comment.message_id = res.Message.id;
+                        currentComment = angular.extend(postData, res.Message, {likes: 0,isUserLiked: false});
+                        if ($("#attachments")[0].files.length){
+                            $scope.uploadAttachment(currentComment);
+                        } else {
+                           $scope.message.Message.push(currentComment);
+                        }
+                        $("#attachments").val('');
+                        MessageService.scrollDown();
+                        $scope.comment = { body: '', message_id: null};
+                    });   
+                // }
             };
         
             $scope.getMessage = function(){
