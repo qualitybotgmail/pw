@@ -83,7 +83,7 @@ class Thread extends AppModel {
 			'finderQuery' => '',
 		)
 	);
-	public $hasMany = array('Like','Comment');
+	public $hasMany = array('Like','Comment','Upload');
 	
 	public function members($thread_id){
 		

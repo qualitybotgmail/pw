@@ -12,7 +12,8 @@ define([
 	'debounce',
 	'uploadAngular',
 	'socketIO',
-	'ngIdleJs'
+	'ngIdleJs',
+	'underscore'
 	], 
 	function (angular, config, dependencyResolverFor, pace) {
 		'use strict';
@@ -142,15 +143,15 @@ define([
 				console.log('idle start');
 			});
 			$rootScope.$on('IdleTimeout', function() { 
-				/* Logout user */
+				/* Logout user if idle time last*/
 				console.log('idle end');
 				$window.location.href = "/users/logout";
 			});
 			
 			Restangular.one('users').one('me').get().then(function(res){
-				if (!res.length) {
+				if (!res.User) {
 					$window.location.href = "/users/logout";
-					// return;
+					return;
 				} else {
 					$rootScope.loginUser  = res.User;	
 				}
