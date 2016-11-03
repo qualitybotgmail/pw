@@ -125,7 +125,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 var currentComment =null;
                 ThreadsModel.one('comment').one(id).customPOST(postData).then(function(res){
                     $scope.comment.comment_id = res.Comment.id;
-                    currentComment = angular.extend(postData, res.Comment, {likes: 0,isUserLiked: false, User: $rootScope.loginUser});
+                    currentComment = angular.extend(postData, res.Comment, {likes: 0,isUserLiked: false, User: $rootScope.loginUser, Upload: []});
                     if ($("#attachments")[0].files.length){
                         $scope.uploadAttachment(currentComment);
                     } else {
@@ -148,9 +148,19 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	$scope.getLatestComment = function() {
         	    ThreadsModel.one($scope.selectedThreadId.toString()).get().then(function(thread){
+        	        var currentCommentLength = $scope.selectedThread.Comment.length;
         	        var commentLength = thread.Comment.length;
-        	        $scope.selectedThread.Comment.push(thread.Comment[commentLength - 1]);
-        	        ThreadService.scrollDown();
+        	        if (currentCommentLength) {
+        	            var lastComment = $scope.selectedThread.Comment[currentCommentLength - 1];
+        	            if (lastComment.id !== thread.Comment[commentLength - 1].id || lastComment.Upload.length !== thread.Comment[commentLength - 1].Upload.length) {
+        	                $scope.selectedThread.Comment.splice((commentLength - 1), 1);
+        	                $scope.selectedThread.Comment.push(thread.Comment[commentLength - 1]);
+        	                ThreadService.scrollDown();        
+        	            }
+        	        } else {
+        	            $scope.selectedThread.Comment.push(thread.Comment[commentLength - 1]);
+        	            ThreadService.scrollDown();
+        	        }
         	    });
         	};
         	

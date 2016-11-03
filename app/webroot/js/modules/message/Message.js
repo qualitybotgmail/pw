@@ -133,7 +133,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                     Restangular.one('messages').one('add').one(id).customPOST(postData).then(function(res){
                         console.log($scope.comment, 'the comment');
                         $scope.comment.message_id = res.Message.id;
-                        currentComment = angular.extend(postData, res.Message, {likes: 0,isUserLiked: false, User: $rootScope.loginUser});
+                        currentComment = angular.extend(postData, res.Message, {likes: 0,isUserLiked: false, User: $rootScope.loginUser, Upload: []});
                         if ($("#attachments")[0].files.length){
                             $scope.uploadAttachment(currentComment);
                         } else {
@@ -156,10 +156,22 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             $scope.getLatestMessage = function() {
                 var messageID = $scope.selectedMessageId.toString();
                 GroupChatModel.one(messageID).get().then(function(res){
+                    var currentMessageLength = $scope.message.Message.length;
                     var groupChat = res.groupchats;
         	        var messageLength = groupChat.Message.length;
-        	        $scope.message.Message.push(groupChat.Message[messageLength - 1]);
-        	        MessageService.scrollDown();
+        	        if (currentMessageLength) {
+        	            var lastMessage = $scope.message.Message[currentMessageLength - 1];
+        	            console.log(lastMessage, groupChat.Message, 'to compare');
+        	            if (lastMessage.id !== groupChat.Message[messageLength - 1].id || lastMessage.Upload.length !== groupChat.Message[messageLength - 1].Upload.length) {
+            				$scope.message.Message.splice((messageLength - 1), 1);
+            				$scope.message.Message.push(groupChat.Message[messageLength - 1]);
+            				MessageService.scrollDown();
+            			}
+        	            
+        	        } else {
+        	            $scope.message.Message.push(groupChat.Message[messageLength - 1]);
+        	            MessageService.scrollDown();   
+        	        }
         	    });
         	};
             
