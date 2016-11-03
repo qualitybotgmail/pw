@@ -125,7 +125,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 var currentComment =null;
                 ThreadsModel.one('comment').one(id).customPOST(postData).then(function(res){
                     $scope.comment.comment_id = res.Comment.id;
-                    currentComment = angular.extend(postData, res.Comment, {likes: 0,isUserLiked: false});
+                    currentComment = angular.extend(postData, res.Comment, {likes: 0,isUserLiked: false, User: $rootScope.loginUser});
                     if ($("#attachments")[0].files.length){
                         $scope.uploadAttachment(currentComment);
                     } else {

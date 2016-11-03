@@ -68,6 +68,9 @@
                                 </div>
                                 <div class="commentText">
                                     <p>
+                                        {{c.User.username}}
+                                    </p>
+                                    <p>
                                         {{c.body}}
                                         <span ng-repeat="upload in c.Upload">
                                             <a fancybox ng-href="{{upload.path}}">
