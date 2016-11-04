@@ -93,11 +93,11 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 
                 fd.append('_method', 'POST');
                 fd.append('data[Upload][comment_id]', $scope.comment.comment_id);
-                
+                console.log("Uploading");
                 $.each($("#attachments")[0].files, function(i, file) {
                     fd.append('data[Upload][file]['+i+']', file);
                 });
-
+                console.log("Noe");
                  $.ajax({
                    url: "/uploads.json",
                    type: "POST",

@@ -282,7 +282,9 @@ class ThreadsController extends AppController {
 			$this->notExisting();
 		}
 		$user_id = $this->Auth->user('id');
-		$this->request->data['Comment']['body'] = $this->request->data['body'];
+		if(isset($this->request->data['body'])){
+			$this->request->data['Comment']['body'] = $this->request->data['body'];
+		}
 		if ($this->request->is(array('post', 'put'))) {
 			$this->request->data['Comment']['thread_id'] = $id;
 			$this->request->data['Comment']['user_id']   = $user_id;
