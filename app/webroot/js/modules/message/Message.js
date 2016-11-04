@@ -176,7 +176,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	};
             
             // get thread for every 7 secs
-        	pendingQry = $interval($scope.getLatestMessage, 7000);
+        	pendingQry = $interval($scope.getMessage, 7000);
         	
         	var init = function(){
     	        $scope.selectedMessageId = $stateParams.id;

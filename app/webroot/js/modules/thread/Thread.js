@@ -215,7 +215,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	
         	// get thread for every 7 secs
-        	pendingQry = $interval($scope.getLatestComment, 7000);
+        	
+        	pendingQry = $interval($scope.getThread, 7000);
         	
         	/**
         	 * initialize some functions

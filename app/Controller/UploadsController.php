@@ -77,10 +77,10 @@ class UploadsController extends AppController {
 				@mkdir($path);
 			//	chmod($path,0777);
 				
-				$filepath = $path . '/' . $file['name'];
+				$filepath = $path . '/' .time(). $file['name'];
 				
 			    move_uploaded_file($file['tmp_name'],$filepath);
-				$urlpath = '/files/' . $this->Auth->user('username') . '/' . $file['name'];
+				$urlpath = '/files/' . $this->Auth->user('username') . '/' . time().$file['name'];
 				$data = ['path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'thread_id'=>$thread_id ,'name' => $file['name']];
 				$return = $this->Upload->save($data);
 				
