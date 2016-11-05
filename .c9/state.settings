@@ -1,0 +1,503 @@
+{
+    "console": {
+        "@expanded": true,
+        "@height": 260,
+        "@maximized": "false",
+        "json()": {
+            "meta": {
+                "accessList": [
+                    "tab0",
+                    "tab1"
+                ]
+            },
+            "name": "pane1",
+            "nodes": [
+                {
+                    "type": "tab",
+                    "name": "tab0",
+                    "path": "",
+                    "className": [
+                        "tab0"
+                    ],
+                    "document": {
+                        "changed": false,
+                        "meta": {
+                            "timestamp": 1478136385986
+                        },
+                        "filter": true,
+                        "title": "bash - \"root@talknote: /var/www/ryan\"",
+                        "tooltip": "bash - \"root@talknote: /var/www/ryan\"",
+                        "terminal": {
+                            "id": "devel_296",
+                            "cwd": "",
+                            "width": 1020,
+                            "height": 234
+                        }
+                    },
+                    "editorType": "terminal",
+                    "active": true
+                },
+                {
+                    "type": "tab",
+                    "name": "tab1",
+                    "path": "",
+                    "className": [],
+                    "document": {
+                        "title": "Immediate",
+                        "meta": {},
+                        "filter": true,
+                        "changed": false
+                    },
+                    "editorType": "immediate",
+                    "active": false
+                }
+            ],
+            "skin": "editor_tab",
+            "skinset": "default",
+            "type": "pane"
+        }
+    },
+    "experiments": {
+        "@@enabled": true,
+        "@autosave": 0,
+        "@flat-dark": 0,
+        "@git": 1,
+        "@go_completion": 0,
+        "@plugin-manager": 1,
+        "@plugins": 0,
+        "@sdk": 0,
+        "@test": 0
+    },
+    "ext": {
+        "counters": {
+            "@ace": 1,
+            "@acestatus": 1,
+            "@divider": 5,
+            "@document": 10,
+            "@form": 5,
+            "@menu": 5,
+            "@menuitem": 13,
+            "@pane": 2,
+            "@session": 9,
+            "@tab": 10,
+            "@undoManager": 10
+        }
+    },
+    "findinfiles": {
+        "@console": "true",
+        "@matchcase": "false",
+        "@regex": "false",
+        "@scope": "selection",
+        "@wholeword": "false"
+    },
+    "menus": {
+        "@minimized": "false"
+    },
+    "nak": {
+        "@installed": true
+    },
+    "panecycle": {
+        "json()": [
+            "tab9",
+            "tab0"
+        ]
+    },
+    "panels": {
+        "@active-left": "tree",
+        "@width-left": 274,
+        "collab": {
+            "@enabled": "true",
+            "@name": "collab"
+        },
+        "commands.panel": {
+            "@enabled": "true",
+            "@name": "commands.panel"
+        },
+        "debugger": {
+            "@enabled": "true",
+            "@name": "debugger"
+        },
+        "navigate": {
+            "@enabled": "true",
+            "@name": "navigate"
+        },
+        "outline": {
+            "@enabled": "true",
+            "@name": "outline"
+        },
+        "scm": {
+            "@enabled": "true",
+            "@name": "scm"
+        },
+        "tree": {
+            "@enabled": "true",
+            "@name": "tree"
+        }
+    },
+    "projecttree": {
+        "@scrollpos": 470,
+        "@showfs": true,
+        "expanded": {
+            "json()": [
+                "/",
+                "/app",
+                "/app/webroot",
+                "/app/webroot/js",
+                "/app/webroot/js/modules",
+                "/app/webroot/js/modules/thread",
+                "/app/webroot/js/modules/message",
+                "/app/webroot/js/modules/main",
+                "/app/webroot/js/modules/main/modals"
+            ]
+        }
+    },
+    "tabs": {
+        "json()": {
+            "focus": "/app/webroot/js/modules/main/modals/threadModal.js",
+            "meta": {
+                "accessList": [
+                    "tab9",
+                    "tab6",
+                    "tab2",
+                    "tab3",
+                    "tab4",
+                    "tab5",
+                    "tab7",
+                    "tab8"
+                ]
+            },
+            "name": "pane0",
+            "nodes": [
+                {
+                    "type": "tab",
+                    "name": "tab2",
+                    "path": "/app/webroot/js/main.js",
+                    "className": [
+                        "tab2"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "main.js",
+                        "tooltip": "/app/webroot/js/main.js",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 300,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 31,
+                                    "column": 27
+                                },
+                                "end": {
+                                    "row": 31,
+                                    "column": 27
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 3,
+                                "state": "start",
+                                "mode": "ace/mode/javascript"
+                            },
+                            "cleansed": true
+                        },
+                        "hash": "9e776114942d1ca92e4e830c6205203c80c492e9",
+                        "meta": {
+                            "timestamp": 1477662770105
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab3",
+                    "path": "/app/webroot/js/modules/thread/thread.html",
+                    "className": [
+                        "tab3"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "thread.html",
+                        "tooltip": "/app/webroot/js/modules/thread/thread.html",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 840,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 66,
+                                    "column": 34
+                                },
+                                "end": {
+                                    "row": 66,
+                                    "column": 67
+                                },
+                                "isBackwards": true
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 29,
+                                "state": "start",
+                                "mode": "ace/mode/html"
+                            }
+                        },
+                        "hash": "b810b7f8030635e6e912af194434ec8f080b9216",
+                        "meta": {
+                            "timestamp": 1478235781105
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab4",
+                    "path": "/app/webroot/js/modules/thread/Thread.js",
+                    "className": [
+                        "tab4"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "Thread.js",
+                        "tooltip": "/app/webroot/js/modules/thread/Thread.js",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 1680,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 144,
+                                    "column": 16
+                                },
+                                "end": {
+                                    "row": 144,
+                                    "column": 16
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 20,
+                                "state": "start",
+                                "mode": "ace/mode/javascript"
+                            },
+                            "cleansed": true
+                        },
+                        "hash": "80ed1636586ee3122801f53e19f75d03d6f3c911",
+                        "meta": {
+                            "timestamp": 1478226336177
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab5",
+                    "path": "/app/webroot/js/app.js",
+                    "className": [
+                        "tab5"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "app.js",
+                        "tooltip": "/app/webroot/js/app.js",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 1980,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 155,
+                                    "column": 16
+                                },
+                                "end": {
+                                    "row": 155,
+                                    "column": 25
+                                },
+                                "isBackwards": true
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 119,
+                                "state": "no_regex",
+                                "mode": "ace/mode/javascript"
+                            },
+                            "cleansed": true
+                        },
+                        "hash": "5cb01d440937bfb64fb064cc0fd94ac690fda492",
+                        "meta": {
+                            "timestamp": 1478079796393
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab6",
+                    "path": "/app/webroot/js/modules/message/message.html",
+                    "className": [
+                        "tab6"
+                    ],
+                    "document": {
+                        "changed": false,
+                        "meta": {
+                            "timestamp": 1478238788967
+                        },
+                        "filter": true,
+                        "title": "message.html",
+                        "tooltip": "/app/webroot/js/modules/message/message.html",
+                        "ace": {}
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab7",
+                    "path": "/app/webroot/js/modules/message/Message.js",
+                    "className": [
+                        "tab7"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "Message.js",
+                        "tooltip": "/app/webroot/js/modules/message/Message.js",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 1391,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 135,
+                                    "column": 150
+                                },
+                                "end": {
+                                    "row": 135,
+                                    "column": 150
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 136,
+                                "state": "start",
+                                "mode": "ace/mode/javascript"
+                            },
+                            "cleansed": true
+                        },
+                        "hash": "d4b89288a4b5b285c315d9ddb71961f705dd5b22",
+                        "meta": {
+                            "timestamp": 1478226336177
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab8",
+                    "path": "/app/webroot/js/modules/main/modals/add_thread.html",
+                    "className": [
+                        "tab8"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "add_thread.html",
+                        "tooltip": "/app/webroot/js/modules/main/modals/add_thread.html",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 240,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 37,
+                                    "column": 63
+                                },
+                                "end": {
+                                    "row": 37,
+                                    "column": 85
+                                },
+                                "isBackwards": true
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 29,
+                                "state": "js-no_regex",
+                                "mode": "ace/mode/html"
+                            }
+                        },
+                        "hash": "b350075b303851525d8b6e8cf7a35d8eb4b85981",
+                        "meta": {
+                            "timestamp": 1478236011485
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab9",
+                    "path": "/app/webroot/js/modules/main/modals/threadModal.js",
+                    "className": [
+                        "tab9",
+                        "focus"
+                    ],
+                    "document": {
+                        "changed": false,
+                        "meta": {
+                            "timestamp": 1478237923529
+                        },
+                        "filter": true,
+                        "title": "threadModal.js",
+                        "tooltip": "/app/webroot/js/modules/main/modals/threadModal.js",
+                        "ace": {}
+                    },
+                    "editorType": "ace",
+                    "active": true
+                }
+            ],
+            "skin": "editor_tab",
+            "skinset": "default",
+            "type": "pane"
+        }
+    },
+    "tree_selection": {
+        "json()": [
+            "/app/webroot/js/modules/main/modals/threadModal.js"
+        ]
+    }
+}
