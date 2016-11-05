@@ -10,7 +10,7 @@
 /tags
 /app/webroot/files*
 *.mo
-
+.c9
 # IDE and editor specific files #
 #################################
 /nbproject

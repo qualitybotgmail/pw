@@ -45,7 +45,7 @@
                         <ul class="commentList">
                             <li ng-repeat="m in message.Message | unique : 'id'"  ng-init="$last && fireMessageEvent()">
                                 <div class="commenterImage" title="{{m.User.username}}">
-                                  <img src="http://placekitten.com/50/50" />
+                                  <img alt="{{c.User.username}}" />
                                 </div>
                                 <div class="commentText">
                                     <p>
