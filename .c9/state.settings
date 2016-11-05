@@ -1,0 +1,743 @@
+{
+    "ace": {
+        "search": {
+            "@backwards": "false",
+            "@highlightmatches": "true",
+            "@matchcase": "false",
+            "@preservecase": "false",
+            "@regex": "false",
+            "@wholeword": "false",
+            "@wraparound": "true"
+        }
+    },
+    "console": {
+        "@expanded": true,
+        "@height": 550,
+        "@maximized": "false",
+        "json()": {
+            "meta": {
+                "accessList": [
+                    "tab5",
+                    "tab0",
+                    "tab1",
+                    "tab4",
+                    "tab13"
+                ]
+            },
+            "name": "pane1",
+            "nodes": [
+                {
+                    "type": "tab",
+                    "name": "tab0",
+                    "path": "",
+                    "className": [
+                        "tab0",
+                        "connecting"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "bash - \"root@talknote: /workspaces/ryan\"",
+                        "tooltip": "bash - \"root@talknote: /workspaces/ryan\"",
+                        "terminal": {
+                            "id": "devel_294",
+                            "cwd": "",
+                            "width": 1583,
+                            "height": 366,
+                            "scrollTop": 60
+                        },
+                        "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+                        "meta": {
+                            "timestamp": 1478136111230
+                        },
+                        "changed": false
+                    },
+                    "editorType": "terminal",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab1",
+                    "path": "",
+                    "className": [],
+                    "document": {
+                        "title": "Immediate",
+                        "meta": {},
+                        "filter": true,
+                        "changed": false
+                    },
+                    "editorType": "immediate",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab4",
+                    "path": "",
+                    "className": [
+                        "tab4"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "bash - \"root@talknote: /home\"",
+                        "tooltip": "bash - \"root@talknote: /home\"",
+                        "terminal": {
+                            "id": "devel_879",
+                            "cwd": "",
+                            "width": 765,
+                            "height": 71,
+                            "scrollTop": -1,
+                            "selection": {
+                                "start": {
+                                    "row": 0,
+                                    "column": 30
+                                },
+                                "end": {
+                                    "row": 0,
+                                    "column": 51
+                                },
+                                "isBackwards": true
+                            }
+                        },
+                        "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+                        "meta": {
+                            "timestamp": 1478222045401
+                        },
+                        "changed": false
+                    },
+                    "editorType": "terminal",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab13",
+                    "path": "",
+                    "className": [
+                        "tab13"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "bash - \"root@talknote: /var/www/ryan\"",
+                        "tooltip": "bash - \"root@talknote: /var/www/ryan\"",
+                        "terminal": {
+                            "id": "devel_302",
+                            "cwd": "",
+                            "width": 765,
+                            "height": 71,
+                            "scrollTop": -8
+                        },
+                        "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+                        "meta": {
+                            "timestamp": 1478226262111
+                        },
+                        "changed": false
+                    },
+                    "editorType": "terminal",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab5",
+                    "path": "",
+                    "className": [
+                        "tab5",
+                        "focus"
+                    ],
+                    "document": {
+                        "changed": false,
+                        "meta": {
+                            "timestamp": 1478303690297
+                        },
+                        "filter": true,
+                        "title": "bash - \"root@talknote: /var/www/ryan\"",
+                        "tooltip": "bash - \"root@talknote: /var/www/ryan\"",
+                        "terminal": {
+                            "id": "devel_118",
+                            "cwd": "",
+                            "width": 1501,
+                            "height": 524
+                        }
+                    },
+                    "editorType": "terminal",
+                    "active": true
+                }
+            ],
+            "skin": "editor_tab",
+            "skinset": "default",
+            "type": "pane"
+        }
+    },
+    "experiments": {
+        "@@enabled": true,
+        "@autosave": 0,
+        "@flat-dark": 0,
+        "@git": 1,
+        "@go_completion": 0,
+        "@plugin-manager": 1,
+        "@plugins": 0,
+        "@sdk": 0,
+        "@test": 0
+    },
+    "ext": {
+        "counters": {
+            "@ace": 1,
+            "@acestatus": 1,
+            "@divider": 5,
+            "@document": 16,
+            "@form": 5,
+            "@menu": 5,
+            "@menuitem": 13,
+            "@pane": 2,
+            "@session": 12,
+            "@tab": 18,
+            "@undoManager": 16
+        }
+    },
+    "findinfiles": {
+        "@console": "true",
+        "@matchcase": "false",
+        "@regex": "false",
+        "@scope": "selection",
+        "@wholeword": "false"
+    },
+    "menus": {
+        "@minimized": "false"
+    },
+    "nak": {
+        "@installed": true
+    },
+    "panecycle": {
+        "json()": [
+            "tab7",
+            "tab5"
+        ]
+    },
+    "panels": {
+        "@active-left": "tree",
+        "@width-left": 282,
+        "collab": {
+            "@enabled": "true",
+            "@name": "collab"
+        },
+        "commands.panel": {
+            "@enabled": "true",
+            "@name": "commands.panel"
+        },
+        "debugger": {
+            "@enabled": "true",
+            "@name": "debugger"
+        },
+        "navigate": {
+            "@enabled": "true",
+            "@name": "navigate"
+        },
+        "outline": {
+            "@enabled": "true",
+            "@name": "outline"
+        },
+        "scm": {
+            "@enabled": "true",
+            "@name": "scm"
+        },
+        "tree": {
+            "@enabled": "true",
+            "@name": "tree"
+        }
+    },
+    "projecttree": {
+        "@scrollpos": 350,
+        "@showfs": true,
+        "expanded": {
+            "json()": [
+                "/app",
+                "/app/Controller",
+                "/app/webroot/js/modules",
+                "/app/webroot/js/modules/thread",
+                "/app/webroot/js/modules/message",
+                "/",
+                "/app/Config",
+                "/app/webroot",
+                "/app/webroot/uploads",
+                "/app/webroot/files",
+                "/app/Model"
+            ]
+        }
+    },
+    "recentfiles": {
+        "json()": []
+    },
+    "search-history": {
+        "search": {
+            "json()": [
+                "getThread"
+            ]
+        }
+    },
+    "tabs": {
+        "json()": {
+            "focus": "/app/Controller/UploadsController.php",
+            "meta": {
+                "accessList": [
+                    "tab7",
+                    "tab2",
+                    "tab3",
+                    "tab8",
+                    "tab9",
+                    "tab10",
+                    "tab11",
+                    "tab14",
+                    "tab6",
+                    "tab15",
+                    "tab17"
+                ]
+            },
+            "name": "pane0",
+            "nodes": [
+                {
+                    "type": "tab",
+                    "name": "tab2",
+                    "path": "/composer.json",
+                    "className": [
+                        "tab2"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "composer.json",
+                        "tooltip": "/composer.json",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 0,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 31,
+                                    "column": 0
+                                },
+                                "end": {
+                                    "row": 31,
+                                    "column": 0
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 41,
+                                "mode": "ace/mode/json"
+                            }
+                        },
+                        "hash": "54ba91f7008fc8985035f476e491df52c99ab20d",
+                        "meta": {
+                            "timestamp": 1434702975000
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab3",
+                    "path": "/app/Controller/AppController.php",
+                    "className": [
+                        "tab3"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "AppController.php",
+                        "tooltip": "/app/Controller/AppController.php",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 600,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 84,
+                                    "column": 2
+                                },
+                                "end": {
+                                    "row": 84,
+                                    "column": 2
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": 0
+                        },
+                        "hash": "58adafbf305b1f8ea0c82dd1a43ae60595ecbe2e",
+                        "meta": {
+                            "timestamp": 1477872278549
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab7",
+                    "path": "/app/Controller/ThreadsController.php",
+                    "className": [
+                        "tab7",
+                        "changed"
+                    ],
+                    "document": {
+                        "changed": true,
+                        "meta": {
+                            "timestamp": 1478311817683
+                        },
+                        "filter": true,
+                        "title": "ThreadsController.php",
+                        "tooltip": "/app/Controller/ThreadsController.php",
+                        "ace": {}
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab8",
+                    "path": "/app/Controller/GroupchatsController.php",
+                    "className": [
+                        "tab8"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "GroupchatsController.php",
+                        "tooltip": "/app/Controller/GroupchatsController.php",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 660,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 63,
+                                    "column": 2
+                                },
+                                "end": {
+                                    "row": 67,
+                                    "column": 2
+                                },
+                                "isBackwards": true
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 11,
+                                "state": "php-doc-start",
+                                "mode": "ace/mode/php"
+                            }
+                        },
+                        "hash": "b0ba714296e3c867a4b7089a8209de7c3540fe98",
+                        "meta": {
+                            "timestamp": 1477632513729
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab9",
+                    "path": "/app/webroot/js/modules/thread/Thread.js",
+                    "className": [
+                        "tab9"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "Thread.js",
+                        "tooltip": "/app/webroot/js/modules/thread/Thread.js",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 2331,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 213,
+                                    "column": 11
+                                },
+                                "end": {
+                                    "row": 213,
+                                    "column": 11
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": 0,
+                            "cleansed": true
+                        },
+                        "hash": "80ed1636586ee3122801f53e19f75d03d6f3c911",
+                        "meta": {
+                            "timestamp": 1478224575029
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab10",
+                    "path": "/app/webroot/js/modules/message/Message.js",
+                    "className": [
+                        "tab10"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "Message.js",
+                        "tooltip": "/app/webroot/js/modules/message/Message.js",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 1755,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 178,
+                                    "column": 49
+                                },
+                                "end": {
+                                    "row": 178,
+                                    "column": 49
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 145,
+                                "state": "start",
+                                "mode": "ace/mode/javascript"
+                            },
+                            "cleansed": true
+                        },
+                        "hash": "9b40798e500b9cc460856d60c64a12ee9c18db66",
+                        "meta": {
+                            "timestamp": 1478224903353
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab11",
+                    "path": "/app/Controller/AttachementsController.php",
+                    "className": [
+                        "tab11"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "AttachementsController.php",
+                        "tooltip": "/app/Controller/AttachementsController.php",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 720,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 68,
+                                    "column": 43
+                                },
+                                "end": {
+                                    "row": 68,
+                                    "column": 43
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": 0
+                        },
+                        "hash": "f52fda32ebfee2f3714225806ae2742192196a8b",
+                        "meta": {
+                            "timestamp": 1477409299689
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab14",
+                    "path": "/app/Controller/Untitled1",
+                    "className": [
+                        "changed",
+                        "tab14"
+                    ],
+                    "document": {
+                        "changed": true,
+                        "filter": true,
+                        "title": "Untitled1",
+                        "tooltip": "/app/Controller/Untitled1",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 0,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 30,
+                                    "column": 0
+                                },
+                                "end": {
+                                    "row": 30,
+                                    "column": 0
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": 0
+                        },
+                        "meta": {
+                            "newfile": true,
+                            "timestamp": 1478233181899
+                        }
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab6",
+                    "path": "/app/Config/database.php",
+                    "className": [
+                        "tab6"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "database.php",
+                        "tooltip": "/app/Config/database.php",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 420,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 90,
+                                    "column": 3
+                                },
+                                "end": {
+                                    "row": 90,
+                                    "column": 3
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": 0
+                        },
+                        "hash": "64a963ac93081ea824db24dc80400b6c09ff74f0",
+                        "meta": {
+                            "timestamp": 1477050754940
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab15",
+                    "path": "/app/Controller/AttachmentsController.php",
+                    "className": [
+                        "tab15"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "AttachmentsController.php",
+                        "tooltip": "/app/Controller/AttachmentsController.php",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 0,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 34,
+                                    "column": 35
+                                },
+                                "end": {
+                                    "row": 34,
+                                    "column": 35
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 50,
+                                "state": "php-start",
+                                "mode": "ace/mode/php"
+                            }
+                        },
+                        "hash": "0ae42cc5fcc3291cd0a5ef1ae14358c7d6ced626",
+                        "meta": {
+                            "timestamp": 1477409299689
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab17",
+                    "path": "/app/Controller/UploadsController.php",
+                    "className": [
+                        "tab17",
+                        "focus"
+                    ],
+                    "document": {
+                        "changed": false,
+                        "meta": {
+                            "timestamp": 1478305251933
+                        },
+                        "filter": true,
+                        "title": "UploadsController.php",
+                        "tooltip": "/app/Controller/UploadsController.php",
+                        "ace": {}
+                    },
+                    "editorType": "ace",
+                    "active": true
+                }
+            ],
+            "skin": "editor_tab",
+            "skinset": "default",
+            "type": "pane"
+        }
+    },
+    "tree_selection": {
+        "json()": [
+            "/app/Model"
+        ]
+    }
+}
