@@ -85,7 +85,11 @@ class ThreadsController extends AppController {
 			unset($thread['Comment'][$kk]['Like']);
 			unset($thread['Comment'][$kk]['Thread']);
 			
-		}
+		} 
+		$this->loadModel('Upload');
+		
+		$cond = array('conditions' => array('Upload.thread_id' => $id));
+		$uploads = $this->Upload->find('all', $cond);
 			//total likes of comments
 		
 				

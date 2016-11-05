@@ -37,7 +37,7 @@ class UploadsController extends AppController {
 			throw new NotFoundException(__('Invalid upload'));
 		}
 		$options = array('conditions' => array('Upload.' . $this->Upload->primaryKey => $id));
-		$this->set('upload', $this->Upload->find('first', $options));
+		$this->set('upload', $this->Upload->find('all', $options));
 	}
 
 /**
@@ -78,7 +78,7 @@ class UploadsController extends AppController {
 			//	chmod($path,0777);
 				
 				$filepath = $path . '/' .time(). $file['name'];
-				
+				$this->Upload->create();
 			    move_uploaded_file($file['tmp_name'],$filepath);
 				$urlpath = '/files/' . $this->Auth->user('username') . '/' . time().$file['name'];
 				$data = ['path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'thread_id'=>$thread_id ,'name' => $file['name']];
