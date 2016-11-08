@@ -53,6 +53,19 @@ define([], function()
                 name: 'app.thread'
             },
 
+            'heads/:id': {
+                views: {
+                    'content': {
+                        templateUrl: baseSourcePath + 'head/head.html?version=' + Talknote.version,
+                        controller: 'HeadController'   
+                    }
+                },
+                dependencies: [
+                    'modules/head/index'
+                ],
+                name: 'app.head'
+            },
+
             'message/:id': {
                 views: {
                     'content': {
