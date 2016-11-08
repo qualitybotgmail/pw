@@ -24,8 +24,8 @@
 		    	<div class="row" >
 		            <div class="col-xs-11">
 						<div class="form-group">
-	                        <label for="user_address">head</label>
-	                        <textarea name="head" class="form-control" id="head" placeholder="Enter head" ng-model="thread.head" required></textarea>
+	                        <label for="user_address">Body</label>
+	                        <textarea name="head" class="form-control" id="head" placeholder="Enter head" ng-model="thread.body"></textarea>
 	                        <i class="tooltips col-xs-12" ng-show="threadForm.head.$dirty && threadForm.head.$invalid">
 	                            <span class="red">This field is required</span>
 	                        </i>
@@ -33,17 +33,17 @@
 		    		</div>
 		    	</div>
 		    	
-		    	<div class="row">
+		    	<!--div class="row">
 	                <div class="form-group">
 	                    <input type="file" name="attachments" id="new-thread-attachments"  multiple />
 	                </div>
-	            </div>
+	            </div-->
 
 			</div>
 			
 			<div class="modal-footer">
 				<button type="button" class="btn btn-sm" id="btn-close" ng-click="cancel()" tabindex="-1"><i class="fa fa-ban bigger-140"></i> &nbsp;Cancel</button>
-				<button type="submit" class="btn btn-primary btn-sm" id="btn-ok" ng-disabled="threadForm.$invalid || ! threadForm.$dirty || state.saving">
+				<button type="submit" class="btn btn-primary btn-sm" id="btn-ok" ng-disabled="threadForm.$invalid || ! threadForm.$dirty">
 					<i class="fa fa-save bigger-140"></i> &nbsp;<u>S</u>ave
 				</button>
 			</div>

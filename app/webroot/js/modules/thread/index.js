@@ -4,10 +4,11 @@
 define([
 	// import models
 	'../../models/threads',
-	'../../models/comments',
+	'../../models/heads',
 	
 	// import modals
 	'./modals/addMemberModal',
+	'./modals/threadHeadModal',
 	
 	// import filters
 	'../../factories/filter',
