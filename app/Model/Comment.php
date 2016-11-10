@@ -24,16 +24,16 @@ class Comment extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'thread_id' => array(
-			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
+		// 'thread_id' => array(
+		// 	'numeric' => array(
+		// 		'rule' => array('numeric'),
+		// 		//'message' => 'Your custom message here',
+		// 		//'allowEmpty' => false,
+		// 		//'required' => false,
+		// 		//'last' => false, // Stop validation after this rule
+		// 		//'on' => 'create', // Limit validation to 'create' or 'update' operations
+		// 	),
+		// ),
 		// 'body' => array(
 		// 	'notEmpty' => array(
 		// 		'rule' => array('notEmpty'),
@@ -62,13 +62,13 @@ class Comment extends AppModel {
 			'fields' => '',
 			'order' => ''
 		),
-		'Thread' => array(
-			'className' => 'Thread',
-			'foreignKey' => 'thread_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		),
+		// 'Thread' => array(
+		// 	'className' => 'Thread',
+		// 	'foreignKey' => 'thread_id',
+		// 	'conditions' => '',
+		// 	'fields' => '',
+		// 	'order' => ''
+		// ),
 	);
 	
 	public $hasMany = ['Like', 'Upload'];
