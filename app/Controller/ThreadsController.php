@@ -40,13 +40,13 @@ class ThreadsController extends AppController {
 			unset($threads[$k]['Owner']['password']);
 			//unset($threads[$k]['Like']);
 			
-			// foreach($thread['Comment'] as $kk => $comment){
-			// 	$threads[$k]['Comment'][$kk]['likes'] = count($comment['Like']);
-			// 	$threads[$k]['Comment'][$kk]['isUserLiked'] = $this->Thread->Comment->isLiked($comment['id'],$uid);
-			// 	unset($threads[$k]['Comment'][$kk]['Like']);
-			// 	unset($threads[$k]['Comment'][$kk]['Thread']);
+			foreach($thread['Head'] as $kk => $head){
+				$threads[$k]['Head'][$kk]['likes'] = count($head['Like']);
+				$threads[$k]['Head'][$kk]['isUserLiked'] = $this->Thread->Head->isLiked($head['id'],$uid);
+				unset($threads[$k]['Head'][$kk]['Like']);
+				unset($threads[$k]['Head'][$kk]['Thread']);
 				
-			// }
+			}
 			//total likes of comments
 		}
 		
@@ -80,13 +80,14 @@ class ThreadsController extends AppController {
 		unset($thread['Owner']['password']);
 	//	unset($thread['Like']);
 			
-		// foreach($thread['Comment'] as $kk => $comment){
-		// 	$thread['Comment'][$kk]['likes'] = count($comment['Like']);
-		// 	$thread['Comment'][$kk]['isUserLiked'] = $this->Thread->Comment->isLiked($comment['id'],$uid);
-		// 	unset($thread['Comment'][$kk]['Like']);
-		// 	unset($thread['Comment'][$kk]['Thread']);
+		foreach($thread['Head'] as $kk => $head){
+			$thread['Head'][$kk]['likes'] = count($head['Like']);
+			$thread['Head'][$kk]['isUserLiked'] = $this->Thread->Head->isLiked($head['id'],$uid);
+			unset($thread['Head'][$kk]['Owner']['password']);
+			unset($thread['Head'][$kk]['Like']);
+			unset($thread['Head'][$kk]['Thread']);
 			
-		// // } 
+		} 
 		// $this->loadModel('Upload');
 		
 		// $cond = array('conditions' => array('Upload.thread_id' => $id));
