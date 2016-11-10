@@ -43,6 +43,7 @@
 	Router::mapResources('messages');
 	Router::mapResources('groupchats');
 	Router::mapResources('comments'); 
+	Router::mapResources('heads');
 	
 	
 	
