@@ -35,6 +35,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             $scope.templates = ThreadFactory.templates;
             $scope.currentPageNumber = 1;
+            $scope.loginUser = $rootScope.loginUser;
             
             
             // add members
@@ -93,6 +94,13 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	$scope.getThread = function() {
         	    ThreadsModel.one($scope.selectedThreadId.toString()).get().then(function(thread){
         	        $scope.thread = thread;
+        	    });
+        	};
+        	
+        	// delete head thread
+        	$scope.deleteHead = function(index, headId) {
+        	    HeadsModel.one(headId).remove().then(function(result){
+        	        $scope.thread.Head.splice(index, 1);
         	    });
         	};
         	

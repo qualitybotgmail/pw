@@ -6,7 +6,10 @@
         font-weight: bolder;
         background: blue;
     }
-    .badge-like,
+    .badge-delete .badge {
+        background-color: #d9534f!important;
+    }
+    .badge-like, .badge-delete,
     .add-member {
         cursor: pointer;
     }
@@ -58,6 +61,14 @@
                                 <span class="badge {{(head.isUserLiked)?'liked':''}}">
                                     {{head.likes}}
                                     <i class="glyphicon glyphicon-thumbs-up"></i>
+                                </span>
+                            </a>
+                        </span>
+                        <span ng-if="thread.Owner.id = loginUser.id">
+                            <a class="badge-delete" ng-click="deleteHead($index, head.id)">
+                                <span class="badge">
+                                    {{head.likes}}
+                                    <i class="glyphicon glyphicon-trash"></i>
                                 </span>
                             </a>
                         </span>

@@ -45,7 +45,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 	            };
             
                 $scope.saveHead = function() {
-                	HeadsModel.one('add').customPOST($scope.head).then(function(res){
+                	HeadsModel.post($scope.head).then(function(res){
                     	if ($("#thread-modal #new-thread-attachments")[0].files.length){
 	                        $scope.uploadAttachment(res);
 	                    } else {
