@@ -14,17 +14,17 @@
 </style>
 
 <!-- if there is a specific thread show this-->
-<div class="row" ng-if="selectedThread">
+<div class="row" ng-if="selectedHead">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <!--<div class="row">-->
         <!--    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">-->
         <!--        <p class="thread-users">-->
-        <!--            <span ng-repeat="u in selectedThread.User">-->
+        <!--            <span ng-repeat="u in selectedHead.User">-->
         <!--                {{ u.username }}-->
         <!--                {{$last ? '' : ', '}}-->
                         
         <!--            </span>-->
-        <!--            <span class="badge add-member" title="Add member" ng-click="addMembers(selectedThread.Thread)">-->
+        <!--            <span class="badge add-member" title="Add member" ng-click="addMembers(selectedHead.Thread)">-->
         <!--                <i class="glyphicon glyphicon-user"></i>-->
         <!--                <i class="glyphicon glyphicon-plus"></i>-->
         <!--            </span>-->
@@ -38,12 +38,12 @@
                 <div class="detailBox">
                     <div class="titleBox">
                         <h3 class="page-header">
-                            {{selectedThread.Thread.title}}
+                            {{selectedHead.Thread.title}}
                             <small>
                                 <span>
-                                    <a class="badge-like" ng-disabled="!selectedThread.Thread.processing" ng-click="like($index, selectedThread)">
-                                        <span class="badge {{(selectedThread.Thread.isUserLiked)?'liked':''}}">
-                                            {{selectedThread.Thread.likes}}
+                                    <a class="badge-like" ng-disabled="!selectedHead.Head.processing" ng-click="like($index, selectedHead)">
+                                        <span class="badge {{(selectedHead.Head.isUserLiked)?'liked':''}}">
+                                            {{selectedHead.Head.likes}}
                                             <i class="glyphicon glyphicon-thumbs-up"></i>
                                         </span>
                                     </a>
@@ -53,8 +53,8 @@
                     </div>
                     <div class="commentBox">
                         <p class="taskDescription">
-                             {{selectedThread.Thread.head}}
-                             <span ng-repeat="upload in selectedThread.Upload">
+                             {{selectedHead.Head.body}}
+                             <span ng-repeat="upload in selectedHead.Head.Upload">
                                 <a fancybox ng-href="{{upload.path}}">
                                     <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
                                 </a>
@@ -63,7 +63,7 @@
                     </div>
                     <div class="actionBox">
                         <ul class="commentList">
-                            <li ng-repeat="c in selectedThread.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
+                            <li ng-repeat="c in selectedHead.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
                                 <div class="commenterImage">
                                   <img alt="{{c.User.username}}" />
                                 </div>
