@@ -79,10 +79,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                         }
                     };
                     
-                    Modal.showModal(modalConfig, {}).then(function (result) {
+                    Modal.showModal(modalConfig, {}).then(function (head) {
                         // success
-                        $scope.thread.Head.push(res);
-                        $state.go('app.head',{id: result.Head.id});
+                        $scope.thread.Head.push(head);
+                        $state.go('app.head',{id: head.Head.id});
                     }, function (err) {
                         // error
                     });

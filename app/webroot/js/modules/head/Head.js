@@ -51,7 +51,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             // $scope.usedTemplate = 'template/thread_list.html';
             
             // $scope.templates = ThreadFactory.templates;
-            $scope.selectedHeadId = null;
+            $scope.selectedThreadId = null;
             $scope.selectedThread = null;
             $scope.comment = {};
             $scope.comment.body = '';
@@ -110,30 +110,30 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	
         	// get thread information
-        	$scope.getHead = function() {
-        	    HeadsModel.one($scope.selectedHeadId.toString()).get().then(function(thread){
+        	$scope.getThread = function() {
+        	    HeadsModel.one($scope.selectedThreadId.toString()).get().then(function(thread){
         	        $scope.selectedThread = thread;
         	    });
         	};
         	
-        	// temporary comment codes
-        // 	$scope.getLatestComment = function() {
-        // 	    HeadsModel.one($scope.selectedHeadId.toString()).get().then(function(thread){
-        // 	        var currentCommentLength = $scope.selectedThread.Comment.length;
-        // 	        var commentLength = thread.Comment.length;
-        // 	        if (currentCommentLength) {
-        // 	            var lastComment = $scope.selectedThread.Comment[currentCommentLength - 1];
-        // 	            if (lastComment.id !== thread.Comment[commentLength - 1].id || lastComment.Upload.length !== thread.Comment[commentLength - 1].Upload.length) {
-        // 	                $scope.selectedThread.Comment.splice((commentLength - 1), 1);
-        // 	                $scope.selectedThread.Comment.push(thread.Comment[commentLength - 1]);
-        // 	                HeadService.scrollDown();        
-        // 	            }
-        // 	        } else {
-        // 	            $scope.selectedThread.Comment.push(thread.Comment[commentLength - 1]);
-        // 	            HeadService.scrollDown();
-        // 	        }
-        // 	    });
-        // 	};
+        	
+        	$scope.getLatestComment = function() {
+        	    HeadsModel.one($scope.selectedThreadId.toString()).get().then(function(thread){
+        	        var currentCommentLength = $scope.selectedThread.Comment.length;
+        	        var commentLength = thread.Comment.length;
+        	        if (currentCommentLength) {
+        	            var lastComment = $scope.selectedThread.Comment[currentCommentLength - 1];
+        	            if (lastComment.id !== thread.Comment[commentLength - 1].id || lastComment.Upload.length !== thread.Comment[commentLength - 1].Upload.length) {
+        	                $scope.selectedThread.Comment.splice((commentLength - 1), 1);
+        	                $scope.selectedThread.Comment.push(thread.Comment[commentLength - 1]);
+        	                HeadService.scrollDown();        
+        	            }
+        	        } else {
+        	            $scope.selectedThread.Comment.push(thread.Comment[commentLength - 1]);
+        	            HeadService.scrollDown();
+        	        }
+        	    });
+        	};
         	
         	$scope.fireMessageEvent = function(){
                 var timeout = $timeout(function() {
@@ -170,13 +170,13 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	    
         	    // if thread was not like
         	    if (!thread.Thread.isUserLiked) {
-        	        HeadsModel.one('like').one(thread.Thread.id.toString()).get().then(function(res) {
+        	        ThreadsModel.one('like').one(thread.Thread.id.toString()).get().then(function(res) {
     	                $scope.selectedThread.Thread.isUserLiked = true;
     	                $scope.selectedThread.Thread.likes += 1;
     	                $scope.selectedThread.Thread.processing = false;
                 	});   
         	    } else { // if thread was already like
-        	        HeadsModel.one('unlike').one(thread.Thread.id.toString()).get().then(function(res) {
+        	        ThreadsModel.one('unlike').one(thread.Thread.id.toString()).get().then(function(res) {
     	                $scope.selectedThread.Thread.isUserLiked = false;
     	                $scope.selectedThread.Thread.likes -= 1;
     	                $scope.selectedThread.Thread.processing = false;
@@ -187,15 +187,15 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	// get thread for every 7 secs
         	
-        	pendingQry = $interval($scope.getHead, 7000);
+        	pendingQry = $interval($scope.getThread, 7000);
         	
         	/**
         	 * initialize some functions
         	 * or variables
         	 */
         	var init = function(){
-    	        $scope.selectedHeadId = $stateParams.id;
-    	        $scope.getHead();
+    	        $scope.selectedThreadId = $stateParams.id;
+    	        $scope.getThread();
         	};
         	init();
         	

@@ -3,8 +3,8 @@
  */
 define([
 	// import models
-	'../../models/threads',
 	'../../models/heads',
+	'../../models/threads',
 	
 	// import modals
 	'./modals/addMemberModal',
