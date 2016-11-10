@@ -62,13 +62,13 @@ class Comment extends AppModel {
 			'fields' => '',
 			'order' => ''
 		),
-		// 'Thread' => array(
-		// 	'className' => 'Thread',
-		// 	'foreignKey' => 'thread_id',
-		// 	'conditions' => '',
-		// 	'fields' => '',
-		// 	'order' => ''
-		// ),
+		'Head' => array(
+			'className' => 'Head',
+			'foreignKey' => 'head_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
 	);
 	
 	public $hasMany = ['Like', 'Upload'];

@@ -85,6 +85,6 @@ class Upload extends AppModel {
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		),'Thread'
+		),'Head'
 	);
 }

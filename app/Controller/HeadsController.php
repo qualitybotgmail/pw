@@ -20,10 +20,41 @@ class HeadsController extends AppController {
  *
  * @return void
  */
+
 	public function index() {
-		$this->Head->recursive = 0;
-		$this->set('heads', $this->Paginator->paginate());
-	}
+		
+		$this->Head->recursive = 2;
+		
+		// $id = $this->Auth->user('id');
+		// $options = array('conditions' => array('user_id'=>$id));
+		//$this->Paginator->settings = ['limit' =>3000];//high limit for now
+		
+		$heads = $this->Head->find('all',['order' => ['Head.created DESC']]);//$this->Paginator->paginate();
+	//	echo ($heads['Owner']['password']);exit;
+		
+		foreach($heads as $k => $head){
+			
+			$tid = $head['Head']['id'];
+			$uid = $this->Auth->user('id');
+			$heads[$k]['Head']['isUserLiked'] = $this->Head->isLiked($tid,$uid);
+			$heads[$k]['Head']['likes'] = count($head['Like']);
+			unset($heads[$k]['Owner']['password']);
+			unset($heads[$k]['Like']);
+			
+			foreach($head['Comment'] as $kk => $comment){
+				$heads[$k]['Comment'][$kk]['likes'] = count($comment['Like']);
+				$heads[$k]['Comment'][$kk]['isUserLiked'] = $this->Head->Comment->isLiked($comment['id'],$uid);
+				unset($heads[$k]['Comment'][$kk]['Like']);
+				unset($heads[$k]['Comment'][$kk]['Head']);
+				
+			}
+			//total likes of comments
+		}
+		
+		$this->set('heads', $heads);
+		 
+
+	}	
 
 /**
  * view method
@@ -32,14 +63,39 @@ class HeadsController extends AppController {
  * @param string $id
  * @return void
  */
+
 	public function view($id = null) {
+	
 		if (!$this->Head->exists($id)) {
 			throw new NotFoundException(__('Invalid head'));
 		}
-		$options = array('conditions' => array('Head.' . $this->Head->primaryKey => $id));
-		$this->set('head', $this->Head->find('first', $options));
+		$this->Head->recursive = 3;
+		$head = $this->Head->findById($id);
+		$tid = $id;
+		$uid = $this->Auth->user('id');
+		
+		$head['Head']['isUserLiked'] = $this->Head->isLiked($tid,$uid);
+		$head['Head']['likes'] = count($head['Like']);
+		unset($head['Owner']['password']);
+		unset($head['Like']);
+			
+		foreach($head['Comment'] as $kk => $comment){
+			$head['Comment'][$kk]['likes'] = count($comment['Like']);
+			$head['Comment'][$kk]['isUserLiked'] = $this->Head->Comment->isLiked($comment['id'],$uid);
+			unset($head['Comment'][$kk]['Like']);
+			unset($head['Comment'][$kk]['Head']);
+			
+		} 
+		$this->loadModel('Upload');
+		
+		$cond = array('conditions' => array('Upload.head_id' => $id));
+		$uploads = $this->Upload->find('all', $cond);
+			//total likes of comments
+		
+				
+		
+		$this->set('head',$head);
 	}
-
 /**
  * add method
  *

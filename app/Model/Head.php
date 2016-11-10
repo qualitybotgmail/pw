@@ -54,7 +54,7 @@ class Head extends AppModel {
  * @var array
  */
 	public $belongsTo = array(
-		'User' => array(
+		'Owner' => array(
 			'className' => 'User',
 			'foreignKey' => 'user_id',
 			'conditions' => '',
@@ -70,6 +70,14 @@ class Head extends AppModel {
 		)
 	);
 	
-	public $hasMany = 'Like';
+	public $hasMany = ['Comment','Like','Upload'];
 	
+	public function isLiked($cid,$uid){
+		$ret = $this->Like->findByHeadIdAndUserId($cid,$uid);
+		if($ret)
+			return true;
+			
+		return false;
+	}
+		
 }
