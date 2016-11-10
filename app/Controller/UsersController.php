@@ -129,11 +129,33 @@ class UsersController extends AppController {
 		$this->view = 'view'; 
 		$id = $this->Auth->user('id');
 		
+		
 		$this->User->recursive = 0;
         $user = $this->User->findById($id); 
         
         $this->set('user',$user);
         
+	}
+	
+	public function timeline(){ 
+		
+		$this->loadModel('Groupchat');
+		$this->loadModel('Thread');
+		// $this->loadModel('Like');
+		
+		$user_id = $this->Auth->user('id');
+		
+		$this->Groupchat->recursive = 2; 
+		$this->Thread->recursive = 2; 
+		// $this->Like->recursive = 2; 
+		
+		$groupchat = $this->Groupchat->find('all',array('conditions'=>array('Groupchat.user_id',$user_id)));
+		$thread = $this->Thread->find('all',array('conditions'=>array('Thread.user_id',$user_id)));
+		// $like = $this->Like->find('all',array('conditions'=>array('Like.user_id',$user_id)));
+		
+		
+		
+		$this->set('user', $groupchat,$thread); //,$like
 	}
 	
 	 

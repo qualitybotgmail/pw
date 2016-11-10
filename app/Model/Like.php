@@ -55,6 +55,16 @@ class Like extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
+		'head_id' => array(
+			'numeric' => array(
+				'rule' => array('numeric'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
 	);
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
@@ -89,6 +99,13 @@ class Like extends AppModel {
 		'Comment' => array(
 			'className' => 'Comment',
 			'foreignKey' => 'comment_id',
+			'conditions' => '',
+			'fields' => '',
+			'order' => ''
+		),
+		'Head' => array(
+			'className' => 'Head',
+			'foreignKey' => 'head_id',
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
@@ -142,5 +159,19 @@ class Like extends AppModel {
 	        );
 	    }
 	    return true;
-	}	
+	}
+	
+	public function headLike($head_id,$user_id){
+		$ret = $this->find('first',array('conditions' => array(
+			'Like.head_id' => $head_id,
+			'Like.user_id'   => $user_id
+		)));
+		
+		return $ret;
+	}
+	public function headLikeExists($head_id,$user_id){
+		$ret = $this->headLike($head_id,$user_id);
+		
+		return count($ret) > 0;
+	}
 }
