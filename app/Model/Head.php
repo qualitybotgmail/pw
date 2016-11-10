@@ -70,4 +70,6 @@ class Head extends AppModel {
 		)
 	);
 	
+	public $hasMany = 'Like';
+	
 }

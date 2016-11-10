@@ -44,6 +44,8 @@
 	Router::mapResources('groupchats');
 	Router::mapResources('comments'); 
 	Router::mapResources('heads');
+	Router::mapResources('likes');
+	
 	
 	
 	
