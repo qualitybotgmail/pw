@@ -48,6 +48,8 @@ class HeadsController extends AppController {
 	public function add() {
 		if ($this->request->is('post')) {
 			$this->Head->create();
+			
+			$this->request->data['Head']['user_id'] = $this->Auth->user('id');
 			if ($this->Head->save($this->request->data)) {
 				$this->Session->setFlash(__('The head has been saved.'), 'default', array('class' => 'alert alert-success'));
 				return $this->redirect(array('action' => 'index'));
@@ -72,6 +74,7 @@ class HeadsController extends AppController {
 			throw new NotFoundException(__('Invalid head'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
+			$this->request->data['Head']['user_id'] = $this->Auth->user('id');
 			if ($this->Head->save($this->request->data)) {
 				$this->Session->setFlash(__('The head has been saved.'), 'default', array('class' => 'alert alert-success'));
 				return $this->redirect(array('action' => 'index'));
