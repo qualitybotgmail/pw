@@ -83,7 +83,7 @@ class Thread extends AppModel {
 			'finderQuery' => '',
 		)
 	);
-	public $hasMany = array('Like','Comment','Upload');
+	public $hasMany = array('Comment','Upload');
 	
 	public function members($thread_id){
 		
@@ -99,9 +99,9 @@ class Thread extends AppModel {
 		
 	}
 	public function isLiked($tid,$uid){
-		$ret = $this->Like->findByThreadIdAndUserId($tid,$uid);
-		if($ret)
-			return true;
+		// $ret = $this->Like->findByThreadIdAndUserId($tid,$uid);
+		// if($ret)
+		// 	return true;
 			
 		return false;
 	}

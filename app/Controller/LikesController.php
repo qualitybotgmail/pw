@@ -22,6 +22,7 @@ class LikesController extends AppController {
  */
 	public function index() {
 		$this->Like->recursive = 0;
+	
 		$this->set('likes', $this->Paginator->paginate());
 	}
 

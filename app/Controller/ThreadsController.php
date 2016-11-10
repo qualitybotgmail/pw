@@ -23,6 +23,7 @@ class ThreadsController extends AppController {
 	public function index() {
 		
 		$this->Thread->recursive = 2;
+		
 		// $id = $this->Auth->user('id');
 		// $options = array('conditions' => array('user_id'=>$id));
 		//$this->Paginator->settings = ['limit' =>3000];//high limit for now
@@ -34,10 +35,10 @@ class ThreadsController extends AppController {
 			
 			$tid = $thread['Thread']['id'];
 			$uid = $this->Auth->user('id');
-			$threads[$k]['Thread']['isUserLiked'] = $this->Thread->isLiked($tid,$uid);
-			$threads[$k]['Thread']['likes'] = count($thread['Like']);
+			//$threads[$k]['Thread']['isUserLiked'] = $this->Thread->isLiked($tid,$uid);
+			//$threads[$k]['Thread']['likes'] = count($thread['Like']);
 			unset($threads[$k]['Owner']['password']);
-			unset($threads[$k]['Like']);
+			//unset($threads[$k]['Like']);
 			
 			foreach($thread['Comment'] as $kk => $comment){
 				$threads[$k]['Comment'][$kk]['likes'] = count($comment['Like']);
@@ -74,10 +75,10 @@ class ThreadsController extends AppController {
 		$tid = $id;
 		$uid = $this->Auth->user('id');
 		
-		$thread['Thread']['isUserLiked'] = $this->Thread->isLiked($tid,$uid);
-		$thread['Thread']['likes'] = count($thread['Like']);
+	//	$thread['Thread']['isUserLiked'] = $this->Thread->isLiked($tid,$uid);
+	//	$thread['Thread']['likes'] = count($thread['Like']);
 		unset($thread['Owner']['password']);
-		unset($thread['Like']);
+	//	unset($thread['Like']);
 			
 		foreach($thread['Comment'] as $kk => $comment){
 			$thread['Comment'][$kk]['likes'] = count($comment['Like']);

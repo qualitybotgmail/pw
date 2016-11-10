@@ -35,16 +35,16 @@ class Like extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
-		'thread_id' => array(
-			'numeric' => array(
-				'rule' => array('numeric'),
-				//'message' => 'Your custom message here',
-				//'allowEmpty' => false,
-				//'required' => false,
-				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
-			),
-		),
+		// 'thread_id' => array(
+		// 	'numeric' => array(
+		// 		'rule' => array('numeric'),
+		// 		//'message' => 'Your custom message here',
+		// 		//'allowEmpty' => false,
+		// 		//'required' => false,
+		// 		//'last' => false, // Stop validation after this rule
+		// 		//'on' => 'create', // Limit validation to 'create' or 'update' operations
+		// 	),
+		// ),
 		'comment_id' => array(
 			'numeric' => array(
 				'rule' => array('numeric'),
@@ -89,13 +89,13 @@ class Like extends AppModel {
 			'fields' => '',
 			'order' => ''
 		),
-		'Thread' => array(
-			'className' => 'Thread',
-			'foreignKey' => 'thread_id',
-			'conditions' => '',
-			'fields' => '',
-			'order' => ''
-		), 
+		// 'Thread' => array(
+		// 	'className' => 'Thread',
+		// 	'foreignKey' => 'thread_id',
+		// 	'conditions' => '',
+		// 	'fields' => '',
+		// 	'order' => ''
+		// ), 
 		'Comment' => array(
 			'className' => 'Comment',
 			'foreignKey' => 'comment_id',
@@ -111,19 +111,19 @@ class Like extends AppModel {
 			'order' => ''
 		)
 	);
-	public function threadLike($thread_id,$user_id){
-		$ret = $this->find('first',array('conditions' => array(
-			'Like.thread_id' => $thread_id,
-			'Like.user_id'   => $user_id
-		)));
+	// public function threadLike($thread_id,$user_id){
+	// 	$ret = $this->find('first',array('conditions' => array(
+	// 		'Like.thread_id' => $thread_id,
+	// 		'Like.user_id'   => $user_id
+	// 	)));
 		
-		return $ret;
-	}
-	public function threadLikeExists($thread_id,$user_id){
-		$ret = $this->threadLike($thread_id,$user_id);
+	// 	return $ret;
+	// }
+	// public function threadLikeExists($thread_id,$user_id){
+	// 	$ret = $this->threadLike($thread_id,$user_id);
 		
-		return count($ret) > 0;
-	}
+	// 	return count($ret) > 0;
+	// }
 	public function commentLike($comment_id,$user_id){
 		$ret = $this->find('first',array('conditions' => array(
 			'Like.comment_id' => $comment_id,
