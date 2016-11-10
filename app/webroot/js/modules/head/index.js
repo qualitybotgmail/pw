@@ -3,17 +3,13 @@
  */
 define([
 	// import models
-	'../../models/threads',
 	'../../models/heads',
-	
-	// import modals
-	'./modals/addMemberModal',
-	'./modals/threadHeadModal',
+	'../../models/comments',
 	
 	// import filters
 	'../../factories/filter',
 	
-	'./Thread',
+	'./Head',
 
 	'../../services/commonService',
 	'../../services/focusService',

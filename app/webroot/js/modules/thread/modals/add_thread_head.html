@@ -1,0 +1,41 @@
+<script type="text/ng-template" id="add-thread-head-modal.html">
+	<div id="thread-modal" tabindex="-1">
+	    
+		<form name="headForm" novalidate ng-submit="save()">
+			<div class="modal-header">
+				<button type="button" class="close" ng-click="cancel()">&times;</button>
+			    <h4 class="white bigger">Head Details</h4>
+			</div>
+
+			<div class="modal-body">
+				
+		    	<div class="row" >
+		            <div class="col-xs-11">
+						<div class="form-group">
+	                        <label for="head-body">Body</label>
+	                        <textarea name="head" class="form-control" id="head-body" placeholder="Enter head" ng-model="head.body"></textarea>
+	                        <i class="tooltips col-xs-12" ng-show="headForm.head.$dirty && headForm.head.$invalid">
+	                            <span class="red">This field is required</span>
+	                        </i>
+	                    </div>
+		    		</div>
+		    	</div>
+		    	
+		    	<div class="row">
+	                <div class="form-group">
+	                    <input type="file" name="attachments" id="new-thread-attachments"  multiple />
+	                </div>
+	            </div>
+
+			</div>
+			
+			<div class="modal-footer">
+				<button type="button" class="btn btn-sm" id="btn-close" ng-click="cancel()" tabindex="-1"><i class="fa fa-ban bigger-140"></i> &nbsp;Cancel</button>
+				<button type="submit" class="btn btn-primary btn-sm" id="btn-ok" ng-disabled="headForm.$invalid || ! headForm.$dirty">
+					<i class="fa fa-save bigger-140"></i> &nbsp;<u>S</u>ave
+				</button>
+			</div>
+
+		</form>
+	</div>
+</script>
