@@ -232,4 +232,28 @@ class HeadsController extends AppController {
 
 		return $this->redirect(array('action' => 'index'));
 	}	
+	
+	
+	public function comment($id = null) {
+		header('Content-Type: application/json;charset=utf-8');
+		if (!$this->Head->exists($id)) {
+			$this->notExisting();
+		}
+		$user_id = $this->Auth->user('id');
+		if(isset($this->request->data['body'])){
+			$this->request->data['Comment']['body'] = $this->request->data['body'];
+		}
+		if ($this->request->is(array('post', 'put'))) {
+			$this->request->data['Comment']['head_id'] = $id;
+			$this->request->data['Comment']['user_id']   = $user_id;
+			$data = $this->Head->Comment->save($this->request->data);
+			if ($data) {
+				echo json_encode($data);
+				exit;
+			} else {
+				$this->failed();
+			}
+		}
+		$this->status("INVALID_REQUEST");
+	}
 }
