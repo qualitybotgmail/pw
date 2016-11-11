@@ -88,6 +88,32 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                         // error
                     });
             };
+            
+            // add members
+            $scope.editHead = function(index, head) {
+                var modalConfig = {
+                        template   : $templateCache.get("add-thread-head-modal.html"),
+                        controller : 'threadHeadModalCtrl',
+                        windowClass: 'modal-width-90 ',
+                        size       : 'sm',
+                        resolve   : {
+                            fromParent: function () {
+                                return {
+                                    'head': head,
+                                    'isEdit': true
+                                };
+                            }
+                        }
+                    };
+                    
+                    Modal.showModal(modalConfig, {}).then(function (head) {
+                        // success
+                        $scope.thread.Head[index] = angular.extend($scope.thread.Head[index], head);
+                        $state.go('app.head',{id: head.Head.id});
+                    }, function (err) {
+                        // error
+                    });
+            };
         	
         	
         	// get thread information

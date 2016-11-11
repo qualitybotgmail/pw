@@ -51,8 +51,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             // $scope.usedTemplate = 'template/thread_list.html';
             
             // $scope.templates = ThreadFactory.templates;
-            $scope.selectedThreadId = null;
-            $scope.selectedThread = null;
+            $scope.selectedHeadId = null;
+            $scope.selectedHead = null;
             $scope.comment = {};
             $scope.comment.body = '';
             
@@ -78,7 +78,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                    async: false,
                    success: function(response) {
                        // .. do something
-                       $scope.selectedThread.Comment.push(angular.extend(comment, {'Upload': response.Success}));
+                       $scope.selectedHead.Comment.push(angular.extend(comment, {'Upload': response.Success}));
                        $scope.$appy();
                    },
                    error: function(jqXHR, textStatus, errorMessage) {
@@ -92,7 +92,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 
                 // posting comments
                 var postData = {'body': $scope.comment.body};
-                var id = $scope.selectedThread.Thread.id.toString();
+                var id = $scope.selectedHead.Thread.id.toString();
                 var currentComment =null;
                 HeadsModel.one('comment').one(id).customPOST(postData).then(function(res){
                     $scope.comment.comment_id = res.Comment.id;
@@ -100,7 +100,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                     if ($("#attachments")[0].files.length){
                         $scope.uploadAttachment(currentComment);
                     } else {
-                       $scope.selectedThread.Comment.push(currentComment); 
+                       $scope.selectedHead.Comment.push(currentComment); 
                     }
                     $("#attachments").val('');
                     HeadService.scrollDown();
@@ -110,26 +110,26 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	
         	// get thread information
-        	$scope.getThread = function() {
-        	    HeadsModel.one($scope.selectedThreadId.toString()).get().then(function(thread){
-        	        $scope.selectedThread = thread;
+        	$scope.getHead = function() {
+        	    HeadsModel.one($scope.selectedHeadId.toString()).get().then(function(thread){
+        	        $scope.selectedHead = thread;
         	    });
         	};
         	
         	
         	$scope.getLatestComment = function() {
-        	    HeadsModel.one($scope.selectedThreadId.toString()).get().then(function(thread){
-        	        var currentCommentLength = $scope.selectedThread.Comment.length;
+        	    HeadsModel.one($scope.selectedHeadId.toString()).get().then(function(thread){
+        	        var currentCommentLength = $scope.selectedHead.Comment.length;
         	        var commentLength = thread.Comment.length;
         	        if (currentCommentLength) {
-        	            var lastComment = $scope.selectedThread.Comment[currentCommentLength - 1];
+        	            var lastComment = $scope.selectedHead.Comment[currentCommentLength - 1];
         	            if (lastComment.id !== thread.Comment[commentLength - 1].id || lastComment.Upload.length !== thread.Comment[commentLength - 1].Upload.length) {
-        	                $scope.selectedThread.Comment.splice((commentLength - 1), 1);
-        	                $scope.selectedThread.Comment.push(thread.Comment[commentLength - 1]);
+        	                $scope.selectedHead.Comment.splice((commentLength - 1), 1);
+        	                $scope.selectedHead.Comment.push(thread.Comment[commentLength - 1]);
         	                HeadService.scrollDown();        
         	            }
         	        } else {
-        	            $scope.selectedThread.Comment.push(thread.Comment[commentLength - 1]);
+        	            $scope.selectedHead.Comment.push(thread.Comment[commentLength - 1]);
         	            HeadService.scrollDown();
         	        }
         	    });
@@ -143,43 +143,43 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             };
         	
         	$scope.likeComment = function(indexComment, comment){
-        	    if ($scope.selectedThread.Comment[indexComment].processing){return;};
+        	    if ($scope.selectedHead.Comment[indexComment].processing){return;};
         	    
-        	    $scope.selectedThread.Comment[indexComment].processing = true;
+        	    $scope.selectedHead.Comment[indexComment].processing = true;
         	    
         	    // if thread was not like
         	    if (!comment.isUserLiked) {
         	        CommentsModel.one('like').one(comment.id.toString()).get().then(function(res) {
-    	                $scope.selectedThread.Comment[indexComment].isUserLiked = true;
-    	                $scope.selectedThread.Comment[indexComment].likes += 1;
-    	                $scope.selectedThread.Comment[indexComment].processing = false;
+    	                $scope.selectedHead.Comment[indexComment].isUserLiked = true;
+    	                $scope.selectedHead.Comment[indexComment].likes += 1;
+    	                $scope.selectedHead.Comment[indexComment].processing = false;
                 	});   
         	    } else { // if thread was already like
         	        CommentsModel.one('unlike').one(comment.id.toString()).get().then(function(res) {
-    	                $scope.selectedThread.Comment[indexComment].isUserLiked = false;
-    	                $scope.selectedThread.Comment[indexComment].likes -= 1;
-    	                $scope.selectedThread.Comment[indexComment].processing = false;
+    	                $scope.selectedHead.Comment[indexComment].isUserLiked = false;
+    	                $scope.selectedHead.Comment[indexComment].likes -= 1;
+    	                $scope.selectedHead.Comment[indexComment].processing = false;
                 	});
         	    }
         	};
         	
         	// posting like/unlike
         	$scope.like = function(index, thread){
-        	    if ($scope.selectedThread.Thread.processing){return;};
-        	    $scope.selectedThread.Thread.processing = true;
+        	    if ($scope.selectedHead.Thread.processing){return;};
+        	    $scope.selectedHead.Thread.processing = true;
         	    
         	    // if thread was not like
         	    if (!thread.Thread.isUserLiked) {
         	        ThreadsModel.one('like').one(thread.Thread.id.toString()).get().then(function(res) {
-    	                $scope.selectedThread.Thread.isUserLiked = true;
-    	                $scope.selectedThread.Thread.likes += 1;
-    	                $scope.selectedThread.Thread.processing = false;
+    	                $scope.selectedHead.Thread.isUserLiked = true;
+    	                $scope.selectedHead.Thread.likes += 1;
+    	                $scope.selectedHead.Thread.processing = false;
                 	});   
         	    } else { // if thread was already like
         	        ThreadsModel.one('unlike').one(thread.Thread.id.toString()).get().then(function(res) {
-    	                $scope.selectedThread.Thread.isUserLiked = false;
-    	                $scope.selectedThread.Thread.likes -= 1;
-    	                $scope.selectedThread.Thread.processing = false;
+    	                $scope.selectedHead.Thread.isUserLiked = false;
+    	                $scope.selectedHead.Thread.likes -= 1;
+    	                $scope.selectedHead.Thread.processing = false;
                 	});
         	    }
         	};
@@ -187,15 +187,15 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	// get thread for every 7 secs
         	
-        	pendingQry = $interval($scope.getThread, 7000);
+        	pendingQry = $interval($scope.getHead, 7000);
         	
         	/**
         	 * initialize some functions
         	 * or variables
         	 */
         	var init = function(){
-    	        $scope.selectedThreadId = $stateParams.id;
-    	        $scope.getThread();
+    	        $scope.selectedHeadId = $stateParams.id;
+    	        $scope.getHead();
         	};
         	init();
         	

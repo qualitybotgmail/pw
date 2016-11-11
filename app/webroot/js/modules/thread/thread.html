@@ -9,7 +9,11 @@
     .badge-delete .badge {
         background-color: #d9534f!important;
     }
+    .badge-edit .badge {
+        background-color: #2a6496!important;
+    }
     .badge-like, .badge-delete,
+    .badge-edit,
     .add-member {
         cursor: pointer;
     }
@@ -67,8 +71,14 @@
                         <span ng-if="thread.Owner.id = loginUser.id">
                             <a class="badge-delete" ng-click="deleteHead($index, head.id)">
                                 <span class="badge">
-                                    {{head.likes}}
                                     <i class="glyphicon glyphicon-trash"></i>
+                                </span>
+                            </a>
+                        </span>
+                        <span ng-if="head.Owner.id = loginUser.id">
+                            <a class="badge-edit" ng-click="editHead($index, head)">
+                                <span class="badge">
+                                    <i class="glyphicon glyphicon-pencil"></i>
                                 </span>
                             </a>
                         </span>
