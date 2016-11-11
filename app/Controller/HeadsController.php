@@ -138,6 +138,7 @@ class HeadsController extends AppController {
 		if (!$this->Head->exists($id)) {
 			throw new NotFoundException(__('Invalid head'));
 		}
+		
 		if ($this->request->is(array('post', 'put'))) {
 			$this->request->data['Head']['user_id'] = $this->Auth->user('id');
 			if ($this->Head->save($this->request->data)) {
@@ -150,7 +151,7 @@ class HeadsController extends AppController {
 			$options = array('conditions' => array('Head.' . $this->Head->primaryKey => $id));
 			$this->request->data = $this->Head->find('first', $options);
 		}
-		$users = $this->Head->User->find('list');
+		$users = $this->Head->Owner->find('list');
 		$threads = $this->Head->Thread->find('list');
 		$this->set(compact('users', 'threads'));
 	}
