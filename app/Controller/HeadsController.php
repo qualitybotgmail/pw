@@ -140,7 +140,12 @@ class HeadsController extends AppController {
 		}
 		
 		if ($this->request->is(array('post', 'put'))) {
-			$this->request->data['Head']['user_id'] = $this->Auth->user('id');
+			
+			// echo json_encode($this->request->data);
+			// exit;
+			
+			$this->request->data['user_id'] = $this->Auth->user('id');
+			
 			if ($this->Head->save($this->request->data)) {
 				$this->Session->setFlash(__('The head has been saved.'), 'default', array('class' => 'alert alert-success'));
 				return $this->redirect(array('action' => 'index'));

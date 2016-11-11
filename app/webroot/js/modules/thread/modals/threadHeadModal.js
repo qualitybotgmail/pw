@@ -9,8 +9,9 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 			'focusService',
 			'HeadsModel',
 			'fromParent',
+			'Restangular',
 
-			function($scope, $timeout, $modalInstance, Modal, Focus, HeadsModel, fromParent)
+			function($scope, $timeout, $modalInstance, Modal, Focus, HeadsModel, fromParent, Restangular)
 			{
 				$scope.head = {};
 				angular.extend($scope, fromParent);
@@ -46,7 +47,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
                 $scope.saveHead = function() {
                 	if ($scope.isEdit) {
-	                	HeadsModel.one($scope.head.id).put($scope.head).then(function(res){
+                		HeadsModel.one($scope.head.id).customPOST($scope.head).then(function(res){
 	                    	if ($("#thread-modal #new-thread-attachments")[0].files.length){
 		                        $scope.uploadAttachment({'Head':$scope.head});
 		                    } else {
