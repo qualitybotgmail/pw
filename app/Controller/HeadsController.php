@@ -83,14 +83,13 @@ class HeadsController extends AppController {
 			$head['Comment'][$kk]['likes'] = count($comment['Like']);
 			$head['Comment'][$kk]['isUserLiked'] = $this->Head->Comment->isLiked($comment['id'],$uid);
 			unset($head['Comment'][$kk]['Like']);
-			unset($head['Comment'][$kk]['Head']);
-			
+			unset($head['Comment'][$kk]['Head']); 
 		} 
 		$this->loadModel('Upload');
 		
 		$cond = array('conditions' => array('Upload.head_id' => $id));
 		$uploads = $this->Upload->find('all', $cond);
-			//total likes of comments
+			// total likes of comments
 		
 				
 		
