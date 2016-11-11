@@ -235,6 +235,7 @@ class HeadsController extends AppController {
 	
 	
 	public function comment($id = null) {
+		
 		header('Content-Type: application/json;charset=utf-8');
 		if (!$this->Head->exists($id)) {
 			$this->notExisting();
