@@ -164,22 +164,22 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	};
         	
         	// posting like/unlike
-        	$scope.like = function(index, thread){
-        	    if ($scope.selectedHead.Thread.processing){return;};
-        	    $scope.selectedHead.Thread.processing = true;
+        	$scope.like = function(index, head){
+        	    if ($scope.selectedHead.Head.processing){return;};
+        	    $scope.selectedHead.Head.processing = true;
         	    
-        	    // if thread was not like
-        	    if (!thread.Thread.isUserLiked) {
-        	        ThreadsModel.one('like').one(thread.Thread.id.toString()).get().then(function(res) {
-    	                $scope.selectedHead.Thread.isUserLiked = true;
-    	                $scope.selectedHead.Thread.likes += 1;
-    	                $scope.selectedHead.Thread.processing = false;
+        	    // if head was not like
+        	    if (!head.isUserLiked) {
+        	        HeadsModel.one('like').one(head.id.toString()).get().then(function(res) {
+    	                $scope.thread.Head.isUserLiked = true;
+    	                $scope.thread.Head.likes += 1;
+    	                $scope.thread.Head.processing = false;
                 	});   
         	    } else { // if thread was already like
-        	        ThreadsModel.one('unlike').one(thread.Thread.id.toString()).get().then(function(res) {
-    	                $scope.selectedHead.Thread.isUserLiked = false;
-    	                $scope.selectedHead.Thread.likes -= 1;
-    	                $scope.selectedHead.Thread.processing = false;
+        	        HeadsModel.one('unlike').one(head.id.toString()).get().then(function(res) {
+    	                $scope.thread.Head.isUserLiked = false;
+    	                $scope.thread.Head.likes -= 1;
+    	                $scope.thread.Head.processing = false;
                 	});
         	    }
         	};

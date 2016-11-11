@@ -41,7 +41,7 @@
                             {{selectedHead.Thread.title}}
                             <small>
                                 <span>
-                                    <a class="badge-like" ng-disabled="!selectedHead.Head.processing" ng-click="like($index, selectedHead)">
+                                    <a class="badge-like" ng-disabled="!selectedHead.Head.processing" ng-click="like($index, selectedHead.Head)">
                                         <span class="badge {{(selectedHead.Head.isUserLiked)?'liked':''}}">
                                             {{selectedHead.Head.likes}}
                                             <i class="glyphicon glyphicon-thumbs-up"></i>
