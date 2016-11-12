@@ -133,7 +133,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                     Restangular.one('messages').one('add').one(id).customPOST(postData).then(function(res){
                         console.log($scope.comment, 'the comment');
                         $scope.comment.message_id = res.Message.id;
-                        currentComment = angular.extend(postData, res.Message, {likes: 0,isUserLiked: false, User: $rootScope.loginUser, Upload: []});
+                        currentComment = angular.extend(postData, res.Message, {User: $rootScope.loginUser, Upload: []});
                         if ($("#attachments")[0].files.length){
                             $scope.uploadAttachment(currentComment);
                         } else {

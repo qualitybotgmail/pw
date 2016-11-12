@@ -7,7 +7,7 @@ define([
 	'../../models/comments',
 	
 	// import modals
-	// './modals/addMemberModal',
+	'../main/modals/threadModal',
 	
 	'./Threads',
 

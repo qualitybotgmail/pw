@@ -35,7 +35,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             $scope.templates = ThreadFactory.templates;
             $scope.currentPageNumber = 1;
-            $scope.loginUser = $rootScope.loginUser;
+            // $scope.loginUser = $rootScope.loginUser;
             
             
             // add members

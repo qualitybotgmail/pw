@@ -65,6 +65,14 @@ define([
                         controller : 'ThreadModalController',
                         windowClass: 'modal-width-90 ',
                         size       : 'lg',
+                        resolve   : {
+                            fromParent: function () {
+                                return {
+                                    'thread': null,
+                                    'isEdit': false
+                                };
+                            }
+                        }
                     };
                     
                     Modal.showModal(modalConfig, {}).then(function (result) {

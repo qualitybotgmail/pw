@@ -6,7 +6,15 @@
         font-weight: bolder;
         background: blue;
     }
+    .badge-delete .badge {
+        background-color: #d9534f!important;
+    }
+    .badge-edit .badge {
+        background-color: #2a6496!important;
+    }
     .badge-like,
+    .badge-edit,
+    .badge-delete,
     .add-member {
         cursor: pointer;
     }
@@ -23,15 +31,20 @@
                     </a>
                 </span>
                 
-                <span>
-                    <a class="badge-like" ng-disabled="!thread.Thread.processing" ng-click="like($index, thread)">
-                        <span class="badge {{(thread.Thread.isUserLiked)?'liked':''}}">
-                            {{thread.Thread.likes}}
-                            <i class="glyphicon glyphicon-thumbs-up"></i>
+                <span ng-if="thread.Owner.id = loginUser.id">
+                    <a class="badge-edit" title="edit thread" ng-click="editThread($index, thread)">
+                        <span class="badge">
+                            <i class="glyphicon glyphicon-pencil"></i>
                         </span>
                     </a>
                 </span>
-                
+                <span ng-if="thread.Owner.id = loginUser.id">
+                    <a class="badge-delete" title="delete thread" ng-click="deleteThread($index, thread.Thread.id)">
+                        <span class="badge">
+                            <i class="glyphicon glyphicon-trash"></i>
+                        </span>
+                    </a>
+                </span>
             </h5>
             <p>
                 {{thread.Thread.head}}
