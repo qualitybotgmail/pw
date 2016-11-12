@@ -29,11 +29,11 @@ class ThreadsController extends AppController {
 		//$this->Paginator->settings = ['limit' =>3000];//high limit for now
 		
 		// $threads = $this->Thread->find('all',['order' => ['Thread.created DESC']]);//$this->Paginator->paginate();
-		
+		// $this->loadModel('User');
 		$threads = $this->Thread->find('all', array(
-			'conditions' => array('user_id' => $id),  
+			// 'conditions' => array('Thread.user_id' => $id),  
 			'order' => array('Thread.created DESC') 
-			));  
+			)); 
 	//	echo ($threads['Owner']['password']);exit;
 		
 		foreach($threads as $k => $thread){
