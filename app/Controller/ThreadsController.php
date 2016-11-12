@@ -24,7 +24,7 @@ class ThreadsController extends AppController {
 		
 		$this->Thread->recursive = 2;
 		
-		// $id = $this->Auth->user('id');
+		$id = $this->Auth->user('id');
 		// $options = array('conditions' => array('user_id'=>$id));
 		//$this->Paginator->settings = ['limit' =>3000];//high limit for now
 		
