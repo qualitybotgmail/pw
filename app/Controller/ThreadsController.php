@@ -115,7 +115,7 @@ class ThreadsController extends AppController {
 			
 			$this->Thread->create();
 			$this->request->data['Thread']['user_id'] = $this->Auth->user('id');
-			$this->request->data['Thread']['head'] = $this->request->data['head'];
+			// $this->request->data['Thread']['head'] = $this->request->data['head'];
 			$this->request->data['Thread']['title'] = $this->request->data['title'];
 			
 			$data = $this->Thread->save($this->request->data);
