@@ -240,6 +240,7 @@ class HeadsController extends AppController {
 		if (!$this->Head->exists($id)) {
 			$this->notExisting();
 		}
+		
 		$user_id = $this->Auth->user('id');
 		if(isset($this->request->data['body'])){
 			$this->request->data['Comment']['body'] = $this->request->data['body'];

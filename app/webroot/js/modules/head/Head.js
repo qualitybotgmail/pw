@@ -92,7 +92,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 
                 // posting comments
                 var postData = {'body': $scope.comment.body};
-                var id = $scope.selectedHead.Thread.id.toString();
+                var id = $scope.selectedHead.Head.id.toString();
                 var currentComment =null;
                 HeadsModel.one('comment').one(id).customPOST(postData).then(function(res){
                     $scope.comment.comment_id = res.Comment.id;
