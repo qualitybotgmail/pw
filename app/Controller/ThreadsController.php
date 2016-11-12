@@ -24,11 +24,16 @@ class ThreadsController extends AppController {
 		
 		$this->Thread->recursive = 2;
 		
-		// $id = $this->Auth->user('id');
+		$id = $this->Auth->user('id');
 		// $options = array('conditions' => array('user_id'=>$id));
 		//$this->Paginator->settings = ['limit' =>3000];//high limit for now
 		
-		$threads = $this->Thread->find('all',['order' => ['Thread.created DESC']]);//$this->Paginator->paginate();
+		// $threads = $this->Thread->find('all',['order' => ['Thread.created DESC']]);//$this->Paginator->paginate();
+		
+		$threads = $this->Thread->find('all', array(
+        	'conditions' => array('user_id' => $id),  
+        	'order' => array('Thread.created DESC') 
+    		));  
 	//	echo ($threads['Owner']['password']);exit;
 		
 		foreach($threads as $k => $thread){
