@@ -11,14 +11,14 @@ define([
 	
 	'./Head',
 
-	'../../services/commonService',
-	'../../services/focusService',
+	// '../../services/commonService',
+	// '../../services/focusService',
 	'../../services/modalService',
-	'../../services/blockerService',
-	'../../services/formService',
-	'../../directives/jwertyDirective',
-	'../../directives/selectTwoDirective',
-	'../../directives/onKeyPressDirective',
-	'../../directives/uploadDirective',
+	// '../../services/blockerService',
+	// '../../services/formService',
+	// '../../directives/jwertyDirective',
+	// '../../directives/selectTwoDirective',
+	// '../../directives/onKeyPressDirective',
+	// '../../directives/uploadDirective',
 	'../../directives/fancyboxDirective',
 ], function () {});

@@ -5,6 +5,7 @@ define([
 	// import models
 	'../../models/heads',
 	'../../models/threads',
+	'../../models/uploads',
 	
 	// import modals
 	'./modals/addMemberModal',
@@ -15,14 +16,15 @@ define([
 	
 	'./Thread',
 
-	'../../services/commonService',
-	'../../services/focusService',
+	// '../../services/commonService',
+	// '../../services/focusService',
 	'../../services/modalService',
-	'../../services/blockerService',
-	'../../services/formService',
-	'../../directives/jwertyDirective',
+	// '../../services/blockerService',
+	// '../../services/formService',
+	// '../../directives/jwertyDirective',
+	// '../../directives/selectTwoDirective',
+	// '../../directives/onKeyPressDirective',
+	// '../../directives/uploadDirective',
 	'../../directives/selectTwoDirective',
-	'../../directives/onKeyPressDirective',
-	'../../directives/uploadDirective',
 	'../../directives/fancyboxDirective',
 ], function () {});

@@ -13,11 +13,12 @@ define([
 	
 	'./Message',
 
-	'../../services/commonService',
-	'../../services/focusService',
+	// '../../services/commonService',
+	// '../../services/focusService',
 	'../../services/modalService',
-	'../../services/blockerService',
-	'../../services/formService',
-	'../../directives/jwertyDirective',
+	// '../../services/blockerService',
+	// '../../services/formService',
+	// '../../directives/jwertyDirective',
+	'../../directives/selectTwoDirective',
 	'../../directives/fancyboxDirective',
 ], function () {});

@@ -1,5 +1,5 @@
 <script type="text/ng-template" id="add-thread-head-modal.html">
-	<div id="thread-modal" tabindex="-1">
+	<div id="thread-head-modal" tabindex="-1">
 	    
 		<form name="headForm" novalidate ng-submit="saveHead()">
 			<div class="modal-header">
@@ -23,15 +23,33 @@
 		    	
 		    	<div class="row">
 	                <div class="form-group">
-	                    <input type="file" name="attachments" id="new-thread-attachments"  multiple />
+	                    <input type="file" name="attachments" id="new-head-attachments"  multiple />
 	                </div>
+	            </div>
+	            
+	            <div class="row" ng-if="head.Upload.length">
+	            	<label class="control-label">Uploads</label>
+	            	<br/>
+	                <span ng-repeat="upload in head.Upload">
+	                	<span>
+                            <a class="badge-delete" ng-click="deleteUpload($index, upload.id)">
+                                <span class="badge">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </span>
+                            </a>
+                        </span>
+                        
+                        <a fancybox ng-href="{{upload.path}}">
+                            <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                        </a>
+                    </span>
 	            </div>
 
 			</div>
 			
 			<div class="modal-footer">
 				<button type="button" class="btn btn-sm" id="btn-close" ng-click="cancel()" tabindex="-1"><i class="fa fa-ban bigger-140"></i> &nbsp;Cancel</button>
-				<button type="submit" class="btn btn-primary btn-sm" id="btn-ok" ng-disabled="headForm.$invalid || ! headForm.$dirty">
+				<button type="submit" class="btn btn-primary btn-sm" id="btn-ok" ng-disabled="headForm.$invalid">
 					<i class="fa fa-save bigger-140"></i> &nbsp;<u>S</u>ave
 				</button>
 			</div>

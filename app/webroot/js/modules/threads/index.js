@@ -11,14 +11,14 @@ define([
 	
 	'./Threads',
 
-	'../../services/commonService',
-	'../../services/focusService',
+	// '../../services/commonService',
+	// '../../services/focusService',
 	'../../services/modalService',
-	'../../services/blockerService',
-	'../../services/formService',
-	'../../directives/jwertyDirective',
-	'../../directives/selectTwoDirective',
-	'../../directives/onKeyPressDirective',
-	'../../directives/uploadDirective',
-	'../../directives/fancyboxDirective',
+	// '../../services/blockerService',
+	// '../../services/formService',
+	// '../../directives/jwertyDirective',
+	// '../../directives/selectTwoDirective',
+	// '../../directives/onKeyPressDirective',
+	// '../../directives/uploadDirective',
+	// '../../directives/fancyboxDirective',
 ], function () {});

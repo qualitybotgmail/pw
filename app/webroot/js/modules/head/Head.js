@@ -32,7 +32,6 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         '$q',
         '$http',
         '$interval',
-        'focusService',
         'modalService',
         'HeadService',
         'HeadsModel',
@@ -40,7 +39,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         'CommentsModel',
         'Restangular',
         
-        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, $interval, Focus, Modal, HeadService, HeadsModel, HeadsFactory, CommentsModel, Restangular) {
+        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, $interval, Modal, HeadService, HeadsModel, HeadsFactory, CommentsModel, Restangular) {
             
             var pendingQry;
             

@@ -15,16 +15,16 @@ define([
 	'./loading/LoadingController',
 	'./notify/NotifyController',
 
-	'../../services/previewService',
+	// '../../services/previewService',
 	'../../services/commonService',
 	'../../services/focusService',
 	'../../services/modalService',
-	'../../services/gritterService',
+	// '../../services/gritterService',
 	'../../services/blockerService',
 	// '../../services/gridService',
 	// '../../services/formService',
 	'../../directives/jwertyDirective',
-	'../../directives/jqGridDirective',
+	// '../../directives/jqGridDirective',
 	'../../directives/selectTwoDirective',
 	
 ], function () {});

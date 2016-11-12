@@ -21,12 +21,11 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         '$templateCache',
         '$q',
         '$http',
-        'focusService',
         'modalService',
         'ThreadsModel',
         'ThreadsFactory',
         
-        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, Focus, Modal, ThreadsModel, ThreadsFactory) {
+        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, Modal, ThreadsModel, ThreadsFactory) {
             
             $scope.currentPageNumber = 1;
             $scope.threads = [];

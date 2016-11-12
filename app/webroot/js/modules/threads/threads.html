@@ -46,11 +46,16 @@
                     </a>
                 </span>
             </h5>
-            <p>
-                {{thread.Thread.head}}
-            </p>
-            <p class="thread-users">
-                <span ng-repeat="u in thread.User">
+            <!--<p>-->
+            <!--    {{thread.Thread.head}}-->
+            <!--</p>-->
+            <p class="thread-users" title="members">
+                <i class="glyphicon glyphicon-user"></i>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;
+                <span ng-if="!thread.User.length">
+                    No Member/s
+                </span>
+                <span ng-repeat="u in thread.User" ng-if="thread.User.length">
                     {{u.username}}
                     {{$last ? '' : ', '}}
                 </span>
