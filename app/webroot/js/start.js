@@ -5,7 +5,6 @@ define([
 	'require',
 	'angular',
 	'app',
-	'lteApp',
 	], function (require, ng) {
 	'use strict';
 

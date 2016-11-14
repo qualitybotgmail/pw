@@ -10,8 +10,6 @@ define([
 	'uiBootstrap',
 	'ngAnimate',
 	'debounce',
-	'uploadAngular',
-	'socketIO',
 	'ngIdleJs',
 	'underscore'
 	], 
@@ -29,7 +27,6 @@ define([
 			'ngAnimate', 
 			'notify',
 			'debounce',
-			'blueimp.fileupload',
 			'ngIdle'
 			// 'btford.socket-io'
 		]);
@@ -61,26 +58,20 @@ define([
 	        'RestangularProvider',
 
 	        '$httpProvider',
-	        'fileUploadProvider',
 	        '$tooltipProvider',
 	        'IdleProvider',
 	        'KeepaliveProvider',
 
-			function($routeProvider, $locationProvider, $controllerProvider, $compileProvider, $filterProvider, $provide, $stateProvider, RestangularProvider, $httpProvider, fileUploadProvider, $tooltipProvider, IdleProvider, KeepaliveProvider, GLOBAL)
+			function($routeProvider, $locationProvider, $controllerProvider, $compileProvider, $filterProvider, $provide, $stateProvider, RestangularProvider, $httpProvider, $tooltipProvider, IdleProvider, KeepaliveProvider, GLOBAL)
 	        {
 	        	IdleProvider.idle(900); // 15 mins
 				IdleProvider.timeout(5*60); // 5 mins
 				KeepaliveProvider.interval(300); // heartbeat every 5 mins
 				KeepaliveProvider.http('/users/me.json'); // URL that makes sure session is alive
-				  
-				  
-	        	// if (Talknote.environment === 'production') $compileProvider.debugInfoEnabled(false);
 	        	
 		        // Restangular Settings
 		        RestangularProvider.setBaseUrl(Talknote.baseUrl + "/");
-		        // RestangularProvider.setDefaultHeaders({'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-Token': Talknote.token});
 		        RestangularProvider.setRequestSuffix('.json');
-		        //RestangularProvider.setDefaultRequestParams({'_token': Talknote.token});
 
 		        talknoteApp.controller = $controllerProvider.register;
 		        talknoteApp.directive  = $compileProvider.directive;
@@ -113,13 +104,6 @@ define([
 	            {
 	                $routeProvider.otherwise("/#/");
 	            }
-
-	            // Uploader
-	            // delete $httpProvider.defaults.headers.common['X-Requested-With'];
-             //   fileUploadProvider.defaults.redirect = window.location.href.replace(
-             //       /\/[^\/]*$/,
-             //       '/cors/result.html?%s'
-             //   );
 	        }
 		]);
 	

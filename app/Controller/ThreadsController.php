@@ -266,9 +266,15 @@ class ThreadsController extends AppController {
 			throw new NotFoundException(__('Invalid thread'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
-			if ($this->Thread->save($this->request->data)) {
-				$this->Session->setFlash(__('The thread has been saved.'), 'default', array('class' => 'alert alert-success'));
-				return $this->redirect(array('action' => 'index'));
+			$this->request->data['Thread']['user_id'] = $this->Auth->user('id');
+			$this->request->data['Thread']['title'] = $this->request->data['title'];
+			$data = $this->Thread->save($this->request->data);
+			
+			if ($data) {
+				// $this->Session->setFlash(__('The thread has been saved.'), 'default', array('class' => 'alert alert-success'));
+				// return $this->redirect(array('action' => 'index'));
+				echo json_encode($data);
+				exit;
 			} else {
 				$this->Session->setFlash(__('The thread could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
 			}

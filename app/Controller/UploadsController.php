@@ -141,10 +141,14 @@ class UploadsController extends AppController {
 		}
 		$this->request->onlyAllow('post', 'delete');
 		if ($this->Upload->delete()) {
-			$this->Session->setFlash(__('The upload has been deleted.'), 'default', array('class' => 'alert alert-success'));
+			// $this->Session->setFlash(__('The upload has been deleted.'), 'default', array('class' => 'alert alert-success'));
+			echo json_encode(['status' => 'OK']); 
+			exit;
 		} else {
-			$this->Session->setFlash(__('The upload could not be deleted. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
+			// $this->Session->setFlash(__('The upload could not be deleted. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
+			echo json_encode(['status' => 'FAILED']); 
+			exit;
 		}
-		return $this->redirect(array('action' => 'index'));
+		// return $this->redirect(array('action' => 'index'));
 	}
 }

@@ -174,11 +174,11 @@ class HeadsController extends AppController {
 		}
 		$this->request->onlyAllow('post', 'delete');
 		if ($this->Head->delete()) {
-			$this->Session->setFlash(__('The head has been deleted.'), 'default', array('class' => 'alert alert-success'));
+			echo json_encode(['status' => 'OK']);
 		} else {
-			$this->Session->setFlash(__('The head could not be deleted. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
+			echo json_encode(['status' => 'FAILED']);
 		}
-		return $this->redirect(array('action' => 'index'));
+		// return $this->redirect(array('action' => 'index'));
 	}
 	
 	

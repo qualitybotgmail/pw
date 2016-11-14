@@ -43,7 +43,7 @@
         <div class="row" >
             <div class="page-header">
                 <h4>
-                    Heads
+                    {{thread.Thread.title}}
                     <small>
                         <span class="badge add-member" title="Add Head" ng-click="addHead(thread.Thread)">
                             <i class="glyphicon glyphicon-plus"></i>
@@ -68,14 +68,14 @@
                                 </span>
                             </a>
                         </span>
-                        <span ng-if="thread.Owner.id = loginUser.id">
+                        <span ng-if="thread.Owner.id = loginUser.id || loginUser.id == head.Owner.id">
                             <a class="badge-delete" ng-click="deleteHead($index, head.id)">
                                 <span class="badge">
                                     <i class="glyphicon glyphicon-trash"></i>
                                 </span>
                             </a>
                         </span>
-                        <span ng-if="head.Owner.id = loginUser.id">
+                        <span ng-if="thread.Owner.id = loginUser.id || loginUser.id == head.Owner.id">
                             <a class="badge-edit" ng-click="editHead($index, head)">
                                 <span class="badge">
                                     <i class="glyphicon glyphicon-pencil"></i>

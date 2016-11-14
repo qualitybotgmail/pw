@@ -8,14 +8,22 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 			'modalService',
 			'focusService',
 			'HeadsModel',
+			'UploadsModel',
 			'fromParent',
 			'Restangular',
 
-			function($scope, $timeout, $modalInstance, Modal, Focus, HeadsModel, fromParent, Restangular)
+			function($scope, $timeout, $modalInstance, Modal, Focus, HeadsModel, UploadsModel, fromParent, Restangular)
 			{
 				$scope.head = {};
 				angular.extend($scope, fromParent);
 				$scope.head.thread_id = ($scope.thread)?$scope.thread.id:$scope.head.thread_id;
+				
+				
+				$scope.deleteUpload = function(index, uploadId) {
+					UploadsModel.one(uploadId).remove().then(function(result){
+	        	        $scope.head.Upload.splice(index, 1);
+	        	    });
+				};
 				
 				$scope.uploadAttachment = function(res){
 	                var fd = new FormData();
@@ -23,7 +31,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 	                fd.append('_method', 'POST');
 	                fd.append('data[Upload][head_id]', res.Head.id);
 	                
-	                $.each($("#thread-modal #new-thread-attachments")[0].files, function(i, file) {
+	                $.each($("#thread-head-modal #new-head-attachments")[0].files, function(i, file) {
 	                    fd.append('data[Upload][file]['+i+']', file);
 	                });
 	
@@ -36,7 +44,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 	                   async: false,
 	                   success: function(response) {
 	                       // .. do something
-	                    	$("#thread-modal #new-thread-attachments").val('');
+	                    	$("#thread-head-modal #new-head-attachments").val('');
                         	$scope.$close(angular.extend(res, {'Upload': response.Success}));
 	                   },
 	                   error: function(jqXHR, textStatus, errorMessage) {
@@ -48,10 +56,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 $scope.saveHead = function() {
                 	if ($scope.isEdit) {
                 		HeadsModel.one($scope.head.id).customPOST($scope.head).then(function(res){
-	                    	if ($("#thread-modal #new-thread-attachments")[0].files.length){
+	                    	if ($("#thread-head-modal #new-head-attachments")[0].files.length){
 		                        $scope.uploadAttachment({'Head':$scope.head});
 		                    } else {
-		                    	$("#thread-modal #new-thread-attachments").val('');
+		                    	$("#thread-head-modal #new-head-attachments").val('');
 	                        	$scope.$close({'Head':$scope.head});	
 		                    }
 	                    });

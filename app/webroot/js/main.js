@@ -59,28 +59,18 @@ require.config({
 		'uiBootstrap'	: {deps: ['angular', 'jquery']},
 		'ngAnimate'		: {deps: ['angular']},
 		'chosen'		: {deps: ['jquery']},
-		'jqGrid'		: {deps: ['jquery', 'jqGridLocaleEn'] },
 		'gritter'		: {deps: ['jquery']},
 		'jqueryUi'		: {deps: ['jquery']},
 		'bootstrap'		: {deps: ['jquery']},
 		'blockUi'		: {deps: ['jquery']},
 		'jwerty'		: {deps: ['jquery']},
-		'lteApp'		: {deps: ['bootstrap', 'lteAppExtend']},
-		'lteAppExtend'	: {deps: ['jquery']},
-		'datepicker'	: {deps: ['jquery']},
-		'maskedinput'	: {deps: ['jquery']},
 		'select2'		: {deps: ['jquery']},
 		'highlight'		: {deps: ['jquery']},
 		'debounce' 		: {deps: ['angular']},
-		'socketIO' 		: {deps: ['angular']},
 		'moment' 		: {deps: ['jquery']},
 		
 		'fancybox' 		: {deps: ['jquery']},
 		'ngIdleJs' 		: {deps: ['angular']},
-
-		'loadImageMeta'     : {deps: ['jquery', 'loadImage']},
-		'uploadImage' 	: {deps: ['jquery', 'uploadWidget']},
-		'uploadAngular' : {deps: ['jquery', 'angular', 'uploadImage', 'uploadAudio', 'uploadVideo', 'uploadValidate']},
 
 		'html2canvas': {
             exports: 'html2canvas',
