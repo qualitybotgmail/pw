@@ -53,7 +53,7 @@ class Thread extends AppModel {
  *
  * @var array
  */
-	public $belongsTo = array(
+	public $belongsTo = array( 
 		'Owner' => array(
 			'className' => 'User',
 			'foreignKey' => 'user_id',
