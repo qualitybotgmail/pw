@@ -141,22 +141,108 @@ class UsersController extends AppController {
 		
 		$this->loadModel('Groupchat');
 		$this->loadModel('Thread');
-		$this->loadModel('Like');
+		$this->loadModel('Like'); 
+		$this->loadModel('Head');
 		
 		$user_id = $this->Auth->user('id');
 		
 		$this->Groupchat->recursive = 2; 
 		$this->Thread->recursive = 2; 
 		$this->Like->recursive = 2; 
-		
-		$groupchat = $this->Groupchat->find('all',array('conditions'=>array('Groupchat.user_id',$user_id)));
-		$thread = $this->Thread->find('all',array('conditions'=>array('Thread.user_id',$user_id)));
-		$like = $this->Like->find('all',array('conditions'=>array('Like.user_id',$user_id)));
+		$this->Head->recursive = 2; 
 		
 		
+		$groupchat = $this->Groupchat->find('all', 
+		['fields' => ['id','created','modified']],
+		['conditions' => ['Groupchat.user_id' => $user_id]], 
+		['order' =>['Groupchat.created' => 'desc']]);  
+		$type = array("type: groupchat");
+		$chats = array_merge($type , $groupchat);
 		
-		$this->set('user', $groupchat,$thread,$like);
 		
+		$thread = $this->Thread->find('all', 
+		['fields' => ['id','created','modified']],
+		['conditions' => ['Thread.user_id' => $user_id]], 
+		['order' =>['Thread.created' => 'desc']]);  
+		$type1 = array("type: threads");
+		$threads = array_merge($type1 , $thread);
+		
+		$like = $this->Like->find('all',
+		['fields' => ['id','created','modified']],
+		['conditions' => ['Like.user_id' => $user_id]], 
+		['order' =>['Like.created' => 'desc']]); 
+		$type2 = array("type: likes");
+		$likes = array_merge($type2 , $like);
+		
+		$head = $this->Head->find('all',
+		['fields' => ['id','created','modified']],
+		['conditions' => ['Head.user_id' => $user_id]], 
+		['order' =>['Head.created' => 'desc']]); 
+		$type3 = array("type: likes");
+		$heads = array_merge($type3 , $head);
+		   
+		 $values = array_merge($chats, $threads, $likes, $heads);
+		 
+		$this->set('user', $values); 	
+		
+	}
+	
+	public function message(){
+		$this->loadModel('Message');
+		$user_id = $this->Auth->user('id');  
+		$this->Message->recursive = 2; 
+		$message = $this->Message->find('all', ['conditions' => ['Message.user_id' => $user_id]], 
+		['order' =>['Message.created' => 'desc']]);  
+		 
+		$this->set('user', $message); 
+	}
+	
+	public function likedhead(){
+		$this->loadModel('Like');
+		$user_id = $this->Auth->user('id');
+		$like = $this->Like->find('all', 
+		['fields' => ['id','head_id','created','modified']],
+		['conditions' => ['Like.user_id' => $user_id], ['head_id !='=>'0']], 
+		['order' =>['Like.created' => 'desc']]);   
+		
+		$this->set('user', $like); 
+	}
+	
+	public function addedtogroupchat(){
+		$this->loadModel('Groupchat');
+		$user_id = $this->Auth->user('id');
+		
+		$groupchat = $this->Groupchat->find('all', 
+		['fields' => ['id','created','modified']],
+		['conditions' => ['Groupchat.user_id' => $user_id]], 
+		['order' =>['Groupchat.created' => 'desc']]);   
+		
+		$this->set('user', $groupchat); 
+		
+	}
+	
+	public function attachment(){
+		$this->loadModel('Upload');
+		$user_id = $this->Auth->user('id');
+		
+		$groupchat = $this->Upload->find('all', 
+		['fields' => ['id','comment_id','name','size','path','created','modified']],
+		['conditions' => ['Upload.user_id' => $user_id]], 
+		['order' =>['Upload.created' => 'desc']]);   
+		
+		$this->set('user', $groupchat); 
+		
+	}
+	
+	public function likedcomment(){
+		$this->loadModel('Like');
+		$user_id = $this->Auth->user('id');
+		$like = $this->Like->find('all', 
+		['fields' => ['id','comment_id','created','modified']],
+		['conditions' => ['Like.user_id' => $user_id], ['comment_id !='=>'0']], 
+		['order' =>['Like.created' => 'desc']]);   
+		
+		$this->set('user', $like); 
 	}
 	
 	 

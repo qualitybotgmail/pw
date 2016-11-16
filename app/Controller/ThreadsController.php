@@ -25,8 +25,8 @@ class ThreadsController extends AppController {
 		$this->Thread->recursive = 3;
 		
 		$id = $this->Auth->user('id');
-		$myThreads = $this->Thread->Owner->find('all', ['conditions' => ['id' => $id]]);
-		print_r($myThreads);exit;
+		$threads = $this->Thread->find('all', ['conditions' => ['user_id' => $id]]);
+		
 	//	echo ($threads['Owner']['password']);exit;
 		
 		foreach($threads as $k => $thread){

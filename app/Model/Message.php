@@ -77,20 +77,20 @@ class Message extends AppModel {
  * @var array
  */
  
-	public $hasMany = array(
-		'Like' => array(
-			'className' => 'Like',
-			'foreignKey' => 'message_id',
-			'dependent' => false,
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'exclusive' => '',
-			'finderQuery' => '',
-			'counterQuery' => ''
-		),'Upload'
-	);
+	// public $hasMany = array(
+	// 	'Like' => array(
+	// 		'className' => 'Like',
+	// 		'foreignKey' => 'message_id',
+	// 		'dependent' => false,
+	// 		'conditions' => '',
+	// 		'fields' => '',
+	// 		'order' => '',
+	// 		'limit' => '',
+	// 		'offset' => '',
+	// 		'exclusive' => '',
+	// 		'finderQuery' => '',
+	// 		'counterQuery' => ''
+	// 	),'Upload'
+	// );
 
 }
