@@ -392,7 +392,7 @@ class ThreadsController extends AppController {
 				 
 				  
 			if($result){
-				echo json_encode(['status' => 'Deleted']); 
+				echo json_encode(['status' => 'DELETED']); 
 			} else{ 
 				echo json_encode(['status' => 'FAILED']);
 				
