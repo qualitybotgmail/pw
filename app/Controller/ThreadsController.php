@@ -22,11 +22,18 @@ class ThreadsController extends AppController {
  */
 	public function index() {
 		
-		$this->Thread->recursive = 3;
+		$this->Thread->User->recursive = 3;
 		
 		$id = $this->Auth->user('id');
 		
 		$options = [];
+		
+		// $this->loadModel('User');
+		// $threads = $this->User->find('all',['conditions' => ['id' => $id],'recursive' => 3]);
+		
+		// print_r($threads);exit;
+	//	echo ($threads['Owner']['password']);exit;
+
 		
 		$options['joins'] = [
 			[
@@ -48,11 +55,7 @@ class ThreadsController extends AppController {
 		
 		// echo json_encode($threadAsMember); exit;
 		
-		
-		
 		$this->set('threads', array_merge($threads, $threadAsMember) );
-		 
-
 	}
 	
 	private function formatQuery($threads) {
@@ -371,4 +374,41 @@ class ThreadsController extends AppController {
 		echo json_encode(['users'=> $users]);
 		exit;
 	}
+	
+	
+	public function deletemember($thread_id = null, $member_id = null) {
+		$this->loadModel('UsersThread');
+		header('Content-Type: application/json;charset=utf-8');
+		$ids = explode(",",$member_id);
+		try{
+			// $thread = $this->Thread->findById($thread_id);
+			// $users = [];
+						
+			// foreach($thread['User'] as $i => $u){
+			// 	if(is_numeric($i)){
+			// 		$users[] = $u['id'];
+			// 	}
+			// }
+			
+			// $oldcount = count($users);
+			// $users = array_merge($ids,$users);
+			// $users = array_unique($users);
+				
+			$result = $this->Thread->deleteAll(
+			  	['user_id'	 =>	$member_id],
+				['thread_id' => $thread_id]
+			); 
+				 
+				  
+			if($result){
+				echo json_encode(['status' => 'DELETED']); 
+			} else{ 
+				echo json_encode(['status' => 'FAILED']);
+			}
+			exit;
+		}catch(Exception $e){
+			echo json_encode(['status' => 'FAILED']);
+			exit;
+		}
+	}	
 }
