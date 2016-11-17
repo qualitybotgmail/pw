@@ -67,10 +67,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 		var result = {isUserLiked: false, likes: 0};
 	                	HeadsModel.post($scope.head).then(function(res){
 	                		result = angular.extend(res, result);
-	                    	if ($("#thread-modal #new-thread-attachments")[0].files.length){
+	                    	if ($("#thread-head-modal #new-head-attachments")[0].files.length){
 		                        $scope.uploadAttachment(result);
 		                    } else {
-		                    	$("#thread-modal #new-thread-attachments").val('');
+		                    	$("#thread-head-modal #new-head-attachments").val('');
 	                        	$scope.$close(result);	
 		                    }
 	                    });	

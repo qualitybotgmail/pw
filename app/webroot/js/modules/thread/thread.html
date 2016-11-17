@@ -6,7 +6,8 @@
         font-weight: bolder;
         background: blue;
     }
-    .badge-delete .badge {
+    .badge-delete .badge,
+    .delete-member.badge{
         background-color: #d9534f!important;
     }
     .badge-edit .badge {
@@ -14,6 +15,7 @@
     }
     .badge-like, .badge-delete,
     .badge-edit,
+    .delete-member,
     .add-member {
         cursor: pointer;
     }
@@ -26,15 +28,34 @@
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <p class="thread-users">
-                    <span ng-repeat="u in thread.User">
+                    <div class="row" ng-repeat="u in thread.User">
                         {{ u.username }}
                         {{$last ? '' : ', '}}
                         
-                    </span>
-                    <span class="badge add-member" title="Add member" ng-click="addMembers(thread.Thread)">
-                        <i class="glyphicon glyphicon-user"></i>
-                        <i class="glyphicon glyphicon-plus"></i>
-                    </span>
+                        <span 
+                            ng-if=" u.id == loginUser.id"
+                            class="badge delete-member" 
+                            title="Leave Thread" 
+                            ng-click="leaveThread($index, u)">
+                            <i class="glyphicon glyphicon-log-out"></i>
+                        </span>
+                        
+                        
+                        <span 
+                            ng-if="thread.Owner.id == loginUser.id"
+                            class="badge delete-member" 
+                            title="delete member" 
+                            ng-click="deleteMember($index, u)">
+                            <i class="glyphicon glyphicon-minus"></i>
+                        </span>
+                        
+                    </div>
+                    <div class="row" ng-if="thread.Owner.id == loginUser.id">
+                        <span class="badge add-member" title="Add member" ng-click="addMembers(thread.Thread)">
+                            <i class="glyphicon glyphicon-user"></i>
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </span>    
+                    </div>
                 </p>
             </div>        
         </div>
@@ -68,14 +89,14 @@
                                 </span>
                             </a>
                         </span>
-                        <span ng-if="thread.Owner.id = loginUser.id || loginUser.id == head.Owner.id">
+                        <span ng-if="thread.Owner.id == loginUser.id || loginUser.id == head.Owner.id">
                             <a class="badge-delete" ng-click="deleteHead($index, head.id)">
                                 <span class="badge">
                                     <i class="glyphicon glyphicon-trash"></i>
                                 </span>
                             </a>
                         </span>
-                        <span ng-if="thread.Owner.id = loginUser.id || loginUser.id == head.Owner.id">
+                        <span ng-if="thread.Owner.id == loginUser.id || loginUser.id == head.Owner.id">
                             <a class="badge-edit" ng-click="editHead($index, head)">
                                 <span class="badge">
                                     <i class="glyphicon glyphicon-pencil"></i>
