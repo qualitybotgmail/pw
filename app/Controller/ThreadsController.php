@@ -25,18 +25,42 @@ class ThreadsController extends AppController {
 		$this->Thread->recursive = 3;
 		
 		$id = $this->Auth->user('id');
-		$threads = $this->Thread->find('all', ['conditions' => ['user_id' => $id]]);
 		
-	//	echo ($threads['Owner']['password']);exit;
+		$options = [];
 		
+		$options['joins'] = [
+			[
+				'table' => 'users_threads',
+		        'alias' => 'users_threads',
+		        'type' => 'INNER',
+		        'conditions' => [
+		        	"users_threads.thread_id = Thread.id",
+		        	"users_threads.user_id = {$id}",
+		        ]
+			]
+		];
+		
+		$threads = $this->formatQuery($this->Thread->find('all', ['conditions' => ['user_id' => $id] ]));
+		
+		// echo json_encode($threads); exit;
+		
+		$threadAsMember = $this->formatQuery($this->Thread->find('all', $options));
+		
+		// echo json_encode($threadAsMember); exit;
+		
+		
+		
+		$this->set('threads', array_merge($threads, $threadAsMember) );
+		 
+
+	}
+	
+	private function formatQuery($threads) {
 		foreach($threads as $k => $thread){
 			
 			$tid = $thread['Thread']['id'];
 			$uid = $this->Auth->user('id');
-			//$threads[$k]['Thread']['isUserLiked'] = $this->Thread->isLiked($tid,$uid);
-			//$threads[$k]['Thread']['likes'] = count($thread['Like']);
 			unset($threads[$k]['Owner']['password']);
-			//unset($threads[$k]['Like']);
 			
 			foreach($thread['Head'] as $kk => $head){
 				$threads[$k]['Head'][$kk]['likes'] = count($head['Like']);
@@ -48,10 +72,11 @@ class ThreadsController extends AppController {
 			//total likes of comments
 		}
 		
-		$this->set('threads', $threads);
-		 
-
+		return $threads;
 	}
+	
+	
+	
 	public function beforeFilter(){
 //		$this->Auth->allow('comment');
 	}
