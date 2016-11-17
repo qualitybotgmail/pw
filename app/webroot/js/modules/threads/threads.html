@@ -31,14 +31,14 @@
                     </a>
                 </span>
                 
-                <span ng-if="thread.Owner.id = loginUser.id">
+                <span ng-if="thread.Owner.id == loginUser.id">
                     <a class="badge-edit" title="edit thread" ng-click="editThread($index, thread)">
                         <span class="badge">
                             <i class="glyphicon glyphicon-pencil"></i>
                         </span>
                     </a>
                 </span>
-                <span ng-if="thread.Owner.id = loginUser.id">
+                <span ng-if="thread.Owner.id == loginUser.id">
                     <a class="badge-delete" title="delete thread" ng-click="deleteThread($index, thread.Thread.id)">
                         <span class="badge">
                             <i class="glyphicon glyphicon-trash"></i>
