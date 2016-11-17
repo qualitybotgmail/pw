@@ -25,20 +25,45 @@ class ThreadsController extends AppController {
 		$this->Thread->User->recursive = 3;
 		
 		$id = $this->Auth->user('id');
-		$this->loadModel('User');
-		$threads = $this->User->find('all',['conditions' => ['id' => $id],'recursive' => 3]);
 		
-		print_r($threads);exit;
+		$options = [];
+		
+		// $this->loadModel('User');
+		// $threads = $this->User->find('all',['conditions' => ['id' => $id],'recursive' => 3]);
+		
+		// print_r($threads);exit;
 	//	echo ($threads['Owner']['password']);exit;
+
 		
+		$options['joins'] = [
+			[
+				'table' => 'users_threads',
+		        'alias' => 'users_threads',
+		        'type' => 'INNER',
+		        'conditions' => [
+		        	"users_threads.thread_id = Thread.id",
+		        	"users_threads.user_id = {$id}",
+		        ]
+			]
+		];
+		
+		$threads = $this->formatQuery($this->Thread->find('all', ['conditions' => ['user_id' => $id] ]));
+		
+		// echo json_encode($threads); exit;
+		
+		$threadAsMember = $this->formatQuery($this->Thread->find('all', $options));
+		
+		// echo json_encode($threadAsMember); exit;
+		
+		$this->set('threads', array_merge($threads, $threadAsMember) );
+	}
+	
+	private function formatQuery($threads) {
 		foreach($threads as $k => $thread){
 			
 			$tid = $thread['Thread']['id'];
 			$uid = $this->Auth->user('id');
-			//$threads[$k]['Thread']['isUserLiked'] = $this->Thread->isLiked($tid,$uid);
-			//$threads[$k]['Thread']['likes'] = count($thread['Like']);
 			unset($threads[$k]['Owner']['password']);
-			//unset($threads[$k]['Like']);
 			
 			foreach($thread['Head'] as $kk => $head){
 				$threads[$k]['Head'][$kk]['likes'] = count($head['Like']);
@@ -50,10 +75,11 @@ class ThreadsController extends AppController {
 			//total likes of comments
 		}
 		
-		$this->set('threads', $threads);
-		 
-
+		return $threads;
 	}
+	
+	
+	
 	public function beforeFilter(){
 //		$this->Auth->allow('comment');
 	}
@@ -350,27 +376,24 @@ class ThreadsController extends AppController {
 	}
 	
 	
-	public function deletemember($gid = null,$member_id = null) {
+	public function deletemember($thread_id = null, $member_id = null) {
 		$this->loadModel('UsersThread');
 		header('Content-Type: application/json;charset=utf-8');
-		$ids = explode(",",$member_id);
+		// $ids = explode(",",$member_id);
 		try{
-			$thread = $this->Thread->findById($gid);
-			$users = [];
+			// $thread = $this->Thread->findById($thread_id);
+			// $users = [];
 						
-			foreach($thread['User'] as $i => $u){
-				if(is_numeric($i)){
-					$users[] = $u['id'];
-				}
-			}
+			// foreach($thread['User'] as $i => $u){
+			// 	if(is_numeric($i)){
+			// 		$users[] = $u['id'];
+			// 	}
+			// }
 			
-			$oldcount = count($users);
-			$users = array_merge($ids,$users);
-			$users = array_unique($users);
-			
-			
-			// if(count($users)!=$oldcount){
-				
+			// $oldcount = count($users);
+			// $users = array_merge($ids,$users);
+			// $users = array_unique($users);
+						
 				// $result = $this->Thread->User->delete(array(
 				// 	'Thread' => array('thread_id' => $gid),
 				// 	'User' => array('User' => $users)
@@ -385,24 +408,24 @@ class ThreadsController extends AppController {
 				// 	    )
 				// 	);
 				
-				 // $result = $this->UsersThread->delete(
-				 // 	['user_id'=>$users],
-					// ['thread_id' => $gid ]
-				 //); 
-$result = $this->Thread->delete(array(
-     'Thread' => array('id' => $thread_id),
-     'User' => array('User' => $users)
-    ));
+				  $result = $this->Thread->delete(
+				  	['user_id'=>$member_id],
+					['thread_id' => $thread_id ]
+				 ); 
+
 				 
-				  
+				
+			// $result = $this->Thread->delete(array(
+		 //    'Thread' => array('id' => $thread_id),
+		 //    'User' => array('User' => $member_id)
+		 //   ));
+    
 			if($result){
 				echo json_encode(['status' => 'DELETE']); 
 			} else{ 
 				echo json_encode(['status' => 'FAILED']);
-				
+				echo json_encode($result);
 			}
-			 
-			
 			exit;
 		}catch(Exception $e){
 			echo json_encode(['status' => 'FAILED']);

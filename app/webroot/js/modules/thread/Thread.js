@@ -123,6 +123,18 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	    });
         	};
         	
+        	// delete Member thread
+        	$scope.deleteMember = function(index, member) {
+        	    ThreadsModel.one('deleteMember').one(member.id).get().then(function(result){
+        	        $scope.thread.User.splice(index, 1);
+        	    });
+        	};
+        	
+        	// Leave Thread
+        	$scope.leaveThread = function(index, member) {
+        	    $scope.deleteMember(index, member);
+        	};
+        	
         	// delete head thread
         	$scope.deleteHead = function(index, headId) {
         	    HeadsModel.one(headId).remove().then(function(result){
