@@ -385,14 +385,18 @@ class ThreadsController extends AppController {
 				// 	    )
 				// 	);
 				
-				  $result = $this->Thread->deleteAll(
-				  	['user_id'=>$users],
-					['thread_id' => $gid ]
-				 ); 
+				 // $result = $this->UsersThread->delete(
+				 // 	['user_id'=>$users],
+					// ['thread_id' => $gid ]
+				 //); 
+$result = $this->Thread->delete(array(
+     'Thread' => array('id' => $thread_id),
+     'User' => array('User' => $users)
+    ));
 				 
 				  
 			if($result){
-				echo json_encode(['status' => 'DELETED']); 
+				echo json_encode(['status' => 'DELETE']); 
 			} else{ 
 				echo json_encode(['status' => 'FAILED']);
 				
