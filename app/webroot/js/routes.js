@@ -79,18 +79,18 @@ define([], function()
                 name: 'app.message'
             },
 
-            // 'timeline': {
-            //     views: {
-            //         'content': {
-            //             templateUrl: baseSourcePath + 'timeline/timeline.html?version=' + Talknote.version,
-            //             controller: 'TimelineController'   
-            //         }
-            //     },
-            //     dependencies: [
-            //         'modules/timeline/index'
-            //     ],
-            //     name: 'app.timeline'
-            // },
+            'timeline': {
+                views: {
+                    'content': {
+                        templateUrl: baseSourcePath + 'timeline/timeline.html?version=' + Talknote.version,
+                        controller: 'TimelineController'   
+                    }
+                },
+                dependencies: [
+                    'modules/timeline/index'
+                ],
+                name: 'app.timeline'
+            },
 
         }
     };
