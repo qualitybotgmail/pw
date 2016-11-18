@@ -46,6 +46,8 @@
 	Router::mapResources('heads');
 	Router::mapResources('likes');
 	
+	Router::mapResources('ignored_threads');
+	
 	
 	
 	
