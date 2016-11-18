@@ -132,7 +132,11 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	// Leave Thread
         	$scope.leaveThread = function(index, member) {
-        	    $scope.deleteMember(index, member);
+        	   // $scope.deleteMember(index, member);
+        	   ThreadsModel.one('deleteMember').one($scope.thread.Thread.id).one(member.id).get().then(function(result){
+        	        $scope.thread.User.splice(index, 1);
+        	        $state.go('app.threads');
+        	   });
         	};
         	
         	// delete head thread

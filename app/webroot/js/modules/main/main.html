@@ -9,8 +9,7 @@
 <div jwerty="CTRL+END" key-event="goto.logout()" key-name="goto.logout" key-bind="document"></div>
 
 <div jwerty="F1" key-event="goto.thread()" key-name="goto.thread" key-bind="document"></div>
-<div jwerty="F2" key-event="goto.message()" key-name="goto.message" key-bind="document"></div>
-<!--<div jwerty="F3" key-event="goto.timeline()" key-name="goto.timeline" key-bind="document"></div>-->
+<div jwerty="F2" key-event="goto.timeline()" key-name="goto.timeline" key-bind="document"></div>
 
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div class="row">
@@ -52,6 +51,12 @@
                                     <i class="glyphicon glyphicon-plus"></i>
                                 </button>
                             </li>
+                            <li>
+                                <a ui-sref="app.timeline">
+                                    Timeline
+                                    <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-time"></span>
+                                </a>
+                            </li>
                           </ul>
                         </div>
                     </div>
@@ -92,21 +97,15 @@
                                             <h3 class="box-title">Application Shortcuts</h3>
                                         </div>
                                         <div class="box-body">
-                                            <a class="btn btn-app" ui-sref="app.thread">
+                                            <a class="btn btn-app" ui-sref="app.threads">
                                                 <span class="badge bg-aqua">F1</span>
                                                 <i class="fa fa-pencil"></i> Thread
                                             </a>
-                    
-                                            <a class="btn btn-app" ui-sref="app.message">
-                                                <span class="badge bg-aqua">F2</span>
-                                                <i class="fa fa-legal"></i> Message
-                                            </a>
                                             
-                                            <!--<a class="btn btn-app" ui-sref="app.timeline">-->
-                                            <!--    <span class="badge bg-aqua">F3</span>-->
-                                            <!--    <i class="fa fa-legal"></i> Timeline-->
-                                            <!--</a>-->
-                    
+                                            <a class="btn btn-app" ui-sref="app.timeline">
+                                                <span class="badge bg-aqua">F2</span>
+                                                <i class="fa fa-legal"></i> Timeline
+                                            </a>
                                             
                                         </div><!-- /.box-body -->
                                     </div><!-- /.box -->

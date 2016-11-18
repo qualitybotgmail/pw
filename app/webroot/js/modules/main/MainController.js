@@ -120,8 +120,8 @@ define([
                     thread: function() {
                         $state.go('app.threads');
                     },
-                    message: function() {
-                        $state.go('app.message');
+                    timeline: function() {
+                        $state.go('app.timeline');
                     }
                 };
 
