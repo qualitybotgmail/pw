@@ -26,7 +26,7 @@ class UsersController extends AppController {
 	}
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('me');
+		$this->Auth->allow('me','dd');
 	}
 
 /**
@@ -139,49 +139,49 @@ class UsersController extends AppController {
 	
 	public function timeline(){ 
 		
-		$this->loadModel('Groupchat');
+		// $this->loadModel('Groupchat');
 		$this->loadModel('Thread');
-		$this->loadModel('Like'); 
+		// $this->loadModel('Like'); 
 		$this->loadModel('Head');
 		
 		$user_id = $this->Auth->user('id');
 		
-		$this->Groupchat->recursive = 2; 
-		$this->Thread->recursive = 2; 
-		$this->Like->recursive = 2; 
-		$this->Head->recursive = 2; 
+		// $this->Groupchat->recursive = 2; 
+		// $this->Thread->recursive = 2; 
+		// $this->Like->recursive = 2; 
+		// $this->Head->recursive = 2; 
 		
 		
-		$groupchat = $this->Groupchat->find('all', 
-		['fields' => ['id','created','modified']],
-		['conditions' => ['Groupchat.user_id' => $user_id]], 
-		['order' =>['Groupchat.created' => 'desc']]);  
-		$type = array("type: groupchat");
-		$chats = array_merge($type , $groupchat);
+		// $groupchat = $this->Groupchat->find('all', 
+		// ['fields' => ['id','created','modified']],
+		// ['conditions' => ['Groupchat.user_id' => $user_id]], 
+		// ['order' =>['Groupchat.created' => 'desc']]);  
+		// $type = array("type: groupchat");
+		// $chats = array_merge($type , $groupchat);
 		
 		
 		$thread = $this->Thread->find('all', 
-		['fields' => ['id','created','modified']],
+		['fields' => ['id','user_id','title','head','created','modified']],
 		['conditions' => ['Thread.user_id' => $user_id]], 
 		['order' =>['Thread.created' => 'desc']]);  
 		$type1 = array("type: threads");
 		$threads = array_merge($type1 , $thread);
 		
-		$like = $this->Like->find('all',
-		['fields' => ['id','created','modified']],
-		['conditions' => ['Like.user_id' => $user_id]], 
-		['order' =>['Like.created' => 'desc']]); 
-		$type2 = array("type: likes");
-		$likes = array_merge($type2 , $like);
+		// $like = $this->Like->find('all',
+		// ['fields' => ['id','created','modified']],
+		// ['conditions' => ['Like.user_id' => $user_id]], 
+		// ['order' =>['Like.created' => 'desc']]); 
+		// $type2 = array("type: likes");
+		// $likes = array_merge($type2 , $like);
 		
 		$head = $this->Head->find('all',
-		['fields' => ['id','created','modified']],
+		['fields' => ['id','user_id','thread_id','body','created','modified']],
 		['conditions' => ['Head.user_id' => $user_id]], 
 		['order' =>['Head.created' => 'desc']]); 
-		$type3 = array("type: likes");
+		$type3 = array("type: heads");
 		$heads = array_merge($type3 , $head);
 		   
-		 $values = array_merge($chats, $threads, $likes, $heads);
+		 $values = array_merge($threads, $heads);// $likes,$chats, 
 		 
 		$this->set('user', $values); 	
 		
@@ -243,6 +243,28 @@ class UsersController extends AppController {
 		['order' =>['Like.created' => 'desc']]);   
 		
 		$this->set('user', $like); 
+	}
+	
+	public function search($keyword = null){
+		$this->loadModel('Head');
+		 
+		 $keyword = 'asas+orrange+banana';
+		 
+		$keyword = str_replace("+", " ", $keyword);
+		$keyword = explode(" ",trim($keyword));
+		
+		foreach($keyword as $k){
+		
+			$head = $this->Head->find('all', 
+			['conditions' => ['Head.body' => $k]], 
+			['order' =>['Head.created' => 'desc']]);  
+		}
+		
+	}
+	
+	public function dd(){
+		$this->User->Thread->find('all');
+		exit;
 	}
 	
 	 
