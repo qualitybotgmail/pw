@@ -376,59 +376,18 @@ class ThreadsController extends AppController {
 	}
 	
 	
-	public function deletemember($thread_id = null, $member_id = null) {
-		$this->loadModel('UsersThread');
-		header('Content-Type: application/json;charset=utf-8');
-		// $ids = explode(",",$member_id);
-		try{
-			// $thread = $this->Thread->findById($thread_id);
-			// $users = [];
-						
-			// foreach($thread['User'] as $i => $u){
-			// 	if(is_numeric($i)){
-			// 		$users[] = $u['id'];
-			// 	}
-			// }
-			
-			// $oldcount = count($users);
-			// $users = array_merge($ids,$users);
-			// $users = array_unique($users);
-						
-				// $result = $this->Thread->User->delete(array(
-				// 	'Thread' => array('thread_id' => $gid),
-				// 	'User' => array('User' => $users)
-				// ));
-
-
-				// $result = $this->Thread->User->deleteAll(['Thread.id'=>$gid,'User.id'=>$users]);
-					// 	$conditions = array(
-				// 	    'AND' => array(
-				// 	        'Thread.id' => $gid,
-				// 	        'User.user_id'=>$users
-				// 	    )
-				// 	);
-				
-				  $result = $this->Thread->delete(
-				  	['user_id'=>$member_id],
-					['thread_id' => $thread_id ]
-				 ); 
-
-				 
-				
-			// $result = $this->Thread->delete(array(
-		 //    'Thread' => array('id' => $thread_id),
-		 //    'User' => array('User' => $member_id)
-		 //   ));
-    
-			if($result){
-				echo json_encode(['status' => 'DELETE']); 
-			} else{ 
-				echo json_encode(['status' => 'FAILED']);
-				echo json_encode($result);
-			}
+	public function deletemember($thread_id = null, $member_id = null) { 
+		$this->loadModel('User');
+		header('Content-Type: application/json;charset=utf-8'); 
+		
+		try{ 
+    		 $this->Thread->query("delete from users_threads where user_id = $member_id and thread_id = $thread_id");
+    		// $result = $this->User->deleteAssoc($member_id,'Thread',$thread_id);
+			echo json_encode(['status' => 'DELETED']); 
+		  
 			exit;
 		}catch(Exception $e){
-			echo json_encode(['status' => 'FAILED']);
+			echo json_encode(['status' => 'FAILED to catch']);
 			exit;
 		}
 	}	
