@@ -20,42 +20,18 @@ class ThreadsController extends AppController {
  *
  * @return void
  */
-	public function index() {
+	public function index() { 
 		
-		$this->Thread->User->recursive = 3;
+		$user_id = $this->Auth->user('id');
+		$users_threads = $this->Thread->query("select * from users_threads where user_id = $user_id");
 		
-		$id = $this->Auth->user('id');
+		$threads = $this->Thread->find('all',
+		// ['fields' => ['id','user_id','thread_id','body','created','modified']],
+		['conditions' => ['Thread.user_id' => $user_id]]); 
 		
-		$options = [];
+		$this->set('threads', array_merge($threads, $users_threads));
+ 
 		
-		// $this->loadModel('User');
-		// $threads = $this->User->find('all',['conditions' => ['id' => $id],'recursive' => 3]);
-		
-		// print_r($threads);exit;
-	//	echo ($threads['Owner']['password']);exit;
-
-		
-		$options['joins'] = [
-			[
-				'table' => 'users_threads',
-		        'alias' => 'users_threads',
-		        'type' => 'INNER',
-		        'conditions' => [
-		        	"users_threads.thread_id = Thread.id",
-		        	"users_threads.user_id = {$id}",
-		        ]
-			]
-		];
-		
-		$threads = $this->formatQuery($this->Thread->find('all', ['conditions' => ['user_id' => $id] ]));
-		
-		// echo json_encode($threads); exit;
-		
-		$threadAsMember = $this->formatQuery($this->Thread->find('all', $options));
-		
-		// echo json_encode($threadAsMember); exit;
-		
-		$this->set('threads', array_merge($threads, $threadAsMember) );
 	}
 	
 	private function formatQuery($threads) {
