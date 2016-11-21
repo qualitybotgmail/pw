@@ -69,6 +69,16 @@
                         <span class="badge add-member" title="Add Head" ng-click="addHead(thread.Thread)">
                             <i class="glyphicon glyphicon-plus"></i>
                         </span>
+                        <span class="col-md-5 pull-right">
+                            <!--<label for="notification"> Push Notification : </label>-->
+                            <input type="checkbox" 
+                                id="notification" 
+                                ng-model="thread.Thread.push_notification" 
+                                data-size="mini"
+                                data-label-text="Notification"
+                                switch-change="pushNotification()"
+                                bootstrap-switch />
+                        </span>
                     </small>
                 </h4>
             </div>
