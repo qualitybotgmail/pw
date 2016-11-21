@@ -87,7 +87,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                     });
             };
         	
-        	 $scope.uploadAttachment = function(message){
+        	$scope.uploadAttachment = function(message){
                 var fd = new FormData();
                 
                 fd.append('_method', 'POST');
