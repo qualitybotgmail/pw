@@ -53,6 +53,7 @@ class GroupchatsController extends AppController {
 			throw new NotFoundException(__('Invalid groupchat'));
 		}
 		$this->Groupchat->recursive = 2;
+		// $this->Groupchat->recursive = 3;
 		
 		$options = array('conditions' => array('Groupchat.' . $this->Groupchat->primaryKey => $id)); 
 		$groupchats = $this->Groupchat->find('first', $options);
