@@ -69,19 +69,7 @@ class Thread extends AppModel {
  * @var array
  */
 	public $hasAndBelongsToMany = array(
-		'User' => array(
-			'className' => 'User',
-			'joinTable' => 'users_threads',
-			'foreignKey' => 'thread_id',
-			'associationForeignKey' => 'user_id',
-			'unique' => 'keepExisting',
-			'conditions' => '',
-			'fields' => '',
-			'order' => '',
-			'limit' => '',
-			'offset' => '',
-			'finderQuery' => '',
-		)
+		'User'
 	);
 	public $hasMany = array('Head');
 	

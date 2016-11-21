@@ -25,7 +25,7 @@ class User extends AppModel {
  */
 	public $hasAndBelongsToMany = array(
 		'Thread' => array(
-			'className' => 'thread',
+			'className' => 'Thread',
 			'joinTable' => 'users_threads',
 			'foreignKey' => 'thread_id',
 			'associationForeignKey' => 'user_id',

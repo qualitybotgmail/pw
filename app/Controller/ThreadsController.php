@@ -23,6 +23,9 @@ class ThreadsController extends AppController {
 	public function index() { 
 		
 		$user_id = $this->Auth->user('id');
+		$this->Thread->Owner->recursive=2;
+		$us = $this->Thread->Owner->find('first',['conditions' => ['id' => $this->Auth->user('id')]]);
+		print_r($us);exit;
 		$users_threads = $this->Thread->query("select * from users_threads where user_id = $user_id");
 		
 		$threads = $this->Thread->find('all',
@@ -366,5 +369,26 @@ class ThreadsController extends AppController {
 			echo json_encode(['status' => 'FAILED to catch']);
 			exit;
 		}
-	}	
+	}
+	
+	public function deleteownthread($thread_id = null){ 
+		// header('Content-Type: application/json;charset=utf-8'); 
+		
+		// $thread = $this->Thread->findById($thread_id);
+		// $thread_owner = $thread['Thread']['user_id'];
+		
+		// $current_user = $this->Auth->user('id');
+		
+		// if($thread_owner == $current_user){
+		// 	//allow delete
+		// }else{
+		// 	//cannot delete thread
+		// }	
+		
+		// echo json_encode('asda');
+		// 	
+		 
+		$this->set('threads', $thread_id); 
+		exit;
+	}
 }
