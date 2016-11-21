@@ -19,28 +19,45 @@
     .add-member {
         cursor: pointer;
     }
-    
+    .red {
+        color: #d9534f!important;
+    }
 </style>
 
-<!-- if there is a specific thread show this-->
-<div class="row" ng-if="thread">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <p class="thread-users">
-                    <div class="row" ng-repeat="u in thread.User">
-                        {{ u.username }}
-                        {{$last ? '' : ', '}}
-                        
-                        <span 
-                            ng-if=" u.id == loginUser.id"
+
+<div class="panel colourable" ng-if="thread">
+    <div class="panel-heading">
+        <span class="panel-title">
+            <div>
+                <label class="lead">
+                    <a ui-sref="app.thread({ id: thread.Thread.id })">
+                        {{thread.Thread.title}}
+                        <span class="badge add-member" title="Add Head" ng-click="addHead(thread.Thread)">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </span>
+                    </a>
+                </label>
+            </div>
+            <span>
+                <!--投稿メンバー-->
+                <span class="thread-users" title="members">
+                    
+                    <i class="glyphicon glyphicon-plus clickable red" ng-click="addMembers(thread.Thread)"></i>
+                    
+                    
+                    <i class="glyphicon glyphicon-user"></i>
+                	<span>:</span>
+                	<span ng-if="!thread.User.length">
+                		No Member/s
+                	</span>
+                	<span ng-repeat="u in thread.User" ng-if="thread.User.length">
+                		<span 
+                            ng-if=" u.id === loginUser.id"
                             class="badge delete-member" 
                             title="Leave Thread" 
                             ng-click="leaveThread($index, u)">
                             <i class="glyphicon glyphicon-log-out"></i>
                         </span>
-                        
-                        
                         <span 
                             ng-if="thread.Owner.id == loginUser.id"
                             class="badge delete-member" 
@@ -49,79 +66,62 @@
                             <i class="glyphicon glyphicon-minus"></i>
                         </span>
                         
-                    </div>
-                    <div class="row" ng-if="thread.Owner.id == loginUser.id">
-                        <span class="badge add-member" title="Add member" ng-click="addMembers(thread.Thread)">
-                            <i class="glyphicon glyphicon-user"></i>
-                            <i class="glyphicon glyphicon-plus"></i>
-                        </span>    
-                    </div>
-                </p>
-            </div>        
-        </div>
-        
-        
-        <div class="row" >
-            <div class="page-header">
-                <h4>
-                    {{thread.Thread.title}}
-                    <small>
-                        <span class="badge add-member" title="Add Head" ng-click="addHead(thread.Thread)">
-                            <i class="glyphicon glyphicon-plus"></i>
-                        </span>
-                        <span class="col-md-5 pull-right">
-                            <!--<label for="notification"> Push Notification : </label>-->
-                            <input type="checkbox" 
+                		{{u.username}}
+                		
+                		{{$last ? '' : ', '}}
+                	</span>
+                </span>
+            </span>
+            <br>
+            <span style="font-size:11px;">
+                {{thread.Thread.created}}
+            </span>
+        </span>
+        <div class="panel-heading-controls">
+            <input type="checkbox" 
                                 id="notification" 
                                 ng-model="thread.Thread.push_notification" 
                                 data-size="mini"
                                 data-label-text="Notification"
                                 switch-change="pushNotification()"
                                 bootstrap-switch />
-                        </span>
-                    </small>
-                </h4>
-            </div>
-            <div class="col-md-12" ng-if="thread.Head.length">
-                <div class="row" ng-repeat="head in thread.Head">
-                    <h5 class="page-header">
-                        <span>
-                            <a ui-sref="app.head({ id: head.id })">
-                                {{head.body}}
-                            </a>
-                        </span>
-                        
-                        <span>
-                            <a class="badge-like" ng-disabled="!head.processing" ng-click="like($index, head)">
-                                <span class="badge {{(head.isUserLiked)?'liked':''}}">
-                                    {{head.likes}}
-                                    <i class="glyphicon glyphicon-thumbs-up"></i>
-                                </span>
-                            </a>
-                        </span>
-                        <span ng-if="thread.Owner.id == loginUser.id || loginUser.id == head.Owner.id">
-                            <a class="badge-delete" ng-click="deleteHead($index, head.id)">
-                                <span class="badge">
-                                    <i class="glyphicon glyphicon-trash"></i>
-                                </span>
-                            </a>
-                        </span>
-                        <span ng-if="thread.Owner.id == loginUser.id || loginUser.id == head.Owner.id">
-                            <a class="badge-edit" ng-click="editHead($index, head)">
-                                <span class="badge">
-                                    <i class="glyphicon glyphicon-pencil"></i>
-                                </span>
-                            </a>
-                        </span>
-                    </h5>
-                    <p>
-                        {{head.created}}
-                    </p>
-                </div>  
-            </div>
-        </div>
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">
+                  <span class="fa fa-cog"></span>&nbsp;<span class="fa fa-caret-down"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a role="button" ng-click="editThread($index, thread)" >編集</a></li>
+                    <li><a role="button" ng-click="deleteThread($index, thread.Thread.id)">削除</a></li>
+                </ul> <!-- / .dropdown-menu -->
+            </div> <!-- / .btn-group -->
+        </div> <!-- / .panel-heading-controls -->
+    </div> <!-- / .panel-heading -->
+    <ul class="list-group">
+      <li class="list-group-item" ng-repeat="head in thread.Head">
+         <a ui-sref="app.head({ id: head.id })">
+            <h5>{{head.body}}</h5>
+        </a>
         
-    </div>
-</div>
+        <span style="font-size:10px;">{{head.created}}</span>
+        <div class="panel-heading-controls">
+            <button class="btn btn-sm {{(head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="!head.processing" ng-click="like($index, head)">
+                {{head.likes}}
+                <span class="fa fa-thumbs-o-up"></span>
+            </button>
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">
+                  <span class="fa fa-cog"></span>&nbsp;<span class="fa fa-caret-down"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a role="button" ng-click="editHead($index, head)">編集</a></li>
+                    <li><a role="button" ng-click="deleteHead($index, head.id)">削除</a></li>
+                </ul> <!-- / .dropdown-menu -->
+            </div> <!-- / .btn-group -->
+        </div> <!-- / .panel-heading-controls -->
+      </li>
+    </ul>
+</div> <!-- / .panel -->
+
+
 
 <div ng-repeat="template in templates" ng-include="template"></div>

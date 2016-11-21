@@ -141,6 +141,11 @@ define([
 				}
     	    });
     	    
+    	    // retrieve threads to be ignored
+     	    Restangular.one('ignored_threads').get().then(function(threads){
+				$rootScope.ignoredThreads  = threads;
+     	    });
+    	    
     	    Restangular.one('groupchats').get().then(function(res){
     	        $rootScope.createdGroupChats = res.groupchats;
     	    });
