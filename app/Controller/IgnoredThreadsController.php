@@ -22,7 +22,7 @@ class IgnoredThreadsController extends AppController {
  */
 	public function index() {
 		$i = $this->IgnoredThread->find('list',['conditions'=>['user_id'=>$this->Auth->user('id')],'fields'=>['thread_id']]);
-		$this->set('ignoredThreads',$i);
+		$this->set('ignoredThreads',array_values($i));
 	}
 	public function off($thread_id){
 		header("Content-Type: application/json");
