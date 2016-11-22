@@ -1,23 +1,50 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>Talknote</title>
+  <title>BackOffice ChatApp</title>
 
+  <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="css/pixel-admin.min.css">
+  <link rel="stylesheet" href="css/themes.css">
   <link rel="stylesheet" href="vendor/select2/select2.css">
   <link rel="stylesheet" href="vendor/fancybox//jquery.fancybox.min.css">
+  <link rel="stylesheet" href="vendor/bootstrap-switch/bootstrap-switch.min.css">
   <link rel="stylesheet" href="css/style.css">
+  
+  <style>
+  .company-name{
+    margin-top:5px;
+    margin-bottom:20px;
+  }
+  .section > .list-group > .list-group-item{
+    border:none;
+    padding:5px 15px;
+  }
+  .section{
+    padding:0 20px;
+  }
+  </style>
 
 </head>
-<body>
-  <div id="row">
-    <div class="content">
-      <div ui-view="loading"></div>
-      <div class="main-view" ui-view="main"></div>
+<body class="theme-default no-main-menu">
+  <div id="main-wrapper">
+    <div id="content-wrapper">
+        <div ui-view="loading"></div>
+        <div class="main-view" ui-view="main"></div>
     </div>
   </div>
 </body>
+    
+      
+<!--<body>-->
+<!--  <div id="row">-->
+<!--    <div class="content">-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</body>-->
+
 	<script type="text/javascript">
 		window.Talknote = window.Talknote || {};
     Talknote.baseSourcePath = window.location.origin+'/';

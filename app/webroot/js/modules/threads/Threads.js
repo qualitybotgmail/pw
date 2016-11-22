@@ -73,6 +73,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	    });
         	};
         	
+        	
+        	
         	/**
         	 * initialize some functions
         	 * or variables

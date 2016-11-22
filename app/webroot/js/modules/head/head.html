@@ -13,119 +13,68 @@
     
 </style>
 
-<!-- if there is a specific thread show this-->
-<div class="row" ng-if="selectedHead">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <!--<div class="row">-->
-        <!--    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">-->
-        <!--        <p class="thread-users">-->
-        <!--            <span ng-repeat="u in selectedHead.User">-->
-        <!--                {{ u.username }}-->
-        <!--                {{$last ? '' : ', '}}-->
-                        
-        <!--            </span>-->
-        <!--            <span class="badge add-member" title="Add member" ng-click="addMembers(selectedHead.Thread)">-->
-        <!--                <i class="glyphicon glyphicon-user"></i>-->
-        <!--                <i class="glyphicon glyphicon-plus"></i>-->
-        <!--            </span>-->
-        <!--        </p>-->
-        <!--    </div>        -->
-        <!--</div>-->
-        
-        
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="detailBox">
-                    <div class="titleBox">
-                        <h3 class="page-header">
-                            {{selectedHead.Thread.title}}
-                            <small>
-                                <span>
-                                    <a class="badge-like" ng-disabled="!selectedHead.Head.processing" ng-click="like($index, selectedHead.Head)">
-                                        <span class="badge {{(selectedHead.Head.isUserLiked)?'liked':''}}">
-                                            {{selectedHead.Head.likes}}
-                                            <i class="glyphicon glyphicon-thumbs-up"></i>
-                                        </span>
-                                    </a>
-                                </span>
-                            </small>
-                        </h3>
-                    </div>
-                    <div class="commentBox">
-                        <p class="taskDescription">
-                             {{selectedHead.Head.body}}
-                             <span ng-repeat="upload in selectedHead.Upload">
-                                <a fancybox ng-href="{{upload.path}}">
-                                    <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
-                                </a>
-                            </span>
-                        </p>
-                    </div>
-                    <div class="actionBox">
-                        <ul class="commentList">
-                            <li ng-repeat="c in selectedHead.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
-                                <div class="commenterImage">
-                                  <img alt="{{c.User.username}}" />
-                                </div>
-                                <div class="commentText">
-                                    <p>
-                                        {{c.User.username}}
-                                    </p>
-                                    <p>
-                                        {{c.body}}
-                                        <span ng-repeat="upload in c.Upload">
-                                            <a fancybox ng-href="{{upload.path}}">
-                                                <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
-                                            </a>
-                                        </span>
-                                    </p> 
-                                    <span class="date sub-text">
-                                        {{c.created}}
-                                        
-                                        <span>
-                                            <a class="badge-like" ng-disabled="c.processing" ng-click="likeComment($index, c)">
-                                                <span class="badge {{(c.isUserLiked)?'liked':''}}">
-                                                    {{c.likes}}
-                                                    <i class="glyphicon glyphicon-thumbs-up"></i>
-                                                </span>
-                                            </a>
-                                        </span>
-                                        
-                                    </span>
-                
-                                </div>
-                            </li>
-                        </ul>
-                        <form class="form-inline" role="form" id="commentFrm" name="commentFrm" method="POST" enctype="multipart/form-data" 
-                        novalidate ng-submit="sendComment()">
-                            <div style="display:none;"><input type="hidden" name="_method" value="POST"/></div>
-                            <div class="row hidden">
-                                <div class="form-group hidden">
-                                    <input type="text" name="data[Upload][comment_id]" id="comment-id" ng-model="comment.comment_id" />
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="form-group">
-                                    <input type="file" name="data[Upload][file]" id="attachments" ng-file-model="comment.filename"  multiple />
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="form-group">
-                                    <textarea name="data[Upload][body]" class="form-control" id="body" placeholder="Comment Here" ng-model="comment.body"></textarea>
-                                </div>
-                                <div class="form-group">    
-                                    <button type="submit" class="btn btn-default" ng-disabled="commentFrm.$invalid">Send</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+
+<div class="panel colourable">
+    <div class="panel-heading">
+        <span class="panel-title">
+            <div>
+                <small>
+                    {{selectedHead.Thread.title}}
+                </small>
+                <label class="lead">
+                    {{selectedHead.Head.body}}
+                </label>
             </div>
-        </div>
-        
-    </div>
-</div>
+            
+            <br>
+            <span style="font-size:11px;">
+                {{selectedHead.Thread.created}}
+            </span>
+        </span>
+        <div class="panel-heading-controls">
+            <button class="btn btn-sm {{(selectedHead.Head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="selectedHead.Head.processing" ng-click="like($index, selectedHead.Head)">
+                 {{selectedHead.Head.likes}}
+                <span class="fa fa-thumbs-o-up"></span>
+            </button>
+            
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown"><span class="fa fa-cog"></span>&nbsp;<span class="fa fa-caret-down"></span></button>
+              <ul class="dropdown-menu dropdown-menu-right">
+                <li><a href="#">編集</a></li>
+                <li><a href="#">削除</a></li>
+              </ul> <!-- / .dropdown-menu -->
+            </div> <!-- / .btn-group -->
+        </div> <!-- / .panel-heading-controls -->
+    </div> <!-- / .panel-heading -->
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="c in selectedHead.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
+            <small>by : {{c.User.username}}</small>
+            <p>{{c.body}}</p>
+            <p>
+                 <span ng-repeat="upload in c.Upload">
+                    <a fancybox ng-href="{{upload.path}}">
+                        <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                    </a>
+                </span>
+            </p>
+            <span style="font-size:10px;">{{c.created}}</span>
+            <button class="btn btn-xs {{(c.isUserLiked)?'':'btn-outline'}} btn-warning pull-right" ng-disabled="c.processing" ng-click="likeComment($index, c)">
+                {{c.likes}}
+                <span class="fa fa-thumbs-o-up"></span>
+            </button>
+        </li>
+        <li class="list-group-item form-group">
+            <form  role="form" id="commentFrm" name="commentFrm" method="POST" enctype="multipart/form-data" 
+                        novalidate ng-submit="sendComment()">
+                
+                <input type="text" name="data[Upload][comment_id]" class="hidden" id="comment-id" ng-model="comment.comment_id" />
+                <input type="file" name="data[Upload][file]" id="attachments"  multiple />
+                <textarea name="data[Upload][body]" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
+                <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin-top:4px;">コメント</button>
+                
+            </form>
+        </li>
+    </ul>
+</div> <!-- / .panel -->
 
 <div ng-repeat="template in templates" ng-include="template"></div>

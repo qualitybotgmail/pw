@@ -28,14 +28,14 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         'UsersModel',
         'ThreadsModel',
         'HeadsModel',
+        'IgnoredThreadsModel',
         'ThreadFactory',
         'Restangular',
         
-        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, $interval, Focus, Modal, UsersModel, ThreadsModel, HeadsModel, ThreadFactory, Restangular) {
+        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, $interval, Focus, Modal, UsersModel, ThreadsModel, HeadsModel, IgnoredThreadsModel, ThreadFactory, Restangular) {
             
             $scope.templates = ThreadFactory.templates;
             $scope.currentPageNumber = 1;
-            // $scope.loginUser = $rootScope.loginUser;
             
             
             // add members
@@ -114,12 +114,34 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                         // error
                     });
             };
-        	
+            
+            // check if selected thread enable push notification
+            $scope.checkNotificationSetting = function(/*result*/) {
+                // var thread = result;
+                // thread.Thread.push_notification = true;
+                // for (var i = 0; i < $rootScope.ignoredThreads.length; i++) { 
+                
+                angular.forEach($rootScope.ignoredThreads, function(thread, index){
+                    if (thread === $scope.thread.Thread.id) {
+                        // false means the thread 
+                        // sett off notificaion/push notification
+                        // ignore this thread
+                        // $scope.$apply(function() {
+                            $scope.thread.Thread.push_notification = false;
+                        // });
+                        // break;
+                    }
+                });
+                // }
+            };
         	
         	// get thread information
         	$scope.getThread = function() {
-        	    ThreadsModel.one($scope.selectedThreadId.toString()).get().then(function(thread){
+        	    ThreadsModel.one($scope.selectedThreadId.toString()).get().then(function(result){
+        	        result.Thread.push_notification = true;
+        	        var thread = result;
         	        $scope.thread = thread;
+        	        $scope.checkNotificationSetting(thread);
         	    });
         	};
         	
@@ -166,6 +188,20 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
     	                $scope.thread.Head[index].processing = false;
                 	});
         	    }
+        	};
+        	
+        	$scope.pushNotification = function() {
+        	    var thread = $scope.thread.Thread;
+        	    
+        	    /**
+        	     * ignored_threads/on/THREAD_ID = will stop ignore threads , which will not accept notifications
+        	     * ignored_threads/off/THREAD_ID = will stop ignoring threads, will accept push notifications
+        	     */
+        	    var transaction = (thread.push_notification)?'off':'on';
+        	    
+                IgnoredThreadsModel.one(transaction).one(thread.id).post().then(function(rest){
+                    $scope.thread.Thread.push_notification = !thread.Thread.push_notification;
+                });
         	};
         	
         	

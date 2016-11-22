@@ -11,112 +11,78 @@
 <div jwerty="F1" key-event="goto.thread()" key-name="goto.thread" key-bind="document"></div>
 <div jwerty="F2" key-event="goto.timeline()" key-name="goto.timeline" key-bind="document"></div>
 
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <div class="row">
-        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-            <div class="row">
-                <nav class="navbar navbar-default sidebar" role="navigation">
-                    <div class="container-fluid">
-                        <div class="navbar-header">
-                          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                          </button>      
-                        </div>
-                        <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
-                          <ul class="nav navbar-nav">
-                            <li class="active">
-                                <a ui-sref="app">
-                                    Home
-                                    <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span>
-                                </a>
-                            </li>
-                            <li>
-                                <a ui-sref="app.threads">
-                                    Threads
-                                </a>
-                                <button class="btn btn-sm btn-info pull-right" ng-click="addThread()" style="margin-top: -40px;margin-right: 5px;" title="Add Threads">
-                                    <i class="glyphicon glyphicon-plus"></i>
-                                </button>
-                            </li>
-                            <li >
-                                <!--<a ui-sref="app.message">-->
-                                <a>
-                                    Message
-                                </a>
-                                <!--<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-envelope"></span>-->
-                                <button class="btn btn-sm btn-info pull-right" ng-click="addGroupChat()" style="margin-top: -40px;margin-right: 5px;" title="Add Group Chat">
-                                    <i class="glyphicon glyphicon-plus"></i>
-                                </button>
-                            </li>
-                            <li>
-                                <a ui-sref="app.timeline">
-                                    Timeline
-                                    <span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-time"></span>
-                                </a>
-                            </li>
-                          </ul>
-                        </div>
-                    </div>
-                </nav>    
-            </div>
-            <br/>
-            <div class="row">
-                <label> --- Messages --</label>
-                
-                <br/>
-                <p ng-repeat="groupchat in createdGroupChats">
-                    <a ui-sref="app.message({ id: groupchat.Groupchat.id })">
-                        <span ng-repeat="u in groupchat.User">
-                            {{u.username}}
-                            {{$last ? '' : ', '}}
-                        </span>
-                    </a>
-                </p>
-            </div>
+<div class="section col-sm-2">
+    <a >
+        <h3 class="company-name">
+            Back Office
+        </h3>    
+    </a>
+    <h4>
+        <a ui-sref="app.threads">
+          グループ
+        </a>
+        
+        <a style="float:right;" ng-click="addThread()">
+            <i class="fa fa-plus-square-o clickable"></i>
+        </a>
+    </h4>
+    
+    <!--<ul class="list-group">-->
+    <!--  <a ui-sref="app" class="list-group-item clickable">-->
+    <!--    <span class="badge badge-info"></span>-->
+    <!--    全社-->
+    <!--  </a>-->
+    <!--  <a class="list-group-item clickable active">-->
+    <!--    <span class="badge badge-info">5</span>-->
+    <!--    Sample Group 1-->
+    <!--  </a>-->
+    <!--  <a class="list-group-item clickable">-->
+    <!--    <span class="badge badge-info">14</span>-->
+    <!--    Sample Group 2-->
+    <!--  </a>-->
+    <!--  <a class="list-group-item clickable">-->
+    <!--    <span class="badge badge-info">11</span>-->
+    <!--    Sample Group 3-->
+    <!--  </a>-->
+    <!--  <a class="list-group-item clickable">-->
+    <!--    <span class="badge badge-info">3</span>-->
+    <!--    Sample Group 4-->
+    <!--  </a>-->
+    <!--  <a class="list-group-item clickable">-->
+    <!--    <span class="badge badge-info">7</span>-->
+    <!--    Sample Group 5-->
+    <!--  </a>-->
+    <!--</ul>-->
+
+    <h4>
+        メッセージ
+        <a style="float:right;" ng-click="addGroupChat()">
+            <i class="fa fa-plus-square-o clickable"></i>
+        </a>
+    </h4>
+    <ul class="list-group">
+      <a class="list-group-item clickable" ng-repeat="groupchat in createdGroupChats" ui-sref="app.message({ id: groupchat.Groupchat.id })">
+        <span class="badge badge-info">5</span>
+        <span ng-repeat="u in groupchat.User">
+            {{u.username}}
+            {{$last ? '' : ', '}}
+        </span>
+      </a>
+      
+    </ul>
+      
+</div>
+
+<div class="section col-sm-8">
+    <div class="row" style="margin-bottom:17px;">
+      <form action="" class="col-xs-12 col-sm-6">
+        <div class="input-group">
+          <span class="input-group-addon" style="border:none;background: #fff;background: rgba(0,0,0,.03);"><i class="fa fa-search"></i></span>
+          <input type="text" placeholder="Search..." class="form-control no-padding-hr" style="border:none;background: #fff;background: rgba(0,0,0,.03);">
         </div>
-        <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div ui-view="content">
-                        <section class="content-header">
-                            <h1>
-                                Talknote
-                            </h1>
-                        </section>
-                        
-                        <section class="content no-outline" tabindex="-1" id="abc">
-                            <div class="row">
-                    
-                                <div class="col-md-12">
-                                    <!-- Application buttons -->
-                                    <div class="box box-primary">
-                                        <div class="box-header">
-                                            <h3 class="box-title">Application Shortcuts</h3>
-                                        </div>
-                                        <div class="box-body">
-                                            <a class="btn btn-app" ui-sref="app.threads">
-                                                <span class="badge bg-aqua">F1</span>
-                                                <i class="fa fa-pencil"></i> Thread
-                                            </a>
-                                            
-                                            <a class="btn btn-app" ui-sref="app.timeline">
-                                                <span class="badge bg-aqua">F2</span>
-                                                <i class="fa fa-legal"></i> Timeline
-                                            </a>
-                                            
-                                        </div><!-- /.box-body -->
-                                    </div><!-- /.box -->
-                                </div><!-- /.col -->
-                            </div><!-- /.row -->
-                        </section>
-                    </div>
-                </div>        
-            </div>
-        </div>
+      </form>
     </div>
+    <div ui-view="content"></div>
 </div>
 
 <div ng-repeat="template in templates" ng-include="template"></div>

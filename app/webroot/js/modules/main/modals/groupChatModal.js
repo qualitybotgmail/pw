@@ -1,4 +1,4 @@
-define(['app', 'angular', 'underscore'], function(app, angular, _)
+define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 {
 	app.controller('groupChatModalController',
 	[
@@ -8,8 +8,9 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
 			'modalService',
 			'focusService',
 			'GroupChatModel',
+			'Restangular',
 
-			function($scope, $timeout, $modalInstance, Modal, Focus, GroupChatModel)
+			function($scope, $timeout, $modalInstance, Modal, Focus, GroupChatModel, Restangular)
 			{
 				$scope.groupchat = {};
 				$scope.groupchat.member_ds = {};
@@ -44,12 +45,49 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
 	        	        $scope.groupchat.users = usersList(res.users);
 	        	    });
 	        	};
+	        	
+	        	$scope.uploadAttachment = function(groupChat){
+	                var fd = new FormData();
+	                
+	                fd.append('_method', 'POST');
+	                fd.append('data[Upload][message_id]', groupChat.Groupchat.id);
+	                
+	                $.each($("#groupchat-modal #groupchat-attachments")[0].files, function(i, file) {
+	                    fd.append('data[Upload][file]['+i+']', file);
+	                });
+	
+	                 $.ajax({
+	                   url: "/uploads.json",
+	                   type: "POST",
+	                   data: fd,
+	                   processData: false,
+	                   contentType: false,
+	                   async:false,
+	                   success: function(response) {
+	                        // .. do something
+	                        $scope.$close(groupChat);
+	                        // $scope.$apply();
+	                   },
+	                   error: function(jqXHR, textStatus, errorMessage) {
+	                       console.log(errorMessage); // Optional
+	                   }
+	                });
+	            };
         	
                 $scope.saveGroupChat = function() {
                 	// console.log($getSelectedUsers(), 'users');
-                    GroupChatModel.one('add').post($scope.groupchat.member_ids.join()).then(function(res){
+                    GroupChatModel.one('add').post($scope.groupchat.member_ids.join()).then(function(groupChat){
                     	// consoel.log(res, 'the result');
-                    	$scope.$close({'Groupchat': angular.extend(res.UsersGroupchat, {'id': res.UsersGroupchat.groupchat_id}), 'User': $getSelectedUsers()});
+                		Restangular.one('messages').one('add').one(groupChat.UsersGroupchat.groupchat_id).customPOST({body: $scope.initial_message}).then(function(res){
+							var groupChatData = {'Groupchat': angular.extend(groupChat.UsersGroupchat, {'id': groupChat.UsersGroupchat.groupchat_id}), 'User': $getSelectedUsers()};
+							console.log(groupChatData, 'the group chat');
+	                        if ($("#groupchat-modal #groupchat-attachments")[0].files.length){
+                            	$scope.uploadAttachment(groupChatData);
+	                        } else {
+	                           $scope.$close(groupChatData);
+	                        }
+	                        
+	                    });	
                     });
                 };
                 

@@ -48,7 +48,7 @@ require.config({
 		
 		fancybox :  	'../vendor/fancybox/jquery.fancybox.min',
 		ngIdleJs :		'../vendor/ngIdle/angular-idle.min',
-		bootstrapSwitch:'../bootstrap-switch/bootstrap-switch.min',
+		bootstrapSwitch:'../vendor/bootstrap-switch/bootstrap-switch.min',
 
 	},
 	shim: {
