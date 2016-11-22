@@ -39,4 +39,6 @@ class User extends AppModel {
 		)
 	);	
 	
+	public $hasMany = 'Like';
+	
 }

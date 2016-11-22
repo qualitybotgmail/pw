@@ -138,31 +138,25 @@ class UsersController extends AppController {
 	}
 	
 	public function timeline(){ 
-		 
-	
-		$this->loadModel('Like'); 
-		$this->loadModel('Head');
-		
-		$user_id = $this->Auth->user('id');
  
+		$user_id = $this->Auth->user('id');
+		$this->User->Thread->Head->recursive = 4;  
 		
+		$thread = $this->User->Thread->find('all',  
+		 ['conditions' => ['Thread.user_id' => $user_id]], 
+		['order' =>['Thread.created' => 'desc']] );   
 		
-		$thread = $this->User->Thread->find('all'
-		//  ['conditions' => ['Thread.user_id' => $user_id]], 
-		// ['order' =>['Thread.created' => 'desc']]
-		);   
-		print_r($thread);exit;
-		// $like = $this->Like->find('all', 
-		// ['conditions' => ['Like.user_id' => $user_id]], 
-		// ['order' =>['Like.created' => 'desc']]);  
+		$like = $this->User->Like->find('all', 
+		['conditions' => ['Like.user_id' => $user_id]], 
+		['order' =>['Like.created' => 'desc']]);  
 		
-		// $head = $this->Head->find('all', 
-		// ['conditions' => ['Head.user_id' => $user_id]], 
-		// ['order' =>['Head.created' => 'desc']]);  
+		$head = $this->User->Thread->Head->find('all', 
+		['conditions' => ['Head.user_id' => $user_id]], 
+		['order' =>['Head.created' => 'desc']]);  
 		   
-		//  $values = array_merge($thread, $head, $like); 
+		$values = array_merge($thread, $head, $like); 
 		 
-		// $this->set('user', $values); 	
+		$this->set('user', $values); 	
 		
 	}
 	
@@ -171,7 +165,7 @@ class UsersController extends AppController {
 		$user_id = $this->Auth->user('id');  
 		$this->Message->recursive = 4; 
 		$message = $this->Message->find('all', 
-		['fields' => ['id','user_id','groupchat_id','body','created','modified']],
+		// ['fields' => ['id','user_id','groupchat_id','body','created','modified']],
 		['conditions' => ['Message.user_id' => $user_id]], 
 		['order' =>['Message.created' => 'desc']]);  
 		 
@@ -179,10 +173,10 @@ class UsersController extends AppController {
 	}
 	
 	public function likedhead(){
-		$this->loadModel('Like');
-		$user_id = $this->Auth->user('id');
-		$like = $this->Like->find('all', 
-		['fields' => ['id','head_id','created','modified']],
+		
+		$user_id = $this->Auth->user('id'); 
+		$like = $this->User->Like->find('all', 
+		// ['fields' => ['id','head_id','created','modified']],
 		['conditions' => ['Like.user_id' => $user_id], ['head_id !='=>'0']], 
 		['order' =>['Like.created' => 'desc']]);   
 		
@@ -190,11 +184,11 @@ class UsersController extends AppController {
 	}
 	
 	public function addedtogroupchat(){
-		$this->loadModel('Groupchat');
+		$this->loadModel('Groupchat'); 
 		$user_id = $this->Auth->user('id');
 		
 		$groupchat = $this->Groupchat->find('all', 
-		['fields' => ['id','created','modified']],
+		// ['fields' => ['id','created','modified']],
 		['conditions' => ['Groupchat.user_id' => $user_id]], 
 		['order' =>['Groupchat.created' => 'desc']]);   
 		
@@ -207,7 +201,7 @@ class UsersController extends AppController {
 		$user_id = $this->Auth->user('id');
 		
 		$groupchat = $this->Upload->find('all', 
-		['fields' => ['id','comment_id','name','size','path','created','modified']],
+		// ['fields' => ['id','comment_id','name','size','path','created','modified']],
 		['conditions' => ['Upload.user_id' => $user_id]], 
 		['order' =>['Upload.created' => 'desc']]);   
 		
@@ -216,46 +210,69 @@ class UsersController extends AppController {
 	}
 	
 	public function likedcomment(){
-		$this->loadModel('Like');
+		$this->User->Like->recursive = 0;
+		// $this->loadModel('Like');
 		$user_id = $this->Auth->user('id');
-		$like = $this->Like->find('all', 
-		['fields' => ['id','comment_id','created','modified']],
-		['conditions' => ['Like.user_id' => $user_id], ['comment_id !='=>'0']], 
+		$like = $this->User->Like->find('all', 
+		// ['fields' => ['id','comment_id','created','modified']],
+		['conditions' => ['Like.user_id' => $user_id], ['comment_id >='=>'1']], 
 		['order' =>['Like.created' => 'desc']]);   
 		
 		$this->set('user', $like); 
 	}
 	
 	public function search($keyword = null){
-		header('Content-Type: application/json;charset=utf-8');
+		$this->loadModel('Thread');
 		$this->loadModel('Head');
-		$this->loadModel('User'); 
+		header('Content-Type: application/json;charset=utf-8'); 
+		
+		$this->User->recursive = -1;
+		$this->Thread->recursive = -1; 
+		$this->Head->recursive = -1; 
 		 
 		$keyword = str_replace("+", " ", $keyword);
 		$keyword = explode(" ",trim($keyword));
 		
-		 $heads=[];
+		 $data=[];
 		foreach($keyword as $k){
-			// $conditions=[];
-			// 	$conditions['User.firstname LIKE']='%'.$k.'%';
-			// $user = $this->User->find('all', 
-			// ['conditions' => ['firstname' =>  $k ]]);  
 			
-			// $user = $this->User->find('all', array('conditions'=>array('User.firstname LIKE'=>'%'.$k.'%')));
- 
-			// $user = $this->User->find('all', array(
-			// 	'conditions'=>array('User.firstname LIKE'=>'%'.$k.'%')
-			// 	));
+			$user = $this->User->find('all',
+			// ['fields' => ['id','username','role','created','modified','firstname','lastname']],
+			['conditions' =>
+				['OR'=>[
+					['User.firstname LIKE' => '%'.$k.'%'],
+					['User.lastname LIKE' => '%'.$k.'%']
+				]],
+			], 
+			['order' =>['User.created' => 'desc']]);
+			
+			
+			$thread = $this->Thread->find('all', 
+				['conditions' => ['Thread.title LIKE' => '%'.$k.'%'] ]);  
+			
 			
 			$head = $this->Head->find('all', 
-			['conditions' => ['Head.body LIKE' => '%'.$k.'%']], 
-			['order' =>['Head.created' => 'desc']]);  
+				['conditions' =>  ['Head.body LIKE' => '%'.$k.'%'] ]);  
+			
+			
+			// $thread = $this->Thread->find('all', 
+			// 	['conditions' => ['Thread.title LIKE' => '%'.$k.'%'] ], 
+			// 	['order' =>['Thread.created' => 'desc']]);  
+			// $thread = $this->User->Thread->Head->find('all', 
+			// ['conditions' =>
+			// 	['OR'=>[
+			// 		['Head.body LIKE' => '%'.$k.'%'], 
+			// 		['Thread.title LIKE' => '%'.$k.'%']
+			// 	]],
+			// ], 
+			// ['order' =>['Head.created' => 'desc']]);  
 			 
-		echo json_encode($head);
-		
+			// echo json_encode(array($user,$head));
+			
+			$data[] = array_merge($user, $thread, $head); 
 		}
-			 //$heads = array_merge($head);
-		$this->set('user', $keyword,$head); 
+		
+		$this->set('user', $data);  
 		
 	}
 	

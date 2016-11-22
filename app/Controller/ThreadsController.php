@@ -30,8 +30,7 @@ class ThreadsController extends AppController {
 		
 		$threads = $this->Thread->find('all',
 		// ['fields' => ['id','user_id','thread_id','body','created','modified']],
-			['conditions' => ['Thread.user_id' => $user_id]], 
-			['order' =>['Thread.created' => 'desc']]); 
+			['conditions' => ['Thread.user_id' => $user_id]] ); 
 		
 		$this->set('threads', array_merge($threads, $users_threads));
  
