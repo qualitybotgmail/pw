@@ -42,13 +42,11 @@ class ThreadsController extends AppController {
         // this query if to get all the threads
         // where user is a member only
 		$users_threads = $this->Thread->find('all', $options);
-		
-		$threads = $this->Thread->find('all',
-			['conditions' => ['Thread.user_id' => $user_id], 'order' => 'Thread.created DESC'] ); 
-		
+
+		// ['fields' => ['id','user_id','thread_id','body','created','modified']],		
+		$threads = $this->Thread->find('all',['conditions' => ['Thread.user_id' => $user_id], 'order' => 'Thread.created DESC'] ); 
+
 		$this->set('threads', array_merge($threads, $users_threads));
- 
-		
 	}
 	
 	private function formatQuery($threads) {
