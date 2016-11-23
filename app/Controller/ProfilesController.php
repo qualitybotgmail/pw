@@ -127,14 +127,47 @@ class ProfilesController extends AppController {
 		 
 		$this->view = 'view'; 
 		$id = $this->Auth->user('id');
+		
 		 
-		$this->User->Profile->recursive = 0;
+		// $this->User->Profile->recursive = 0;
         $user = $this->Profile->find('first', ['conditions'=> ['Profile.user_id' => $id]]); 
         
         $this->set('profiles',$user);
         
 	}
 	
+	// public function timeline(){ 
+	// ////this should have logs then query threads owner
+	// 	$this->loadModel('Log'); 
+	// 	$user_id = $this->Auth->user('id'); 
+		
+	// 	// $timeline = $this->Log->Thread
+		
+		
+		
+		
+	// 	$thread = $this->User->Thread->find('all',  
+	// 	 ['conditions' => ['Thread.user_id' => $user_id]], 
+	// 	['order' =>['Thread.created' => 'desc']] );   
+		
+		
+	// 	$head = $this->User->Thread->Head->Comment->find('all', 
+	// 	['conditions' => ['Head.user_id' => $user_id]], 
+	// 	['order' =>['Head.created' => 'desc']]);   
+		
+	// 	$comment = $this->Comment->find('all',
+	// 	['conditions'=>['Comment.user_id'=>$user_id]],
+	// 	['order'=>['Comment.created'=>'desc']]
+	// 	); 
+		 
+		 
+	// 	if(!empty($thread))$data['Threads'][] = $thread;
+	// 	if(!empty($head))$data['Heads'][] = $head;
+	// 	if(!empty($comment))$data['Comments'][] = $comment;
+		 
+	// 	$this->set('user', $data); 	
+		
+	// }
 	
 	
 }
