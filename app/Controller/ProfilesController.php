@@ -123,5 +123,59 @@ class ProfilesController extends AppController {
 		 exit;
 	}
 	
+	public function me(){ 
+		 
+		$this->loadModel('User'); 
+		$this->view = 'view'; 
+		$id = $this->Auth->user('id');
+        $usercount = $this->Profile->find('count', ['conditions'=> ['Profile.user_id' => $id]]); 
+		if($usercount!=0){
+	    	 $user = $this->Profile->find('first', 
+	    	 ['fields' => ['Profile.id','Profile.user_id','User.username','Profile.firstname', 'Profile.lastname','Profile.created','Profile.modified', 'User.role','User.created','User.modified']],
+	    	 ['conditions'=> ['Profile.user_id' => $id]]); 
+		}else{
+			$this->User->recursive = -1; 
+			$user = $this->User->find('first', 
+			['fields' => ['id','username','role','created','modified']],
+			['conditions'=> ['User.id' => $id]]); 
+		}
+        
+        $this->set('profiles',$user);
+        
+	}
+	
+	// public function timeline(){ 
+	// ////this should have logs then query threads owner
+	// 	$this->loadModel('Log'); 
+	// 	$user_id = $this->Auth->user('id'); 
+		
+	// 	// $timeline = $this->Log->Thread
+		
+		
+		
+		
+	// 	$thread = $this->User->Thread->find('all',  
+	// 	 ['conditions' => ['Thread.user_id' => $user_id]], 
+	// 	['order' =>['Thread.created' => 'desc']] );   
+		
+		
+	// 	$head = $this->User->Thread->Head->Comment->find('all', 
+	// 	['conditions' => ['Head.user_id' => $user_id]], 
+	// 	['order' =>['Head.created' => 'desc']]);   
+		
+	// 	$comment = $this->Comment->find('all',
+	// 	['conditions'=>['Comment.user_id'=>$user_id]],
+	// 	['order'=>['Comment.created'=>'desc']]
+	// 	); 
+		 
+		 
+	// 	if(!empty($thread))$data['Threads'][] = $thread;
+	// 	if(!empty($head))$data['Heads'][] = $head;
+	// 	if(!empty($comment))$data['Comments'][] = $comment;
+		 
+	// 	$this->set('user', $data); 	
+		
+	// }
+	
 	
 }
