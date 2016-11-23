@@ -24,13 +24,27 @@ class ThreadsController extends AppController {
 		
 		$user_id = $this->Auth->user('id');
 		$this->Thread->Owner->recursive=2;
-		$us = $this->Thread->Owner->find('first',['conditions' => ['id' => $this->Auth->user('id')]]);
-		print_r($us);exit;
-		$users_threads = $this->Thread->query("select * from users_threads where user_id = $user_id");
+		
+		$options = [
+				'order' => 'Thread.created DESC',
+				'joins' => [
+					[
+					   'table' => 'users_threads',
+	                   'alias' => 'users_threads',
+	                   'type' => 'INNER',
+	                   'conditions' => [
+	                           "users_threads.thread_id = Thread.id",
+	                           "users_threads.user_id = {$user_id}",
+	                    ]
+					]
+                ]
+			];
+        // this query if to get all the threads
+        // where user is a member only
+		$users_threads = $this->Thread->find('all', $options);
 		
 		$threads = $this->Thread->find('all',
-		// ['fields' => ['id','user_id','thread_id','body','created','modified']],
-			['conditions' => ['Thread.user_id' => $user_id]] ); 
+			['conditions' => ['Thread.user_id' => $user_id], 'order' => 'Thread.created DESC'] ); 
 		
 		$this->set('threads', array_merge($threads, $users_threads));
  
