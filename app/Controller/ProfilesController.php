@@ -123,5 +123,18 @@ class ProfilesController extends AppController {
 		 exit;
 	}
 	
+	public function me(){ 
+		 
+		$this->view = 'view'; 
+		$id = $this->Auth->user('id');
+		 
+		$this->User->Profile->recursive = 0;
+        $user = $this->Profile->find('first', ['conditions'=> ['Profile.user_id' => $id]]); 
+        
+        $this->set('profiles',$user);
+        
+	}
+	
+	
 	
 }
