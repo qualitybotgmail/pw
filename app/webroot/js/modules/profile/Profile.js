@@ -1,6 +1,7 @@
 define(['app', 'angular', 'underscore'], function(app, angular, _)
 {
-	app.controller('TimelineController',[
+	app.controller('ProfileController',[
+	    '$rootScope',
         '$scope',
         '$timeout',
         '$state',
@@ -12,7 +13,7 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
         'focusService',
         'GLOBAL',
         'Restangular',
-        function($scope, $timeout, $state, $stateParams, $templateCache, $q, Focus, GLOBAL, Restangular) {
+        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, Focus, GLOBAL, Restangular) {
         	
         }
 	]);
