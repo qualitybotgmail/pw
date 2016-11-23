@@ -125,12 +125,20 @@ class ProfilesController extends AppController {
 	
 	public function me(){ 
 		 
+		$this->loadModel('User'); 
 		$this->view = 'view'; 
 		$id = $this->Auth->user('id');
-		
-		 
-		// $this->User->Profile->recursive = 0;
-        $user = $this->Profile->find('first', ['conditions'=> ['Profile.user_id' => $id]]); 
+        $usercount = $this->Profile->find('count', ['conditions'=> ['Profile.user_id' => $id]]); 
+		if($usercount!=0){
+	    	 $user = $this->Profile->find('first', 
+	    	 ['fields' => ['Profile.id','Profile.user_id','User.username','Profile.firstname', 'Profile.lastname','Profile.created','Profile.modified', 'User.role','User.created','User.modified']],
+	    	 ['conditions'=> ['Profile.user_id' => $id]]); 
+		}else{
+			$this->User->recursive = -1; 
+			$user = $this->User->find('first', 
+			['fields' => ['id','username','role','created','modified']],
+			['conditions'=> ['User.id' => $id]]); 
+		}
         
         $this->set('profiles',$user);
         
