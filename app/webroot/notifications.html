@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <div id="result"></div>
+    <script type="text/javascript">
+        var source = new EventSource("/users/notifications");
+        source.onmessage = function(event) {
+            document.getElementById('result').innerHTML += event.data+'<br />';
+        };
+    </script>
+</body>
+</html>
