@@ -26,7 +26,11 @@
             </div>
             <span>
                 <span class="thread-users" title="members">
-                    <i class="glyphicon glyphicon-plus clickable red" ng-click="addMembers(message.Groupchat)"></i>
+                    
+                    <i class="glyphicon glyphicon-plus clickable red" 
+                        ng-if="loginUser.id == message.Owner.id"
+                        ng-click="addMembers(message.Groupchat)"></i>
+                    
                 	<i class="glyphicon glyphicon-user"></i>
                 	<span>:</span>
                 	<span ng-repeat="u in message.User" ng-if="message.User.length">
@@ -39,20 +43,34 @@
             <span style="font-size:11px;">
                 {{message.Groupchat.created}}
             </span>
+            <div class="panel-heading-controls">
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">
+                      <span class="fa fa-cog"></span>&nbsp;<span class="fa fa-caret-down"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li><a href="" class="clickable" role="button" ng-click="deleteGroupChat(message.Groupchat.id)">削除</a></li>
+                    </ul> <!-- / .dropdown-menu -->
+                </div> <!-- / .btn-group -->
+            </div> <!-- / .panel-heading-controls -->
         </span>
     </div> <!-- / .panel-heading -->
     <ul class="list-group">
-        <li class="list-group-item" ng-repeat="m in message.Message | unique : 'id'"  ng-init="$last && fireMessageEvent()">
-            <small>by : {{m.User.username}}</small>
-            <p>{{m.body}}</p>
-            <p>
-                 <span ng-repeat="upload in m.Upload">
-                    <a fancybox ng-href="{{upload.path}}">
-                        <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
-                    </a>
-                </span>
-            </p>
-            <span style="font-size:10px;">{{m.created}}</span>
+        <li class="list-item">
+            <ul class="list-group commentList">
+                <li class="list-group-item" ng-repeat="m in message.Message | unique : 'id'"  ng-init="$last && fireMessageEvent()">
+                    <small>by : {{m.User.username}}</small>
+                    <p>{{m.body}}</p>
+                    <p>
+                         <span ng-repeat="upload in m.Upload">
+                            <a fancybox ng-href="{{upload.path}}">
+                                <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                            </a>
+                        </span>
+                    </p>
+                    <span style="font-size:10px;">{{m.created}}</span>
+                </li>
+            </ul>
         </li>
         <li class="list-group-item form-group">
             <form  role="form" id="messageFrm" name="messageFrm" method="POST" enctype="multipart/form-data" 

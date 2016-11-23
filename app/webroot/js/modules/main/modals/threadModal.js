@@ -2,6 +2,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 {
 	app.controller('ThreadModalController',
 	[
+			'$rootScope',
 			'$scope',
 			'$timeout',
 			'$modalInstance',
@@ -10,7 +11,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 			'ThreadsModel',
 			'fromParent',
 
-			function($scope, $timeout, $modalInstance, Modal, Focus, ThreadsModel, fromParent)
+			function($rootScope, $scope, $timeout, $modalInstance, Modal, Focus, ThreadsModel, fromParent)
 			{
 				$scope.thread = {};
 				
@@ -23,6 +24,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 	                    });
                 	} else {
                 		ThreadsModel.post($scope.thread).then(function(res){
+                			$rootScope.threads.unshift({'Thread': res, 'User': [], 'Owner': $rootScope.loginUser});
                         	$scope.$close(res);
 	                    });	
                 	}

@@ -53,7 +53,7 @@ define([
         	    
                 $scope.templates = {
                     modal: GLOBAL.baseSourcePath + 'templates/modal.html?version=' + GLOBAL.version,
-                    report: GLOBAL.baseSourcePath + 'templates/report.html?version=' + GLOBAL.version,
+                    // report: GLOBAL.baseSourcePath + 'templates/report.html?version=' + GLOBAL.version,
                     thread: GLOBAL.baseModulePath + 'main/modals/add_thread.html',
                     groupchat: GLOBAL.baseModulePath + 'main/modals/add_group_chat.html',
                 };

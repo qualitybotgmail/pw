@@ -28,16 +28,16 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, Modal, ThreadsModel, ThreadsFactory) {
             
             $scope.currentPageNumber = 1;
-            $scope.threads = [];
+            // $scope.threads = [];
             
             $scope.templates = ThreadsFactory.templates;
             
         	// get the lists of threads
-        	$scope.getThreads = function () {
-        	    ThreadsModel.one('index').one('page:'+$scope.currentPageNumber.toString()).get().then(function(res) {
-            	   $scope.threads = res;
-            	});
-        	};
+        // 	$scope.getThreads = function () {
+        // 	    ThreadsModel.one('index').one('page:'+$scope.currentPageNumber.toString()).get().then(function(res) {
+        //     	   $scope.threads = res;
+        //     	});
+        // 	};
         	
         	
         	// edit threads
@@ -80,7 +80,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	 * or variables
         	 */
         	var init = function(){
-        	    $scope.getThreads();   
+        	   // $scope.getThreads();   
         	};
         	init();
         	

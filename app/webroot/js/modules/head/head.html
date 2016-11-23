@@ -47,21 +47,25 @@
         </div> <!-- / .panel-heading-controls -->
     </div> <!-- / .panel-heading -->
     <ul class="list-group">
-        <li class="list-group-item" ng-repeat="c in selectedHead.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
-            <small>by : {{c.User.username}}</small>
-            <p>{{c.body}}</p>
-            <p>
-                 <span ng-repeat="upload in c.Upload">
-                    <a fancybox ng-href="{{upload.path}}">
-                        <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
-                    </a>
-                </span>
-            </p>
-            <span style="font-size:10px;">{{c.created}}</span>
-            <button class="btn btn-xs {{(c.isUserLiked)?'':'btn-outline'}} btn-warning pull-right" ng-disabled="c.processing" ng-click="likeComment($index, c)">
-                {{c.likes}}
-                <span class="fa fa-thumbs-o-up"></span>
-            </button>
+        <li class="list-item">
+            <ul class="list-group commentList">
+                <li class="list-group-item" ng-repeat="c in selectedHead.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
+                    <small>by : {{c.User.username}}</small>
+                    <p>{{c.body}}</p>
+                    <p>
+                         <span ng-repeat="upload in c.Upload">
+                            <a fancybox ng-href="{{upload.path}}">
+                                <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                            </a>
+                        </span>
+                    </p>
+                    <span style="font-size:10px;">{{c.created}}</span>
+                    <button class="btn btn-xs {{(c.isUserLiked)?'':'btn-outline'}} btn-warning pull-right" ng-disabled="c.processing" ng-click="likeComment($index, c)">
+                        {{c.likes}}
+                        <span class="fa fa-thumbs-o-up"></span>
+                    </button>
+                </li>
+            </ul>
         </li>
         <li class="list-group-item form-group">
             <form  role="form" id="commentFrm" name="commentFrm" method="POST" enctype="multipart/form-data" 

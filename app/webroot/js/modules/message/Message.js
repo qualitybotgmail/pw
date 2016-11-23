@@ -107,6 +107,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                    success: function(response) {
                         // .. do something
                         $scope.message.Message.push(angular.extend(message, {'Upload': response.Success}));
+                        $("#attachments").val('');
+                        $scope.comment.body = ''; 
+                        $scope.comment.message_id = null;
+                        MessageService.scrollDown();
                         $scope.$apply();
                    },
                    error: function(jqXHR, textStatus, errorMessage) {
@@ -140,8 +144,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                            $scope.message.Message.push(currentComment);
                         }
                         $("#attachments").val('');
+                        // $scope.comment = { body: '', message_id: null};
+                        $scope.comment.body = ''; 
+                        $scope.comment.message_id = null;
                         MessageService.scrollDown();
-                        $scope.comment = { body: '', message_id: null};
                     });   
                 // }
             };
@@ -172,6 +178,14 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	            $scope.message.Message.push(groupChat.Message[messageLength - 1]);
         	            MessageService.scrollDown();   
         	        }
+        	    });
+        	};
+        	
+        	// delete head thread
+        	$scope.deleteGroupChat = function(groupChatId) {
+        	    GroupChatModel.one(groupChatId).remove().then(function(result){
+        	        $rootScope.getGroupchat();
+        	       $state.go('app');
         	    });
         	};
             

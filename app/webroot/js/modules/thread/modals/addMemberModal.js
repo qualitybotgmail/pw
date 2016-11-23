@@ -28,9 +28,9 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
 				var $getSelectedUsers = function() {
 					var arr = [];
 					angular.forEach($scope.members.users, function(user, index){
-						console.log(user, 'the user');
+						// console.log(user, 'the user');
 						angular.forEach($scope.members.ids, (function(id, index) {
-							console.log(parseInt(user.id), id, ' = ', parseInt(user.id) === id);
+							// console.log(parseInt(user.id), id, ' = ', parseInt(user.id) === id);
 						    if(parseInt(user.id) === id) {
 						    	arr.push(user);
 						    }

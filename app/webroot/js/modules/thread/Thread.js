@@ -197,7 +197,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	     * ignored_threads/on/THREAD_ID = will stop ignore threads , which will not accept notifications
         	     * ignored_threads/off/THREAD_ID = will stop ignoring threads, will accept push notifications
         	     */
-        	    var transaction = (thread.push_notification)?'off':'on';
+        	    var transaction = (!thread.push_notification)?'off':'on';
         	    
                 IgnoredThreadsModel.one(transaction).one(thread.id).post().then(function(rest){
                     $scope.thread.Thread.push_notification = !thread.Thread.push_notification;

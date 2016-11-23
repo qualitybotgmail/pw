@@ -13,7 +13,7 @@ define([
 	
 	'./MainController',
 	'./loading/LoadingController',
-	'./notify/NotifyController',
+	// './notify/NotifyController',
 
 	// '../../services/previewService',
 	'../../services/commonService',

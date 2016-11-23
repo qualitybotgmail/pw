@@ -154,16 +154,16 @@ padding: 10px 10px 0 10px;
 .commentList {
     padding:0;
     list-style:none;
-    max-height:200px;
+    max-height:250px;
     overflow:auto;
 }
-.commentList li {
-    margin:0;
-    margin-top:10px;
-}
-.commentList li > div {
-    display:table-cell;
-}
+/*.commentList li {*/
+/*    margin:0;*/
+/*    margin-top:10px;*/
+/*}*/
+/*.commentList li > div {*/
+/*    display:table-cell;*/
+/*}*/
 .commenterImage {
     width:30px;
     margin-right:5px;

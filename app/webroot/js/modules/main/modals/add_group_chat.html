@@ -4,14 +4,14 @@
 		<form name="groupchatForm" novalidate>
 			<div class="modal-header">
 				<button type="button" class="close" ng-click="cancel()">&times;</button>
-			    <h4 class="white bigger">groupchat Details</h4>
+			    <h4 class="white bigger">メッセージ送信</h4>
 			</div>
 
 			<div class="modal-body">
 				<div class="row" >
-		            <div class="col-xs-7">
+		            <div class="col-xs-12">
 						<div class="form-group">
-		                        <label for="title">Member</label>
+		                        <label for="title">メンバー</label>
 		                        <select2
 	                                id="member_search"
 	                                data="groupchat.users"
@@ -29,16 +29,16 @@
 	                            </select2>
 	                            
 		                        <i class="tooltips col-xs-12" ng-show="groupchatForm.member_ids.$dirty && groupchatForm.member_ids.$invalid">
-		                            <span class="red">This field is required</span>
+		                            <span class="red">※必須項目です</span>
 		                        </i>
 	                    </div>
 	                    <div class="form-group">
-		                        <label for="title">Message</label>
+		                        <label for="title">メッセージ</label>
 		                        
 		                        <textarea class="form-control" row="2" placeholder="Initial Message" ng-model="initial_message" required></textarea>
 	                            
 		                        <i class="tooltips col-xs-12" ng-show="groupchatForm.member_ids.$dirty && groupchatForm.member_ids.$invalid">
-		                            <span class="red">This field is required</span>
+		                            <span class="red">※必須項目です</span>
 		                        </i>
 	                    </div>
 	                    <div class="row">
@@ -53,7 +53,7 @@
 			<div class="modal-footer">
 				<button type="button" class="btn btn-sm" id="btn-close" ng-click="cancel()" tabindex="-1"><i class="fa fa-ban bigger-140"></i> &nbsp;Cancel</button>
 				<button type="submit" ng-click="saveGroupChat()" class="btn btn-primary btn-sm" id="btn-ok" ng-disabled="groupchatForm.$invalid || ! groupchatForm.$dirty">
-					<i class="fa fa-save bigger-140"></i> &nbsp;<u>S</u>ave
+					<i class="fa fa-save bigger-140"></i> &nbsp;送信
 				</button>
 			</div>
 

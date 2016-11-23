@@ -132,6 +132,7 @@ define([
 				$window.location.href = "/users/logout";
 			});
 			
+			// get users information
 			Restangular.one('users').one('me').get().then(function(res){
 				if (!res.User) {
 					$window.location.href = "/users/logout";
@@ -141,14 +142,21 @@ define([
 				}
     	    });
     	    
+    	   Restangular.one('threads').get().then(function(threads) {
+        	   $rootScope.threads = threads;
+        	});
+    	    
     	    // retrieve threads to be ignored
      	    Restangular.one('ignored_threads').get().then(function(threads){
 				$rootScope.ignoredThreads  = threads;
      	    });
-    	    
-    	    Restangular.one('groupchats').get().then(function(res){
-    	        $rootScope.createdGroupChats = res.groupchats;
-    	    });
+     	    
+    	    $rootScope.getGroupchat = function() {
+    	    	Restangular.one('groupchats').get().then(function(res){
+	    	        $rootScope.createdGroupChats = res.groupchats;
+	    	    });	
+    	    }
+    	    $rootScope.getGroupchat();
         	    
 			$rootScope.$on('$stateChangeStart', 
 				function(event, toState, toParams, fromState, fromParams) {

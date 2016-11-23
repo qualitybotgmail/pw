@@ -1,3 +1,27 @@
+<style type="text/css">
+	.blue	 {
+		color: #5bc0de;
+	}
+	#loading {
+	    height: 100%;
+	    position: fixed;
+	    z-index: 999;
+	    width: 100%;
+	    left: 0px;
+	    top: 0px;
+	    overflow: hidden;
+	    background-color: rgba(128,128,128, 0.4);
+	    /*opacity: .5;*/
+	}
+	.loading-element-component {
+		text-align: center;
+	    margin-top: 20%;
+	    font-size:20px;
+	}
+	.text-yellow{
+		color: orange;
+	}
+</style>
 <div id="loading" ng-show="loading.show">
 	<div class="loading-overlay-component"></div>
 	<div class="loading-element-component">
