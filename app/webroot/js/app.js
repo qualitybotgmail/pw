@@ -133,12 +133,13 @@ define([
 			});
 			
 			// get users information
-			Restangular.one('users').one('me').get().then(function(res){
+			Restangular.one('profiles').one('me').get().then(function(res){
 				if (!res.User) {
 					$window.location.href = "/users/logout";
 					return;
 				} else {
 					$rootScope.loginUser  = res.User;	
+					$rootScope.loginUserProfile  = res.Profile;	
 				}
     	    });
     	    
