@@ -4,17 +4,26 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
 	    '$rootScope',
         '$scope',
         '$timeout',
-        '$state',
-        '$stateParams',
-        '$templateCache',
-        '$q',
-        'commonService',
-        'modalService',
-        'focusService',
-        'GLOBAL',
+        'ProfilesModel',
         'Restangular',
-        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, Focus, GLOBAL, Restangular) {
+        function($rootScope, $scope, $timeout, ProfilesModel, Restangular) {
+            $scope.profile = $rootScope.loginUserProfile || {};
         	
+        	$scope.submit = function() {
+        	    if ($scope.profile.id) {
+        	        ProfilesModel.one('edit').one($scope.profile.id).customPOST($scope.profile).then(function(res){
+        	           // console.log(res, 'the result');
+        	            $scope.profile = res.Profile;
+        	            $rootScope.loginUserProfile = $scope.profile;
+        	        });
+        	    } else {
+        	         ProfilesModel.one('add').customPOST($scope.profile).then(function(res){
+        	           //  console.log(res, 'the result');
+        	             $scope.profile = res.Profile;
+        	             $rootScope.loginUserProfile = $scope.profile;
+        	         });
+        	    }
+        	}
         }
 	]);
 });
