@@ -26,7 +26,20 @@ class UsersController extends AppController {
 	}
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('me','dd');
+		$this->Auth->allow('me','dd','notifications');
+	}
+	
+	
+	public function notifications(){
+		header('Content-Type: text/event-stream');
+		header('Cache-Control: no-cache');
+
+		$i = 0;
+		echo "data: " . $i . "\n\n";
+		flush();
+
+		//	sleep(3);
+		
 	}
 
 /**
@@ -139,24 +152,36 @@ class UsersController extends AppController {
 	
 	public function timeline(){ 
  
+		$this->loadModel('Comment');
+		// $this->Head->recursive = -1; 
 		$user_id = $this->Auth->user('id');
-		$this->User->Thread->Head->recursive = 4;  
+		// $this->User->Thread->Head->recursive = 4;  
 		
 		$thread = $this->User->Thread->find('all',  
 		 ['conditions' => ['Thread.user_id' => $user_id]], 
 		['order' =>['Thread.created' => 'desc']] );   
 		
-		$like = $this->User->Like->find('all', 
-		['conditions' => ['Like.user_id' => $user_id]], 
-		['order' =>['Like.created' => 'desc']]);  
 		
 		$head = $this->User->Thread->Head->find('all', 
 		['conditions' => ['Head.user_id' => $user_id]], 
 		['order' =>['Head.created' => 'desc']]);  
+		
+		// $like = $this->User->Like->find('all', 
+		// ['conditions' => ['Like.user_id' => $user_id]], 
+		// ['order' =>['Like.created' => 'desc']]);  
+		
+		$comment = $this->Comment->find('all',
+		['conditions'=>['Comment.user_id'=>$user_id]],
+		['order'=>['Comment.created'=>'desc']]
+		);
 		   
-		$values = array_merge($thread, $head, $like); 
+		// $values = array_merge($thread, $head, $comment); 
 		 
-		$this->set('user', $values); 	
+		if(!empty($thread))$data['Threads'][] = $thread;
+		if(!empty($head))$data['Heads'][] = $head;
+		if(!empty($comment))$data['Comments'][] = $comment;
+		 
+		$this->set('user', $data); 	
 		
 	}
 	
@@ -224,9 +249,10 @@ class UsersController extends AppController {
 	public function search($keyword = null){
 		$this->loadModel('Thread');
 		$this->loadModel('Head');
+		$this->loadModel('Profile');
 		header('Content-Type: application/json;charset=utf-8'); 
 		
-		$this->User->recursive = -1;
+		$this->Profile->recursive = -1;
 		$this->Thread->recursive = -1; 
 		$this->Head->recursive = -1; 
 		 
@@ -236,15 +262,24 @@ class UsersController extends AppController {
 		 $data=[];
 		foreach($keyword as $k){
 			
-			$user = $this->User->find('all',
-			// ['fields' => ['id','username','role','created','modified','firstname','lastname']],
+			$prof = $this->Profile->find('all',
 			['conditions' =>
 				['OR'=>[
-					['User.firstname LIKE' => '%'.$k.'%'],
-					['User.lastname LIKE' => '%'.$k.'%']
+					['Profile.firstname LIKE' => '%'.$k.'%'],
+					['Profile.lastname LIKE' => '%'.$k.'%']
 				]],
-			], 
-			['order' =>['User.created' => 'desc']]);
+			],	['order' =>['User.created' => 'desc']]);
+			
+			
+			// $user = $this->User->find('all',
+			// // ['fields' => ['id','username','role','created','modified','firstname','lastname']],
+			// ['conditions' =>
+			// 	['OR'=>[
+			// 		['User.firstname LIKE' => '%'.$k.'%'],
+			// 		['User.lastname LIKE' => '%'.$k.'%']
+			// 	]],
+			// ], 
+			// ['order' =>['User.created' => 'desc']]);
 			
 			
 			$thread = $this->Thread->find('all', 
@@ -268,8 +303,10 @@ class UsersController extends AppController {
 			// ['order' =>['Head.created' => 'desc']]);  
 			 
 			// echo json_encode(array($user,$head));
-			
-			$data[] = array_merge($user, $thread, $head); 
+			if(!empty($prof))$data['Profiles'][] = $prof;
+			if(!empty($thread))$data['Threads'][] = $thread;
+			if(!empty($head))$data['Heads'][] = $head;
+			//$data[] = array_merge($user, $thread, $head); 
 		}
 		
 		$this->set('user', $data);  
