@@ -11,8 +11,53 @@
 <div jwerty="F1" key-event="goto.thread()" key-name="goto.thread" key-bind="document"></div>
 <div jwerty="F2" key-event="goto.timeline()" key-name="goto.timeline" key-bind="document"></div>
 
+<style type="text/css">
+
+    img {
+    vertical-align: middle;
+    }
+    
+    /*.img-responsive {*/
+    /*display: block;*/
+    /*height: auto;*/
+    /*max-width: 100%;*/
+    /*}*/
+    
+    /*.img-rounded {*/
+    /*border-radius: 3px;*/
+    /*}*/
+    
+    /*.img-thumbnail {*/
+    /*background-color: #fff;*/
+    /*border: 1px solid #ededf0;*/
+    /*border-radius: 3px;*/
+    /*display: inline-block;*/
+    /*height: auto;*/
+    /*line-height: 1.428571429;*/
+    /*max-width: 100%;*/
+    /*moz-transition: all .2s ease-in-out;*/
+    /*o-transition: all .2s ease-in-out;*/
+    /*padding: 2px;*/
+    /*transition: all .2s ease-in-out;*/
+    /*webkit-transition: all .2s ease-in-out;*/
+    /*}*/
+    
+    /*.img-circle {*/
+    /*border-radius: 50%;*/
+    /*}*/
+            
+    .thread-title {
+        font-size: 20px;
+    }
+    .timeline-img{
+        width: 50px;
+        height: 50px;
+    }
+
+</style>
+
 <div class="section col-sm-2">
-    <a >
+    <a ui-sref="app">
         <h3 class="company-name">
             Back Office
         </h3>    
@@ -61,7 +106,118 @@
         </div>
       </form>
     </div>
-    <div ui-view="content"></div>
+    <div ui-view="content">
+        <div class="row">
+            <h3>
+                タイムライン
+            </h3>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="qa-message-list" id="wallmessages">
+	
+                    	<div class="message-item" ng-repeat="thread in timeline">
+                    		<div class="message-inner">
+                    			<div class="message-head clearfix">
+                    				<div class="avatar pull-left">
+                    					<img src="/img/avatar.png" class="timeline-img">
+                    				</div>
+                    				<div class="user-detail">
+                    					<h5 class="handle">
+                    					    <a ui-sref="app.thread({ id: thread.Thread.id })">
+                    					        {{thread.Thread.title}}
+                    					    </a>
+                    					</h5>
+                    					<div class="post-meta">
+                    						<div class="asker-meta">
+                    							<span class="qa-message-what"></span>
+                    							<span class="qa-message-when">
+                    								<span class="qa-message-when-data">{{thread.Thread.created}}</span>
+                    							</span>
+                    							 <span class="qa-message-who">
+                    								<span class="qa-message-who-pad">by </span>
+                    								<span class="qa-message-who-data">
+                    								    {{thread.Owner.username}}
+                    								</span>
+                    							</span>
+                    						</div>
+                    					</div>
+                    				</div>
+                    			</div>
+                    			<div class="qa-message-content">
+                    			    <h3>Head</h3>
+                    				<div class="message-item" ng-repeat="head in thread.Head">
+                                		<div class="message-inner">
+                                			<div class="message-head clearfix">
+                                				<div class="avatar pull-left">
+                                					<img src="/img/avatar.png" class="timeline-img">
+                                				</div>
+                                				<div class="user-detail">
+                                					<h5 class="handle">
+                                					    <a ui-sref="app.thread({ id: thread.Thread.id })">
+                                					        {{head.body}}
+                                					    </a>
+                                					</h5>
+                                					<div class="post-meta">
+                                						<div class="asker-meta">
+                                							<span class="qa-message-what"></span>
+                                							<span class="qa-message-when">
+                                								<span class="qa-message-when-data">{{head.created}}</span>
+                                							</span>
+                                							 <span class="qa-message-who">
+                                								<span class="qa-message-who-pad">by </span>
+                                								<span class="qa-message-who-data">
+                                								    {{head.Owner.username}}
+                                								</span>
+                                							</span>
+                                						</div>
+                                					</div>
+                                				</div>
+                                			</div>
+                                			<div class="qa-message-content">
+                                				<ul class="list-group">
+                                                    <li class="list-item">
+                                                        <ul class="list-group commentList">
+                                                            <li class="list-group-item" ng-repeat="c in head.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
+                                                                <small>by : {{c.User.username}}</small>
+                                                                <p>{{c.body}}</p>
+                                                                <p>
+                                                                     <span ng-repeat="upload in c.Upload">
+                                                                        <a fancybox ng-href="{{upload.path}}">
+                                                                            <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                                                                        </a>
+                                                                    </span>
+                                                                </p>
+                                                                <span style="font-size:10px;">{{c.created}}</span>
+                                                                <button class="btn btn-xs {{(c.isUserLiked)?'':'btn-outline'}} btn-warning pull-right" ng-disabled="c.processing" ng-click="likeComment($index, c)">
+                                                                    {{c.likes}}
+                                                                    <span class="fa fa-thumbs-o-up"></span>
+                                                                </button>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li class="list-group-item form-group">
+                                                        <form  role="form" id="commentFrm" name="commentFrm" method="POST" enctype="multipart/form-data" 
+                                                                    novalidate ng-submit="sendComment()">
+                                                            
+                                                            <input type="text" name="data[Upload][comment_id]" class="hidden" id="comment-id" ng-model="comment.comment_id" />
+                                                            <input type="file" name="data[Upload][file]" id="attachments"  multiple />
+                                                            <textarea name="data[Upload][body]" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
+                                                            <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin-top:4px;">コメント</button>
+                                                            
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                			</div>
+                                		</div>
+                                	</div>
+                    			</div>
+                    		</div>
+                    	</div>
+                    </div>
+	            </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="section col-sm-2">
