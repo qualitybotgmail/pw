@@ -26,7 +26,7 @@
                         <input class="form-control" type="text" placeholder="Lasst Name" ng-model="profile.lastname" required>
                     </div>
                     <div class="form-group pull-right">
-                        <input type="submit" class="btn {{(profile.id)?'btn-warning':'btn-primary'}}" value="{{ (profile.id)?'Update':'Save' }}">
+                        <input type="submit" class="btn {{(profile.id)?'btn-warning':'btn-primary'}}" value="{{ (profile.id)?'Update':'Save' }}" ng-disabled="isProcessing">
                     </div>
                 </form>
             </div>             
