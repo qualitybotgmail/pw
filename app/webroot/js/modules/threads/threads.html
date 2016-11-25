@@ -50,9 +50,13 @@
             </span>
         </span>
         <div class="panel-heading-controls">
-            <!--<button class="btn btn-sm btn-outline btn-warning">-->
-            <!--    <span class="fa fa-thumbs-o-up"></span>-->
-            <!--</button>-->
+            <input type="checkbox" 
+                                id="notification" 
+                                ng-model="thread.Thread.push_notification" 
+                                data-size="mini"
+                                data-label-text="Notification"
+                                switch-change="pushNotification($index)"
+                                bootstrap-switch />
             <div class="btn-group btn-group-sm">
                 <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">
                   <span class="fa fa-cog"></span>&nbsp;<span class="fa fa-caret-down"></span>

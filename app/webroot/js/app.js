@@ -143,14 +143,34 @@ define([
 				}
     	    });
     	    
-    	   Restangular.one('threads').get().then(function(threads) {
-        	   $rootScope.threads = threads;
-        	});
+    	    var _checkThreadIsIgnored = function(ignoredThreads) {
+    	    	angular.forEach($rootScope.threads, function(thread,index){
+            		var isNeedNotification = true;
+            		for (var i = 0; i < ignoredThreads.length; i++)	{
+            			if (ignoredThreads[i] === thread.Thread.id) {
+            				isNeedNotification = false;
+            				thread.Thread.push_notification = false;
+            				break;
+            			}
+            		}
+            		if (isNeedNotification) {
+            			thread.Thread.push_notification = true;
+            		}
+            	});
+    	    };
+    	    	
+    	    $rootScope.getIgnoredThreads = function() {
+    	    	// retrieve threads to be ignored
+	     	    Restangular.one('ignored_threads').get().then(function(ignoredThreads){
+					$rootScope.ignoredThreads  = ignoredThreads;
+					_checkThreadIsIgnored(ignoredThreads);
+	     	    });
+    	    };
     	    
-    	    // retrieve threads to be ignored
-     	    Restangular.one('ignored_threads').get().then(function(threads){
-				$rootScope.ignoredThreads  = threads;
-     	    });
+    	    Restangular.one('threads').get().then(function(threads) {
+        	   $rootScope.threads = threads;
+        	   $rootScope.getIgnoredThreads();
+        	});
      	    
     	    $rootScope.getGroupchat = function() {
     	    	Restangular.one('groupchats').get().then(function(res){
