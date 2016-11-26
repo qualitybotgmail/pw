@@ -173,15 +173,15 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	    // if head was not like
         	    if (!head.isUserLiked) {
         	        HeadsModel.one('like').one(head.id.toString()).get().then(function(res) {
-    	                $scope.thread.Head.isUserLiked = true;
-    	                $scope.thread.Head.likes += 1;
-    	                $scope.thread.Head.processing = false;
+    	                $scope.selectedHead.Head.isUserLiked = true;
+    	                $scope.selectedHead.Head.likes += 1;
+    	                $scope.selectedHead.Head.processing = false;
                 	});   
         	    } else { // if thread was already like
         	        HeadsModel.one('unlike').one(head.id.toString()).get().then(function(res) {
-    	                $scope.thread.Head.isUserLiked = false;
-    	                $scope.thread.Head.likes -= 1;
-    	                $scope.thread.Head.processing = false;
+    	                $scope.selectedHead.Head.isUserLiked = false;
+    	                $scope.selectedHead.Head.likes -= 1;
+    	                $scope.selectedHead.Head.processing = false;
                 	});
         	    }
         	};
