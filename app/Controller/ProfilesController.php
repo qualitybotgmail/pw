@@ -222,27 +222,76 @@ class ProfilesController extends AppController {
 		}
 		
 	}	
+	public function _loadasoc(&$obj,$modelA,$modelB){
+		$this->loadModel($modelB);
+		$this->$modelB->recursive=-1;
+		$find = "findAllBy".$modelA."Id";
+		$result = $this->$modelB->$find($obj[$modelA]['id']);
+		$obj[$modelB] = $result;
+		return $result;
+	}
 	public function timeline(){
-		error_reporting(0);
+	//	error_reporting(0);
 		
 		header("Content-Type: application/json");
 		
-		$this->Profile->User->recursive=4;
-		$u = $this->Profile->User->findById($this->Auth->user('id'));
-		$threads = [];
-		foreach($u['Thread'] as $t){
-			$t=$this->_unsetall($t,'Owner',array('modified','password','created','role','Comment','Groupchat','Head','Message','Thread','IgnoredThread',"Like","Log","Setting","Upload"));
-			$t=$this->_unsetallr($t,'Head',array('Owner/Comment'));
-			$t=$this->_unsetallr($t,'User',array('modified','created','role','Comment','Groupchat','Head','Message','Thread','UsersThread','IgnoredThread','Like','Log','Profile/0/User','Profile/0/modified','Profile/0/created'));
-
-			$t=$this->_unsetkey($t,'password');
-			$t=$this->_unsetkey($t,'role');
-			$t=$this->_unsetkey($t,'head');
-			
-			
-			$threads[]=$t;
+		$this->Profile->User->Thread->recursive=-1;
+		$this->Profile->User->Thread->Head->recursive=-1;
+		$this->Profile->User->Thread->Head->Comment->recursive=-1;
 		
+	//	$u = $this->Profile->User->find('all',array('conditions' => array('user_id' =>) ));
+		$threads = $this->Profile->User->Thread->findAllByUserId($this->Auth->user('id'));
+		foreach($threads as $k => $t){
+			$threads[$k]['Head'] = array();
+			$tid = $t['Thread']['id'];
+			$heads = $this->Profile->User->Thread->Head->findAllByThreadId($tid);
+		
+			foreach($heads as $kh=> $head){
+				$hid = $head['Head']['id'];
+				if($t['Thread']['modified'] < $head['Head']['modified']){
+					$threads[$k]['Thread']['modified'] = $head['Head']['modified'];
+				}
+				$threads[$k]['Head'][] = $head['Head'];
+				
+				
+				$comments = $this->_loadasoc($head,'Head','Comment');
+				$this->_loadasoc($head,'Head','Upload');
+				
+				$this->_loadasoc($head,'Head','Like');
+				$head['Head']['likes'] = isset($head['Like'])?count($head['Like']):0;
+				$userLiked = $this->Profile->User->Head->Like->findByUserIdAndHeadId($this->Auth->user('id'),$hid);
+				$head['Head']['isUserLiked'] = count($userLiked)>0;
+				$threads[$k]['Head'][$kh] = $head;
+				
+				for($i = 0 ; $i < count($comments); $i++){
+					$comment = $threads[$k]['Head'][$kh]['Comment'][$i];
+					$this->_loadasoc($threads[$k]['Head'][$kh]['Comment'][$i],'Comment','Like');
+					$threads[$k]['Head'][$kh]['Comment'][$i]['Comment']['likes'] = count($threads[$k]['Head'][$kh]['Comment'][$i]['Like']);
+					$userCommentLiked = $this->Profile->User->Like->findByUserIdAndCommentId($this->Auth->user('id'),$comment['Comment']['id']);
+					$threads[$k]['Head'][$kh]['Comment'][$i]['Comment']['isUserLiked'] = count($userCommentLiked)>0;
+					$this->_loadasoc($threads[$k]['Head'][$kh]['Comment'][$i],'Comment','Upload');
+				}
+				
+			}
+			
+			
 		}
+		// $threads = [];
+		// foreach($u['Thread'] as $t){
+		// 	$t=$this->_unsetall($t,'Owner',array('modified','password','created','role','Comment','Groupchat','Head','Message','Thread','IgnoredThread',"Like","Log","Setting","Upload"));
+		// 	$t=$this->_unsetallr($t,'Head',array('Owner/Comment'));
+		// 	$t=$this->_unsetallr($t,'User',array('modified','created','role','Comment','Groupchat','Head','Message','Thread','UsersThread','IgnoredThread','Like','Log','Profile/0/User','Profile/0/modified','Profile/0/created'));
+
+		// 	$t=$this->_unsetkey($t,'password');
+		// 	$t=$this->_unsetkey($t,'role');
+		// 	$t=$this->_unsetkey($t,'head');
+			
+			
+		// 	$threads[]=$t;
+			
+		// 	break;
+		
+		// }
 		echo json_encode($threads);
 		exit;
 	}
