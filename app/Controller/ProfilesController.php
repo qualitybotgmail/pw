@@ -194,10 +194,38 @@ class ProfilesController extends AppController {
 		$obj[$name] = $rets;
 		return $obj;
 	}	
-	
+	public function _unsetkey($obj,$ak){
+		if(is_array($obj)){
+
+			$nobj = [];
+			foreach($obj as $k => $o){
+				if($k == $ak) continue;
+				$nobj[$k] = $this->_unsetkey($o,$ak);
+			}
+			return $nobj;
+		}else{
+			return $obj;
+		}
+		
+	}
+	public function _unsetkeyr($obj,$ak){
+		if(is_array($obj)){
+
+			$nobj = [];
+			foreach($obj as $k => $o){
+				if($k == $ak) continue;
+				$nobj[$k] = $this->_unsetkey($o,$ak);
+			}
+			return $nobj;
+		}else{
+			return $obj;
+		}
+		
+	}	
 	public function timeline(){
+		error_reporting(0);
+		
 		header("Content-Type: application/json");
-		$t = array('Owner' => ['User' => ['foo' => 'fff']]);
 		
 		$this->Profile->User->recursive=4;
 		$u = $this->Profile->User->findById($this->Auth->user('id'));
@@ -205,11 +233,15 @@ class ProfilesController extends AppController {
 		foreach($u['Thread'] as $t){
 			$t=$this->_unsetall($t,'Owner',array('modified','password','created','role','Comment','Groupchat','Head','Message','Thread','IgnoredThread',"Like","Log","Setting","Upload"));
 			$t=$this->_unsetallr($t,'Head',array('Owner/Comment'));
-			$t=$this->_unsetallr($t,'User',array('modified','password','created','role','Comment','Groupchat','Head','Message','Thread','UsersThread','IgnoredThread','Like','Log','Profile/0/User','Profile/0/modified','Profile/0/created'));
+			$t=$this->_unsetallr($t,'User',array('modified','created','role','Comment','Groupchat','Head','Message','Thread','UsersThread','IgnoredThread','Like','Log','Profile/0/User','Profile/0/modified','Profile/0/created'));
 
+			$t=$this->_unsetkey($t,'password');
+			$t=$this->_unsetkey($t,'role');
+			$t=$this->_unsetkey($t,'head');
+			
 			
 			$threads[]=$t;
-	
+		
 		}
 		echo json_encode($threads);
 		exit;
