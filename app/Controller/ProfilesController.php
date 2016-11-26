@@ -209,7 +209,7 @@ class ProfilesController extends AppController {
 
 			
 			$threads[]=$t;
-			break;
+	
 		}
 		echo json_encode($threads);
 		exit;
