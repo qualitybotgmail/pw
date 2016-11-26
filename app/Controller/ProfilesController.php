@@ -153,8 +153,68 @@ class ProfilesController extends AppController {
         $this->set('profiles',$user);
         
 	}
+	public function _unsets($obj,$name){
+
+		$ex = explode("/",$name);
+
+		switch(count($ex)){
+			case 1:
+				unset($obj[$ex[0]]);
+				break;
+			case 2: 
+				unset($obj[$ex[0]][$ex[1]]);
+				break;
+			case 3:
+				unset($obj[$ex[0]][$ex[1]][$ex[2]]);
+				break;
+			case 4:
+				unset($obj[$ex[0]][$ex[1]][$ex[2]][$ex[3]]);
+				break;		
+			default:
+				break;
+		}
+
+		
+		return $obj;
+	}
+
+	public function _unsetall($obj,$name,$subnames){
+		foreach($subnames as $sn){
+			
+			$obj = $this->_unsets($obj,$name.'/'.$sn);
+		}
+		
+		return $obj;
+	}
+	public function _unsetallr($obj,$name,$subnames){
+		$rets = [];
+		foreach($obj[$name] as $u){
+			$rets[]=$this->_unsetall(array($name=>$u),$name,$subnames);
+		}
+		$obj[$name] = $rets;
+		return $obj;
+	}	
 	
-	public function timeline(){ 
+	public function timeline(){
+		header("Content-Type: application/json");
+		$t = array('Owner' => ['User' => ['foo' => 'fff']]);
+		
+		$this->Profile->User->recursive=4;
+		$u = $this->Profile->User->findById($this->Auth->user('id'));
+		$threads = [];
+		foreach($u['Thread'] as $t){
+			$t=$this->_unsetall($t,'Owner',array('modified','password','created','role','Comment','Groupchat','Head','Message','Thread','IgnoredThread',"Like","Log","Setting","Upload"));
+			$t=$this->_unsetallr($t,'Head',array('Owner/Comment'));
+			$t=$this->_unsetallr($t,'User',array('modified','password','created','role','Comment','Groupchat','Head','Message','Thread','UsersThread','IgnoredThread','Like','Log','Profile/0/User','Profile/0/modified','Profile/0/created'));
+
+			
+			$threads[]=$t;
+			break;
+		}
+		echo json_encode($threads);
+		exit;
+	}
+	public function timeline2(){ 
 	////this should have logs then query threads owner
 		$this->loadModel('Log'); 
 		$this->loadModel('Thread'); 
