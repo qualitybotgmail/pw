@@ -11,6 +11,7 @@ define([
 	// import modals
 	'./modals/addMemberModal',
 	'./modals/threadHeadModal',
+	'../main/modals/threadModal',
 	
 	// import filters
 	'../../factories/filter',

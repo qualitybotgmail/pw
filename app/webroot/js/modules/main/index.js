@@ -6,6 +6,7 @@ define([
 	'../../models/threads',
 	'../../models/users',
 	'../../models/groupChats',
+	'../../models/profiles',
 	
 	// import filters
 	'../../factories/filter',

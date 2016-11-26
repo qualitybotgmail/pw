@@ -287,6 +287,7 @@ class ThreadsController extends AppController {
 		if ($this->request->is(array('post', 'put'))) {
 			$this->request->data['Thread']['user_id'] = $this->Auth->user('id');
 			$this->request->data['Thread']['title'] = $this->request->data['title'];
+			$this->request->data['Thread']['id'] = $this->request->data['id'];
 			$data = $this->Thread->save($this->request->data);
 			
 			if ($data) {

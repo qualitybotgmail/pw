@@ -8,6 +8,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             factory.templates = {
                 addThreadMember: GLOBAL.baseModulePath + 'thread/modals/add_thread_member.html?version=' + GLOBAL.version,
                 addThreadHead: GLOBAL.baseModulePath + 'thread/modals/add_thread_head.html?version=' + GLOBAL.version,
+                thread: GLOBAL.baseModulePath + 'main/modals/add_thread.html',
             };
             return factory;
         }
@@ -36,6 +37,16 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             $scope.templates = ThreadFactory.templates;
             $scope.currentPageNumber = 1;
+            
+            
+            var _updateThreadTitle = function(threadId){
+                for (var i = 0; i < $rootScope.threads.length; i++) {
+                    if (threadId === $rootScope.threads[0].Thread.id){
+                        angular.extend($rootScope.threads[0].Thread, $scope.thread.Thread);
+                        break;
+                    }
+                }  
+            };
             
             
             // add members
@@ -115,6 +126,13 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                     });
             };
             
+            // delete head thread
+        	$scope.deleteHead = function(index, headId) {
+        	    HeadsModel.one(headId).remove().then(function(result){
+        	        $scope.thread.Head.splice(index, 1);
+        	    });
+        	};
+            
             // check if selected thread enable push notification
             $scope.checkNotificationSetting = function(/*result*/) {
                 for(var i=0; i<$rootScope.ignoredThreads; i++){
@@ -154,10 +172,37 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	   });
         	};
         	
-        	// delete head thread
-        	$scope.deleteHead = function(index, headId) {
-        	    HeadsModel.one(headId).remove().then(function(result){
-        	        $scope.thread.Head.splice(index, 1);
+        	// edit threads
+            $scope.editThread = function(index, thread) {
+                var modalConfig = {
+                    template   : $templateCache.get("thread-modal.html"),
+                    controller : 'ThreadModalController',
+                    windowClass: 'modal-width-90 ',
+                    size       : 'sm',
+                    resolve   : {
+                        fromParent: function () {
+                            return {
+                                'thread': thread.Thread,
+                                'isEdit': true
+                            };
+                        }
+                    }
+                };
+                
+                Modal.showModal(modalConfig, {}).then(function (result) {
+                    // success
+                    $scope.thread.Thread = angular.extend($scope.thread.Thread, result);
+                    _updateThreadTitle($scope.thread.Thread.id);
+                }, function (err) {
+                    // error
+                });
+            };
+            
+            // delete head thread
+        	$scope.deleteThread = function(index, ThreadId) {
+        	    ThreadsModel.one(ThreadId).remove().then(function(result){
+        	        $rootScope.getThreads();
+        	        $state.go('app.threads');
         	    });
         	};
         	
