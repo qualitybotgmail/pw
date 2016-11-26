@@ -49,6 +49,7 @@ require.config({
 		fancybox :  	'../vendor/fancybox/jquery.fancybox.min',
 		ngIdleJs :		'../vendor/ngIdle/angular-idle.min',
 		bootstrapSwitch:'../vendor/bootstrap-switch/bootstrap-switch.min',
+		ngNotification :'../vendor/angular-notifications/angular-notification.min',
 
 	},
 	shim: {
@@ -73,6 +74,7 @@ require.config({
 		'fancybox' 		: {deps: ['jquery']},
 		'ngIdleJs' 		: {deps: ['angular']},
 		'bootstrapSwitch': {deps: ['angular']},
+		'ngNotification': {deps: ['angular']},
 
 		'html2canvas': {
             exports: 'html2canvas',

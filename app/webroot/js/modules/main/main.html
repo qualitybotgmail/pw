@@ -124,14 +124,14 @@
                     				<div class="user-detail">
                     					<h5 class="handle">
                     					    <a ui-sref="app.thread({ id: thread.Thread.id })">
-                    					        {{thread.Thread.title}}
+                    					        {{thread.title}}
                     					    </a>
                     					</h5>
                     					<div class="post-meta">
                     						<div class="asker-meta">
                     							<span class="qa-message-what"></span>
                     							<span class="qa-message-when">
-                    								<span class="qa-message-when-data">{{thread.Thread.created}}</span>
+                    								<span class="qa-message-when-data">{{thread.created}}</span>
                     							</span>
                     							 <span class="qa-message-who">
                     								<span class="qa-message-who-pad">by </span>
@@ -143,7 +143,7 @@
                     					</div>
                     				</div>
                     			</div>
-                    			<div class="qa-message-content">
+                    			<div class="qa-message-content" ng-if="thread.Head.length">
                     			    <h3>Head</h3>
                     				<div class="message-item" ng-repeat="head in thread.Head">
                                 		<div class="message-inner">

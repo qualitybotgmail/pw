@@ -45,9 +45,10 @@ define([
         'Restangular',
         'ThreadsModel',
         'UsersModel',
+        'ProfilesModel',
         'MainFactory',
 
-        function($rootScope, $scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, UsersModel, Factory) {
+        function($rootScope, $scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, UsersModel, ProfilesModel, Factory) {
         	
         	var start = function() {
         	    
@@ -100,126 +101,9 @@ define([
                     });
                 };
                 
-                // UsersModel.one('timeline').get().then(function(timeline){
-                //   $scope.timeline = timeline;
-                // });
-                
-                $scope.timeline = [  
-                   {  
-                      Thread:{  
-                         id:"110",
-                         user_id:"21",
-                         title:"Team Talknote",
-                         head:null,
-                         created:"2016-11-19 09:24:00",
-                         modified:"2016-11-19 09:24:00"
-                      },
-                      Owner:{  
-                         id:"21",
-                         username:"ryan",
-                         role:"admin",
-                         created:"2016-11-18 00:02:52",
-                         modified:"2016-11-18 00:02:52",
-                      },
-                      Head:[  
-                         {  
-                            id:"53",
-                            user_id:"21",
-                            thread_id:"110",
-                            body:"kokook",
-                            created:"2016-11-22 08:12:27",
-                            modified:"2016-11-22 08:12:27",
-                            Owner:{  
-                               id:"21",
-                               username:"ryan",
-                               role:"admin",
-                               created:"2016-11-18 00:02:52",
-                               modified:"2016-11-18 00:02:52",
-                            },
-                            Comment:[  
-                               {  
-                                  id:"3",
-                                  user_id:"21",
-                                  head_id:"53",
-                                  body:"kokoko",
-                                  created:"2016-11-22 08:12:34",
-                                  modified:"2016-11-22 08:12:34",
-                                  User:{  
-                                     id:"21",
-                                     username:"ryan",
-                                     password:"$2a$10$tNjFx2u69BCUjrmjee10Wu9cDEhXGK1rZ39zy6X4g3357cr0n8seu",
-                                     role:"admin",
-                                     created:"2016-11-18 00:02:52",
-                                     modified:"2016-11-18 00:02:52",
-                                  },
-                                  Upload:[  ],
-                                  likes:0,
-                                  isUserLiked:false
-                               },
-                               {  
-                                  id:"4",
-                                  user_id:"21",
-                                  head_id:"53",
-                                  body:"asdsad",
-                                  created:"2016-11-22 10:50:53",
-                                  modified:"2016-11-22 10:50:53",
-                                  User:{  
-                                     id:"21",
-                                     username:"ryan",
-                                     password:"$2a$10$tNjFx2u69BCUjrmjee10Wu9cDEhXGK1rZ39zy6X4g3357cr0n8seu",
-                                     role:"admin",
-                                     created:"2016-11-18 00:02:52",
-                                     modified:"2016-11-18 00:02:52",
-                                  },
-                                  Upload:[  ],
-                                  likes:0,
-                                  isUserLiked:false
-                               },
-                               {  
-                                  id:"5",
-                                  user_id:"3",
-                                  head_id:"53",
-                                  body:"asdasd",
-                                  created:"2016-11-22 10:50:56",
-                                  modified:"2016-11-22 10:50:56",
-                                  User:{  
-                                     id:"3",
-                                     username:"admin",
-                                     password:"$2a$10$vyADTWUl3uT6Bj3iAJB/J.3T79O1GPBX2osJc0TiafN0.YYQNd/Gu",
-                                     role:"admin",
-                                     created:"2015-06-19 08:31:21",
-                                     modified:"2015-06-19 08:31:21",
-                                  },
-                                  Upload:[  ],
-                                  likes:0,
-                                  isUserLiked:false
-                               },
-                               {  
-                                  id:"6",
-                                  user_id:"3",
-                                  head_id:"53",
-                                  body:"asdasdasd",
-                                  created:"2016-11-22 10:50:59",
-                                  modified:"2016-11-22 10:50:59",
-                                  User:{  
-                                     id:"3",
-                                     username:"admin",
-                                     password:"$2a$10$vyADTWUl3uT6Bj3iAJB/J.3T79O1GPBX2osJc0TiafN0.YYQNd/Gu",
-                                     role:"admin",
-                                     created:"2015-06-19 08:31:21",
-                                     modified:"2015-06-19 08:31:21",
-                                  },
-                                  Upload:[  ],
-                                  likes:0,
-                                  isUserLiked:false
-                               }
-                            ],
-                            likes:0,
-                            isUserLiked:false
-                         }
-                      ]
-                   }
-                ];
+                ProfilesModel.one('timeline').get().then(function(timeline){
+                  $scope.timeline = timeline;
+                });
 
                
 
