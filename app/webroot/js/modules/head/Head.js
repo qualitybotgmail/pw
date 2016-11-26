@@ -56,6 +56,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             $scope.selectedHead = null;
             $scope.comment = {};
             $scope.comment.body = '';
+            $scope.isFetching = false;
             
             
             $scope.currentPageNumber = 1;
@@ -146,10 +147,12 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	// get thread information
         	$scope.getHead = function() {
+        	    if($scope.isFetching) return;
+        	    $scope.isFetching = true;
+        	    
         	    HeadsModel.one($scope.selectedHeadId.toString()).get().then(function(thread){
         	        $scope.selectedHead = thread;
-        	        // get thread for every 7 secs
-                    pendingQry = $interval($scope.getHead, 7000);
+        	        $scope.isFetching = false;
         	    });
         	};
         	
@@ -220,6 +223,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	    }
         	};
         	
+        	// get thread for every 7 secs
+            pendingQry = $interval($scope.getHead, 7000);
         	
         	/**
         	 * initialize some functions
