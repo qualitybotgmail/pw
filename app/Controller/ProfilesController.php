@@ -152,9 +152,9 @@ class ProfilesController extends AppController {
 		$this->loadModel('Comment'); 
 		$user_id = $this->Auth->user('id'); 
 		 $data=[];
-		
-		// $this->Log->recursive = -1; 
-		$this->Thread->recursive = 2; 
+		 
+		// $this->Thread->recursive = 2; 
+		$this->Thread->recursive = 3; 
 		//////////////////////////////////////////
 		// $timeline = $this->Log->Thread->find('all',
 		// ['conditions' => ['Thread.user_id' => $user_id]], 

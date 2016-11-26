@@ -96,5 +96,6 @@ class Comment extends AppModel {
 			
 		return false;
 	}
+	  
 	
 }

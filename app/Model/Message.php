@@ -82,4 +82,14 @@ class Message extends AppModel {
 		'Upload'
 	);
 
+	 
+	function beforeSave($options = array()){
+		if(empty($this->data[$this->alias]['id'])){
+			$this->Log->saveAll($options);
+		}else{ 
+			$this->Log->saveAll($options);
+		}
+    return true;
+	}
+	
 }

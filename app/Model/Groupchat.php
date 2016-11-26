@@ -85,5 +85,5 @@ class Groupchat extends AppModel {
 		return $ret;
 		
 	}	
-	 
+	  
 }
