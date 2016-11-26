@@ -50,10 +50,17 @@ class ProfilesController extends AppController {
 		$user_id = $this->Auth->user('id');
 			
 			$this->Profile->create();
-			$data = $this->Profile->set(array('user_id'=>$user_id, 'firstname'=> $this->request->data['Profile']['firstname'], 'lastname'=>$this->request->data['Profile']['lastname']));  
-			if ($this->Profile->save($data)) {
-				$this->Session->setFlash(__('The profile has been saved.'), 'default', array('class' => 'alert alert-success'));
-				return $this->redirect(array('action' => 'index'));
+			$data = [
+				'Profile' => [
+						'user_id'=>$user_id, 
+						'firstname'=> $this->request->data['firstname'], 
+						'lastname'=>$this->request->data['lastname']
+					]
+				];
+			$saveResult = $this->Profile->save($data);
+			if ($saveResult) {
+				echo json_encode($saveResult);
+				exit;
 			} else {
 				$this->Session->setFlash(__('The profile could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
 			}
@@ -74,9 +81,12 @@ class ProfilesController extends AppController {
 			throw new NotFoundException(__('Invalid profile'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
-			if ($this->Profile->save($this->request->data)) {
+			$result = $this->Profile->save($this->request->data);
+			if ($result) {
 				$this->Session->setFlash(__('The profile has been saved.'), 'default', array('class' => 'alert alert-success'));
-				return $this->redirect(array('action' => 'index'));
+				echo json_encode($result);
+				exit;
+				// return $this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The profile could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
 			}
@@ -131,13 +141,13 @@ class ProfilesController extends AppController {
         $usercount = $this->Profile->find('count', ['conditions'=> ['Profile.user_id' => $id]]); 
 		if($usercount!=0){
 	    	 $user = $this->Profile->find('first', 
-	    	 ['fields' => ['Profile.id','Profile.user_id','User.username','Profile.firstname', 'Profile.lastname','Profile.created','Profile.modified', 'User.role','User.created','User.modified']],
-	    	 ['conditions'=> ['Profile.user_id' => $id]]); 
+	    	 ['conditions'=> ['Profile.user_id' => $id]],
+	    	 ['fields' => ['Profile.id','Profile.user_id','User.username','Profile.firstname', 'Profile.lastname','Profile.created','Profile.modified', 'User.role','User.created','User.modified']]); 
 		}else{
 			$this->User->recursive = -1; 
 			$user = $this->User->find('first', 
-			['fields' => ['id','username','role','created','modified']],
-			['conditions'=> ['User.id' => $id]]); 
+			['conditions'=> ['User.id' => $id],
+			['fields' => ['id','username','role','created','modified']]]); 
 		}
         
         $this->set('profiles',$user);

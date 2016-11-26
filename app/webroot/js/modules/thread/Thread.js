@@ -117,22 +117,15 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             // check if selected thread enable push notification
             $scope.checkNotificationSetting = function(/*result*/) {
-                // var thread = result;
-                // thread.Thread.push_notification = true;
-                // for (var i = 0; i < $rootScope.ignoredThreads.length; i++) { 
-                
-                angular.forEach($rootScope.ignoredThreads, function(thread, index){
-                    if (thread === $scope.thread.Thread.id) {
+                for(var i=0; i<$rootScope.ignoredThreads; i++){
+                    if ($rootScope.ignoredThreads[i] === $scope.thread.Thread.id) {
                         // false means the thread 
                         // sett off notificaion/push notification
                         // ignore this thread
-                        // $scope.$apply(function() {
-                            $scope.thread.Thread.push_notification = false;
-                        // });
-                        // break;
+                        $scope.thread.Thread.push_notification = false;
+                        break;
                     }
-                });
-                // }
+                };
             };
         	
         	// get thread information
@@ -197,7 +190,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	     * ignored_threads/on/THREAD_ID = will stop ignore threads , which will not accept notifications
         	     * ignored_threads/off/THREAD_ID = will stop ignoring threads, will accept push notifications
         	     */
-        	    var transaction = (thread.push_notification)?'off':'on';
+        	    var transaction = (!thread.push_notification)?'off':'on';
         	    
                 IgnoredThreadsModel.one(transaction).one(thread.id).post().then(function(rest){
                     $scope.thread.Thread.push_notification = !thread.Thread.push_notification;

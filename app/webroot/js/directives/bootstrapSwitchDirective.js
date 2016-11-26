@@ -19,8 +19,8 @@ define([
                     element.on('switchChange.bootstrapSwitch', function(event, state) {
                         if (ngModel) {
                             scope.$apply(function() {
+                                ngModel.$setViewValue(state);
                                 scope.switchChange();
-                                // ngModel.$setViewValue(state);
                             });
                         }
                     });

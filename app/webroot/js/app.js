@@ -132,23 +132,52 @@ define([
 				$window.location.href = "/users/logout";
 			});
 			
-			Restangular.one('users').one('me').get().then(function(res){
+			// get users information
+			Restangular.one('profiles').one('me').get().then(function(res){
 				if (!res.User) {
 					$window.location.href = "/users/logout";
 					return;
 				} else {
 					$rootScope.loginUser  = res.User;	
+					$rootScope.loginUserProfile  = res.Profile;	
 				}
     	    });
     	    
-    	    // retrieve threads to be ignored
-     	    Restangular.one('ignored_threads').get().then(function(threads){
-				$rootScope.ignoredThreads  = threads;
-     	    });
+    	    var _checkThreadIsIgnored = function(ignoredThreads) {
+    	    	angular.forEach($rootScope.threads, function(thread,index){
+            		var isNeedNotification = true;
+            		for (var i = 0; i < ignoredThreads.length; i++)	{
+            			if (ignoredThreads[i] === thread.Thread.id) {
+            				isNeedNotification = false;
+            				thread.Thread.push_notification = false;
+            				break;
+            			}
+            		}
+            		if (isNeedNotification) {
+            			thread.Thread.push_notification = true;
+            		}
+            	});
+    	    };
+    	    	
+    	    $rootScope.getIgnoredThreads = function() {
+    	    	// retrieve threads to be ignored
+	     	    Restangular.one('ignored_threads').get().then(function(ignoredThreads){
+					$rootScope.ignoredThreads  = ignoredThreads;
+					_checkThreadIsIgnored(ignoredThreads);
+	     	    });
+    	    };
     	    
-    	    Restangular.one('groupchats').get().then(function(res){
-    	        $rootScope.createdGroupChats = res.groupchats;
-    	    });
+    	    Restangular.one('threads').get().then(function(threads) {
+        	   $rootScope.threads = threads;
+        	   $rootScope.getIgnoredThreads();
+        	});
+     	    
+    	    $rootScope.getGroupchat = function() {
+    	    	Restangular.one('groupchats').get().then(function(res){
+	    	        $rootScope.createdGroupChats = res.groupchats;
+	    	    });	
+    	    }
+    	    $rootScope.getGroupchat();
         	    
 			$rootScope.$on('$stateChangeStart', 
 				function(event, toState, toParams, fromState, fromParams) {

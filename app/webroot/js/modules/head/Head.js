@@ -78,6 +78,9 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                    success: function(response) {
                        // .. do something
                        $scope.selectedHead.Comment.push(angular.extend(comment, {'Upload': response.Success}));
+                       $("#attachments").val('');
+                       HeadService.scrollDown();
+                       $scope.comment = {};
                        $scope.$appy();
                    },
                    error: function(jqXHR, textStatus, errorMessage) {
@@ -186,7 +189,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	// get thread for every 7 secs
         	
-        	pendingQry = $interval($scope.getHead, 7000);
+        // 	pendingQry = $interval($scope.getHead, 7000);
         	
         	/**
         	 * initialize some functions

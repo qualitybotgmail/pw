@@ -7,24 +7,22 @@ define([
 	'../../models/users',
 	'../../models/groupChats',
 	
+	// import filters
+	'../../factories/filter',
+	
 	// import modals
 	'./modals/threadModal',
 	'./modals/groupChatModal',
 	
 	'./MainController',
 	'./loading/LoadingController',
-	'./notify/NotifyController',
+	// './notify/NotifyController',
 
-	// '../../services/previewService',
 	'../../services/commonService',
 	'../../services/focusService',
 	'../../services/modalService',
-	// '../../services/gritterService',
 	'../../services/blockerService',
-	// '../../services/gridService',
-	// '../../services/formService',
 	'../../directives/jwertyDirective',
-	// '../../directives/jqGridDirective',
 	'../../directives/selectTwoDirective',
 	
 ], function () {});

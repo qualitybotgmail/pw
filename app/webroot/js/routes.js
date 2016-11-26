@@ -14,11 +14,12 @@ define([], function()
                     'loading': {
                         templateUrl: baseSourcePath + 'main/loading/loading.html?version=' + Talknote.version,
                         controller: 'LoadingController'  
-                    },
-                    'notify': {
-                        templateUrl: baseSourcePath + 'main/notify/notify.html?version=' + Talknote.version,
-                        controller: 'NotifyController'
                     }
+                    // ,
+                    // 'notify': {
+                    //     templateUrl: baseSourcePath + 'main/notify/notify.html?version=' + Talknote.version,
+                    //     controller: 'NotifyController'
+                    // }
                 },
                 
                 dependencies: [
@@ -90,6 +91,19 @@ define([], function()
                     'modules/timeline/index'
                 ],
                 name: 'app.timeline'
+            },
+
+            'profile': {
+                views: {
+                    'content': {
+                        templateUrl: baseSourcePath + 'profile/profile.html?version=' + Talknote.version,
+                        controller: 'ProfileController'   
+                    }
+                },
+                dependencies: [
+                    'modules/profile/index'
+                ],
+                name: 'app.profile'
             },
 
         }
