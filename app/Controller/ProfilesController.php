@@ -373,39 +373,43 @@ class ProfilesController extends AppController {
 	
 	
 	public function search($keyword = null){
+		
 		header('Content-Type: application/json;charset=utf-8'); 
 		$this->loadModel('Thread');
 		$this->loadModel('Head'); 
+		$this->loadModel('User'); 
 		
-		$this->Profile->recursive = -1;
+		
+		$this->Profile->recursive = 1;
 		$this->Thread->recursive = -1; 
 		$this->Head->recursive = -1; 
+		$this->User->recursive = -1; 
+		
 		 
 		$keyword = str_replace("+", " ", $keyword);
 		$keyword = explode(" ",trim($keyword));
 		
-		 $data=[];
+		$data=[];
 		foreach($keyword as $k){
 			
+			$users = $this->User->find('all',
+			['conditions' => ['User.username LIKE' => '%'.$k.'%'],
+			'fields' => ['id','username']]);
+			
 			$prof = $this->Profile->find('all',
-			['conditions' =>
+			['fields'=>[
+				
+				'Profile.id',
+				'Profile.user_id',
+				'Profile.firstname','Profile.lastname',
+				'User.id',
+				'User.username'
+				],'conditions' =>
 				['OR'=>[
 					['Profile.firstname LIKE' => '%'.$k.'%'],
 					['Profile.lastname LIKE' => '%'.$k.'%']
 				]],
 			],	['order' =>['User.created' => 'desc']]);
-			
-			
-			// $user = $this->User->find('all',
-			// // ['fields' => ['id','username','role','created','modified','firstname','lastname']],
-			// ['conditions' =>
-			// 	['OR'=>[
-			// 		['User.firstname LIKE' => '%'.$k.'%'],
-			// 		['User.lastname LIKE' => '%'.$k.'%']
-			// 	]],
-			// ], 
-			// ['order' =>['User.created' => 'desc']]);
-			
 			
 			$thread = $this->Thread->find('all', 
 				['conditions' => ['Thread.title LIKE' => '%'.$k.'%'] ]);  
@@ -431,11 +435,12 @@ class ProfilesController extends AppController {
 			if(!empty($prof))$data['Profiles'][] = $prof;
 			if(!empty($thread))$data['Threads'][] = $thread;
 			if(!empty($head))$data['Heads'][] = $head;
+			if(!empty($users))$data['Users'][] = $users;
+			
 			//$data[] = array_merge($user, $thread, $head); 
 		}
 		
-		$this->set('profile', $data);  
-		
+		echo json_encode($data);exit;
 	}
 	
 	
