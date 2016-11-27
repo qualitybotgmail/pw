@@ -104,7 +104,7 @@
         
         <span style="font-size:10px;">{{head.created}}</span>
         <div class="panel-heading-controls">
-            <button class="btn btn-sm {{(head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="!head.processing" ng-click="like($index, head)">
+            <button class="btn btn-sm {{(head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="head.processing" ng-click="like($index, head)">
                 {{head.likes}}
                 <span class="fa fa-thumbs-o-up"></span>
             </button>

@@ -40,13 +40,26 @@
             <div class="btn-group btn-group-sm">
               <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown"><span class="fa fa-cog"></span>&nbsp;<span class="fa fa-caret-down"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
-                <li><a href="#">編集</a></li>
-                <li><a href="#">削除</a></li>
+                <li><a href="" class="clickable" role="button" ng-click="editHead(selectedHead.Head)">編集</a></li>
+                <li><a href="" class="clickable" role="button" ng-click="deleteHead(selectedHead.Thread.id, selectedHead.Head.id)">削除</a></li>
               </ul> <!-- / .dropdown-menu -->
             </div> <!-- / .btn-group -->
         </div> <!-- / .panel-heading-controls -->
     </div> <!-- / .panel-heading -->
     <ul class="list-group">
+         <li class="list-group-item">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>
+                         <span ng-repeat="upload in selectedHead.Upload">
+                            <a fancybox ng-href="{{upload.path}}">
+                                <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                            </a>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </li>
         <li class="list-item">
             <ul class="list-group commentList">
                 <li class="list-group-item" ng-repeat="c in selectedHead.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">

@@ -19,7 +19,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
                 $scope.save = function() {
                 	if ($scope.isEdit) {
-                		ThreadsModel.one($scope.thread.id).customPOST({'title': $scope.thread.title}).then(function(res){
+                		ThreadsModel.one($scope.thread.id).customPOST({id: $scope.thread.id, 'title': $scope.thread.title}).then(function(res){
                         	$scope.$close(res);	
 	                    });
                 	} else {

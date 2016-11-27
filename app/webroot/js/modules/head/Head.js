@@ -6,7 +6,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             var factory = {};
             
             factory.templates = {
-                addThreadMember: GLOBAL.baseModulePath + 'thread/modals/add_thread_member.html?version=' + GLOBAL.version,
+                addThreadHead: GLOBAL.baseModulePath + 'thread/modals/add_thread_head.html?version=' + GLOBAL.version,
             };
             return factory;
         }
@@ -39,9 +39,11 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         'CommentsModel',
         'Restangular',
         
-        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, $interval, Modal, HeadService, HeadsModel, HeadsFactory, CommentsModel, Restangular) {
+        function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, $interval, Modal, HeadService, HeadsModel, HeadFactory, CommentsModel, Restangular) {
             
             var pendingQry;
+            
+            $scope.templates = HeadFactory.templates;
             
             $scope.comments = {
                 comment_id: null
@@ -54,9 +56,42 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             $scope.selectedHead = null;
             $scope.comment = {};
             $scope.comment.body = '';
+            $scope.isFetching = false;
             
             
             $scope.currentPageNumber = 1;
+            
+            // delete head thread
+        	$scope.deleteHead = function(threadId, headId) {
+        	    HeadsModel.one(headId).remove().then(function(result){
+        	       $state.go('app.thread', {id:threadId});
+        	    });
+        	};
+        	
+        	// add members
+            $scope.editHead = function(head) {
+                var modalConfig = {
+                        template   : $templateCache.get("add-thread-head-modal.html"),
+                        controller : 'threadHeadModalCtrl',
+                        windowClass: 'modal-width-90 ',
+                        size       : 'sm',
+                        resolve   : {
+                            fromParent: function () {
+                                return {
+                                    'head': head,
+                                    'isEdit': true
+                                };
+                            }
+                        }
+                    };
+                    
+                    Modal.showModal(modalConfig, {}).then(function (head) {
+                        // success
+                        $scope.selectedHead.Head = angular.extend($scope.selectedHead.Head, head);
+                    }, function (err) {
+                        // error
+                    });
+            };
             
             $scope.uploadAttachment = function(comment){
                 var fd = new FormData();
@@ -110,14 +145,16 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 });
             };
         	
-        	
         	// get thread information
         	$scope.getHead = function() {
+        	    if($scope.isFetching) return;
+        	    $scope.isFetching = true;
+        	    
         	    HeadsModel.one($scope.selectedHeadId.toString()).get().then(function(thread){
         	        $scope.selectedHead = thread;
+        	        $scope.isFetching = false;
         	    });
         	};
-        	
         	
         	$scope.getLatestComment = function() {
         	    HeadsModel.one($scope.selectedHeadId.toString()).get().then(function(thread){
@@ -173,23 +210,21 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	    // if head was not like
         	    if (!head.isUserLiked) {
         	        HeadsModel.one('like').one(head.id.toString()).get().then(function(res) {
-    	                $scope.thread.Head.isUserLiked = true;
-    	                $scope.thread.Head.likes += 1;
-    	                $scope.thread.Head.processing = false;
+    	                $scope.selectedHead.Head.isUserLiked = true;
+    	                $scope.selectedHead.Head.likes += 1;
+    	                $scope.selectedHead.Head.processing = false;
                 	});   
         	    } else { // if thread was already like
         	        HeadsModel.one('unlike').one(head.id.toString()).get().then(function(res) {
-    	                $scope.thread.Head.isUserLiked = false;
-    	                $scope.thread.Head.likes -= 1;
-    	                $scope.thread.Head.processing = false;
+    	                $scope.selectedHead.Head.isUserLiked = false;
+    	                $scope.selectedHead.Head.likes -= 1;
+    	                $scope.selectedHead.Head.processing = false;
                 	});
         	    }
         	};
         	
-        	
         	// get thread for every 7 secs
-        	
-        // 	pendingQry = $interval($scope.getHead, 7000);
+            pendingQry = $interval($scope.getHead, 7000);
         	
         	/**
         	 * initialize some functions

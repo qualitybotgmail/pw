@@ -11,6 +11,7 @@ define([
 	'ngAnimate',
 	'debounce',
 	'ngIdleJs',
+	'ngNotification',
 	'underscore'
 	], 
 	function (angular, config, dependencyResolverFor, pace) {
@@ -27,7 +28,8 @@ define([
 			'ngAnimate', 
 			'notify',
 			'debounce',
-			'ngIdle'
+			'ngIdle',
+			'notification'
 			// 'btford.socket-io'
 		]);
 
@@ -117,8 +119,19 @@ define([
 			'Restangular', 
 			'Idle', 
 			'$log', 
-			'Keepalive', 
-		function($rootScope, $q, $state, $window, Notify, Restangular, Idle, $log, Keepalive) {
+			'Keepalive',
+			'$notification',
+		function($rootScope, $q, $state, $window, Notify, Restangular, Idle, $log, Keepalive, $notification) {
+			
+			$notification.requestPermission()
+            .then(function success(value) {
+                new Notification('Notification allowed', {
+                    body : value,
+                    delay: 1000
+                });
+            }, function error() {
+                $log.error("Can't request for notification");
+            })
 			
 			// Idle watch
 			Idle.watch();
@@ -167,16 +180,21 @@ define([
 	     	    });
     	    };
     	    
-    	    Restangular.one('threads').get().then(function(threads) {
-        	   $rootScope.threads = threads;
-        	   $rootScope.getIgnoredThreads();
-        	});
+    	    $rootScope.getThreads = function(){
+    	    	Restangular.one('threads').get().then(function(threads) {
+	        	   $rootScope.threads = threads;
+	        	   $rootScope.getIgnoredThreads();
+	        	});	
+    	    };
+    	    
      	    
     	    $rootScope.getGroupchat = function() {
     	    	Restangular.one('groupchats').get().then(function(res){
 	    	        $rootScope.createdGroupChats = res.groupchats;
 	    	    });	
     	    }
+    	    
+    	    $rootScope.getThreads();
     	    $rootScope.getGroupchat();
         	    
 			$rootScope.$on('$stateChangeStart', 

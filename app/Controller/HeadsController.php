@@ -175,10 +175,13 @@ class HeadsController extends AppController {
 		$this->request->onlyAllow('post', 'delete');
 		if ($this->Head->delete()) {
 			echo json_encode(['status' => 'OK']);
+			exit;
 		} else {
 			echo json_encode(['status' => 'FAILED']);
+			exit;
 		}
-		// return $this->redirect(array('action' => 'index'));
+		
+		return $this->redirect(array('action' => 'index'));
 	}
 	
 	

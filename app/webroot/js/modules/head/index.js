@@ -9,16 +9,11 @@ define([
 	// import filters
 	'../../factories/filter',
 	
+	// import modals
+	'../thread/modals/threadHeadModal',
+	
 	'./Head',
 
-	// '../../services/commonService',
-	// '../../services/focusService',
 	'../../services/modalService',
-	// '../../services/blockerService',
-	// '../../services/formService',
-	// '../../directives/jwertyDirective',
-	// '../../directives/selectTwoDirective',
-	// '../../directives/onKeyPressDirective',
-	// '../../directives/uploadDirective',
 	'../../directives/fancyboxDirective',
 ], function () {});

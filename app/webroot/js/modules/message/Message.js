@@ -46,6 +46,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	var pendingQry;
         	
         	$scope.templates = MessageFactory.templates;
+        	$scope.isFetching = false;
         	
         	// var for selected message
         	$scope.message = {};
@@ -153,9 +154,12 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             };
         
             $scope.getMessage = function(){
+                if ($scope.isFetching) return;
+                $scope.isFetching = true;
                 var messageID = $scope.selectedMessageId.toString();
         	    GroupChatModel.one(messageID).get().then(function(res){
         	        $scope.message = res.groupchats;
+        	        $scope.isFetching = false;
         	    });
             };
             
