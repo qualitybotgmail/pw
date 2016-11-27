@@ -389,62 +389,44 @@ class ProfilesController extends AppController {
 		$this->Profile->recursive = -1;
 		$this->Thread->recursive = -1; 
 		$this->Head->recursive = -1; 
-		 
-		$keyword = str_replace("+", " ", $keyword);
-		$keyword = explode(" ",trim($keyword));
 		
-		 $data=[];
-		foreach($keyword as $k){
-			
-			$prof = $this->Profile->find('all',
-			['conditions' =>
-				['OR'=>[
-					['Profile.firstname LIKE' => '%'.$k.'%'],
-					['Profile.lastname LIKE' => '%'.$k.'%']
-				]],
-			],	['order' =>['User.created' => 'desc']]);
-			
-			
-			// $user = $this->User->find('all',
-			// // ['fields' => ['id','username','role','created','modified','firstname','lastname']],
-			// ['conditions' =>
-			// 	['OR'=>[
-			// 		['User.firstname LIKE' => '%'.$k.'%'],
-			// 		['User.lastname LIKE' => '%'.$k.'%']
-			// 	]],
-			// ], 
-			// ['order' =>['User.created' => 'desc']]);
-			
-			
-			$thread = $this->Thread->find('all', 
-				['conditions' => ['Thread.title LIKE' => '%'.$k.'%'] ]);  
-			
-			
-			$head = $this->Head->find('all', 
-				['conditions' =>  ['Head.body LIKE' => '%'.$k.'%'] ]);  
-			
-			
-			// $thread = $this->Thread->find('all', 
-			// 	['conditions' => ['Thread.title LIKE' => '%'.$k.'%'] ], 
-			// 	['order' =>['Thread.created' => 'desc']]);  
-			// $thread = $this->User->Thread->Head->find('all', 
-			// ['conditions' =>
-			// 	['OR'=>[
-			// 		['Head.body LIKE' => '%'.$k.'%'], 
-			// 		['Thread.title LIKE' => '%'.$k.'%']
-			// 	]],
-			// ], 
-			// ['order' =>['Head.created' => 'desc']]);  
-			 
-			// echo json_encode(array($user,$head));
-			if(!empty($prof))$data['Profiles'][] = $prof;
-			if(!empty($thread))$data['Threads'][] = $thread;
-			if(!empty($head))$data['Heads'][] = $head;
-			//$data[] = array_merge($user, $thread, $head); 
+		$splittedKeyword = preg_split('/\s+/', $keyword);
+		
+		$threadLike = [];
+		$headLike = [];
+		$profileLike = [];
+		
+		foreach($splittedKeyword as $s){
+			$threadLike[] = ["Thread.title LIKE" => "%$s%"];
+			$headLike[] = ["Head.body LIKE" => "%$s%"];
+			array_push($profileLike, ["Profile.firstname LIKE" => "%$s%"], 
+									["Profile.lastname LIKE" => "%$s%"]);
 		}
 		
-		$this->set('profile', $data);  
+		// for threads
+		$threads = $this->Thread->find('all', [
+						'conditions' => ['OR' => $threadLike]
+					]);
 		
+		// for heads
+		$heads = $this->Head->find('all', [
+					'conditions' => ['OR' => $headLike]
+				]);
+		
+		// for profiles
+		$profiles = $this->Profile->find('all', [
+						'conditions' => ['OR' => $profileLike]
+					]);
+		
+		 $data=[];
+		
+		if(!empty($profiles))$data['Profiles'] = $profiles;
+		if(!empty($threads))$data['Threads'] = $threads;
+		if(!empty($heads))$data['Heads'] = $heads;
+		
+		print_r($data); exit;
+		
+		$this->set('search', $data);  
 	}
 	
 	
