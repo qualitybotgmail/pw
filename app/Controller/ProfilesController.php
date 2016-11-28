@@ -154,11 +154,11 @@ class ProfilesController extends AppController {
         
 	}
 
-	public function _loadasoc(&$obj,$modelA,$modelB){
+	public function _loadasoc(&$obj,$modelA,$modelB,$recursive = -1,$fields = array()){
 		$this->loadModel($modelB);
-		$this->$modelB->recursive=-1;
+		$this->$modelB->recursive=$recursive;
 		$find = "findAllBy".$modelA."Id";
-		$result = $this->$modelB->$find($obj[$modelA]['id']);
+		$result = $this->$modelB->$find($obj[$modelA]['id'],$fields);
 		$obj[$modelB] = $result;
 		return $result;
 	}
@@ -170,7 +170,7 @@ class ProfilesController extends AppController {
 		$this->Profile->User->recursive=1;
 		$this->Profile->User->Thread->recursive=-1;
 		$this->Profile->User->Thread->Head->recursive=-1;
-		$this->Profile->User->Thread->Head->Comment->recursive=-1;
+		$this->Profile->User->Thread->Head->Comment->recursive=2;
 
 		$u = $this->Profile->User->findById($this->Auth->user('id'));
 		$threads = array();
@@ -194,7 +194,7 @@ class ProfilesController extends AppController {
 				$threads[$k]['Head'][] = $head['Head'];
 				
 				
-				$comments = $this->_loadasoc($head,'Head','Comment');
+				$comments = $this->_loadasoc($head,'Head','Comment',1);
 				$this->_loadasoc($head,'Head','Upload');
 				
 				$this->_loadasoc($head,'Head','Like');
@@ -218,6 +218,7 @@ class ProfilesController extends AppController {
 					$userCommentLiked = $this->Profile->User->Like->findByUserIdAndCommentId($this->Auth->user('id'),$comment['Comment']['id']);
 					$threads[$k]['Head'][$kh]['Comment'][$i]['Comment']['isUserLiked'] = count($userCommentLiked)>0;
 					$this->_loadasoc($threads[$k]['Head'][$kh]['Comment'][$i],'Comment','Upload');
+					
 				}
 				
 			}
@@ -392,9 +393,9 @@ class ProfilesController extends AppController {
 		$data=[];
 		foreach($keyword as $k){
 			
-			$users = $this->User->find('all',
+			$users = $this->User->find('list',
 			['conditions' => ['User.username LIKE' => '%'.$k.'%'],
-			'fields' => ['id','username']]);
+			'fields' => ['id']]);
 			
 			$prof = $this->Profile->find('all',
 			['fields'=>[
@@ -406,11 +407,14 @@ class ProfilesController extends AppController {
 				'User.username'
 				],'conditions' =>
 				['OR'=>[
-					['Profile.firstname LIKE' => '%'.$k.'%'],
-					['Profile.lastname LIKE' => '%'.$k.'%']
+					[
+					'Profile.firstname LIKE' => '%'.$k.'%',
+					'Profile.lastname LIKE' => '%'.$k.'%' ,
+					'Profile.user_id' => $users
+					]
 				]],
 			],	['order' =>['User.created' => 'desc']]);
-			
+
 			$thread = $this->Thread->find('all', 
 				['conditions' => ['Thread.title LIKE' => '%'.$k.'%'] ]);  
 			
@@ -435,7 +439,6 @@ class ProfilesController extends AppController {
 			if(!empty($prof))$data['Profiles'][] = $prof;
 			if(!empty($thread))$data['Threads'][] = $thread;
 			if(!empty($head))$data['Heads'][] = $head;
-			if(!empty($users))$data['Users'][] = $users;
 			
 			//$data[] = array_merge($user, $thread, $head); 
 		}
