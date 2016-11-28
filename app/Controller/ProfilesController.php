@@ -195,6 +195,9 @@ class ProfilesController extends AppController {
 				
 				
 				$comments = $this->_loadasoc($head,'Head','Comment',1);
+				$this->Profile->User->recursive =-1;
+	            $head['Head']['Owner'] = $this->Profile->User->findById($head['Head']['user_id'],array('username'));
+				
 				$this->_loadasoc($head,'Head','Upload');
 				
 				$this->_loadasoc($head,'Head','Like');
