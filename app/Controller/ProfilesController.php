@@ -398,7 +398,13 @@ class ProfilesController extends AppController {
 			
 			$users = $this->User->find('list',
 			['conditions' => ['User.username LIKE' => '%'.$k.'%'],
-			'fields' => ['id']]);
+			'fields' => ['id','username']]);
+			
+			$prof_cond = array(
+					'Profile.firstname LIKE' => '%'.$k.'%',
+					'Profile.lastname LIKE' => '%'.$k.'%' ,
+					'Profile.user_id' => array_keys($users)
+			);
 			
 			$prof = $this->Profile->find('all',
 			['fields'=>[
@@ -409,13 +415,7 @@ class ProfilesController extends AppController {
 				'User.id',
 				'User.username'
 				],'conditions' =>
-				['OR'=>[
-					[
-					'Profile.firstname LIKE' => '%'.$k.'%',
-					'Profile.lastname LIKE' => '%'.$k.'%' ,
-					'Profile.user_id' => $users
-					]
-				]],
+				['OR'=>$prof_cond],
 			],	['order' =>['User.created' => 'desc']]);
 
 			$thread = $this->Thread->find('all', 
@@ -439,6 +439,7 @@ class ProfilesController extends AppController {
 			// ['order' =>['Head.created' => 'desc']]);  
 			 
 			// echo json_encode(array($user,$head));
+			if(!empty($users))$data['Users'][] = $users;
 			if(!empty($prof))$data['Profiles'][] = $prof;
 			if(!empty($thread))$data['Threads'][] = $thread;
 			if(!empty($head))$data['Heads'][] = $head;
