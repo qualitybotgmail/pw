@@ -387,7 +387,9 @@ class ProfilesController extends AppController {
 		$this->Profile->recursive = 1;
 		$this->Thread->recursive = -1; 
 		$this->Head->recursive = -1; 
-		$this->User->recursive = -1; 
+		$this->User->recursive = -1;
+		
+		$user_id = $this->Auth->user('id');
 		
 		 
 		$keyword = str_replace("+", " ", $keyword);
@@ -396,7 +398,7 @@ class ProfilesController extends AppController {
 		$data=[];
 		foreach($keyword as $k){
 			
-			$users = $this->User->find('list',
+			$users = $this->User->find('all',
 			['conditions' => ['User.username LIKE' => '%'.$k.'%'],
 			'fields' => ['id','username']]);
 			
@@ -408,22 +410,51 @@ class ProfilesController extends AppController {
 			
 			$prof = $this->Profile->find('all',
 			['fields'=>[
-				
-				'Profile.id',
-				'Profile.user_id',
-				'Profile.firstname','Profile.lastname',
-				'User.id',
-				'User.username'
-				],'conditions' =>
+					'Profile.id',
+					'Profile.user_id',
+					'Profile.firstname','Profile.lastname',
+					'User.id',
+					'User.username'
+				],
+				'conditions' =>
 				['OR'=>$prof_cond],
 			],	['order' =>['User.created' => 'desc']]);
+			
+			
+			$pusers = [];
+			foreach($prof as $p){
+				$pusers[] = ['User' => $p['User']];
+			}
 
+			$pusers = array_unique(array_merge($users,$pusers),SORT_REGULAR);
+			
 			$thread = $this->Thread->find('all', 
-				['conditions' => ['Thread.title LIKE' => '%'.$k.'%'] ]);  
+				['conditions' => ['Thread.title LIKE' => '%'.$k.'%', 'user_id' => $user_id] ]);
+			
+			$options = [
+				'conditions' => ['Thread.title LIKE' => '%'.$k.'%'],
+				'order' => 'Thread.created DESC',
+				'joins' => [
+					[
+					   'table' => 'users_threads',
+	                   'alias' => 'users_threads',
+	                   'type' => 'INNER',
+	                   'conditions' => [
+	                           "users_threads.thread_id = Thread.id",
+	                           "users_threads.user_id = {$user_id}",
+	                    ]
+					]
+                ]
+			];
+	        // this query if to get all the threads
+	        // where user is a member only
+			$user_threads = $this->Thread->find('all', $options);
+			// echo json_encode(array_merge($thread,$user_threads));die();
 			
 			
-			$head = $this->Head->find('all', 
-				['conditions' =>  ['Head.body LIKE' => '%'.$k.'%'] ]);  
+			
+			// $head = $this->Head->find('all', 
+				// ['conditions' =>  ['Head.body LIKE' => '%'.$k.'%'] ]);  
 			
 			
 			// $thread = $this->Thread->find('all', 
@@ -439,10 +470,11 @@ class ProfilesController extends AppController {
 			// ['order' =>['Head.created' => 'desc']]);  
 			 
 			// echo json_encode(array($user,$head));
-			if(!empty($users))$data['Users'][] = $users;
-			if(!empty($prof))$data['Profiles'][] = $prof;
-			if(!empty($thread))$data['Threads'][] = $thread;
-			if(!empty($head))$data['Heads'][] = $head;
+			// if(!empty($users))$data['Users'] = $users;
+			if(!empty($pusers))$data['Users'] = array_merge($pusers,[]);
+			if(!empty($thread) || !empty($user_threads))$data['Threads'] = array_merge($thread,$user_threads);
+			// if(!empty($thread))$data['Threads'] = $users_threads;
+			// if(!empty($head))$data['Heads'] = $head;
 			
 			//$data[] = array_merge($user, $thread, $head); 
 		}
