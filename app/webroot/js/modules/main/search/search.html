@@ -1,0 +1,68 @@
+<style type="text/css">
+  .result-list {
+    /*height: 200px;*/
+  }
+  .result-list ul .list-group-item:first-child {
+    margin-top: -10px;
+  }
+  .result-list ul .list-group-item:hover {
+    background-color:#d9d9d9;
+  }
+  
+  .result-list ul .list-group-item:last-child {
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+  }
+  .result-list ul {
+    max-height: 150px;
+    overflow-y:auto;
+    margin-bottom: 0px;
+    margin-top: -10px;
+  }
+  .search-result{
+    border: 1px solid black;
+    width: 93.2%;
+    z-index: 9999;
+    position: absolute;
+    background: #fff;
+    box-shadow: 3px 6px 20px #888888;
+    min-height: 300px;
+    max-height: 400px;
+  }
+  .search-result p {
+    background: #000;
+    color:#fff;
+    font-weight: bold;
+  }
+</style>
+<div class="row" style="margin-bottom:17px;">
+  <form action="" class="col-xs-12 col-sm-6">
+    <div class="input-group">
+      <span class="input-group-addon" style="border:none;background: #fff;background: rgba(0,0,0,.03);"><i class="fa fa-search"></i></span>
+      <input type="text" placeholder="Search..." class="form-control no-padding-hr" ng-model="qrySearch" style="border:none;background: #fff;background: rgba(0,0,0,.03);">
+    </div>
+    <div class="input-group search-result" ng-if="search.Users.length || search.Users.length">
+        <!--<p ng-if="search.Profiles.length">-->
+        <div class="result-list">
+          <p ng-if="search.Users.length">ユーザー</p>
+          <ul class="list-group" ng-if="search.Users.length">
+            <li class="list-group-item" ng-repeat="c in search.Users" ng-click="selectUser(c)">
+              {{c.User.username}}
+            </li>
+          </ul>  
+        </div>
+          
+        <!--</p>-->
+        <!--<p ng-if="search.Threads.length">-->
+        <div class="result-list">
+          <p ng-if="search.Threads.length">タイムライン</p>      
+          <ul class="list-group" ng-if="search.Threads.length">
+            <li class="list-group-item" ng-repeat="t in search.Threads" ng-click="selectThread(t.Thread.id)">
+              {{t.Thread.title}}
+            </li>
+          </ul>
+        </div>
+        <!--</p>-->
+    </div>
+  </form>
+</div>
