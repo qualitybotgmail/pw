@@ -42,7 +42,7 @@
                 <!--投稿メンバー-->
                 <span class="thread-users" title="members">
                     
-                    <i class="glyphicon glyphicon-plus clickable red" ng-click="addMembers(thread.Thread)"></i>
+                    <i class="glyphicon glyphicon-plus clickable red" ng-if="thread.Owner.id == loginUser.id" ng-click="addMembers(thread.Thread)"></i>
                     
                     
                     <i class="glyphicon glyphicon-user"></i>
@@ -85,7 +85,7 @@
                                 data-label-text="Notification"
                                 switch-change="pushNotification()"
                                 bootstrap-switch />
-            <div class="btn-group btn-group-sm">
+            <div class="btn-group btn-group-sm" ng-if="thread.Owner.id == loginUser.id">
                 <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">
                   <span class="fa fa-cog"></span>&nbsp;<span class="fa fa-caret-down"></span>
                 </button>
@@ -108,11 +108,11 @@
                 {{head.likes}}
                 <span class="fa fa-thumbs-o-up"></span>
             </button>
-            <div class="btn-group btn-group-sm">
+            <div class="btn-group btn-group-sm" ng-if="thread.Owner.id == loginUser.id || head.Owner.id == loginUser.id">
               <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">
                   <span class="fa fa-cog"></span>&nbsp;<span class="fa fa-caret-down"></span>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-right">
+                <ul class="dropdown-menu dropdown-menu-right" >
                     <li><a href="" class="clickable" role="button" ng-click="editHead($index, head)">編集</a></li>
                     <li><a href="" class="clickable" role="button" ng-click="deleteHead($index, head.id)">削除</a></li>
                 </ul> <!-- / .dropdown-menu -->
