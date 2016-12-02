@@ -1,5 +1,29 @@
-define(['app', 'angular'], function(app, angular)
+define(['jquery', 'app', 'angular'], function($, app, angular)
 {
+    app.directive('search', [
+        function() {
+            return {
+                restrict: 'A',
+                scope: {
+                  	'model'       : '=ngModel'
+                },
+                link: function(scope, element, attrs, ngModel) {
+                    element.focus(function() {
+                        $('div.search-result').show();
+                        $(document).bind('focusin.search click.search',function(e) {
+                            if ($(e.target).closest('.search-result, #search').length) return;
+                            $(document).unbind('.search-result');
+                            $('div.search-result').fadeOut('medium');
+                        });   
+                    });
+                    
+                    
+                    $('div.search-result').hide();
+                }
+            };
+        }
+    ]);
+    
 	app.controller('SearchController',
     [
     	'$rootScope',
@@ -13,6 +37,7 @@ define(['app', 'angular'], function(app, angular)
         function($rootScope, $scope, $state, $timeout, ProfilesModel, GroupChatModel, Restangular) {
             
             $scope.search = {};
+            $scope.showSearch = false;
             
             $scope.$watch('qrySearch', function(newV, oldV){
                 if (!$scope.qrySearch) return;
