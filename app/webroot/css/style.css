@@ -151,7 +151,7 @@ padding: 10px 10px 0 10px;
 .taskDescription {
     margin-top:10px 0;
 }
-.commentList {
+.commentList, ul[class*=" commentList-"] {
     padding:0;
     list-style:none;
     max-height:250px;

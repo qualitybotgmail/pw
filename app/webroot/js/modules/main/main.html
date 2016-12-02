@@ -16,35 +16,6 @@
     img {
     vertical-align: middle;
     }
-    
-    /*.img-responsive {*/
-    /*display: block;*/
-    /*height: auto;*/
-    /*max-width: 100%;*/
-    /*}*/
-    
-    /*.img-rounded {*/
-    /*border-radius: 3px;*/
-    /*}*/
-    
-    /*.img-thumbnail {*/
-    /*background-color: #fff;*/
-    /*border: 1px solid #ededf0;*/
-    /*border-radius: 3px;*/
-    /*display: inline-block;*/
-    /*height: auto;*/
-    /*line-height: 1.428571429;*/
-    /*max-width: 100%;*/
-    /*moz-transition: all .2s ease-in-out;*/
-    /*o-transition: all .2s ease-in-out;*/
-    /*padding: 2px;*/
-    /*transition: all .2s ease-in-out;*/
-    /*webkit-transition: all .2s ease-in-out;*/
-    /*}*/
-    
-    /*.img-circle {*/
-    /*border-radius: 50%;*/
-    /*}*/
             
     .thread-title {
         font-size: 20px;
@@ -98,14 +69,8 @@
 </div>
 
 <div class="section col-sm-8">
-    <div class="row" style="margin-bottom:17px;">
-      <form action="" class="col-xs-12 col-sm-6">
-        <div class="input-group">
-          <span class="input-group-addon" style="border:none;background: #fff;background: rgba(0,0,0,.03);"><i class="fa fa-search"></i></span>
-          <input type="text" placeholder="Search..." class="form-control no-padding-hr" style="border:none;background: #fff;background: rgba(0,0,0,.03);">
-        </div>
-      </form>
-    </div>
+    <div ui-view="search"></div>
+    
     <div ui-view="content">
         <div class="row">
             <h3>
@@ -114,8 +79,7 @@
             <div class="col-md-12">
                 <div class="row">
                     <div class="qa-message-list" id="wallmessages">
-	
-                    	<div class="message-item" ng-repeat="thread in timeline">
+                    	<div class="message-item" ng-repeat="(threadIndex,thread) in timeline">
                     		<div class="message-inner">
                     			<div class="message-head clearfix">
                     				<div class="avatar pull-left">
@@ -124,14 +88,14 @@
                     				<div class="user-detail">
                     					<h5 class="handle">
                     					    <a ui-sref="app.thread({ id: thread.Thread.id })">
-                    					        {{thread.title}}
+                    					        {{thread.Thread.title}}
                     					    </a>
                     					</h5>
                     					<div class="post-meta">
                     						<div class="asker-meta">
                     							<span class="qa-message-what"></span>
                     							<span class="qa-message-when">
-                    								<span class="qa-message-when-data">{{thread.created}}</span>
+                    								<span class="qa-message-when-data">{{thread.Thread.created}}</span>
                     							</span>
                     							 <span class="qa-message-who">
                     								<span class="qa-message-who-pad">by </span>
@@ -145,7 +109,7 @@
                     			</div>
                     			<div class="qa-message-content" ng-if="thread.Head.length">
                     			    <h3>Head</h3>
-                    				<div class="message-item" ng-repeat="head in thread.Head">
+                    				<div class="message-item" ng-repeat="(headIndex,head) in thread.Head">
                                 		<div class="message-inner">
                                 			<div class="message-head clearfix">
                                 				<div class="avatar pull-left">
@@ -154,56 +118,59 @@
                                 				<div class="user-detail">
                                 					<h5 class="handle">
                                 					    <a ui-sref="app.thread({ id: thread.Thread.id })">
-                                					        {{head.body}}
+                                					        {{head.Head.body}}
                                 					    </a>
                                 					</h5>
                                 					<div class="post-meta">
                                 						<div class="asker-meta">
                                 							<span class="qa-message-what"></span>
                                 							<span class="qa-message-when">
-                                								<span class="qa-message-when-data">{{head.created}}</span>
+                                								<span class="qa-message-when-data">{{head.Head.created}}</span>
                                 							</span>
                                 							 <span class="qa-message-who">
                                 								<span class="qa-message-who-pad">by </span>
                                 								<span class="qa-message-who-data">
-                                								    {{head.Owner.username}}
+                                								    {{head.Head.Owner.User.username}}
                                 								</span>
                                 							</span>
                                 						</div>
                                 					</div>
+                                					<div class="panel-heading-controls pull-right">
+                                                        <button class="btn btn-sm {{(head.Head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="head.Head.processing" ng-click="likeHead(threadIndex, headIndex, head.Head.id)">
+                                                             {{head.Head.likes}}
+                                                            <span class="fa fa-thumbs-o-up"></span>
+                                                        </button>
+                                                    </div>
                                 				</div>
                                 			</div>
                                 			<div class="qa-message-content">
                                 				<ul class="list-group">
-                                                    <li class="list-item">
-                                                        <ul class="list-group commentList">
-                                                            <li class="list-group-item" ng-repeat="c in head.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
+                                                    <li class="list-item" ng-if="head.Comment.length">
+                                                        <ul class="list-group commentList commentList-{{threadIndex}}-{{headIndex}}">
+                                                            <li class="list-group-item" ng-repeat="(commentIndex,c) in head.Comment" ng-init="$last && fireMessageEvent(threadIndex, headIndex)">
                                                                 <small>by : {{c.User.username}}</small>
-                                                                <p>{{c.body}}</p>
+                                                                <p>{{c.Comment.body}}</p>
                                                                 <p>
-                                                                     <span ng-repeat="upload in c.Upload">
+                                                                    <span ng-repeat="upload in c.Upload">
                                                                         <a fancybox ng-href="{{upload.path}}">
                                                                             <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
                                                                         </a>
                                                                     </span>
                                                                 </p>
-                                                                <span style="font-size:10px;">{{c.created}}</span>
-                                                                <button class="btn btn-xs {{(c.isUserLiked)?'':'btn-outline'}} btn-warning pull-right" ng-disabled="c.processing" ng-click="likeComment($index, c)">
-                                                                    {{c.likes}}
+                                                                <span style="font-size:10px;">{{c.Comment.created}}</span>
+                                                                <button class="btn btn-xs {{(c.isUserLiked)?'':'btn-outline'}} btn-warning pull-right" ng-disabled="c.Comment.processing" ng-click="likeComment(threadIndex, headIndex, commentIndex, c.Comment.id)">
+                                                                    {{c.Comment.likes}}
                                                                     <span class="fa fa-thumbs-o-up"></span>
                                                                 </button>
                                                             </li>
                                                         </ul>
                                                     </li>
                                                     <li class="list-group-item form-group">
-                                                        <form  role="form" id="commentFrm" name="commentFrm" method="POST" enctype="multipart/form-data" 
-                                                                    novalidate ng-submit="sendComment()">
-                                                            
-                                                            <input type="text" name="data[Upload][comment_id]" class="hidden" id="comment-id" ng-model="comment.comment_id" />
-                                                            <input type="file" name="data[Upload][file]" id="attachments"  multiple />
-                                                            <textarea name="data[Upload][body]" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
+                                                        <form  role="form" id="commentFrm-{{threadIndex}}-{{headIndex}}" name="commentFrm" method="POST" enctype="multipart/form-data" 
+                                                                    novalidate ng-submit="sendComment(commentFrm.$valid, threadIndex, headIndex, head.Head.id)">
+                                                            <input type="file" name="attachments" id="attachments"  multiple />
+                                                            <textarea name="body" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment[threadIndex][headIndex].body"></textarea>
                                                             <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin-top:4px;">コメント</button>
-                                                            
                                                         </form>
                                                     </li>
                                                 </ul>
