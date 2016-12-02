@@ -1,3 +1,7 @@
+/**
+ * Routes for the app
+ **/
+
 define([], function()
 {
     var baseSourcePath = Talknote.baseSourcePath + 'js/modules/';
@@ -14,12 +18,11 @@ define([], function()
                     'loading': {
                         templateUrl: baseSourcePath + 'main/loading/loading.html?version=' + Talknote.version,
                         controller: 'LoadingController'  
+                    },
+                    'search@app' :{
+                        templateUrl: baseSourcePath + 'main/search/search.html?version=' + Talknote.version,
+                        controller: 'SearchController'  
                     }
-                    // ,
-                    // 'notify': {
-                    //     templateUrl: baseSourcePath + 'main/notify/notify.html?version=' + Talknote.version,
-                    //     controller: 'NotifyController'
-                    // }
                 },
                 
                 dependencies: [
