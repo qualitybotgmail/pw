@@ -1,6 +1,6 @@
 define(['jquery', 'app', 'angular'], function($, app, angular)
 {
-    app.directive('search', [
+    app.directive('searchDir', [
         function() {
             return {
                 restrict: 'A',
