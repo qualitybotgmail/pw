@@ -418,13 +418,17 @@ class ProfilesController extends AppController {
 				['OR'=>$prof_cond],
 			],	['order' =>['User.created' => 'desc']]);
 
+
+			
+			
+			$threadis = $this->Head->find('list', 
+				['fields'=>['thread_id'],'conditions' =>  ['Head.body LIKE' => '%'.$k.'%'] ]);  
+			
 			$thread = $this->Thread->find('all', 
-				['conditions' => ['Thread.title LIKE' => '%'.$k.'%'] ]);  
-			
-			
-			$head = $this->Head->find('all', 
-				['conditions' =>  ['Head.body LIKE' => '%'.$k.'%'] ]);  
-			
+				['conditions' => [
+					'OR' =>
+					['Thread.title LIKE' => '%'.$k.'%',
+					'Thread.id' => $threadis]]]);  
 			
 			// $thread = $this->Thread->find('all', 
 			// 	['conditions' => ['Thread.title LIKE' => '%'.$k.'%'] ], 
@@ -442,10 +446,19 @@ class ProfilesController extends AppController {
 			if(!empty($users))$data['Users'][] = $users;
 			if(!empty($prof))$data['Profiles'][] = $prof;
 			if(!empty($thread))$data['Threads'][] = $thread;
-			if(!empty($head))$data['Heads'][] = $head;
+		//	if(!empty($head))$data['Heads'][] = $head;
 			
 			//$data[] = array_merge($user, $thread, $head); 
 		}
+		function m($v){
+			
+			return $v[0]['Thread']['modified'];
+		}
+		
+		array_multisort(
+			array_map('m',$data['Threads']),
+			SORT_DESC ,SORT_REGULAR ,
+			$data['Threads']);
 		
 		echo json_encode($data);exit;
 	}
