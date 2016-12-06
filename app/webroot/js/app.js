@@ -86,9 +86,9 @@ define([
 		        // https://github.com/angular-ui/ui-router/wiki/Frequently-Asked-Questions#how-to-configure-your-server-to-work-with-html5mode
 	            //$locationProvider.html5Mode(true);
 	            
+	            // register routes
 	            if(config.routes !== undefined)
 	            {
-
 	                angular.forEach(config.routes, function(route, path)
 	                {
 					    $stateProvider
@@ -121,19 +121,34 @@ define([
 			'$log', 
 			'Keepalive',
 			'$notification',
-		function($rootScope, $q, $state, $window, Notify, Restangular, Idle, $log, Keepalive, $notification) {
+			'$interval',
+		function($rootScope, $q, $state, $window, Notify, Restangular, Idle, $log, Keepalive, $notification, $interval) {
 			
-			$notification.requestPermission()
-            .then(function success(value) {
-                new Notification('Notification allowed', {
-                    body : value,
-                    delay: 1000
-                });
-            }, function error() {
+			// notification
+			$notification.requestPermission().then(function success(permission) {
+				/**
+				 * check if the notification is
+				 * granted by the user
+				 **/
+				if (permission === 'granted') {
+					// get thread for every 7 secs
+	            	$interval( function() {
+						console.log('getting logs');
+						$notification('alert', {
+							body: 'You have a new message.',
+							tag : 'threads',
+		                    delay: 2000
+						});
+					}, 7000);	
+				}
+			}, 
+			function error() {
                 $log.error("Can't request for notification");
-            })
+            });
 			
-			// Idle watch
+			/**
+			 * use to check if the user is idle
+			 **/
 			Idle.watch();
 			$rootScope.$on('IdleStart', function() { 
 				/* Display modal warning or sth */ 
@@ -141,11 +156,10 @@ define([
 			});
 			$rootScope.$on('IdleTimeout', function() { 
 				/* Logout user if idle time last*/
-				console.log('idle end');
 				$window.location.href = "/users/logout";
 			});
 			
-			// get users information
+			// get login users information
 			Restangular.one('profiles').one('me').get().then(function(res){
 				if (!res.User) {
 					$window.location.href = "/users/logout";

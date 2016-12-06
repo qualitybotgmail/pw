@@ -76,35 +76,35 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 	                });
 	            };
 	            
-	            var _checkUsersExists = function() {
-	            	var member_ids = $scope.groupchat.member_ids,
-	            		length = member_ids.length,
-	            		resultGroupchat = {};
+	       //     var _checkUsersExists = function() {
+	       //     	var member_ids = $scope.groupchat.member_ids,
+	       //     		length = member_ids.length,
+	       //     		resultGroupchat = {};
 	            		
-	            	resultGroupchat.result = false;
+	       //     	resultGroupchat.result = false;
 	            	
-	            	angular.forEach($rootScope.createdGroupChats, function(groupchat, index){
-	            		console.log('lenght : ', groupchat.User.length, '===', length, ' = ' ,groupchat.User.length === length);
-	            		if (groupchat.User.length === length) {
-	            			angular.forEach(member_ids, function(memberId, index){
-	            				angular.forEach(groupchat.User, function(user, index){
-	            					console.log('member checking : ', memberId, '===', user.id, ' = ' ,memberId === user.id);
-									if (memberId === user.id){
-										resultGroupchat.result = true;
-									} else {
-										resultGroupchat.result = false;
-									}
-								});        				
-								if (resultGroupchat.result) {
-									resultGroupchat = angular.extend(groupchat, resultGroupchat);
-									console.log(groupchat, 'existed groupChat');
-									$state.go('app.message', { id: groupchat.Groupchat.id });
-								}
-	            			})
-	            		}
-	            	});
-	            	return resultGroupchat.result;
-	            };
+	       //     	angular.forEach($rootScope.createdGroupChats, function(groupchat, index){
+	       //     		console.log('lenght : ', groupchat.User.length, '===', length, ' = ' ,groupchat.User.length === length);
+	       //     		if (groupchat.User.length === length) {
+	       //     			angular.forEach(member_ids, function(memberId, index){
+	       //     				angular.forEach(groupchat.User, function(user, index){
+	       //     					console.log('member checking : ', memberId, '===', user.id, ' = ' ,memberId === user.id);
+								// 	if (memberId === user.id){
+								// 		resultGroupchat.result = true;
+								// 	} else {
+								// 		resultGroupchat.result = false;
+								// 	}
+								// });        				
+								// if (resultGroupchat.result) {
+								// 	resultGroupchat = angular.extend(groupchat, resultGroupchat);
+								// 	console.log(groupchat, 'existed groupChat');
+								// 	$state.go('app.message', { id: groupchat.Groupchat.id });
+								// }
+	       //     			})
+	       //     		}
+	       //     	});
+	       //     	return resultGroupchat.result;
+	       //     };
         	
                 $scope.saveGroupChat = function() {
                 	var member_ids = $scope.groupchat.member_ids,

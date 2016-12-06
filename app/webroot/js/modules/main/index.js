@@ -7,6 +7,8 @@ define([
 	'../../models/users',
 	'../../models/groupChats',
 	'../../models/profiles',
+	'../../models/heads',
+	'../../models/comments',
 	
 	// import filters
 	'../../factories/filter',
@@ -17,7 +19,7 @@ define([
 	
 	'./MainController',
 	'./loading/LoadingController',
-	// './notify/NotifyController',
+	'./search/SearchController',
 
 	'../../services/commonService',
 	'../../services/focusService',

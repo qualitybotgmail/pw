@@ -1,7 +1,8 @@
 define([
+    'jquery',
     'app', 
     'angular',
-    ], function(app, angular) {
+    ], function($, app, angular) {
         
     //http://stackoverflow.com/questions/17648014/how-can-i-use-an-angularjs-filter-to-format-a-number-to-have-leading-zeros
     app.filter('numberFixedLen', function () {
@@ -19,10 +20,26 @@ define([
         };
     });
     
+    app.service('MainService', [
+        function(){
+            var _this = this;
+            _this.scrollDown = function(threadIndex, headIndex){
+                var $t = $('.commentList-'+threadIndex+'-'+headIndex);
+                $t.animate({"scrollTop": $('.commentList-'+threadIndex+'-'+headIndex)[0].scrollHeight}, "slow");
+            };
+        }
+    ]);
+    
     app.factory('MainFactory', [
         'GLOBAL',
         function (GLOBAL) {
             var factory = {};
+            
+            factory.templates = {
+                modal: GLOBAL.baseSourcePath + 'templates/modal.html?version=' + GLOBAL.version,
+                thread: GLOBAL.baseModulePath + 'main/modals/add_thread.html',
+                groupchat: GLOBAL.baseModulePath + 'main/modals/add_group_chat.html',
+            };
             
             return factory;
         }
@@ -44,21 +61,19 @@ define([
         'GLOBAL',
         'Restangular',
         'ThreadsModel',
+        'HeadsModel',
+        'CommentsModel',
         'UsersModel',
         'ProfilesModel',
         'MainFactory',
+        'MainService',
 
-        function($rootScope, $scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, UsersModel, ProfilesModel, Factory) {
+        function($rootScope, $scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, HeadsModel, CommentsModel, UsersModel, ProfilesModel, Factory, MainService) {
+        	$scope.comment = [];
         	
         	var start = function() {
         	    
-                $scope.templates = {
-                    modal: GLOBAL.baseSourcePath + 'templates/modal.html?version=' + GLOBAL.version,
-                    // report: GLOBAL.baseSourcePath + 'templates/report.html?version=' + GLOBAL.version,
-                    thread: GLOBAL.baseModulePath + 'main/modals/add_thread.html',
-                    groupchat: GLOBAL.baseModulePath + 'main/modals/add_group_chat.html',
-                };
-                
+                $scope.templates = Factory.templates;
                 
                 $scope.addThread = function () {
                     var modalConfig = {
@@ -101,9 +116,120 @@ define([
                     });
                 };
                 
+                $scope.uploadAttachment = function(threadIndex, headIndex, attachment, threadIndex, headIndex, comment){
+                    var fd = new FormData();
+                    
+                    fd.append('_method', 'POST');
+                    fd.append('data[Upload][comment_id]', $scope.comment.comment_id);
+                    
+                    $.each($(attachment)[0].files, function(i, file) {
+                        fd.append('data[Upload][file]['+i+']', file);
+                    });
+                    
+                     $.ajax({
+                      url: "/uploads.json",
+                      type: "POST",
+                      data: fd,
+                      processData: false,
+                      contentType: false,
+                      async: false,
+                      success: function(response) {
+                          // .. do something
+                          comment.Upload = response.Success;
+                          $scope.timeline[threadIndex].Head[headIndex].Comment.push(comment); 
+                          $(attachment).val('');
+                          MainService.scrollDown(threadIndex, headIndex);
+                          $scope.comment[threadIndex][headIndex] = {};
+                          $scope.$appy();
+                      },
+                      error: function(jqXHR, textStatus, errorMessage) {
+                          console.log(errorMessage); // Optional
+                      }
+                    });
+                };
+                
+                $scope.sendComment = function(isFormValid, threadIndex, headIndex, headId) {
+                    var attachment = '#commentFrm-'+threadIndex+'-'+headIndex + ' #attachments';
+                    var $files = $(attachment)[0].files;
+                    if (!$files.length && !isFormValid) return;
+                    
+                    // console.log($scope.comment[threadIndex][headIndex], 'latest comment');
+                    var postData = {'body': $scope.comment[threadIndex][headIndex].body};
+                    HeadsModel.one('comment').one(headId).customPOST(postData).then(function(res){
+                        $scope.comment.comment_id = res.Comment.id;
+                        var currentComment = {};
+                        currentComment.Comment = angular.extend(postData, res.Comment, {likes: 0,isUserLiked: false});
+                        currentComment.Upload = [];
+                        currentComment.User = $rootScope.loginUser;
+                        
+                        // console.log(currentComment, 'comment to push');
+                        
+                        if ($files.length){
+                            $scope.uploadAttachment(threadIndex, headIndex, attachment, threadIndex, headIndex, currentComment);
+                        } else {
+                            $scope.timeline[threadIndex].Head[headIndex].Comment.push(currentComment); 
+                        }
+                        
+                        // console.log($scope.timeline[threadIndex].Head[headIndex].Comment, 'comments');
+                        $(attachment).val('');
+                        MainService.scrollDown(threadIndex, headIndex);
+                        $scope.comment[threadIndex][headIndex] = {};
+                    });
+                };
+                
+                $scope.likeComment = function(threadIndex, headIndex, commentIndex, commentId){
+                    // console.log($scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment);
+            	    if ($scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.processing){return;};
+            	    
+            	    $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.processing = true;
+            	    
+            	    // if thread was not like
+            	    if (!$scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.isUserLiked) {
+            	        CommentsModel.one('like').one(commentId).get().then(function(res) {
+        	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.isUserLiked = true;
+        	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.likes += 1;
+        	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.processing = false;
+                    	});   
+            	    } else { // if thread was already like
+            	        CommentsModel.one('unlike').one(commentId).get().then(function(res) {
+        	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.isUserLiked = false;
+        	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.likes -= 1;
+        	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.processing = false;
+                    	});
+            	    }
+            	};
+            	
+            	// posting like/unlike
+            	$scope.likeHead = function(threadIndex, headIndex, headId){
+            	    if ($scope.timeline[threadIndex].Head[headIndex].Head.processing){return;};
+            	    $scope.timeline[threadIndex].Head[headIndex].Head.processing = true;
+            	    
+            	    // if head was not like
+            	    if (!$scope.timeline[threadIndex].Head[headIndex].Head.isUserLiked) {
+            	        HeadsModel.one('like').one(headId).get().then(function(res) {
+        	                $scope.timeline[threadIndex].Head[headIndex].Head.isUserLiked = true;
+        	                $scope.timeline[threadIndex].Head[headIndex].Head.likes += 1;
+        	                $scope.timeline[threadIndex].Head[headIndex].Head.processing = false;
+                    	});   
+            	    } else { // if thread was already like
+            	        HeadsModel.one('unlike').one(headId).get().then(function(res) {
+        	                $scope.timeline[threadIndex].Head[headIndex].Head.isUserLiked = false;
+        	                $scope.timeline[threadIndex].Head[headIndex].Head.likes -= 1;
+        	                $scope.timeline[threadIndex].Head[headIndex].Head.processing = false;
+                    	});
+            	    }
+            	};
+                
                 ProfilesModel.one('timeline').get().then(function(timeline){
-                  $scope.timeline = timeline;
+                    $scope.timeline = timeline;
                 });
+                
+                $scope.fireMessageEvent = function(threadIndex, headIndex){
+                    var timeout = $timeout(function() {
+                        MainService.scrollDown(threadIndex, headIndex);
+                        $timeout.cancel(timeout);
+                    }, 1000);
+                };
 
                
 

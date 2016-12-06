@@ -243,12 +243,12 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	};
         	
         	
-        	$scope.fireMessageEvent = function(){
-                var timeout = $timeout(function() {
-                    ThreadService.scrollDown();
-                    $timeout.cancel(timeout);
-                }, 1000);
-            };
+        // 	$scope.fireMessageEvent = function(){
+        //         var timeout = $timeout(function() {
+        //             ThreadService.scrollDown();
+        //             $timeout.cancel(timeout);
+        //         }, 1000);
+        //     };
         	
         	
         	/**
