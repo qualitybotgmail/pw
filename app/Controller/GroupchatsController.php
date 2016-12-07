@@ -73,14 +73,16 @@ class GroupchatsController extends AppController {
 		header('Content-Type: application/json;charset=utf-8');
 		$this->loadModel('UsersGroupchat');
 		$ids = explode(",",$user_id); 
-		 
-			$user_id = $this->Auth->user('id');  
-			$this->Groupchat->create(); 
-			 $data = $this->Groupchat->save(array('user_id' => $user_id));
+		
+		$user_id = $this->Auth->user('id');
+		$ids[] = $user_id;
+		
+		$this->Groupchat->create(); 
+		$data = $this->Groupchat->save(array('user_id' => $user_id));
 	 
-			if ($data) {
+		if ($data) {
 				$groupchat_id = $this->Groupchat->getLastInsertId(); 
-				foreach($ids as $id){  
+				foreach($ids as $id){
 					///check if user_id and groupchat_id already exists
 					$exists = $this->UsersGroupchat->find('count', array(
     			    'conditions' => array('user_id' => $id,'groupchat_id' => $groupchat_id )

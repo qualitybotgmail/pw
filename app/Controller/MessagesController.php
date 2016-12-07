@@ -115,19 +115,22 @@ class MessagesController extends AppController {
 	
 	public function add($id = null){ 
 		 
-	header('Content-Type: application/json;charset=utf-8'); 
+		header('Content-Type: application/json;charset=utf-8'); 
 	
-			$groupchat_id = $id;  
+		$groupchat_id = $id;  
 		
 		if ($this->request->is('post')) {
 			// $body = 'asd';
 			$body = $this->request->data['body'];
 	
 			$user_id = $this->Auth->user('id'); 
+			
 			$this->Message->create();
 			
 			$data = array('user_id' => $user_id, 'groupchat_id' => $groupchat_id, 'body' => $body); 
+			
 			$saved = $this->Message->save($data);
+			
 			if($saved){
 				$result = $saved; 
 			}else{

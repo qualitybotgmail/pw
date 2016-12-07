@@ -132,15 +132,12 @@ class ThreadsController extends AppController {
 			
 			$data = $this->Thread->save($this->request->data);
 			if ($data) {
-				
-				if(true){//$this->request->is('ajax')){
-					$id = $data['Thread']['id'];
-					header('Content-Type: application/json;charset=utf-8');
-					echo json_encode($data);
-					exit;
-				}
-				$this->Session->setFlash(__('The thread has been saved.'), 'default', array('class' => 'alert alert-success'));
-				return $this->redirect(array('action' => 'index'));
+
+				$id = $data['Thread']['id'];
+				header('Content-Type: application/json;charset=utf-8');
+				echo json_encode($data);
+				exit;
+
 			} else {
 				$this->Session->setFlash(__('The thread could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
 			}
