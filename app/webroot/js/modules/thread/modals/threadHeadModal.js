@@ -44,8 +44,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 	                   async: false,
 	                   success: function(response) {
 	                       // .. do something
+	                       console.log('closing with upload');
 	                    	$("#thread-head-modal #new-head-attachments").val('');
                         	$scope.$close(angular.extend(res, {'Upload': response.Success}));
+                        	$scope.$appy();
 	                   },
 	                   error: function(jqXHR, textStatus, errorMessage) {
 	                       console.log(errorMessage); // Optional
@@ -60,6 +62,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 		                        $scope.uploadAttachment({'Head':$scope.head});
 		                    } else {
 		                    	$("#thread-head-modal #new-head-attachments").val('');
+		                    	console.log('closing no upload');
 	                        	$scope.$close({'Head':$scope.head});	
 		                    }
 	                    });

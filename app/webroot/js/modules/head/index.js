@@ -5,6 +5,7 @@ define([
 	// import models
 	'../../models/heads',
 	'../../models/comments',
+	'../../models/uploads',
 	
 	// import filters
 	'../../factories/filter',

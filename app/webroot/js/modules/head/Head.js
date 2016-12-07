@@ -70,27 +70,31 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	// add members
             $scope.editHead = function(head) {
+                $scope.stopInterval();
+                
                 var modalConfig = {
-                        template   : $templateCache.get("add-thread-head-modal.html"),
-                        controller : 'threadHeadModalCtrl',
-                        windowClass: 'modal-width-90 ',
-                        size       : 'sm',
-                        resolve   : {
-                            fromParent: function () {
-                                return {
-                                    'head': head,
-                                    'isEdit': true
-                                };
-                            }
+                    template   : $templateCache.get("add-thread-head-modal.html"),
+                    controller : 'threadHeadModalCtrl',
+                    windowClass: 'modal-width-90 ',
+                    size       : 'sm',
+                    resolve   : {
+                        fromParent: function () {
+                            return {
+                                'head': head,
+                                'isEdit': true
+                            };
                         }
-                    };
-                    
-                    Modal.showModal(modalConfig, {}).then(function (head) {
-                        // success
-                        $scope.selectedHead.Head = angular.extend($scope.selectedHead.Head, head);
-                    }, function (err) {
-                        // error
-                    });
+                    }
+                };
+                
+                Modal.showModal(modalConfig, {}).then(function (head) {
+                    // success
+                    $scope.selectedHead.Head = angular.extend($scope.selectedHead.Head, head);
+                    $scope.startInterval();
+                }, function (err) {
+                    // error
+                    $scope.startInterval();
+                });
             };
             
             $scope.uploadAttachment = function(comment){
@@ -115,6 +119,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                        $scope.selectedHead.Comment.push(angular.extend(comment, {'Upload': response.Success}));
                        $("#attachments").val('');
                        HeadService.scrollDown();
+                       $scope.startInterval();
                        $scope.comment = {};
                        $scope.$appy();
                    },
@@ -126,6 +131,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             $scope.sendComment = function(){
                 if (!$("#attachments")[0].files.length && $scope.comment.body == '') return;
+                $scope.stopInterval();
                 
                 // posting comments
                 var postData = {'body': $scope.comment.body};
@@ -138,6 +144,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                         $scope.uploadAttachment(currentComment);
                     } else {
                        $scope.selectedHead.Comment.push(currentComment); 
+                       $scope.startInterval();
                     }
                     $("#attachments").val('');
                     HeadService.scrollDown();
@@ -224,7 +231,16 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	};
         	
         	// get thread for every 7 secs
-            pendingQry = $interval($scope.getHead, 7000);
+        	$scope.startInterval = function() {
+        	    console.log('starting interval');
+        	    pendingQry = $interval($scope.getHead, 7000);    
+        	};
+        	
+        	$scope.stopInterval = function() {
+        	    console.log('stoping interval');
+        	    $interval.cancel(pendingQry);
+        	};
+            
         	
         	/**
         	 * initialize some functions
@@ -232,13 +248,14 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	 */
         	var init = function(){
     	        $scope.selectedHeadId = $stateParams.id;
-    	        $scope.getHead();
+    	       // $scope.getHead();
+    	        $scope.startInterval();
         	};
         	init();
         	
             /* Destroy non-angular objectst */
 			$scope.$on('$destroy', function (event) {
-			    $interval.cancel(pendingQry);
+			    $scope.stopInterval();
 			});
         }
 	]);
