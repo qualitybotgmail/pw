@@ -130,6 +130,8 @@ class MessagesController extends AppController {
 			$data = array('user_id' => $user_id, 'groupchat_id' => $groupchat_id, 'body' => $body); 
 			
 			$saved = $this->Message->save($data);
+			echo json_encode($saved);
+			exit;
 			
 			if($saved){
 				$result = $saved; 
@@ -143,7 +145,7 @@ class MessagesController extends AppController {
 			// $message_id = $this->Message->getLastInsertId();
 		
 		echo json_encode($result);
-		$this->set('add', $result);
+		// $this->set('add', $result);
 		 
         exit;
 	}
