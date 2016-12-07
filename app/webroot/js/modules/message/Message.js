@@ -79,12 +79,14 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                             }
                         }
                     };
-                    
+                    $scope.stopInterval();
                     Modal.showModal(modalConfig, {}).then(function (selectMembers) {
                         // success
                         $updateUserGroupChat(selectMembers, groupChat.id);
+                        $scope.startInterval();
                     }, function (err) {
                         // error
+                        $scope.startInterval();
                     });
             };
         	
@@ -111,7 +113,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                         $("#attachments").val('');
                         $scope.comment.body = ''; 
                         $scope.comment.message_id = null;
-                        MessageService.scrollDown();
+                        // MessageService.scrollDown();
+                        $scope.startInterval();
                         $scope.$apply();
                    },
                    error: function(jqXHR, textStatus, errorMessage) {
@@ -130,6 +133,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             $scope.sendMessage = function(){
                 // posting comments
                 if (!$("#attachments")[0].files.length && $scope.comment.body === '') return;
+                $scope.stopInterval();
                 
                 var postData = {'body': $scope.comment.body};
                 var id = $scope.message.Groupchat.id;
@@ -143,12 +147,13 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                             $scope.uploadAttachment(currentComment);
                         } else {
                            $scope.message.Message.push(currentComment);
+                           $scope.startInterval();
                         }
                         $("#attachments").val('');
                         // $scope.comment = { body: '', message_id: null};
                         $scope.comment.body = ''; 
                         $scope.comment.message_id = null;
-                        MessageService.scrollDown();
+                        // MessageService.scrollDown();
                     });   
                 // }
             };
@@ -163,27 +168,27 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	    });
             };
             
-            $scope.getLatestMessage = function() {
-                var messageID = $scope.selectedMessageId.toString();
-                GroupChatModel.one(messageID).get().then(function(res){
-                    var currentMessageLength = $scope.message.Message.length;
-                    var groupChat = res.groupchats;
-        	        var messageLength = groupChat.Message.length;
-        	        if (currentMessageLength) {
-        	            var lastMessage = $scope.message.Message[currentMessageLength - 1];
-        	            console.log(lastMessage, groupChat.Message, 'to compare');
-        	            if (lastMessage.id !== groupChat.Message[messageLength - 1].id || lastMessage.Upload.length !== groupChat.Message[messageLength - 1].Upload.length) {
-            				$scope.message.Message.splice((messageLength - 1), 1);
-            				$scope.message.Message.push(groupChat.Message[messageLength - 1]);
-            				MessageService.scrollDown();
-            			}
+        //     $scope.getLatestMessage = function() {
+        //         var messageID = $scope.selectedMessageId.toString();
+        //         GroupChatModel.one(messageID).get().then(function(res){
+        //             var currentMessageLength = $scope.message.Message.length;
+        //             var groupChat = res.groupchats;
+        // 	        var messageLength = groupChat.Message.length;
+        // 	        if (currentMessageLength) {
+        // 	            var lastMessage = $scope.message.Message[currentMessageLength - 1];
+        // 	            console.log(lastMessage, groupChat.Message, 'to compare');
+        // 	            if (lastMessage.id !== groupChat.Message[messageLength - 1].id || lastMessage.Upload.length !== groupChat.Message[messageLength - 1].Upload.length) {
+        //     				$scope.message.Message.splice((messageLength - 1), 1);
+        //     				$scope.message.Message.push(groupChat.Message[messageLength - 1]);
+        //     				MessageService.scrollDown();
+        //     			}
         	            
-        	        } else {
-        	            $scope.message.Message.push(groupChat.Message[messageLength - 1]);
-        	            MessageService.scrollDown();   
-        	        }
-        	    });
-        	};
+        // 	        } else {
+        // 	            $scope.message.Message.push(groupChat.Message[messageLength - 1]);
+        // 	            MessageService.scrollDown();   
+        // 	        }
+        // 	    });
+        // 	};
         	
         	// delete head thread
         	$scope.deleteGroupChat = function(groupChatId) {
@@ -194,11 +199,19 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	};
             
             // get thread for every 7 secs
-        	pendingQry = $interval($scope.getMessage, 7000);
+            $scope.startInterval = function() {
+                pendingQry = $interval($scope.getMessage, 7000);    
+            };
+            
+            $scope.stopInterval = function() {
+                $interval.cancel(pendingQry);
+            };
         	
         	var init = function(){
     	        $scope.selectedMessageId = $stateParams.id;
-    	        $scope.getMessage();
+    	       // $scope.getMessage();
+    	       $scope.startInterval();
+    	       
         	};
         	init();
         	

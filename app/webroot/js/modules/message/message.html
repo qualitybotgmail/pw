@@ -56,7 +56,7 @@
         </span>
     </div> <!-- / .panel-heading -->
     <ul class="list-group">
-        <li class="list-item">
+        <li class="list-item" ng-if="message.Message.lenght">
             <ul class="list-group commentList">
                 <li class="list-group-item" ng-repeat="m in message.Message | unique : 'id'"  ng-init="$last && fireMessageEvent()">
                     <small>by : {{m.User.username}}</small>

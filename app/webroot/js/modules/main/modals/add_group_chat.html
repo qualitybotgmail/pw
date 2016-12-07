@@ -17,7 +17,7 @@
 	                                data="groupchat.users"
 	                                display-field="username"
 	                                ng-model="groupchat.member_ids"
-	                                placeholder="Search Member"
+	                                placeholder="メンバー検索"
 	                                search="username"
 	                                selected="selected(val)"
 	                                detailed-selection="1"
@@ -35,7 +35,7 @@
 	                    <div class="form-group">
 		                        <label for="title">メッセージ</label>
 		                        
-		                        <textarea class="form-control" row="2" placeholder="Initial Message" ng-model="initial_message" required></textarea>
+		                        <textarea class="form-control" row="2" placeholder="初期メッセージ" ng-model="initial_message" required></textarea>
 	                            
 		                        <i class="tooltips col-xs-12" ng-show="groupchatForm.member_ids.$dirty && groupchatForm.member_ids.$invalid">
 		                            <span class="red">※必須項目です</span>
@@ -51,7 +51,10 @@
 			</div>
 			
 			<div class="modal-footer">
-				<button type="button" class="btn btn-sm" id="btn-close" ng-click="cancel()" tabindex="-1"><i class="fa fa-ban bigger-140"></i> &nbsp;Cancel</button>
+				<button type="button" class="btn btn-sm" id="btn-close" ng-click="cancel()" tabindex="-1">
+					<i class="fa fa-ban bigger-140"></i> &nbsp;
+					キャンセル
+				</button>
 				<button type="submit" ng-click="saveGroupChat()" class="btn btn-primary btn-sm" id="btn-ok" ng-disabled="groupchatForm.$invalid || ! groupchatForm.$dirty">
 					<i class="fa fa-save bigger-140"></i> &nbsp;送信
 				</button>
