@@ -4,7 +4,7 @@
 		<form name="headForm" novalidate ng-submit="saveHead()">
 			<div class="modal-header">
 				<button type="button" class="close" ng-click="cancel()">&times;</button>
-			    <h4 class="white bigger">Head Details</h4>
+			    <h4 class="white bigger">ヘッド投稿</h4>
 			</div>
 
 			<div class="modal-body">
@@ -12,11 +12,11 @@
 		    	<div class="row" >
 		            <div class="col-xs-11">
 						<div class="form-group">
-	                        <label for="head-body">Body</label>
-	                        <textarea name="head" class="form-control" id="head-body" placeholder="Enter head" ng-model="head.body"></textarea>
-	                        <i class="tooltips col-xs-12" ng-show="headForm.head.$dirty && headForm.head.$invalid">
+	                        <label for="head-body">本文</label>
+	                        <textarea name="head" class="form-control" id="head-body" placeholder="**ヘッド内容をご記入**" ng-model="head.body"></textarea>
+	                        <!--i class="tooltips col-xs-12" ng-show="headForm.head.$dirty && headForm.head.$invalid">
 	                            <span class="red">This field is required</span>
-	                        </i>
+	                        </i-->
 	                    </div>
 		    		</div>
 		    	</div>
@@ -48,9 +48,13 @@
 			</div>
 			
 			<div class="modal-footer">
-				<button type="button" class="btn btn-sm" id="btn-close" ng-click="cancel()" tabindex="-1"><i class="fa fa-ban bigger-140"></i> &nbsp;Cancel</button>
+				<button type="button" class="btn btn-sm" id="btn-close" ng-click="cancel()" tabindex="-1">
+					<i class="fa fa-ban bigger-140"></i> &nbsp;
+					キャンセル
+				</button>
 				<button type="submit" class="btn btn-primary btn-sm" id="btn-ok" ng-disabled="headForm.$invalid">
-					<i class="fa fa-save bigger-140"></i> &nbsp;<u>S</u>ave
+					<i class="fa fa-save bigger-140"></i> &nbsp;
+					保存
 				</button>
 			</div>
 
