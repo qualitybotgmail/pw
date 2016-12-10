@@ -12,7 +12,7 @@ App::uses('AppModel', 'Model');
  * @property User $User
  */
 class Log extends AppModel {
-
+public $actsAs = array('Containable');
 /**
  * Validation rules
  *

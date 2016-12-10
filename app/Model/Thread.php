@@ -8,6 +8,7 @@ App::uses('AppModel', 'Model');
  */
 class Thread extends AppModel {
 
+
 /**
  * Validation rules
  *
@@ -73,7 +74,7 @@ class Thread extends AppModel {
 			'joinTable' => 'users_threads'
 		)
 	);
-	public $hasMany = array('Head','Notification');
+	public $hasMany = array('Head','Notification','Log');
 	
 	public function members($thread_id){
 		
@@ -96,6 +97,17 @@ class Thread extends AppModel {
 		return false;
 	}
 
-	
+	public function afterSave($created, $options = array()){
+
+		if(!$created){
+			$id = AuthComponent::user('id');
+			$this->Log->save(array(
+				'user_id' => 	$id,
+				'thread_id' => $this->data['Thread']['id'],
+				'type' => 'edit'
+			));
+		}
+
+	}
 	
 }
