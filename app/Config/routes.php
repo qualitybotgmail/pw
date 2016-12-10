@@ -46,7 +46,7 @@
 	Router::mapResources('heads');
 	Router::mapResources('likes');
 	Router::mapResources('profiles');
-	
+	Router::mapResources('notifications');
 	Router::mapResources('ignored_threads');
 	
 	

@@ -73,7 +73,7 @@ class Thread extends AppModel {
 			'joinTable' => 'users_threads'
 		)
 	);
-	public $hasMany = array('Head');
+	public $hasMany = array('Head','Notification');
 	
 	public function members($thread_id){
 		
