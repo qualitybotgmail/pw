@@ -35,8 +35,9 @@
                 <span class="thread-users" title="members">
                 	<i class="glyphicon glyphicon-user"></i>
                 	<span>:</span>
-                	<span ng-if="!thread.User.length">
-                		No Member/s
+                	<span>
+                		{{thread.Owner.username}}
+                		{{thread.User.length ? ', ' : ''}}
                 	</span>
                 	<span ng-repeat="u in thread.User" ng-if="thread.User.length">
                 		{{u.username}}
@@ -54,7 +55,9 @@
                                 id="notification" 
                                 ng-model="thread.Thread.push_notification" 
                                 data-size="mini"
-                                data-label-text="Notification"
+                                data-label-text="通知"
+                                switch-on-text="onText"
+                                switch-off-text="offText"
                                 switch-change="pushNotification($index)"
                                 bootstrap-switch />
             <div class="btn-group btn-group-sm">

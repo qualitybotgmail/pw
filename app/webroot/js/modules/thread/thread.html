@@ -47,8 +47,9 @@
                     
                     <i class="glyphicon glyphicon-user"></i>
                 	<span>:</span>
-                	<span ng-if="!thread.User.length">
-                		No Member/s
+                	<span>
+                		{{thread.Owner.username}}
+                		{{thread.User.length ? ', ' : ''}}
                 	</span>
                 	<span ng-repeat="u in thread.User" ng-if="thread.User.length">
                 		<span 
@@ -102,7 +103,8 @@
             <h5>{{head.body}}</h5>
         </a>
         
-        <span style="font-size:10px;">{{head.created}}</span>
+        <span style="font-size:11px;">{{head.created}}</span>
+        <span style="font-size:11px;">by: {{head.Owner.username}}</span>
         <div class="panel-heading-controls">
             <button class="btn btn-sm {{(head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="head.processing" ng-click="like($index, head)">
                 {{head.likes}}

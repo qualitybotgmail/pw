@@ -93,7 +93,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                     
                     Modal.showModal(modalConfig, {}).then(function (head) {
                         // success
-                        $scope.thread.Head.push(head);
+                        // $scope.thread.Head.push(head);
+                        $rootScope.getThreads();
                         $state.go('app.head',{id: head.Head.id});
                     }, function (err) {
                         // error
@@ -168,6 +169,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	   // $scope.deleteMember(index, member);
         	   ThreadsModel.one('deleteMember').one($scope.thread.Thread.id).one(member.id).get().then(function(result){
         	        $scope.thread.User.splice(index, 1);
+        	        $rootScope.getThreads();
         	        $state.go('app.threads');
         	   });
         	};
@@ -191,7 +193,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 
                 Modal.showModal(modalConfig, {}).then(function (result) {
                     // success
-                    $scope.thread.Thread = angular.extend($scope.thread.Thread, result);
+                    $scope.thread.Thread = angular.extend($scope.thread.Thread, result.Thread);
                     _updateThreadTitle($scope.thread.Thread.id);
                 }, function (err) {
                     // error

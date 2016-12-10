@@ -14,7 +14,10 @@ define([
                   	'model'       : '=ngModel'
                 },
                 link: function(scope, element, attrs, ngModel) {
-                    element.bootstrapSwitch();
+                    element.bootstrapSwitch({
+                        onText: '有効',
+                        offText: '無効',
+                    });
 
                     element.on('switchChange.bootstrapSwitch', function(event, state) {
                         if (ngModel) {

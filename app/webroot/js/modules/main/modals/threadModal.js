@@ -16,15 +16,22 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 				$scope.thread = {};
 				
 				angular.extend($scope, fromParent);
+				
+				if ($scope.thread) {
+					$scope.thread = {
+						'tempId' : $scope.thread.id,
+						'tempTitle' : $scope.thread.title,
+					};
+				}
             
                 $scope.save = function() {
                 	if ($scope.isEdit) {
-                		ThreadsModel.one($scope.thread.id).customPOST({id: $scope.thread.id, 'title': $scope.thread.title}).then(function(res){
+                		ThreadsModel.one($scope.thread.tempId).customPOST({id: $scope.thread.tempId, 'title': $scope.thread.tempTitle}).then(function(res){
                         	$scope.$close(res);	
 	                    });
                 	} else {
-                		ThreadsModel.post($scope.thread).then(function(res){
-                			$rootScope.threads.unshift({'Thread': res, 'User': [], 'Owner': $rootScope.loginUser});
+                		ThreadsModel.post({'title': $scope.thread.tempTitle}).then(function(res){
+                			$rootScope.threads.unshift({'Thread': res.Thread, 'User': [], 'Owner': $rootScope.loginUser});
                         	$scope.$close(res);
 	                    });	
                 	}

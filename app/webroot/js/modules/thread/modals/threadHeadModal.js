@@ -2,6 +2,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 {
 	app.controller('threadHeadModalCtrl',
 	[
+			'$rootScope',
 			'$scope',
 			'$timeout',
 			'$modalInstance',
@@ -12,10 +13,19 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 			'fromParent',
 			'Restangular',
 
-			function($scope, $timeout, $modalInstance, Modal, Focus, HeadsModel, UploadsModel, fromParent, Restangular)
+			function($rootScope, $scope, $timeout, $modalInstance, Modal, Focus, HeadsModel, UploadsModel, fromParent, Restangular)
 			{
 				$scope.head = {};
+				
 				angular.extend($scope, fromParent);
+				
+				if ($scope.head){
+					$scope.head = {
+						'tempId': $scope.head.id,
+						'tempBody': $scope.head.body
+					}
+				}
+				
 				$scope.head.thread_id = ($scope.thread)?$scope.thread.id:$scope.head.thread_id;
 				
 				
@@ -57,18 +67,18 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
                 $scope.saveHead = function() {
                 	if ($scope.isEdit) {
-                		HeadsModel.one($scope.head.id).customPOST($scope.head).then(function(res){
+                		HeadsModel.one($scope.head.tempId).customPOST({'id': $scope.head.tempId, 'body': $scope.head.tempBody, 'thread_id': $scope.thread.id}).then(function(res){
 	                    	if ($("#thread-head-modal #new-head-attachments")[0].files.length){
-		                        $scope.uploadAttachment({'Head':$scope.head});
+		                        $scope.uploadAttachment(angular.extend(res,{'Owner': $rootScope.loginUser}));
 		                    } else {
 		                    	$("#thread-head-modal #new-head-attachments").val('');
 		                    	console.log('closing no upload');
-	                        	$scope.$close({'Head':$scope.head});	
+	                        	$scope.$close(angular.extend(res,{'Owner': $rootScope.loginUser}));	
 		                    }
 	                    });
                 	} else {
                 		var result = {isUserLiked: false, likes: 0};
-	                	HeadsModel.post($scope.head).then(function(res){
+	                	HeadsModel.post({'body': $scope.head.tempBody, 'thread_id': $scope.thread.id}).then(function(res){
 	                		result = angular.extend(res, result);
 	                    	if ($("#thread-head-modal #new-head-attachments")[0].files.length){
 		                        $scope.uploadAttachment(result);

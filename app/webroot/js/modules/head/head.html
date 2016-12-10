@@ -60,7 +60,7 @@
                 </div>
             </div>
         </li>
-        <li class="list-item" ng-if="selectedHead.Comment.lenght">
+        <li class="list-item" ng-if="selectedHead.Comment.length">
             <ul class="list-group commentList">
                 <li class="list-group-item" ng-repeat="c in selectedHead.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
                     <small>by : {{c.User.username}}</small>
