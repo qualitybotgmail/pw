@@ -19,10 +19,11 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 				
 				angular.extend($scope, fromParent);
 				
-				if ($scope.head){
+				if ($scope.isEdit){
 					$scope.head = {
 						'tempId': $scope.head.id,
-						'tempBody': $scope.head.body
+						'tempBody': $scope.head.body,
+						'tempThreadId': $scope.head.thread_id
 					}
 				}
 				
@@ -67,7 +68,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
                 $scope.saveHead = function() {
                 	if ($scope.isEdit) {
-                		HeadsModel.one($scope.head.tempId).customPOST({'id': $scope.head.tempId, 'body': $scope.head.tempBody, 'thread_id': $scope.thread.id}).then(function(res){
+                		HeadsModel.one($scope.head.tempId).customPOST({'id': $scope.head.tempId, 'body': $scope.head.tempBody, 'thread_id': $scope.head.tempThreadId}).then(function(res){
 	                    	if ($("#thread-head-modal #new-head-attachments")[0].files.length){
 		                        $scope.uploadAttachment(angular.extend(res,{'Owner': $rootScope.loginUser}));
 		                    } else {
@@ -78,7 +79,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 	                    });
                 	} else {
                 		var result = {isUserLiked: false, likes: 0};
-	                	HeadsModel.post({'body': $scope.head.tempBody, 'thread_id': $scope.thread.id}).then(function(res){
+	                	HeadsModel.post({'body': $scope.head.tempBody, 'thread_id': $scope.head.tempThreadId}).then(function(res){
 	                		result = angular.extend(res, result);
 	                    	if ($("#thread-head-modal #new-head-attachments")[0].files.length){
 		                        $scope.uploadAttachment(result);
