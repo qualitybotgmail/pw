@@ -350,7 +350,7 @@ class ThreadsController extends AppController {
 	public function userstoadd($thread_id){
 		header('Content-Type: application/json;charset=utf-8');
 		$members = $this->Thread->members($thread_id);
-		
+		$members[] = $this->Auth->user('id');
 		$users = $this->Thread->User->find("all",['fields' => ['id','username'],'conditions' => [
 			'NOT' => [
 				'User.id' => $members
