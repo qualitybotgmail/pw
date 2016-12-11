@@ -6,13 +6,24 @@ App::uses('AppController', 'Controller');
  * @property Message $Message
  * @property PaginatorComponent $Paginator
  */
+ 
+
 class MessagesController extends AppController {
 
+
+
+// public $uses = array(
+//         'Message'
+//     );
+
+    
 /**
  * Components
  *
  * @var array
  */
+ 
+	public $uses = array('Message');
 	public $components = array('Paginator');
 
 	public function beforeFilter(){
@@ -113,16 +124,15 @@ class MessagesController extends AppController {
 		return $this->redirect(array('action' => 'index'));
 	}
 	
-	public function add($id = null){ 
+			public function add($id = null){ 
 		 
 		header('Content-Type: application/json;charset=utf-8'); 
 	
 		$groupchat_id = $id;  
 		
-		if ($this->request->is('post')) {
-			// $body = 'asd';
+		if ($this->request->is('post')) { 
 			$body = $this->request->data['body'];
-	
+			// $body = 'asd';
 			$user_id = $this->Auth->user('id'); 
 			
 			$this->Message->create();
@@ -141,14 +151,14 @@ class MessagesController extends AppController {
 		 
 		} else{
 			$result = 'data unposted';
-		}
-			// $message_id = $this->Message->getLastInsertId();
+		} 
 		
-		echo json_encode($result);
-		// $this->set('add', $result);
+		echo json_encode($result); 
 		 
         exit;
 	}
+	
+	
 	
 /**
  * add method

@@ -78,18 +78,17 @@ class Message extends AppModel {
  */
  
 	public $hasMany = array(
-		
 		'Upload'
 	);
 
 	 
-	function beforeSave($options = array()){
-		if(empty($this->data[$this->alias]['id'])){
-			$this->Log->saveAll($options);
-		}else{ 
-			$this->Log->saveAll($options);
-		}
-    return true;
-	}
+	// function beforeSave($options = array()){
+	// 	if(empty($this->data[$this->alias]['id'])){
+	// 		$this->Log->saveAll($options);
+	// 	}else{ 
+	// 		$this->Log->saveAll($options);
+	// 	}
+ //   return true;
+	// }
 	
 }

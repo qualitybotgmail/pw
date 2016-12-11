@@ -497,6 +497,49 @@ class ProfilesController extends AppController {
 		echo json_encode($data);exit;
 	}
 	
+	public function notifications(){
+		header('Content-Type: application/json;charset=utf-8'); 
+		
+		$uid = $this->Auth->user('id');
+		
+		$this->Profile->User->Behaviors->load('Containable');
+		$user = $this->Profile->User->find('first',array(
+			'conditions' => array('id' => $uid),
+			'contain' => array(
+				
+				'Thread' => array(
+					'Log.thread_id',
+					'Log.user_id',
+					'Log.type',
+					'Log.created',
+					'Log' => 
+					array(
+						'User.username',
+						'Thread.title'
+					)
+				)
+			)
+		));
+		
+		$notifications = [];
+		$notifications_dates = [];
+		foreach($user['Thread'] as $t){
+			foreach($t['Log'] as $log){
+				$notifications[] = $log;
+				$notifications_dates[] = $log['created'];
+			}
+		}
+
+		
+		array_multisort($notifications_dates,SORT_DESC,SORT_STRING,$notifications);
+
+		echo json_encode($notifications);
+		exit;
 	
+	}
 	
+	public function beforeFilter(){
+		$this->Auth->allow('notifications');
+		
+	}	
 }

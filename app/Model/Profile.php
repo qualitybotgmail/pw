@@ -61,4 +61,57 @@ class Profile extends AppModel {
 			'order' => ''
 		)
 	);
+	
+	public function getMyThreadIds(){
+		$id = AuthComponent::user('id');
+		if($id == ''){
+			return array();
+		}
+		$r = $this->query("SELECT thread_id FROM users_threads WHERE user_id = " .$id);
+		$ret = array();
+		foreach($r as $t){
+			$ret[] = $t['users_threads']['thread_id'];
+		}
+		return $ret;
+	}
+
+	public function getMyLogIds(){
+		$id = AuthComponent::user('id');
+		if($id == ''){
+			return array();
+		}
+		
+		$r = $this->query("SELECT log_id FROM users_logs WHERE user_id = " .$id);
+
+		$ret = array();
+		foreach($r as $t){
+			$ret[] = $t['users_logs']['log_id'];
+		}
+		return $ret;
+	}
+	
+	public function getMyLogThreadIds(){
+
+		$ids = $this->getMyThreadIds();
+		
+		$this->User->Log->recursive = 1;
+		$lids = $this->getMyLogIds();
+		
+		$mlids = $this->User->Log->find('all', array(
+			'conditions' => array(
+				'Log.thread_id' => $ids
+			),'contain' => array("Thread")
+		));
+		echo 'test';
+		print_r($mlids);
+		exit;
+		return array_diff($mlids,$lids);
+	}
+	public function getMyLogThreads(){
+		$ids = $this->getMyLogThreadIds();
+		
+	//	$this->User->Thread->recursive = -1;
+		$threads = $this->User->Thread->findAllById($ids);
+		return $threads;
+	}
 }
