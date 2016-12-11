@@ -17,7 +17,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 				
 				angular.extend($scope, fromParent);
 				
-				if ($scope.thread) {
+				if ($scope.isEdit) {
 					$scope.thread = {
 						'tempId' : $scope.thread.id,
 						'tempTitle' : $scope.thread.title,
