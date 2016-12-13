@@ -124,27 +124,77 @@ define([
 			'$interval',
 		function($rootScope, $q, $state, $window, Notify, Restangular, Idle, $log, Keepalive, $notification, $interval) {
 			
-			// notification
-			$notification.requestPermission().then(function success(permission) {
-				/**
-				 * check if the notification is
-				 * granted by the user
-				 **/
-				if (permission === 'granted') {
-					// get thread for every 7 secs
-	            	$interval( function() {
-						console.log('getting logs');
-						$notification('alert', {
-							body: 'You have a new message.',
-							tag : 'threads',
-		                    delay: 2000
-						});
-					}, 7000);	
-				}
-			}, 
-			function error() {
-                $log.error("Can't request for notification");
-            });
+			var _callNotification = function() {
+				var isDesktopNotificationSupported = $notification.isSupported;
+				if (isDesktopNotificationSupported) {
+					// notification
+					$notification.requestPermission().then(function success(permission) {
+						/**
+						 * check if the notification is
+						 * granted by the user
+						 **/
+						if (permission === 'granted') {
+							var nLists = [];
+							// get thread for every 7 secs
+			            	$interval( function() {
+								Restangular.one('profiles').one('notifications').get().then(function(notifications){
+									angular.forEach(notifications, function(notification, index) {
+										
+										var action = notification.type.split('.');
+										var body = '';
+										
+										switch (action[1]){
+											case 'add':
+												body = 'Add ' + action[0];
+												break;
+											case 'edit':
+												body = action[0] + ' was ' + action[1];
+												break;
+											case 'like':
+												body = action[0] + ' was ' + action[1];
+												break;
+										}
+										
+										nLists[index] = $notification('Notification', {
+											body: body,
+											tag : notification.id+notification.type,
+										});	
+										
+										nLists[index].$on('show', function () {
+											var showNotification = notification;
+											console.log('notified server that log id #' + showNotification.id + ' was notified to the user');
+											Restangular.one('profiles').one('notified').one(showNotification.id).get().then(function(notifications){});
+										});
+										
+										nLists[index].$on('click', function () {
+											var clickAction = notification.type.split('.');
+											var clickNotification = notification;
+											switch(clickAction[0]) {
+											    case 'Comment':
+											    	window.location = Talknote.baseUrl+'/index.html#/head/'+clickNotification.head.id;
+											    	nLists[index].close();
+											        break;
+											    case 'Message':
+											    	window.location = Talknote.baseUrl+'/index.html#/message/'+clickNotification.Message.id;
+											    	nLists[index].close();
+											        break;
+											    default:
+											        window.location = Talknote.baseUrl+'/index.html#/threads/'+clickNotification.Thread.id;
+											        nLists[index].close();
+											}
+											
+										});
+										
+									});
+								});
+							}, 7000);	
+						}
+					}, 
+					function error() {
+		                $log.error("Can't request for notification");
+		            });	
+				}	
+			};
 			
 			/**
 			 * use to check if the user is idle
@@ -167,6 +217,7 @@ define([
 				} else {
 					$rootScope.loginUser  = res.User;	
 					$rootScope.loginUserProfile  = res.Profile;	
+					_callNotification();
 				}
     	    });
     	    
