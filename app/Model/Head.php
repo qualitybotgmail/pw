@@ -83,7 +83,7 @@ class Head extends AppModel {
 	
 	
 		$id = AuthComponent::user('id');
-		
+		print_r($this->data);exit;
 		$this->Log->save(array(
 			'user_id' => 	$id,
 			'thread_id' => $this->data['Head']['thread_id'],

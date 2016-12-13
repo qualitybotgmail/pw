@@ -109,5 +109,8 @@ class Thread extends AppModel {
 		}
 
 	}
-	
+	public function logsFor($tid){
+		$id = AuthComponent::user('id');
+		return $this->query('SELECT count(*) FROM logs where thread_id = ' . $tid . '' );
+	}
 }

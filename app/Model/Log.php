@@ -105,6 +105,7 @@ public $actsAs = array('Containable');
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
+			
 		),
 		'Thread' => array(
 			'className' => 'Thread',
@@ -112,6 +113,7 @@ public $actsAs = array('Containable');
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
+			
 		),
 		'Head' => array(
 			'className' => 'Head',

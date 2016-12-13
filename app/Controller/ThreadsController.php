@@ -48,7 +48,50 @@ class ThreadsController extends AppController {
 
 		$this->set('threads', array_merge($threads, $users_threads));
 	}
-	
+	public function notifications($tid) { 
+		header('Content-Type: application/json;charset=utf8');
+		$uid = $this->Auth->user('id');
+		
+		$this->loadModel('UsersLog');
+		$notifiedIds = $this->UsersLog->find('list',array(
+			'conditions' => array(
+				'user_id' => $uid
+			),
+			'fields' => 'log_id'
+		));
+				
+		$this->loadModel('User');
+		$this->User->Behaviors->load('Containable');
+		
+		$u = $this->User->find('first',array(
+			'conditions' => array('id' => $uid),
+			'contain' => array('Thread.id' => array(
+				'Log.id' ,'Head.id'	=> array('Log.id', 'Comment.id' => array('Log.id'))
+			))
+		));
+		$logs = array();
+		foreach($u['Thread'] as $t){
+			foreach($t['Log'] as $tl){
+				$logs[] = $tl['id'];
+			}
+			foreach($t['Head'] as $h){
+				foreach($h['Log'] as $hl){
+					$logs[] = $hl['id'];
+					
+				
+				}
+				foreach($h['Comment'] as $c){
+					foreach($c['Log'] as $cl){
+						$logs[] = $cl['id'];
+					}
+				}
+			}
+		}
+		
+		echo json_encode(array('count'=>count(array_diff(array_unique($logs),$notifiedIds))));
+		
+		exit;
+	}
 	private function formatQuery($threads) {
 		foreach($threads as $k => $thread){
 			
@@ -72,7 +115,7 @@ class ThreadsController extends AppController {
 	
 	
 	public function beforeFilter(){
-//		$this->Auth->allow('comment');
+		$this->Auth->allow('index2','notifications');
 	}
 
 /**

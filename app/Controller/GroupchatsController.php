@@ -18,7 +18,7 @@ class GroupchatsController extends AppController {
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('add','view');
+		$this->Auth->allow('add','view','notifications');
 	}
 /**
  * index method
@@ -72,6 +72,7 @@ class GroupchatsController extends AppController {
 	public function add($user_id = null) { 
 		header('Content-Type: application/json;charset=utf-8');
 		$this->loadModel('UsersGroupchat');
+		
 		$ids = explode(",",$user_id); 
 		
 		$user_id = $this->Auth->user('id');
@@ -225,5 +226,42 @@ class GroupchatsController extends AppController {
 			echo json_encode(['status' => 'FAILED']);
 			exit;
 		}
+	}
+	public function notifications($gid) { 
+		header('Content-Type: application/json;charset=utf8');
+		$uid = $this->Auth->user('id');
+		
+		$this->loadModel('UsersLog');
+		$notifiedIds = $this->UsersLog->find('list',array(
+			'conditions' => array(
+				'user_id' => $uid
+			),
+			'fields' => 'log_id'
+		));
+				
+		$this->loadModel('User');
+		$this->User->Behaviors->load('Containable');
+		
+		$u = $this->User->find('first',array(
+			'conditions' => array('id' => $uid),
+			'contain' => array('Groupchat.id' => array('Message.id' => array('Log.id')))
+		));
+		
+		$logs = array();
+		foreach($u['Groupchat'] as $t){
+			
+			foreach($t['Message'] as $h){
+				foreach($h['Log'] as $hl){
+					$logs[] = $hl['id'];
+					
+				
+				}
+		
+			}
+		}
+		
+		echo json_encode(array('count'=>count(array_diff(array_unique($logs),$notifiedIds))));
+		
+		exit;
 	}	
 }

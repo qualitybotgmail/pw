@@ -511,6 +511,7 @@ class ProfilesController extends AppController {
 		));
 		
 		$this->Profile->User->Behaviors->load('Containable');
+
 		$user = $this->Profile->User->find('first',array(
 			'conditions' => array('id' => $uid),
 			'contain' => array(
