@@ -120,7 +120,7 @@ define([
                     var fd = new FormData();
                     
                     fd.append('_method', 'POST');
-                    fd.append('data[Upload][comment_id]', $scope.comment.comment_id);
+                    fd.append('data[Upload][comment_id]', comment.Comment.id);
                     
                     $.each($(attachment)[0].files, function(i, file) {
                         fd.append('data[Upload][file]['+i+']', file);
@@ -170,7 +170,6 @@ define([
                             $scope.timeline[threadIndex].Head[headIndex].Comment.push(currentComment); 
                         }
                         
-                        // console.log($scope.timeline[threadIndex].Head[headIndex].Comment, 'comments');
                         $(attachment).val('');
                         MainService.scrollDown(threadIndex, headIndex);
                         $scope.comment[threadIndex][headIndex] = {};
