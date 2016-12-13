@@ -111,6 +111,7 @@ class Like extends AppModel {
 			'order' => ''
 		)
 	);
+	public $hasMany = 'Log';
 	// public function threadLike($thread_id,$user_id){
 	// 	$ret = $this->find('first',array('conditions' => array(
 	// 		'Like.thread_id' => $thread_id,
@@ -174,4 +175,34 @@ class Like extends AppModel {
 		
 		return count($ret) > 0;
 	}
+	public function afterSave($created, $options = array()){
+		if(!$created) return;
+		
+		$this->Behaviors->load('Containable');
+		$like = $this->data['Like'];
+		$hid = isset($like['head_id'])? $like['head_id']:0;
+		$cid = isset($like['comment_id'])? $like['comment_id']:0;
+		
+		$type = $hid != 0 ? "Head.like" : ($cid != 0 ? 'Comment.like' : "Unknown.like");
+		
+		$like_d = $this->find('first',array(
+			'conditions' => array(
+				'Like.id' => $like['id']	
+			),
+			'contain' => array('Head.id'=>'Thread.id','Comment.id' => 'Head.id')
+		));
+		
+		$id = AuthComponent::user('id');
+		
+		$this->Log->save(array(
+			'like_id' => $like['id'],
+			'user_id' => 	$id,
+			'thread_id' => $type == 'Comment.like' ? $like_d['Comment']['Head']['thread_id'] : $like_d['Head']['thread_id'],
+			'head_id' => $hid,
+			'comment_id' => $cid,
+			'type' => $type
+		));
+	
+
+	}			
 }

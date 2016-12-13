@@ -140,7 +140,7 @@ public $actsAs = array('Containable');
 			'conditions' => '',
 			'fields' => '',
 			'order' => ''
-		)
+		),'Groupchat'
 	);
 
 /**
@@ -164,4 +164,23 @@ public $actsAs = array('Containable');
 		)
 	);
 
+	public function setNotified($lid){
+		
+		$log = $this->exists($lid);
+		
+		if($log){
+			$id = AuthComponent::user('id');
+			if($this->UsersLog->findByUserIdAndLogId($id,$lid)){
+				return "ALREADY_NOTIFIED";
+			}
+			$s = $this->UsersLog->save(array('user_id' => $id,'log_id' => $lid));
+			
+			return "SUCCESS";
+		}
+		return "INVALID_LOG_ID";
+		
+		
+		
+
+	}
 }

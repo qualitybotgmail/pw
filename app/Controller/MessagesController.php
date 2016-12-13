@@ -124,7 +124,7 @@ class MessagesController extends AppController {
 		return $this->redirect(array('action' => 'index'));
 	}
 	
-			public function add($id = null){ 
+	public function add($id = null){ 
 		 
 		header('Content-Type: application/json;charset=utf-8'); 
 	
@@ -230,6 +230,6 @@ class MessagesController extends AppController {
 
 
 	}
-	
+
 }
  

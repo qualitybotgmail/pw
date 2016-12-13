@@ -37,7 +37,7 @@ class Groupchat extends AppModel {
 			'exclusive' => '',
 			'finderQuery' => '',
 			'counterQuery' => ''
-		)
+		),'Log'
 	);
 
 

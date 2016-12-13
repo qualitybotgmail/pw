@@ -71,7 +71,7 @@ class Comment extends AppModel {
 		),
 	);
 	
-	public $hasMany = ['Like', 'Upload'];
+	public $hasMany = ['Like', 'Upload','Log'];
 
 // 	public function afterFind($results, $primary = false) {
 // 		$ret = [];
@@ -96,6 +96,26 @@ class Comment extends AppModel {
 			
 		return false;
 	}
-	  
+	
+	public function afterSave($created, $options = array()){
+		$this->Head->Behaviors->load('Containable');
+		$head = $this->Head->find('first',array(
+			'conditions' => array(
+				'id' => $this->data['Comment']['head_id']	
+			),'contain' => array(),'fields'=>'thread_id'
+		));
+		
+		$id = AuthComponent::user('id');
+		
+		$this->Log->save(array(
+			'user_id' => 	$id,
+			'thread_id' => $head['Head']['thread_id'],
+			'head_id' => $this->data['Comment']['head_id'],
+			'comment_id' => $this->data['Comment']['id'],
+			'type' => 'Comment.'. ($created? 'add' : 'edit')
+		));
+	
+
+	}		
 	
 }

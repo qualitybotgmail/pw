@@ -75,7 +75,7 @@ class GroupchatsController extends AppController {
 		$ids = explode(",",$user_id); 
 		
 		$user_id = $this->Auth->user('id');
-		$ids[] = $user_id;
+	//	$ids[] = $user_id;
 		
 		$this->Groupchat->create(); 
 		$data = $this->Groupchat->save(array('user_id' => $user_id));
@@ -160,7 +160,11 @@ class GroupchatsController extends AppController {
 		header('Content-Type: application/json;charset=utf-8'); 
 		
 		$this->loadModel('User');
-		$users = $this->User->find("all", array('fields'=>array('id','username','created','modified')));
+		$this->User->Behaviors->load('Containable');
+		$users = $this->User->find("all", array('fields'=>array('id','username'),
+			'contain' => array(),
+			'conditions' => array('User.id !=' => $this->Auth->user('id'))
+		));
 		 
 		echo json_encode(['users'=> $users]);
 		exit;
