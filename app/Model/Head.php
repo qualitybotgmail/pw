@@ -70,7 +70,7 @@ class Head extends AppModel {
 		)
 	);
 	
-	public $hasMany = ['Comment','Like','Upload'];
+	public $hasMany = ['Comment','Like','Upload','Log'];
 	
 	public function isLiked($cid,$uid){
 		$ret = $this->Like->findByHeadIdAndUserId($cid,$uid);
@@ -79,5 +79,18 @@ class Head extends AppModel {
 			
 		return false;
 	}
+	public function afterSave($created, $options = array()){
+	
+	
+		$id = AuthComponent::user('id');
 		
+		$this->Log->save(array(
+			'user_id' => 	$id,
+			'thread_id' => $this->data['Head']['thread_id'],
+			'head_id' => $this->data['Head']['id'],
+			'type' => 'Head.'. ($created? 'add' : 'edit')
+		));
+	
+
+	}		
 }

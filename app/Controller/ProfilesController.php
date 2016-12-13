@@ -502,6 +502,14 @@ class ProfilesController extends AppController {
 		
 		$uid = $this->Auth->user('id');
 		
+		$this->loadModel('UsersLog');
+		$notifiedIds = $this->UsersLog->find('list',array(
+			'conditions' => array(
+				'user_id' => $uid
+			),
+			'fields' => 'log_id'
+		));
+		
 		$this->Profile->User->Behaviors->load('Containable');
 		$user = $this->Profile->User->find('first',array(
 			'conditions' => array('id' => $uid),
@@ -510,13 +518,59 @@ class ProfilesController extends AppController {
 				'Thread' => array(
 					'Log.thread_id',
 					'Log.user_id',
+					'Log.id',
+					
+					'Log.user_id != ' . $uid,
 					'Log.type',
 					'Log.created',
 					'Log' => 
 					array(
+						'conditions' => array(
+							'NOT' => array('Log.id' => $notifiedIds)	
+						),
+						
 						'User.username',
-						'Thread.title'
-					)
+						'Thread.id != 0',
+						'Head.id != 0',
+						'Comment.id != 0',
+						'Like.id != 0'
+						
+						
+					),
+					
+				),
+				
+				// 'Message.id' ,
+				// 'Message' => array(
+					
+				// 	'Groupchat' => array(
+				// 		'Log' => array(
+				// 			'User.username',
+				// 			'Message.body'
+				// 		)
+				// 	),'Groupchat.id'
+				// )
+			)
+		));
+		//print_r($user);exit;
+		$messages = $this->Profile->User->find('first',array(
+			'conditions' => array('id' => $uid),
+			'contain' => array(
+				'Message.id',
+				'Message' => array(
+					
+					'Groupchat' => array(
+						'Log.user_id != ' . $uid,
+						'Log' => array(
+							'conditions' => array(
+								'NOT' => array('Log.id' => $notifiedIds)	
+							),
+														
+							'User.username',
+							 
+							'Message.body'
+						)
+					),'Groupchat.id'
 				)
 			)
 		));
@@ -525,10 +579,21 @@ class ProfilesController extends AppController {
 		$notifications_dates = [];
 		foreach($user['Thread'] as $t){
 			foreach($t['Log'] as $log){
+				
 				$notifications[] = $log;
 				$notifications_dates[] = $log['created'];
 			}
 		}
+
+		foreach($messages['Message'] as $m){
+			
+				foreach($m['Groupchat']['Log'] as $log){
+					$notifications[] = $log;
+					$notifications_dates[] = $log['created'];					
+				}
+			
+		}
+		
 
 		
 		array_multisort($notifications_dates,SORT_DESC,SORT_STRING,$notifications);
@@ -537,8 +602,15 @@ class ProfilesController extends AppController {
 		exit;
 	
 	}
+	public function notified($lid = null){
+		header('Content-Type: application/json;charset=utf-8'); 
+		$r = $this->Profile->User->Log->setNotified($lid);
+		echo json_encode(['status' => $r]);
+		exit;
+	}
 	
 	public function beforeFilter(){
+		
 		$this->Auth->allow('notifications');
 		
 	}	

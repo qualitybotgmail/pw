@@ -109,19 +109,17 @@ class HeadsController extends AppController {
 			$data = $this->Head->save($this->request->data);
 			if ($data) {
 				
-				if (true) { // return the save data
+				
 					header('Content-Type: application/json;charset=utf-8');
 					echo json_encode($data);
 					exit;
-				}
 				
-				$this->Session->setFlash(__('The head has been saved.'), 'default', array('class' => 'alert alert-success'));
-				return $this->redirect(array('action' => 'index'));
 			} else {
-				$this->Session->setFlash(__('The head could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
+				echo json_encode('{status: "FAILED"}');
+				exit;
 			}
 		}
-		$users = $this->Head->User->find('list');
+		$users = $this->Head->Owner->find('list');
 		$threads = $this->Head->Thread->find('list');
 		$this->set(compact('users', 'threads'));
 	}

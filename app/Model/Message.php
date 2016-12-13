@@ -78,7 +78,7 @@ class Message extends AppModel {
  */
  
 	public $hasMany = array(
-		'Upload'
+		'Upload','Log'
 	);
 
 	 
@@ -90,5 +90,19 @@ class Message extends AppModel {
 	// 	}
  //   return true;
 	// }
+
+	public function afterSave($created, $options = array()){
+		if(!$created) return;
+
+		$id = AuthComponent::user('id');
+		$msg = $this->data['Message'];
+		
+		$this->Log->save(array(
+			'user_id' => 	$id,
+			'message_id' => $msg['id'],
+			'groupchat_id' => $msg['groupchat_id'],
+			'type' => 'Message.add'
+		));
 	
+	}	
 }

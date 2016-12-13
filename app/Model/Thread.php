@@ -104,7 +104,7 @@ class Thread extends AppModel {
 			$this->Log->save(array(
 				'user_id' => 	$id,
 				'thread_id' => $this->data['Thread']['id'],
-				'type' => 'edit'
+				'type' => 'Thread.edit'
 			));
 		}
 
