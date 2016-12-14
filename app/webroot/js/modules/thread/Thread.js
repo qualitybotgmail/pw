@@ -153,6 +153,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	        result.Thread.push_notification = true;
         	        var thread = result;
         	        $scope.thread = thread;
+        	        console.log($scope.thread, 'the threads');
         	        $scope.checkNotificationSetting(thread);
         	    });
         	};
@@ -243,14 +244,6 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                     $scope.thread.Thread.push_notification = !thread.Thread.push_notification;
                 });
         	};
-        	
-        	
-        // 	$scope.fireMessageEvent = function(){
-        //         var timeout = $timeout(function() {
-        //             ThreadService.scrollDown();
-        //             $timeout.cancel(timeout);
-        //         }, 1000);
-        //     };
         	
         	
         	/**
