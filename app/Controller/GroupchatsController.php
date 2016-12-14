@@ -244,9 +244,11 @@ class GroupchatsController extends AppController {
 		
 		$u = $this->User->find('first',array(
 			'conditions' => array('id' => $uid),
-			'contain' => array('Groupchat.id' => array('Message.id' => array('Log.id')))
+			'contain' => array('Groupchat.id' => array('Message.id' => array(
+				'Log.id','Log' => array('conditions' => array('NOT' => array('id' => $notifiedIds)))
+			)))
 		));
-		
+	//	print_r($u);exit;
 		$logs = array();
 		foreach($u['Groupchat'] as $t){
 			

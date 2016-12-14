@@ -503,12 +503,12 @@ class ProfilesController extends AppController {
 		$uid = $this->Auth->user('id');
 		
 		$this->loadModel('UsersLog');
-		$notifiedIds = $this->UsersLog->find('list',array(
+		$notifiedIds = array_unique($this->UsersLog->find('list',array(
 			'conditions' => array(
 				'user_id' => $uid
 			),
 			'fields' => 'log_id'
-		));
+		)));
 		
 		$this->Profile->User->Behaviors->load('Containable');
 
@@ -527,7 +527,8 @@ class ProfilesController extends AppController {
 					'Log' => 
 					array(
 						'conditions' => array(
-							'NOT' => array('Log.id' => $notifiedIds)	
+							'NOT' => array(
+								'id' => $notifiedIds,'user_id' => $uid)	
 						),
 						
 						'User.username',
@@ -553,25 +554,19 @@ class ProfilesController extends AppController {
 				// )
 			)
 		));
+	//	print_r($notifiedIds);
 		//print_r($user);exit;
 		$messages = $this->Profile->User->find('first',array(
 			'conditions' => array('id' => $uid),
 			'contain' => array(
-				'Message.id',
-				'Message' => array(
-					
-					'Groupchat' => array(
-						'Log.user_id != ' . $uid,
+				'Groupchat.id' => array(
+					'Message.id' => array(
 						'Log' => array(
 							'conditions' => array(
-								'NOT' => array('Log.id' => $notifiedIds)	
-							),
-														
-							'User.username',
-							 
-							'Message.body'
-						)
-					),'Groupchat.id'
+								'NOT' => array('id' => $notifiedIds,'user_id' => $uid)
+							),'Message.user_id','Message.body','Groupchat.id'
+						)	
+					)	
 				)
 			)
 		));
@@ -580,17 +575,22 @@ class ProfilesController extends AppController {
 		$notifications_dates = [];
 		foreach($user['Thread'] as $t){
 			foreach($t['Log'] as $log){
-				
+				$un = array('username' => $log['User']['username']);
+				$un['id'] = $log['User']['id'];
+				$log['User'] = $un;
 				$notifications[] = $log;
 				$notifications_dates[] = $log['created'];
 			}
 		}
 
-		foreach($messages['Message'] as $m){
-			
-				foreach($m['Groupchat']['Log'] as $log){
-					$notifications[] = $log;
-					$notifications_dates[] = $log['created'];					
+		foreach($messages['Groupchat'] as $g){
+				
+				foreach($g['Message'] as $msg){
+					
+					foreach($msg['Log'] as $l){
+						$notifications[] = $l;
+						$notifications_dates[] = $l['created'];
+					}
 				}
 			
 		}
