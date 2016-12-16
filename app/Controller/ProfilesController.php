@@ -505,10 +505,25 @@ class ProfilesController extends AppController {
 			where Thread.user_id = 21 and L.id not in (select log_id from users_logs where users_logs.user_id = 21)
 			group by Thread.thread_id'
 		);
-		$ret = array();
+		$ret = array('Threads'=>array(),'Groupchats'=>array());
 		foreach($t as $v){
-			$ret[] = array('thread_id' => $v['Thread']['id'],'count' => $v['0']['count']);
+			$ret["Threads"][] = array('thread_id' => $v['Thread']['id'],'count' => $v['0']['count']);
 		}
+
+		$t2q ='SELECT Groupchat.id groupchats,count(groupchats.id) count FROM `groupchats`
+		inner join users_groupchats on users_groupchats.groupchat_id = groupchats.id
+		inner join messages on messages.groupchat_id = groupchats.id
+		
+		inner join logs on logs.message_id = messages.id
+		where messages.user_id != '.$uid.' and logs.type = "Message.add" and logs.id not in (select log_id from users_logs where users_logs.user_id = 21)
+		group by groupchats.id';
+
+		$t2 = $this->Profile->query($t2q);
+		foreach($t2 as $v){
+			$ret["Groupchats"][] = array('groupchat_id' => $v['Groupchat']['id'],'count' => $v['0']['count']);
+		}
+		
+		$ret['Groupchats']=$t2;
 		echo json_encode($ret);
 		exit;
 	}	

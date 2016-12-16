@@ -32,9 +32,6 @@ class GroupchatsController extends AppController {
 		
 		$options = array('conditions' => array('user_id'=>$id)); 
 		$groupchats =['groupchats' => $this->Groupchat->find('all', $options)];
-		// $groupchats = $this->removeFields($groupchats,'modified');
-		// $groupchats = $this->removeFields($groupchats,'password');
-		// $groupchats = $this->removeFields($groupchats,'UsersGroupchat');
 		
 		$this->set('groupchats', $groupchats);
 		//	print_r($groupchats);
@@ -58,10 +55,11 @@ class GroupchatsController extends AppController {
 		$options = array('conditions' => array('Groupchat.' . $this->Groupchat->primaryKey => $id)); 
 		$groupchats = $this->Groupchat->find('first', $options);
 		
+		$this->Groupchat->notified($id,$this->Auth->user('id'));
 		$this->set(array(
 			'groupchats' => $groupchats, 
 			'_serialize' => array('groupchats')
-			));
+		));
 	}
 
 /**

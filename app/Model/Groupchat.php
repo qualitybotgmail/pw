@@ -85,5 +85,18 @@ class Groupchat extends AppModel {
 		return $ret;
 		
 	}	
+	public function notified($id=null,$uid){
+	//	return;
+		$this->Behaviors->load('Containable');
+		$r = $this->find('first',array(
+			'conditions' => array('Groupchat.id' => $id),
+			'contain' => array(
+			
+				'Log.id',
+				"Log.user_id != $uid"
+			)		
+		));
+	//	print_r($r);exit;
+	}
 	  
 }

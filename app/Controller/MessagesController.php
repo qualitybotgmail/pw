@@ -230,6 +230,6 @@ class MessagesController extends AppController {
 
 
 	}
-
+	
 }
  
