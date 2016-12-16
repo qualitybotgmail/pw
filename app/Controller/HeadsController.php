@@ -69,8 +69,12 @@ class HeadsController extends AppController {
 		if (!$this->Head->exists($id)) {
 			throw new NotFoundException(__('Invalid head'));
 		}
-		$this->Head->recursive = 3;
-		$head = $this->Head->findById($id);
+		$this->Head->Behaviors->load('Containable');
+		//$this->Head->recursive = 3;
+		$head = $this->Head->find('first',array(
+			'conditions' => array('Head.id' => $id),
+			'contain' => array('Thread','Like','Comment' => array('Like','User'),'Owner')
+		));//ById($id);
 		$tid = $id;
 		$uid = $this->Auth->user('id');
 		
@@ -92,7 +96,7 @@ class HeadsController extends AppController {
 			// total likes of comments
 		
 				
-		
+		$this->Head->notified($id,$uid);
 		$this->set('head',$head);
 	}
 /**

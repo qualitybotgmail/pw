@@ -83,7 +83,7 @@ class Head extends AppModel {
 	
 	
 		$id = AuthComponent::user('id');
-		print_r($this->data);exit;
+		
 		$this->Log->save(array(
 			'user_id' => 	$id,
 			'thread_id' => $this->data['Head']['thread_id'],
@@ -91,6 +91,53 @@ class Head extends AppModel {
 			'type' => 'Head.'. ($created? 'add' : 'edit')
 		));
 	
+
+	}	
+
+	
+	public function notified($hid,$uid){
+		
+		$this->Log->User->Behaviors->load('Containable');
+		$r = $this->Log->User->find('first',array(
+			'fields' => 'id',
+			'conditions' => array('id' => $uid),
+			
+			'contain' => array(
+				'Thread.user_id',
+				'Thread.id' => array(
+					"Head.id" => array(
+							'Log.head_id = "'.$hid.'"',
+							'Log.id'
+					)
+				)
+			)
+			
+		));
+		$logs = array();
+		foreach ($r['Thread'] as $t){
+			foreach($t['Head'] as $h){
+				foreach($h['Log'] as $l){
+					
+					$logs[] = $l['id'];
+				}
+			}
+		}
+		$lids = $this->Log->UsersLog->find('list',array(
+			'conditions' => array(
+				'AND' => array(
+					'UsersLog.user_id' => $uid,
+					'UsersLog.log_id' => $logs
+				)
+			),
+			'fields' => 'UsersLog.log_id'
+		));
+		
+		$to_be_marked_viewed = array();
+		foreach(array_diff($logs,$lids) as $id){
+			$to_be_marked_viewed[] = array('user_id' => $uid, 'log_id' => $id);
+		}
+		$r = $this->Log->UsersLog->saveAll($to_be_marked_viewed);
+
 
 	}		
 }

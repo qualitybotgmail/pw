@@ -496,7 +496,22 @@ class ProfilesController extends AppController {
 		
 		echo json_encode($data);exit;
 	}
-	
+	public function notifications_count() { 
+		header('Content-Type: application/json;charset=utf8');
+		$t = $this->Profile->query(
+			'SELECT Thread.thread_id id,count(Thread.thread_id) count FROM `users_threads` Thread
+			inner join logs L on L.thread_id = Thread.thread_id
+			
+			where Thread.user_id = 21 and L.id not in (select log_id from users_logs where users_logs.user_id = 21)
+			group by Thread.thread_id'
+		);
+		$ret = array();
+		foreach($t as $v){
+			$ret[] = array('thread_id' => $v['Thread']['id'],'count' => $v['0']['count']);
+		}
+		echo json_encode($ret);
+		exit;
+	}	
 	public function notifications(){
 		header('Content-Type: application/json;charset=utf-8'); 
 		
@@ -610,9 +625,7 @@ class ProfilesController extends AppController {
 		exit;
 	}
 	
-	public function beforeFilter(){
-		
-		$this->Auth->allow('notifications');
-		
-	}	
+
+	
+	
 }

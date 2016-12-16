@@ -111,6 +111,22 @@ class Thread extends AppModel {
 	}
 	public function logsFor($tid){
 		$id = AuthComponent::user('id');
-		return $this->query('SELECT count(*) FROM logs where thread_id = ' . $tid . '' );
+		return $this->query('SELECT count(*) FROM logs where thread_id = ' . $tid . '	' );
 	}
+	
+	public function notified($tid,$uid){
+		$sql = "SELECT logs.id FROM logs where logs.thread_id = $tid and logs.type = 'Thread.edit' and logs.id not in (select users_logs.log_id from users_logs where users_logs.user_id = $uid)";
+		
+		$r = $this->query($sql);
+		$lids = array();
+		if($r){
+			foreach($r as $log){
+				$lids[] = array('log_id' => $log['logs']['id'],'user_id' =>$uid);
+			}
+			$r = $this->Log->UsersLog->saveAll($lids);
+			
+		}
+	//	print_r($r);
+	}
+	
 }

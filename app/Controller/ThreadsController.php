@@ -48,50 +48,7 @@ class ThreadsController extends AppController {
 
 		$this->set('threads', array_merge($threads, $users_threads));
 	}
-	public function notifications($tid) { 
-		header('Content-Type: application/json;charset=utf8');
-		$uid = $this->Auth->user('id');
-		
-		$this->loadModel('UsersLog');
-		$notifiedIds = $this->UsersLog->find('list',array(
-			'conditions' => array(
-				'user_id' => $uid
-			),
-			'fields' => 'log_id'
-		));
-				
-		$this->loadModel('User');
-		$this->User->Behaviors->load('Containable');
-		
-		$u = $this->User->find('first',array(
-			'conditions' => array('id' => $uid),
-			'contain' => array('Thread.id' => array(
-				'Log.id' ,'Head.id'	=> array('Log.id', 'Comment.id' => array('Log.id'))
-			))
-		));
-		$logs = array();
-		foreach($u['Thread'] as $t){
-			foreach($t['Log'] as $tl){
-				$logs[] = $tl['id'];
-			}
-			foreach($t['Head'] as $h){
-				foreach($h['Log'] as $hl){
-					$logs[] = $hl['id'];
-					
-				
-				}
-				foreach($h['Comment'] as $c){
-					foreach($c['Log'] as $cl){
-						$logs[] = $cl['id'];
-					}
-				}
-			}
-		}
-		
-		echo json_encode(array('count'=>count(array_diff(array_unique($logs),$notifiedIds))));
-		
-		exit;
-	}
+
 	private function formatQuery($threads) {
 		foreach($threads as $k => $thread){
 			
@@ -134,11 +91,9 @@ class ThreadsController extends AppController {
 		$thread = $this->Thread->findById($id);
 		$tid = $id;
 		$uid = $this->Auth->user('id');
-		
-	//	$thread['Thread']['isUserLiked'] = $this->Thread->isLiked($tid,$uid);
-	//	$thread['Thread']['likes'] = count($thread['Like']);
+
 		unset($thread['Owner']['password']);
-	//	unset($thread['Like']);
+
 			
 		foreach($thread['Head'] as $kk => $head){
 			$thread['Head'][$kk]['likes'] = count($head['Like']);
@@ -148,13 +103,8 @@ class ThreadsController extends AppController {
 			unset($thread['Head'][$kk]['Thread']);
 			
 		} 
-		// $this->loadModel('Upload');
-		
-		// $cond = array('conditions' => array('Upload.thread_id' => $id));
-		// $uploads = $this->Upload->find('all', $cond);
-			//total likes of comments
-		
-				
+		$this->Thread->notified($id,$uid);
+		//set viewed for the user
 		
 		$this->set('thread',$thread);
 	}
