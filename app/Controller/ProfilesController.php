@@ -498,11 +498,12 @@ class ProfilesController extends AppController {
 	}
 	public function notifications_count() { 
 		header('Content-Type: application/json;charset=utf8');
+		$uid = $this->Auth->user('id');
 		$t = $this->Profile->query(
 			'SELECT Thread.thread_id id,count(Thread.thread_id) count FROM `users_threads` Thread
 			inner join logs L on L.thread_id = Thread.thread_id
 			
-			where Thread.user_id = 21 and L.id not in (select log_id from users_logs where users_logs.user_id = 21)
+			where Thread.user_id = '.$uid.' and L.id not in (select log_id from users_logs where users_logs.user_id = '.$uid.')
 			group by Thread.thread_id'
 		);
 		$ret = array('Threads'=>array(),'Groupchats'=>array());
@@ -511,17 +512,16 @@ class ProfilesController extends AppController {
 		}
 
 		$t2q ='SELECT Groupchat.id id,count(Groupchat.id) count FROM `logs` 
-inner join groupchats Groupchat on Groupchat.id = logs.groupchat_id
-inner join users_groupchats on Groupchat.id = users_groupchats.groupchat_id
-where users_groupchats.user_id = 21 and logs.id not in (select log_id from users_logs where user_id = 21)
-group by Groupchat.id';
+			inner join groupchats Groupchat on Groupchat.id = logs.groupchat_id
+			inner join users_groupchats on Groupchat.id = users_groupchats.groupchat_id
+			where users_groupchats.user_id = '.$uid.' and logs.id not in (select log_id from users_logs where user_id = '.$uid.')
+			group by Groupchat.id';
 
 		$t2 = $this->Profile->query($t2q);
 		
 		foreach($t2 as $v){
 			$ret["Groupchats"][] = array('groupchat_id' => $v['Groupchat']['id'],'count' => $v['0']['count']);
 		}
-		
 		
 		echo json_encode($ret);
 		exit;
