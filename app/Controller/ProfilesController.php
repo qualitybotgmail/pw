@@ -499,6 +499,7 @@ class ProfilesController extends AppController {
 	public function notifications_count() { 
 		header('Content-Type: application/json;charset=utf8');
 		$uid = $this->Auth->user('id');
+
 		$t = $this->Profile->query(
 			'SELECT Thread.thread_id id,count(Thread.thread_id) count FROM `users_threads` Thread
 			inner join logs L on L.thread_id = Thread.thread_id
@@ -530,7 +531,15 @@ class ProfilesController extends AppController {
 		header('Content-Type: application/json;charset=utf-8'); 
 		
 		$uid = $this->Auth->user('id');
-		
+		$prof = $this->Profile->findByUserId($uid);
+		$prof = $prof['Profile'];
+		if(isset($prof['notifications'])){
+			
+			if($prof['notifications'] == 0){
+				echo json_encode(array('status' => 'OFF'));
+				exit;
+			}
+		}		
 		$this->loadModel('UsersLog');
 		$notifiedIds = array_unique($this->UsersLog->find('list',array(
 			'conditions' => array(
@@ -639,7 +648,47 @@ class ProfilesController extends AppController {
 		exit;
 	}
 	
+	public function notificationsoff(){
+		
+		$uid = $this->Auth->user('id');
+		$prof = $this->Profile->findByUserId($uid);
+		
+		if(count($prof) > 0){
+			$r = $this->Profile->save(array('notifications' => 0,'id' => $prof['Profile']['id']));
+			if(!$r){
+				echo json_encode(array('status' => 'FAILED'));
+				exit;
+			}
+		}else{
+			$prof = array(
+				'notifications' => 0,'user_id' => $uid
+			);
+			$this->Profile->save($prof);
+		}
+		echo json_encode(array('status' => 'OK'));
+		exit;
+	}
 
+	public function notificationson(){
+		
+		$uid = $this->Auth->user('id');
+		$prof = $this->Profile->findByUserId($uid);
+		
+		if(count($prof) > 0){
+			$r = $this->Profile->save(array('notifications' => 1,'id' => $prof['Profile']['id']));
+			if(!$r){
+				echo json_encode(array('status' => 'FAILED'));
+				exit;
+			}
+		}else{
+			$prof = array(
+				'notifications' => 1,'user_id' => $uid
+			);
+			$this->Profile->save($prof);
+		}
+		echo json_encode(array('status' => 'OK'));
+		exit;
+	}
 	
 	
 }

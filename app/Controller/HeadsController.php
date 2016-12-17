@@ -73,7 +73,7 @@ class HeadsController extends AppController {
 		//$this->Head->recursive = 3;
 		$head = $this->Head->find('first',array(
 			'conditions' => array('Head.id' => $id),
-			'contain' => array('Thread','Like','Comment' => array('Like','User'),'Owner')
+			'contain' => array('Thread','Like','Comment.created','Comment.body','Comment.id' => array('Like','User.id','User.username'),'Owner')
 		));//ById($id);
 		$tid = $id;
 		$uid = $this->Auth->user('id');
