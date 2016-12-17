@@ -20,11 +20,11 @@ class ThreadsController extends AppController {
  *
  * @return void
  */
-	public function index() { 
+	
+	public function index_old() { 
 		
 		$user_id = $this->Auth->user('id');
-		$this->Thread->Owner->Behaviors->load("Containable");
-		//$this->Thread->Owner->recursive=2;
+		$this->Thread->Owner->recursive=2;
 		
 		$options = [
 				'order' => 'Thread.created DESC',
@@ -38,8 +38,7 @@ class ThreadsController extends AppController {
 	                           "users_threads.user_id = {$user_id}",
 	                    ]
 					]
-                ],
-                'contain' => array("Owner.username","User")
+                ]
 			];
         // this query if to get all the threads
         // where user is a member only
@@ -47,8 +46,37 @@ class ThreadsController extends AppController {
 
 		// ['fields' => ['id','user_id','thread_id','body','created','modified']],		
 		$threads = $this->Thread->find('all',['conditions' => ['Thread.user_id' => $user_id], 'order' => 'Thread.created DESC'] ); 
-
+		$result = array();
 		$this->set('threads', array_merge($threads, $users_threads));
+	}
+
+	public function index() { 
+		
+		$user_id = $this->Auth->user('id');
+		$this->Thread->Owner->recursive=2;
+		
+
+        // this query if to get all the threads
+        // where user is a member only
+        $this->Thread->Owner->Behaviors->load("Containable");
+		$users_threads = $this->Thread->Owner->find('first', array(
+			'conditions' => array('Owner.id' => $user_id),
+			'contain' => array('Thread.id','Thread.title','Thread.created','Thread' => array('Owner.id','Owner.username','User.id','User.username')),
+			'fields' => array('id','username')
+		));
+
+		
+		$result = array();
+		foreach($users_threads['Thread'] as $thread){
+			$owner = $thread['Owner'];
+			$user = $thread['User'];
+			unset($thread['Owner']);
+			unset($thread['User']);
+			
+			$result[] = array('Thread' => $thread,'Owner' => $owner,'User' => $user);
+							
+		}
+		$this->set('threads', $result);
 	}
 
 	private function formatQuery($threads) {
