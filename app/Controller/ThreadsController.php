@@ -23,7 +23,8 @@ class ThreadsController extends AppController {
 	public function index() { 
 		
 		$user_id = $this->Auth->user('id');
-		$this->Thread->Owner->recursive=2;
+		$this->Thread->Owner->Behaviors->load("Containable");
+		//$this->Thread->Owner->recursive=2;
 		
 		$options = [
 				'order' => 'Thread.created DESC',
@@ -37,7 +38,8 @@ class ThreadsController extends AppController {
 	                           "users_threads.user_id = {$user_id}",
 	                    ]
 					]
-                ]
+                ],
+                'contain' => array("Owner.username","User")
 			];
         // this query if to get all the threads
         // where user is a member only

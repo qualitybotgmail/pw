@@ -191,7 +191,7 @@ class Like extends AppModel {
 			),
 			'contain' => array('Head.id'=>'Thread.id','Comment.id' => 'Head.id')
 		));
-		if(isset($like_d['Comment']['head_id']))
+		if(isset($like_d['Comment']['head_id']) )
 			$hid = $like_d['Comment']['head_id'];
 		$id = AuthComponent::user('id');
 		
