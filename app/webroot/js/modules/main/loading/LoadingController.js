@@ -1,12 +1,13 @@
-define(['app'], function(app)
+define(['jquery', 'app'], function($, app)
 {
 	app.controller('LoadingController',
     [
     	'$scope',
         '$timeout',
+        '$state',
         'notifyService',
 
-        function($scope, $timeout, Notify) {
+        function($scope, $timeout, $state, Notify) {
         	var start = function() {
                 $scope.loading = Notify.loading;
 
