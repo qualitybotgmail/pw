@@ -65,15 +65,18 @@ define([
         'CommentsModel',
         'UsersModel',
         'ProfilesModel',
+        'GroupChatModel',
         'MainFactory',
         'MainService',
 
-        function($rootScope, $scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, HeadsModel, CommentsModel, UsersModel, ProfilesModel, Factory, MainService) {
+        function($rootScope, $scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, HeadsModel, CommentsModel, UsersModel, ProfilesModel, GroupChatModel, Factory, MainService) {
         	$scope.comment = [];
         	
         	var start = function() {
         	    
                 $scope.templates = Factory.templates;
+                $scope.threadNotifications = [];
+                $scope.groupChatNotifications = [];
                 
                 $scope.addThread = function () {
                     var modalConfig = {
@@ -254,8 +257,18 @@ define([
 
         	$scope.$on('$stateChangeSuccess', 
               function(event, toState, toParams, fromState, fromParams){
-                start();
-
+                $('.thread-lists, .message-lists').removeClass('active');
+                switch ($state.current.name) {
+                    case 'app.thread':
+                        $("#thread-"+$state.params.id).addClass('active');
+                        break;
+                    case 'app.message':
+                        $("#message-"+$state.params.id).addClass('active');
+                        break;
+                    case 'app':
+                        start();
+                }
+                
                 var t = $timeout(function() {
                     angular.element('#main-loading').remove();
 

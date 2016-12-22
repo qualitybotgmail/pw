@@ -43,8 +43,8 @@
     </h4>
     
     <ul class="list-group">
-      <a class="list-group-item clickable" ng-if="thread.Thread" ui-sref="app.thread({ id: thread.Thread.id })" ng-repeat="thread in threads">
-        <span class="badge badge-info">{{thread.Head.length}}</span>
+      <a class="list-group-item clickable thread-lists" id="thread-{{thread.Thread.id}}" ng-if="thread.Thread" ui-sref="app.thread({ id: thread.Thread.id })" ng-repeat="(threadIndex,thread) in threads">
+        <span class="badge badge-info" ng-if="thread.Thread.notifications">{{thread.Thread.notifications}}</span>
         {{thread.Thread.title}}
       </a>
     </ul>
@@ -56,8 +56,8 @@
         </a>
     </h4>
     <ul class="list-group">
-      <a class="list-group-item clickable" ng-repeat="groupchat in createdGroupChats" ui-sref="app.message({ id: groupchat.Groupchat.id })">
-        <span class="badge badge-info">{{groupchat.User.length}}</span>
+      <a class="list-group-item clickable message-lists" id="message-{{groupchat.Groupchat.id}}" ng-repeat="(groupChatIndex,groupchat) in createdGroupChats" ui-sref="app.message({ id: groupchat.Groupchat.id })">
+        <span class="badge badge-info" ng-if="groupchat.Groupchat.notifications">{{groupchat.Groupchat.notifications}}</span>
         <span ng-repeat="u in groupchat.User">
             {{u.username}}
             {{$last ? '' : ', '}}

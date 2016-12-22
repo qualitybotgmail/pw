@@ -99,6 +99,11 @@ define(['jquery', 'app', 'angular'], function($, app, angular)
                 $state.go('app.thread', { id: threadId });
             };
             
+            $scope.selectHead = function(headId){
+                $scope.search = {};
+                $state.go('app.head', { id: headId });
+            };
+            
         }
     ]);
 });

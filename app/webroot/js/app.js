@@ -1,4 +1,5 @@
 define([
+	'jquery',
 	'angular', 
 	'routes', 
 	'services/dependencyResolverFor', 
@@ -14,7 +15,7 @@ define([
 	'ngNotification',
 	'underscore'
 	], 
-	function (angular, config, dependencyResolverFor, pace) {
+	function ($, angular, config, dependencyResolverFor, pace) {
 		'use strict';
 
 		pace.start({
@@ -111,7 +112,7 @@ define([
 	
 	talknoteApp.run(
 		[
-			'$rootScope', 
+			'$rootScope',
 			'$q', 
 			'$state',
 			'$window',
@@ -124,77 +125,8 @@ define([
 			'$interval',
 		function($rootScope, $q, $state, $window, Notify, Restangular, Idle, $log, Keepalive, $notification, $interval) {
 			
-			var _callNotification = function() {
-				var isDesktopNotificationSupported = $notification.isSupported;
-				if (isDesktopNotificationSupported) {
-					// notification
-					$notification.requestPermission().then(function success(permission) {
-						/**
-						 * check if the notification is
-						 * granted by the user
-						 **/
-						if (permission === 'granted') {
-							var nLists = [];
-							// get thread for every 7 secs
-			            	$interval( function() {
-								Restangular.one('profiles').one('notifications').get().then(function(notifications){
-									angular.forEach(notifications, function(notification, index) {
-										
-										var action = notification.type.split('.');
-										var body = '';
-										
-										switch (action[1]){
-											case 'add':
-												body = 'Add ' + action[0];
-												break;
-											case 'edit':
-												body = action[0] + ' was ' + action[1];
-												break;
-											case 'like':
-												body = action[0] + ' was ' + action[1];
-												break;
-										}
-										
-										nLists[index] = $notification('Notification', {
-											body: body,
-											tag : notification.id+notification.type,
-										});	
-										
-										nLists[index].$on('show', function () {
-											var showNotification = notification;
-											console.log('notified server that log id #' + showNotification.id + ' was notified to the user');
-											Restangular.one('profiles').one('notified').one(showNotification.id).get().then(function(notifications){});
-										});
-										
-										nLists[index].$on('click', function () {
-											var clickAction = notification.type.split('.');
-											var clickNotification = notification;
-											switch(clickAction[0]) {
-											    case 'Comment':
-											    	window.location = Talknote.baseUrl+'/index.html#/head/'+clickNotification.head.id;
-											    	nLists[index].close();
-											        break;
-											    case 'Message':
-											    	window.location = Talknote.baseUrl+'/index.html#/message/'+clickNotification.Message.id;
-											    	nLists[index].close();
-											        break;
-											    default:
-											        window.location = Talknote.baseUrl+'/index.html#/threads/'+clickNotification.Thread.id;
-											        nLists[index].close();
-											}
-											
-										});
-										
-									});
-								});
-							}, 7000);	
-						}
-					}, 
-					function error() {
-		                $log.error("Can't request for notification");
-		            });	
-				}	
-			};
+			
+			var pendingQryNotification, queryFirst = true;
 			
 			/**
 			 * use to check if the user is idle
@@ -217,9 +149,43 @@ define([
 				} else {
 					$rootScope.loginUser  = res.User;	
 					$rootScope.loginUserProfile  = res.Profile;	
-					_callNotification();
+					// _callNotification();
 				}
     	    });
+    	    
+    	    var _getNotificationCount = function () {
+    	    	Restangular.one("profiles").one("notifications_count").get().then(function(notifications){
+    	    		var threadsNotifications = notifications.Threads;
+    	    		var groupchatsNotifications = notifications.Groupchats;
+    	    		
+    	    		angular.forEach($rootScope.threads, function(thread,index){
+    	    			for (var i = 0; i < threadsNotifications.length; i++)	{
+	            			if (threadsNotifications[i].thread_id === thread.Thread.id) {
+	            				thread.Thread.notifications = threadsNotifications[i].count;
+	            				break;
+	            			}
+	            		}
+    	    		});
+    	    		
+    	    		angular.forEach($rootScope.createdGroupChats, function(groupChat,index){
+    	    			for (var i = 0; i < groupchatsNotifications.length; i++)	{
+	            			if (groupchatsNotifications[i].groupchat_id === groupChat.Groupchat.id) {
+	            				groupChat.Groupchat.notifications = groupchatsNotifications[i].count;
+	            				break;
+	            			}
+	            		}
+    	    		});
+    	    		queryFirst = false;	
+    	    	});
+    	    };
+    	    
+    	    var _startQueryNotifications = function() {
+    	    	if (queryFirst){
+    	    		_getNotificationCount();
+    	    	} else {
+    	    		pendingQryNotification = $interval(_getNotificationCount, 10000);
+    	    	}
+    	    };
     	    
     	    var _checkThreadIsIgnored = function(ignoredThreads) {
     	    	angular.forEach($rootScope.threads, function(thread,index){
@@ -235,6 +201,7 @@ define([
             			thread.Thread.push_notification = true;
             		}
             	});
+            	_startQueryNotifications();
     	    };
     	    	
     	    $rootScope.getIgnoredThreads = function() {
@@ -251,7 +218,6 @@ define([
 	        	   $rootScope.getIgnoredThreads();
 	        	});	
     	    };
-    	    
      	    
     	    $rootScope.getGroupchat = function() {
     	    	Restangular.one('groupchats').get().then(function(res){

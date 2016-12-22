@@ -1,5 +1,12 @@
 define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 {
+    app.filter('groupBy', function() {
+        return _.memoize(function(items, field) {
+                return _.groupBy(items, field);
+            }
+        );
+    });
+    
     app.factory('MessageFactory', [
         'GLOBAL',
         function (GLOBAL) {
@@ -17,8 +24,12 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         function(){
             var _this = this;
             _this.scrollDown = function(){
-                var $t = $('.commentList');
-                $t.animate({"scrollTop": $('.commentList')[0].scrollHeight}, "slow");
+                // var $t = $('.commentList');
+                // $t.animate({"scrollTop": $('.commentList')[0].scrollHeight}, "slow");
+                var list = document.getElementById('message-list-wrapper');
+                if(list){
+                  list.scrollTop = list.scrollHeight;
+                }
             };
         }
     ]);
@@ -124,10 +135,13 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             };
             
             $scope.fireMessageEvent = function(){
-                var timeout = $timeout(function() {
-                    MessageService.scrollDown();
-                    $timeout.cancel(timeout);
-                }, 1000);
+                if (!$scope.loadFirstTime) {
+                    $scope.loadFirstTime = true;
+                    var timeout = $timeout(function() {
+                        MessageService.scrollDown();
+                        $timeout.cancel(timeout);
+                    }, 1000);   
+                }
             };
             
             $scope.sendMessage = function(){
@@ -211,7 +225,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
     	        $scope.selectedMessageId = $stateParams.id;
     	       // $scope.getMessage();
     	       $scope.startInterval();
-    	       
+    	       $("#message-7").addClass('active');
         	};
         	init();
         	
