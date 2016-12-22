@@ -112,7 +112,7 @@ define([
 	
 	talknoteApp.run(
 		[
-			'$rootScope', 
+			'$rootScope',
 			'$q', 
 			'$state',
 			'$window',
@@ -126,7 +126,7 @@ define([
 		function($rootScope, $q, $state, $window, Notify, Restangular, Idle, $log, Keepalive, $notification, $interval) {
 			
 			
-			var pendingQryNotification;
+			var pendingQryNotification, queryFirst = true;
 			
 			/**
 			 * use to check if the user is idle
@@ -160,7 +160,6 @@ define([
     	    		
     	    		angular.forEach($rootScope.threads, function(thread,index){
     	    			for (var i = 0; i < threadsNotifications.length; i++)	{
-    	    				console.log('Threads ', threadsNotifications[i].thread_id, '===', thread.Thread.id, ' : ', threadsNotifications[i].id === thread.Thread.id);
 	            			if (threadsNotifications[i].thread_id === thread.Thread.id) {
 	            				thread.Thread.notifications = threadsNotifications[i].count;
 	            				break;
@@ -170,19 +169,22 @@ define([
     	    		
     	    		angular.forEach($rootScope.createdGroupChats, function(groupChat,index){
     	    			for (var i = 0; i < groupchatsNotifications.length; i++)	{
-    	    				console.log('Groupchats ', groupchatsNotifications[i].groupchat_id, '===', groupChat.Groupchat.id, ' : ', groupchatsNotifications[i].id === groupChat.Groupchat.id);
 	            			if (groupchatsNotifications[i].groupchat_id === groupChat.Groupchat.id) {
 	            				groupChat.Groupchat.notifications = groupchatsNotifications[i].count;
 	            				break;
 	            			}
 	            		}
     	    		});
-    	    		
+    	    		queryFirst = false;	
     	    	});
     	    };
     	    
     	    var _startQueryNotifications = function() {
-    	    	pendingQryNotification = $interval(_getNotificationCount(), 10000);
+    	    	if (queryFirst){
+    	    		_getNotificationCount();
+    	    	} else {
+    	    		pendingQryNotification = $interval(_getNotificationCount, 10000);
+    	    	}
     	    };
     	    
     	    var _checkThreadIsIgnored = function(ignoredThreads) {

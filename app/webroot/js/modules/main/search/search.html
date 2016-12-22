@@ -48,7 +48,7 @@
           <p>ユーザー</p>
           <ul class="list-group" ng-if="!search.Users.length">
             <li class="list-group-item">
-              No Result Found
+              結果が見つかりません
             </li>
           </ul>
           <ul class="list-group" ng-if="search.Users.length" ng-if="search.Users.length">
@@ -64,7 +64,7 @@
           <p>タイムライン</p>      
           <ul class="list-group" ng-if="!search.Threads.length">
             <li class="list-group-item">
-              No Result Found
+              結果が見つかりません
             </li>
           </ul>
           <ul class="list-group" ng-if="search.Threads.length" ng-if="search.Threads.length">
@@ -74,6 +74,19 @@
           </ul>
         </div>
         <!--</p>-->
+        <div class="result-list">
+          <p>ヘッド</p>      
+          <ul class="list-group" ng-if="!search.Heads.length">
+            <li class="list-group-item">
+              結果が見つかりません
+            </li>
+          </ul>
+          <ul class="list-group" ng-if="search.Heads.length" ng-if="search.Heads.length">
+            <li class="list-group-item" ng-repeat="h in search.Heads" ng-click="selectHead(t.Head.id)">
+              {{h.Head.body}}
+            </li>
+          </ul>
+        </div>
     </div>
   </form>
 </div>
