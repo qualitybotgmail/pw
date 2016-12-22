@@ -45,14 +45,19 @@ class GroupchatsController extends AppController {
  * @param string $id
  * @return void
  */
-	public function view($id = null) {
+	public function view($id = null,$page = null,$limit = null) {
 		if (!$this->Groupchat->exists($id)) {
 			throw new NotFoundException(__('Invalid groupchat'));
 		}
 		$this->Groupchat->recursive = 2;
 		// $this->Groupchat->recursive = 3;
 		
-		$options = array('conditions' => array('Groupchat.' . $this->Groupchat->primaryKey => $id)); 
+		$options = array('conditions' => array('Groupchat.' . $this->Groupchat->primaryKey => $id),
+			'contain' => array(
+				'Message'=>array('User.username','User.id','Upload.path','Upload.created'),'User.username','User.id','Owner.username','Owner.id'
+			)		
+		);
+		$this->Groupchat->Behaviors->load('Containable');
 		$groupchats = $this->Groupchat->find('first', $options);
 		
 		$this->Groupchat->notified($id,$this->Auth->user('id'));
