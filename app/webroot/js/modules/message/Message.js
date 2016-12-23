@@ -225,7 +225,6 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
     	        $scope.selectedMessageId = $stateParams.id;
     	       // $scope.getMessage();
     	       $scope.startInterval();
-    	       $("#message-7").addClass('active');
         	};
         	init();
         	

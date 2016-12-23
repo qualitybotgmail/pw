@@ -1,7 +1,8 @@
 define(['jquery', 'app', 'angular'], function($, app, angular)
 {
     app.directive('searchDir', [
-        function() {
+        'searchService',
+        function(searchService) {
             return {
                 restrict: 'A',
                 scope: {
@@ -12,14 +13,24 @@ define(['jquery', 'app', 'angular'], function($, app, angular)
                         $('div.search-result').show();
                         $(document).bind('focusin.search click.search',function(e) {
                             if ($(e.target).closest('.search-result, #search').length) return;
-                            $(document).unbind('.search-result');
-                            $('div.search-result').fadeOut('medium');
+                            searchService.unbindElement();
                         });   
                     });
                     
                     
                     $('div.search-result').hide();
                 }
+            };
+        }
+    ]);
+    
+    app.service('searchService', [
+        function() {
+            var _this = this;
+            
+            _this.unbindElement = function() {
+                $(document).unbind('.search-result');
+                $('div.search-result').fadeOut('medium');
             };
         }
     ]);
@@ -32,9 +43,10 @@ define(['jquery', 'app', 'angular'], function($, app, angular)
         '$timeout',
         'ProfilesModel',
         'GroupChatModel',
+        'searchService',
         'Restangular',
 
-        function($rootScope, $scope, $state, $timeout, ProfilesModel, GroupChatModel, Restangular) {
+        function($rootScope, $scope, $state, $timeout, ProfilesModel, GroupChatModel, searchService, Restangular) {
             
             $scope.search = {};
             $scope.showSearch = false;
@@ -79,6 +91,7 @@ define(['jquery', 'app', 'angular'], function($, app, angular)
             };
             
             $scope.selectUser = function (user){
+                searchService.unbindElement();
                 if (user.User.id === $rootScope.loginUser.id){
                     $scope.search = {};
                     $state.go('app.profile');
@@ -97,11 +110,13 @@ define(['jquery', 'app', 'angular'], function($, app, angular)
             };
             
             $scope.selectThread = function(threadId){
+                searchService.unbindElement();
                 $scope.search = {};
                 $state.go('app.thread', { id: threadId });
             };
             
             $scope.selectHead = function(headId){
+                searchService.unbindElement();
                 $scope.search = {};
                 $state.go('app.head', { id: headId });
             };
