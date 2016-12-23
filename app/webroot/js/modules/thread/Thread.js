@@ -153,7 +153,6 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	        result.Thread.push_notification = true;
         	        var thread = result;
         	        $scope.thread = thread;
-        	        console.log($scope.thread, 'the threads');
         	        $scope.checkNotificationSetting(thread);
         	    });
         	};
