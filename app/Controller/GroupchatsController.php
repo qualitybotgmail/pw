@@ -45,7 +45,17 @@ class GroupchatsController extends AppController {
  * @param string $id
  * @return void
  */
-	public function view($id = null,$page = null,$limit = null) {
+	public function paged($id,$chunks,$page){
+		if($id == null || $chunks == null || $page == null){
+			
+			echo 'Invalid parameter';
+			exit;
+		}
+		$this->view = 'view';
+		$this->view($id,$chunks,$page);
+	}
+	public function view($id = null,$chunks = null,$page = null) {
+		
 		if (!$this->Groupchat->exists($id)) {
 			throw new NotFoundException(__('Invalid groupchat'));
 		}
@@ -59,6 +69,17 @@ class GroupchatsController extends AppController {
 		);
 		$this->Groupchat->Behaviors->load('Containable');
 		$groupchats = $this->Groupchat->find('first', $options);
+		if($chunks != null && $page != null){
+			$messages = $groupchats['Message'];
+			$total = count($messages);
+			
+			$chunked = array_chunk($messages,$chunks);
+			$pages = count($chunked);
+			$hasnext = $pages > $page;
+			
+			$groupchats['Message'] = @$chunked[$page-1];
+			$groupchats['page_info'] = array('total_messages' => $total,'total_pages' => $pages,'has_next' => $hasnext,'index' =>$page);
+		}
 		
 		$this->Groupchat->notified($id,$this->Auth->user('id'));
 		$this->set(array(
