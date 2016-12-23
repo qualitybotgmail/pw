@@ -29,7 +29,8 @@
 					<i class="fa fa-ban bigger-140"></i> &nbsp;キャンセル
 				</button>
 				<button type="submit" class="btn btn-primary btn-sm" id="btn-ok" ng-disabled="threadForm.$invalid || ! threadForm.$dirty">
-					<i class="fa fa-save bigger-140"></i> &nbsp;作成
+					<i class="fa fa-save bigger-140"></i> &nbsp;
+					{{(!isEdit)?'作成':'編集 '}}
 				</button>
 			</div>
 

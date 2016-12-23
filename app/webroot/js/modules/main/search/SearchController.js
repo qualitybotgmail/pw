@@ -85,9 +85,11 @@ define(['jquery', 'app', 'angular'], function($, app, angular)
                 }
                 
                 if(!_checkUsersExists(user.User.id)) {
+                    $('.thread-lists, .message-lists').removeClass('active');
                     GroupChatModel.one('add').post(user.User.id).then(function(groupChat){
-						var groupChatData = {'Groupchat': angular.extend(groupChat.UsersGroupchat, {'id': groupChat.UsersGroupchat.groupchat_id}), 'User': [user]};
+						var groupChatData = {'Groupchat': angular.extend(groupChat.UsersGroupchat, {'id': groupChat.UsersGroupchat.groupchat_id}), 'User': [user.User]};
                         $rootScope.createdGroupChats.push(groupChatData);
+                        console.log($rootScope.createdGroupChats, ' updated groupchats');
                         $scope.search = {};
                         $state.go('app.message',{id: groupChatData.Groupchat.id});
                     });

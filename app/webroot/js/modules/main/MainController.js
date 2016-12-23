@@ -71,6 +71,33 @@ define([
 
         function($rootScope, $scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, HeadsModel, CommentsModel, UsersModel, ProfilesModel, GroupChatModel, Factory, MainService) {
         	$scope.comment = [];
+        	$scope.loadFirsttime = true;
+        	
+        	
+        	$scope.fireThreadActiveEvent = function() {
+                if ($state.current.name === 'app.thread') {
+                    $scope.loadFirsttime = false;
+                    var t = $timeout(function() {
+            	        $('.thread-lists, .message-lists').removeClass('active');
+                        $("a#thread-"+$state.params.id+'.list-group-item.clickable.thread-lists.ng-scope').addClass('active');
+    
+                        $timeout.cancel(t);
+                    }, 500);
+                    
+                }  
+        	};
+        	
+        	$scope.fireMessageActiveEvent = function() {
+                if ($state.current.name === 'app.message') {
+                    $scope.loadFirsttime = false;
+                    var t = $timeout(function() {
+            	        $('.thread-lists, .message-lists').removeClass('active');
+                        $("a#message-"+$state.params.id+'.list-group-item.clickable.message-lists.ng-scope').addClass('active');
+    
+                        $timeout.cancel(t);
+                    }, 500);
+                }  
+        	};
         	
         	var start = function() {
         	    
@@ -257,18 +284,22 @@ define([
 
         	$scope.$on('$stateChangeSuccess', 
               function(event, toState, toParams, fromState, fromParams){
-                $('.thread-lists, .message-lists').removeClass('active');
-                switch ($state.current.name) {
-                    case 'app.thread':
-                        $("#thread-"+$state.params.id).addClass('active');
-                        break;
-                    case 'app.message':
-                        $("#message-"+$state.params.id).addClass('active');
-                        break;
-                    case 'app':
-                        start();
-                }
-                
+                // if (!$scope.loadFirsttime) {
+                    // console.log($state, 'checking');
+                    switch ($state.current.name) {
+                        case 'app.thread':
+                            $('.thread-lists, .message-lists').removeClass('active');
+                            $("a#thread-"+$state.params.id+'.list-group-item.clickable.thread-lists.ng-scope').addClass('active');
+                            break;
+                        case 'app.message':
+                            $('.thread-lists, .message-lists').removeClass('active');
+                            $("a#message-"+$state.params.id+'.list-group-item.clickable.message-lists.ng-scope').addClass('active');
+                            break;
+                        case 'app':
+                            start();
+                    }   
+                // }
+            
                 var t = $timeout(function() {
                     angular.element('#main-loading').remove();
 
@@ -286,6 +317,7 @@ define([
 
                 Notify.loading.show = false;
             });
+
         }
     ]);
 });
