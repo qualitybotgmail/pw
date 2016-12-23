@@ -156,13 +156,14 @@ define([
     	    
     	    var _getNotificationCount = function () {
     	    	Restangular.one("profiles").one("notifications_count").get().then(function(notifications){
+    	    		$rootScope.notificationCount = 0;
     	    		var threadsNotifications = notifications.Threads;
     	    		var groupchatsNotifications = notifications.Groupchats;
     	    		
     	    		angular.forEach($rootScope.threads, function(thread,index){
     	    			for (var i = 0; i < threadsNotifications.length; i++)	{
 	            			if (threadsNotifications[i].thread_id === thread.Thread.id) {
-	            				$rootScope.notificationCount += threadsNotifications[i].count;
+	            				$rootScope.notificationCount += parseInt(threadsNotifications[i].count);
 	            				thread.Thread.notifications = threadsNotifications[i].count;
 	            				break;
 	            			}
@@ -172,7 +173,7 @@ define([
     	    		angular.forEach($rootScope.createdGroupChats, function(groupChat,index){
     	    			for (var i = 0; i < groupchatsNotifications.length; i++)	{
 	            			if (groupchatsNotifications[i].groupchat_id === groupChat.Groupchat.id) {
-	            				$rootScope.notificationCount += groupchatsNotifications[i].count;
+	            				$rootScope.notificationCount += parseInt(groupchatsNotifications[i].count);
 	            				groupChat.Groupchat.notifications = groupchatsNotifications[i].count;
 	            				break;
 	            			}

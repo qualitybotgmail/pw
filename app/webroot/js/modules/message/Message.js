@@ -58,10 +58,13 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	$scope.templates = MessageFactory.templates;
         	$scope.isFetching = false;
+        	$scope.pageLimit = 10;
+        	$scope.pageIndex = 1;
         	
         	// var for selected message
         	$scope.message = {};
         	$scope.comment = { body: '', message_id: null};
+        	$scope.loadFirstTime = true;
         	
         	var $updateUserGroupChat = function(selectMembers, groupChatId){
         	    angular.forEach($rootScope.createdGroupChats, function(groupChat, index){
@@ -135,8 +138,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             };
             
             $scope.fireMessageEvent = function(){
-                if (!$scope.loadFirstTime) {
-                    $scope.loadFirstTime = true;
+                if ($scope.loadFirstTime) {
+                    $scope.loadFirstTime = false;
                     var timeout = $timeout(function() {
                         MessageService.scrollDown();
                         $timeout.cancel(timeout);
@@ -154,7 +157,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 var currentComment = null;
                 // if ($("#attachments")[0].files.length){ 
                     Restangular.one('messages').one('add').one(id).customPOST(postData).then(function(res){
-                        console.log($scope.comment, 'the comment');
+                        // console.log($scope.comment, 'the comment');
+                        if (!$scope.message.Message) $scope.message.Message = [];
                         $scope.comment.message_id = res.Message.id;
                         currentComment = angular.extend(postData, res.Message, {User: $rootScope.loginUser, Upload: []});
                         if ($("#attachments")[0].files.length){
@@ -176,33 +180,40 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 if ($scope.isFetching) return;
                 $scope.isFetching = true;
                 var messageID = $scope.selectedMessageId.toString();
-        	    GroupChatModel.one(messageID).get().then(function(res){
+        	    GroupChatModel.one('paged').one(messageID).one($scope.pageLimit.toString()).one($scope.pageIndex.toString()).get().then(function(res){
         	        $scope.message = res.groupchats;
         	        $scope.isFetching = false;
+        	        $scope.startInterval();
         	    });
             };
             
-        //     $scope.getLatestMessage = function() {
-        //         var messageID = $scope.selectedMessageId.toString();
-        //         GroupChatModel.one(messageID).get().then(function(res){
-        //             var currentMessageLength = $scope.message.Message.length;
-        //             var groupChat = res.groupchats;
-        // 	        var messageLength = groupChat.Message.length;
-        // 	        if (currentMessageLength) {
-        // 	            var lastMessage = $scope.message.Message[currentMessageLength - 1];
-        // 	            console.log(lastMessage, groupChat.Message, 'to compare');
-        // 	            if (lastMessage.id !== groupChat.Message[messageLength - 1].id || lastMessage.Upload.length !== groupChat.Message[messageLength - 1].Upload.length) {
-        //     				$scope.message.Message.splice((messageLength - 1), 1);
-        //     				$scope.message.Message.push(groupChat.Message[messageLength - 1]);
-        //     				MessageService.scrollDown();
-        //     			}
-        	            
-        // 	        } else {
-        // 	            $scope.message.Message.push(groupChat.Message[messageLength - 1]);
-        // 	            MessageService.scrollDown();   
-        // 	        }
-        // 	    });
-        // 	};
+            $scope.getLatestMessage = function() {
+                var messageID = $scope.selectedMessageId.toString();
+                GroupChatModel.one('paged').one(messageID).one('1').one('1').get().then(function(res){
+                    var groupChat = res.groupchats;
+                    if (!$scope.message.Message) {
+                        $scope.message.Message = [];
+                        $scope.message.Message.push(groupChat.Message[0]);
+                    } else {
+                        var currentMessageLength = $scope.message.Message.length;
+            	        var messageLength = groupChat.Message.length;
+            	        
+            	        if (currentMessageLength) {
+            	            var lastMessage = $scope.message.Message[currentMessageLength - 1];
+            	            console.log(lastMessage, groupChat.Message, 'to compare');
+            	            if (lastMessage.id !== groupChat.Message[messageLength - 1].id || lastMessage.Upload.length !== groupChat.Message[messageLength - 1].Upload.length) {
+                				$scope.message.Message.splice((messageLength - 1), 1);
+                				$scope.message.Message.push(groupChat.Message[messageLength - 1]);
+                				// MessageService.scrollDown();
+                			}
+            	            
+            	        } else {
+            	            $scope.message.Message.push(groupChat.Message[messageLength - 1]);
+            	            MessageService.scrollDown();   
+            	        }    
+                    }
+        	    });
+        	};
         	
         	// delete head thread
         	$scope.deleteGroupChat = function(groupChatId) {
@@ -214,7 +225,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             // get thread for every 7 secs
             $scope.startInterval = function() {
-                pendingQry = $interval($scope.getMessage, 7000);    
+                pendingQry = $interval($scope.getLatestMessage, 7000);    
             };
             
             $scope.stopInterval = function() {
@@ -223,8 +234,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	var init = function(){
     	        $scope.selectedMessageId = $stateParams.id;
-    	       // $scope.getMessage();
-    	       $scope.startInterval();
+    	        $scope.getMessage();
         	};
         	init();
         	
