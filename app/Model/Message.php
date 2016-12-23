@@ -14,6 +14,9 @@ class Message extends AppModel {
  *
  * @var array
  */
+	public $virtualFields = array(
+	    'created_date' => 'SUBSTRING(Message.created,1,10)'
+	); 
 	public $validate = array(
 		'user_id' => array(
 			'numeric' => array(
@@ -82,14 +85,6 @@ class Message extends AppModel {
 	);
 
 	 
-	// function beforeSave($options = array()){
-	// 	if(empty($this->data[$this->alias]['id'])){
-	// 		$this->Log->saveAll($options);
-	// 	}else{ 
-	// 		$this->Log->saveAll($options);
-	// 	}
- //   return true;
-	// }
 
 	public function afterSave($created, $options = array()){
 		if(!$created) return;
