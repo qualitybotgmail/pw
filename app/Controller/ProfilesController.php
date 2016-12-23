@@ -599,10 +599,12 @@ class ProfilesController extends AppController {
 			'contain' => array(
 				'Groupchat.id' => array(
 					'Message.id' => array(
+						
 						'Log' => array(
 							'conditions' => array(
 								'NOT' => array('id' => $notifiedIds,'user_id' => $uid)
-							),'Message.user_id','Message.body','Groupchat.id'
+							),
+							'Message.user_id' ,'Message.body','Groupchat.id', 'User.username'
 						)	
 					)	
 				)
