@@ -177,41 +177,54 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             };
         
             $scope.getMessage = function(){
-                if ($scope.isFetching) return;
-                $scope.isFetching = true;
                 var messageID = $scope.selectedMessageId.toString();
         	    GroupChatModel.one('paged').one(messageID).one($scope.pageLimit.toString()).one($scope.pageIndex.toString()).get().then(function(res){
+        	        res.groupchats.Message.reverse();
         	        $scope.message = res.groupchats;
-        	        $scope.isFetching = false;
         	        $scope.startInterval();
         	    });
             };
             
+            $scope.getPreviousMessages = function() {
+                console.log($scope.message.page_info);
+                var messageID = $scope.selectedMessageId.toString(), nextIndex = parseInt($scope.message.page_info.index) + 1;
+                
+                GroupChatModel.one('paged').one(messageID).one($scope.pageLimit.toString()).one(nextIndex.toString()).get().then(function(res){
+                    $scope.message.page_info = res.groupchats.page_info;
+                    angular.forEach(res.groupchats.Message, function(message, index){
+                       $scope.message.Message.splice(0,0, message);
+                    });
+        	    });
+            };
+            
             $scope.getLatestMessage = function() {
+                if ($scope.isFetching) return;
+                $scope.isFetching = true;
                 var messageID = $scope.selectedMessageId.toString();
                 GroupChatModel.one('paged').one(messageID).one('1').one('1').get().then(function(res){
                     var groupChat = res.groupchats;
-                    if (!$scope.message.Message) {
-                        $scope.message.Message = [];
-                        $scope.message.Message.push(groupChat.Message[0]);
-                    } else {
-                        var currentMessageLength = $scope.message.Message.length;
-            	        var messageLength = groupChat.Message.length;
-            	        
-            	        if (currentMessageLength) {
-            	            var lastMessage = $scope.message.Message[currentMessageLength - 1];
-            	            console.log(lastMessage, groupChat.Message, 'to compare');
-            	            if (lastMessage.id !== groupChat.Message[messageLength - 1].id || lastMessage.Upload.length !== groupChat.Message[messageLength - 1].Upload.length) {
-                				$scope.message.Message.splice((messageLength - 1), 1);
-                				$scope.message.Message.push(groupChat.Message[messageLength - 1]);
-                				// MessageService.scrollDown();
-                			}
+                    // console.log('current message length : ', $scope.message.Message.length);
+                    if (groupChat.Message) {
+                        var latestMessage = res.groupchats.Message[0];
+                        
+                        if (!$scope.message.Message) {
+                            // console.log('message is null so need to put everyting')
+                            $scope.message.Message = res.groupchats.Message;
+                        } else {
+                            var currentMessageLength = $scope.message.Message.length;
+                	        var messageLength = groupChat.Message.length;
+                	        var lastMessage = $scope.message.Message[currentMessageLength - 1];
             	            
-            	        } else {
-            	            $scope.message.Message.push(groupChat.Message[messageLength - 1]);
-            	            MessageService.scrollDown();   
-            	        }    
+            	            if (lastMessage.id !== latestMessage.id) {
+                				$scope.message.Message.push(latestMessage);
+                			}
+                			// console.log(lastMessage.Upload.length, '!==', latestMessage.Upload.length, ' : ', lastMessage.Upload.length !== latestMessage.Upload.length);
+                			if (lastMessage.Upload.length !== latestMessage.Upload.length){
+                			    $scope.message.Message[messageLength -1] = latestMessage;
+                			}
+                        }
                     }
+                    $scope.isFetching = false;
         	    });
         	};
         	
