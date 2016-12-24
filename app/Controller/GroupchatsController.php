@@ -68,7 +68,14 @@ class GroupchatsController extends AppController {
 			)		
 		);
 		$this->Groupchat->Behaviors->load('Containable');
-		$groupchats = $this->Groupchat->find('first', $options);
+		$groupchats = $this->Groupchat->find('all', $options);
+		$groupchats = $groupchats[0];
+		
+		$gdates = array();
+		foreach($groupchats['Message'] as $m){
+			$gdates[] = $m['created'];
+		}
+		array_multisort($gdates,SORT_DESC, SORT_STRING,$groupchats['Message']);
 		if($chunks != null && $page != null){
 			$messages = $groupchats['Message'];
 			$total = count($messages);
