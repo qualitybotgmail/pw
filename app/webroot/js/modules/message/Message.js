@@ -179,7 +179,9 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             $scope.getMessage = function(){
                 var messageID = $scope.selectedMessageId.toString();
         	    GroupChatModel.one('paged').one(messageID).one($scope.pageLimit.toString()).one($scope.pageIndex.toString()).get().then(function(res){
-        	        res.groupchats.Message.reverse();
+        	        if (res.groupchats.Message) {
+        	            res.groupchats.Message.reverse();
+        	        }
         	        $scope.message = res.groupchats;
         	        $scope.startInterval();
         	    });

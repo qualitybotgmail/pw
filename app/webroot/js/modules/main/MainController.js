@@ -252,6 +252,23 @@ define([
                     $timeout.cancel(timeout);
                 }, 1000);
             };
+            
+            $scope.goto = {
+                home: function() {
+                    $state.go('app');
+                },
+                thread: function(thread) {
+                    thread.notifications = 0;
+                    $state.go('app.thread', { id: thread.id });
+                },
+                message: function(groupchat) {
+                    groupchat.notifications = 0;
+                    $state.go('app.message', { id: groupchat.id });
+                },
+                timeline: function() {
+                    $state.go('app.timeline');
+                }
+            };
         	
         	var start = function() {
         	    
@@ -267,18 +284,6 @@ define([
                 $scope.focus = Focus.init();
 
                 $scope.blocker = Blocker.init();
-
-                $scope.goto = {
-                    home: function() {
-                        $state.go('app');
-                    },
-                    thread: function() {
-                        $state.go('app.threads');
-                    },
-                    timeline: function() {
-                        $state.go('app.timeline');
-                    }
-                };
 
         	}; // end of start
 
