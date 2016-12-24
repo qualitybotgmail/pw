@@ -81,14 +81,14 @@
     
     <div id="message-list-wrapper">
 		<div class="panel-body padding-sm">
-			<a href="#" class="messages-link">MORE MESSAGES</a>
+			<a class="messages-link clickable" ng-click="getPreviousMessages()" ng-if="message.page_info.has_next">MORE MESSAGES</a>
 			<div class="messages-list" >
-			    <div ng-repeat="(created, filteredMessages) in message.Message | groupBy: 'created'" ng-init="$last && fireMessageEvent()">
+			    <div ng-repeat="(created_date, filteredMessages) in message.Message | groupBy: 'created_date'" ng-init="$last && fireMessageEvent()">
 			        <div class="message text-center">
 			             <hr>
-			             <h5>{{created}}</h5>
+			             <h5>{{created_date}}</h5>
 			         </div>    
-			        <div class="message" ng-repeat="m in filteredMessages">
+			        <div class="message" ng-repeat="m in filteredMessages track by $index">
     					<div class="avatar">
     				        <img src="/img/avatar.png" alt="">
                         </div>

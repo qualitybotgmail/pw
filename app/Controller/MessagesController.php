@@ -140,6 +140,8 @@ class MessagesController extends AppController {
 			$data = array('user_id' => $user_id, 'groupchat_id' => $groupchat_id, 'body' => $body); 
 			
 			$saved = $this->Message->save($data);
+			$s = explode(" ",$saved['Message']['created']);
+			$saved['Message']['created_date'] = $s[0];
 			echo json_encode($saved);
 			exit;
 			

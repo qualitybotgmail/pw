@@ -49,7 +49,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 comment_id: null
             };
             $scope.file = null;
-            // $scope.usedTemplate = 'template/thread_list.html';
+            $scope.loadFirstTime = true;
             
             // $scope.templates = ThreadFactory.templates;
             $scope.selectedHeadId = null;
@@ -136,7 +136,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 // posting comments
                 var postData = {'body': $scope.comment.body};
                 var id = $scope.selectedHead.Head.id.toString();
-                var currentComment =null;
+                var currentComment = null;
+                console.log(postData,"postData")
+                $rootScope.sendPushNotif(postData);
+                
                 HeadsModel.one('comment').one(id).customPOST(postData).then(function(res){
                     $scope.comment.comment_id = res.Comment.id;
                     currentComment = angular.extend(postData, res.Comment, {likes: 0,isUserLiked: false, User: $rootScope.loginUser, Upload: []});
@@ -182,10 +185,13 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	};
         	
         	$scope.fireMessageEvent = function(){
-                var timeout = $timeout(function() {
-                    HeadService.scrollDown();
-                    $timeout.cancel(timeout);
-                }, 1000);
+        	    if ($scope.loadFirstTime) {
+        	        $scope.loadFirstTime = false;
+        	        var timeout = $timeout(function() {
+                        HeadService.scrollDown();
+                        $timeout.cancel(timeout);
+                    }, 1000);
+        	    }
             };
         	
         	$scope.likeComment = function(indexComment, comment){

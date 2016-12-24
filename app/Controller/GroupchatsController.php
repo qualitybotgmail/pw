@@ -29,9 +29,24 @@ class GroupchatsController extends AppController {
 		$this->Groupchat->recursive = 1;
 		
 		$id = $this->Auth->user('id');
+		$this->Groupchat->Behaviors->load('Containable');
+		$ids = $this->Groupchat->query('select groupchat_id from users_groupchats where user_id ='.$id);
+		function m($m){
+			return $m['users_groupchats']['groupchat_id'];
+		}
+		$ids = array_map('m',$ids);
 		
-		$options = array('conditions' => array('user_id'=>$id)); 
+		$options = array('conditions' => array('OR'=>array('Groupchat.id' => $ids,'Groupchat.user_id' => $id))); 
+		$options['contain'] = array(
+			'Message' , 'User.username','User.id', 'Owner.username','Owner.id'
+		);
 		$groupchats =['groupchats' => $this->Groupchat->find('all', $options)];
+		function gm($m){
+			$o = $m['Owner'];
+			$m['User'][] = $o;
+			return $m;
+		}
+		$groupchats['groupchats'] = array_map('gm',$groupchats['groupchats']);
 		
 		$this->set('groupchats', $groupchats);
 		//	print_r($groupchats);
@@ -45,7 +60,17 @@ class GroupchatsController extends AppController {
  * @param string $id
  * @return void
  */
-	public function view($id = null,$page = null,$limit = null) {
+	public function paged($id,$chunks,$page){
+		if($id == null || $chunks == null || $page == null){
+			
+			echo 'Invalid parameter';
+			exit;
+		}
+		$this->view = 'view';
+		$this->view($id,$chunks,$page);
+	}
+	public function view($id = null,$chunks = null,$page = null) {
+		
 		if (!$this->Groupchat->exists($id)) {
 			throw new NotFoundException(__('Invalid groupchat'));
 		}
@@ -58,7 +83,25 @@ class GroupchatsController extends AppController {
 			)		
 		);
 		$this->Groupchat->Behaviors->load('Containable');
-		$groupchats = $this->Groupchat->find('first', $options);
+		$groupchats = $this->Groupchat->find('all', $options);
+		$groupchats = $groupchats[0];
+		
+		$gdates = array();
+		foreach($groupchats['Message'] as $m){
+			$gdates[] = $m['created'];
+		}
+		array_multisort($gdates,SORT_DESC, SORT_STRING,$groupchats['Message']);
+		if($chunks != null && $page != null){
+			$messages = $groupchats['Message'];
+			$total = count($messages);
+			
+			$chunked = array_chunk($messages,$chunks);
+			$pages = count($chunked);
+			$hasnext = $pages > $page;
+			
+			$groupchats['Message'] = @$chunked[$page-1];
+			$groupchats['page_info'] = array('total_messages' => $total,'total_pages' => $pages,'has_next' => $hasnext,'index' =>$page);
+		}
 		
 		$this->Groupchat->notified($id,$this->Auth->user('id'));
 		$this->set(array(
@@ -176,15 +219,22 @@ class GroupchatsController extends AppController {
 	public function userstoadd($gid){
 		header('Content-Type: application/json;charset=utf-8');
 		$members = $this->Groupchat->members($gid);
+		//$this->Groupchat->User->Behaviors->load("Containable");
+		$this->loadModel("User");
+		$this->User->recursive=-1;
 		
-		$users = $this->Groupchat->User->find("all",['fields' => ['id','username'],'conditions' => [
+		$users = $this->User->find("all",['fields' => ['id','username'],
+			
+			'conditions' => [
 			'NOT' => [
 				'User.id' => $members
 			]
 		]]);
 		
 		if(count($users) == 0){
-			$users = $this->Groupchats->User->find("all",['fields' => ['id','username']]);
+			$users = $this->User->find("all",[
+				
+				'fields' => ['id','username']]);
 		}
 		echo json_encode(['users'=> $users]);
 		exit;

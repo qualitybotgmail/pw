@@ -118,7 +118,11 @@ class ThreadsController extends AppController {
 			throw new NotFoundException(__('Invalid thread'));
 		}
 		$this->Thread->recursive = 3;
-		$thread = $this->Thread->findById($id);
+		$this->Thread->Behaviors->load('Containable');
+		$thread = $this->Thread->find('first',array(
+			'conditions' => array('Thread.id' => $id),
+			'contain' => array('Head'=>array('Like','Owner'),'User.username','User.id','Owner.username','Owner.id')
+		));
 		$tid = $id;
 		$uid = $this->Auth->user('id');
 
@@ -211,7 +215,7 @@ class ThreadsController extends AppController {
 	}
 /**
  * add method
- *
+ *
  * @return void
  */
 	public function like($id = null) {

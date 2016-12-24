@@ -1,3 +1,8 @@
+<style type="text/css">
+    .badge-important {
+        background-color: #d15b47!important;
+    }
+</style>
 <!-- Notifications -->
 <div gritter={{gritter.notify}} gritter-options="gritter.options" gritter-remove={{gritter.remove}} gritter-remove-all={{gritter.removeAll}} gritter-ids="gritter.ids" gritter-destroy={{gritter.destroy}}>
 </div>
@@ -43,7 +48,7 @@
     </h4>
     
     <ul class="list-group">
-      <a class="list-group-item clickable thread-lists" id="thread-{{thread.Thread.id}}" ng-if="thread.Thread" ui-sref="app.thread({ id: thread.Thread.id })" ng-repeat="(threadIndex,thread) in threads" ng-init="$last && fireThreadActiveEvent()">
+      <a class="list-group-item clickable thread-lists" id="thread-{{thread.Thread.id}}" ng-if="thread.Thread" ng-click="goto.thread(thread.Thread)" ng-repeat="(threadIndex,thread) in threads" ng-init="$last && fireThreadActiveEvent()">
         <span class="badge badge-info" ng-if="thread.Thread.notifications">{{thread.Thread.notifications}}</span>
         {{thread.Thread.title}}
       </a>
@@ -56,7 +61,7 @@
         </a>
     </h4>
     <ul class="list-group">
-      <a class="list-group-item clickable message-lists" id="message-{{groupchat.Groupchat.id}}" ng-repeat="(groupChatIndex,groupchat) in createdGroupChats" ui-sref="app.message({ id: groupchat.Groupchat.id })" ng-init="$last && fireMessageActiveEvent()">
+      <a class="list-group-item clickable message-lists" id="message-{{groupchat.Groupchat.id}}" ng-if="groupchat.Groupchat" ng-click="goto.message(groupchat.Groupchat)" ng-repeat="(groupChatIndex,groupchat) in createdGroupChats" ng-init="$last && fireMessageActiveEvent()">
         <span class="badge badge-info" ng-if="groupchat.Groupchat.notifications">{{groupchat.Groupchat.notifications}}</span>
         <span ng-repeat="u in groupchat.User">
             {{u.username}}
@@ -191,6 +196,7 @@
     <div class="nav pull-right">
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <span class="badge badge-important" ng-if="notificationCount">{{notificationCount}}</span>
                 <span>{{loginUser.username}}</span>
                 </span>&nbsp;<span class="fa fa-caret-down"></span>
             </a>

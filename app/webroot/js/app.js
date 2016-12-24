@@ -213,7 +213,7 @@ define([
             $rootScope.sendPushNotif = function(data){
                 var req = {
                  method: 'POST',
-                 url: 'https://simple-push-demo.appspot.com/api/v2/sendpush',
+                 url: 'http://188.166.183.64:7000/api/send-push-msg',
                  headers: {
                    'Content-Type': 'application/json'
                  },
@@ -317,26 +317,66 @@ define([
     	    		var threadsNotifications = notifications.Threads;
     	    		var groupchatsNotifications = notifications.Groupchats;
     	    		
-    	    		angular.forEach($rootScope.threads, function(thread,index){
-    	    			for (var i = 0; i < threadsNotifications.length; i++)	{
-	            			if (threadsNotifications[i].thread_id === thread.Thread.id) {
-	            				$rootScope.notificationCount += parseInt(threadsNotifications[i].count);
-	            				thread.Thread.notifications = threadsNotifications[i].count;
+
+    	    		angular.forEach(threadsNotifications, function(threadNotification, index){
+    	    			var isThreadIdExist = false;
+    	    			for (var i = 0; i < $rootScope.threads.length; i++)	{
+	            			if (threadNotification.thread_id === $rootScope.threads[i].Thread.id) {
+	            				$rootScope.notificationCount += parseInt(threadNotification.count);
+	            				$rootScope.threads[i].Thread.notifications = threadNotification.count;
+	            				isThreadIdExist = true;
 	            				break;
 	            			}
+	            		}
+	            		
+	            		// if thread id not exist update the thread
+	            		if (!isThreadIdExist) {
+	            			$rootScope.getThreads();
 	            		}
     	    		});
     	    		
-    	    		angular.forEach($rootScope.createdGroupChats, function(groupChat,index){
-    	    			for (var i = 0; i < groupchatsNotifications.length; i++)	{
-	            			if (groupchatsNotifications[i].groupchat_id === groupChat.Groupchat.id) {
-	            				$rootScope.notificationCount += parseInt(groupchatsNotifications[i].count);
-	            				groupChat.Groupchat.notifications = groupchatsNotifications[i].count;
+    	    		angular.forEach(groupchatsNotifications, function(groupchatsNotification, index){
+    	    			var isGroupchatIdExist = false;
+    	    			for (var i = 0; i < $rootScope.createdGroupChats.length; i++)	{
+	            			if (groupchatsNotification.groupchat_id ===$rootScope.createdGroupChats[i].Groupchat.id) {
+	            				$rootScope.notificationCount += parseInt(groupchatsNotification.count);
+	            				$rootScope.createdGroupChats[i].Groupchat.notifications = groupchatsNotification.count;
+	            				isGroupchatIdExist = true;
 	            				break;
 	            			}
 	            		}
+	            		
+	            		// if groupchat id not exist update the groupchat
+	            		if (!isGroupchatIdExist) {
+	            			$rootScope.getGroupchat();
+	            		}
     	    		});
-    	    		queryFirst = false;	
+    	    		
+    	    		// angular.forEach($rootScope.threads, function(thread,index){
+    	    			
+    	    		// 	for (var i = 0; i < threadsNotifications.length; i++)	{
+	          //  			if (threadsNotifications[i].thread_id === thread.Thread.id) {
+	          //  				$rootScope.notificationCount += parseInt(threadsNotifications[i].count);
+	          //  				thread.Thread.notifications = threadsNotifications[i].count;
+	          //  				break;
+	          //  			}
+	          //  		}
+    	    		// });
+    	    		
+    	    		// angular.forEach($rootScope.createdGroupChats, function(groupChat,index){
+    	    		// 	for (var i = 0; i < groupchatsNotifications.length; i++)	{
+	          //  			if (groupchatsNotifications[i].groupchat_id === groupChat.Groupchat.id) {
+	          //  				$rootScope.notificationCount += parseInt(groupchatsNotifications[i].count);
+	          //  				groupChat.Groupchat.notifications = groupchatsNotifications[i].count;
+	          //  				break;
+	          //  			}
+	          //  		}
+    	    		// });
+    	    		
+    	    		if (queryFirst) {
+    	    			queryFirst = false;
+    	    			_startQueryNotifications();
+    	    		}
     	    	});
     	    };
     	    

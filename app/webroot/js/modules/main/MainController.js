@@ -29,8 +29,12 @@ define([
                 $t.animate({"scrollTop": $('.commentList-'+threadIndex+'-'+headIndex)[0].scrollHeight}, "slow");
             };
             
-            _this.activeList = function(list, id){
+            _this.removeActive = function() {
                 $('.thread-lists, .message-lists').removeClass('active');
+            };
+            
+            _this.activeList = function(list, id){
+                _this.removeActive();
                 var t = $timeout(function() {
                     $("a#"+list+"-"+id+".list-group-item.clickable."+list+"-lists.ng-scope").addClass('active');
 
@@ -248,6 +252,23 @@ define([
                     $timeout.cancel(timeout);
                 }, 1000);
             };
+            
+            $scope.goto = {
+                home: function() {
+                    $state.go('app');
+                },
+                thread: function(thread) {
+                    thread.notifications = 0;
+                    $state.go('app.thread', { id: thread.id });
+                },
+                message: function(groupchat) {
+                    groupchat.notifications = 0;
+                    $state.go('app.message', { id: groupchat.id });
+                },
+                timeline: function() {
+                    $state.go('app.timeline');
+                }
+            };
         	
         	var start = function() {
         	    
@@ -264,18 +285,6 @@ define([
 
                 $scope.blocker = Blocker.init();
 
-                $scope.goto = {
-                    home: function() {
-                        $state.go('app');
-                    },
-                    thread: function() {
-                        $state.go('app.threads');
-                    },
-                    timeline: function() {
-                        $state.go('app.timeline');
-                    }
-                };
-
         	}; // end of start
 
         	$scope.$on('$stateChangeSuccess', 
@@ -288,6 +297,7 @@ define([
                         MainService.activeList('message',$state.params.id);
                         break;
                     case 'app':
+                        MainService.removeActive();
                         start();
                 }
             

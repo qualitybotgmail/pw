@@ -22,7 +22,7 @@ class LogsController extends AppController {
  */
 	public function index() {
 		$this->Log->recursive = 0;
-		$this->set('logs', $this->Paginator->paginate());
+		$this->set('logs', $this->Log->find('all',array('orderby DESC' => 'created')));
 	}
 
 /**
