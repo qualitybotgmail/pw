@@ -179,7 +179,11 @@ define([
 	            			}
 	            		}
     	    		});
-    	    		queryFirst = false;	
+    	    		
+    	    		if (queryFirst) {
+    	    			queryFirst = false;
+    	    			_startQueryNotifications();
+    	    		}
     	    	});
     	    };
     	    

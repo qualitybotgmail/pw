@@ -29,8 +29,12 @@ define([
                 $t.animate({"scrollTop": $('.commentList-'+threadIndex+'-'+headIndex)[0].scrollHeight}, "slow");
             };
             
-            _this.activeList = function(list, id){
+            _this.removeActive = function() {
                 $('.thread-lists, .message-lists').removeClass('active');
+            };
+            
+            _this.activeList = function(list, id){
+                _this.removeActive();
                 var t = $timeout(function() {
                     $("a#"+list+"-"+id+".list-group-item.clickable."+list+"-lists.ng-scope").addClass('active');
 
@@ -288,6 +292,7 @@ define([
                         MainService.activeList('message',$state.params.id);
                         break;
                     case 'app':
+                        MainService.removeActive();
                         start();
                 }
             
