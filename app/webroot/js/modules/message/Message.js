@@ -1,12 +1,5 @@
 define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 {
-    app.filter('groupBy', function() {
-        return _.memoize(function(items, field) {
-                return _.groupBy(items, field);
-            }
-        );
-    });
-    
     app.factory('MessageFactory', [
         'GLOBAL',
         function (GLOBAL) {
@@ -24,12 +17,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         function(){
             var _this = this;
             _this.scrollDown = function(){
-                // var $t = $('.commentList');
-                // $t.animate({"scrollTop": $('.commentList')[0].scrollHeight}, "slow");
-                var list = document.getElementById('message-list-wrapper');
-                if(list){
-                  list.scrollTop = list.scrollHeight;
-                }
+                var $t = $('.commentList');
+                $t.animate({"scrollTop": $('.commentList')[0].scrollHeight}, "slow");
             };
         }
     ]);
@@ -135,13 +124,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             };
             
             $scope.fireMessageEvent = function(){
-                if (!$scope.loadFirstTime) {
-                    $scope.loadFirstTime = true;
-                    var timeout = $timeout(function() {
-                        MessageService.scrollDown();
-                        $timeout.cancel(timeout);
-                    }, 1000);   
-                }
+                var timeout = $timeout(function() {
+                    MessageService.scrollDown();
+                    $timeout.cancel(timeout);
+                }, 1000);
             };
             
             $scope.sendMessage = function(){
@@ -153,6 +139,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 var id = $scope.message.Groupchat.id;
                 var currentComment = null;
                 // if ($("#attachments")[0].files.length){ 
+                    console.log(postData, "postData")
+                    $rootScope.sendPushNotif(postData);
                     Restangular.one('messages').one('add').one(id).customPOST(postData).then(function(res){
                         console.log($scope.comment, 'the comment');
                         $scope.comment.message_id = res.Message.id;
@@ -225,6 +213,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
     	        $scope.selectedMessageId = $stateParams.id;
     	       // $scope.getMessage();
     	       $scope.startInterval();
+    	       
         	};
         	init();
         	

@@ -13,11 +13,10 @@ define([
 	'debounce',
 	'ngIdleJs',
 	'ngNotification',
-	'underscore'
+	'underscore',
 	], 
-	function ($, angular, config, dependencyResolverFor, pace) {
+	function ($, angular, config, dependencyResolverFor,  pace) {
 		'use strict';
-
 		pace.start({
 			document: false
 		});
@@ -33,7 +32,6 @@ define([
 			'notification'
 			// 'btford.socket-io'
 		]);
-
 		talknoteApp.constant('GLOBAL', {
 			// Formats
 			default: {
@@ -123,8 +121,167 @@ define([
 			'Keepalive',
 			'$notification',
 			'$interval',
-		function($rootScope, $q, $state, $window, Notify, Restangular, Idle, $log, Keepalive, $notification, $interval) {
+			'$http',
+		function($rootScope, $q, $state, $window, Notify, Restangular, Idle, $log, Keepalive, $notification, $interval,$http) {
+		
+            $rootScope.isSubscribed = false;
+            $rootScope.swRegistration = null;
+            $rootScope.sSubscription = {};
+            $rootScope.urlB64ToUint8Array = function(base64String) {
+              var padding = '='.repeat((4 - base64String.length % 4) % 4);
+              var base64 = (base64String + padding)
+                .replace(/\-/g, '+')
+                .replace(/_/g, '/');
+            
+              var rawData = window.atob(base64);
+              var outputArray = new Uint8Array(rawData.length);
+            
+              for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+              }
+              return outputArray;
+            };
+            $rootScope.applicationKeys = {
+                publicKey : $rootScope.urlB64ToUint8Array('BDd3_hVL9fZi9Ybo2UUzA284WG5FZR30_95YeZJsiA' + 'pwXKpNcF1rRPF3foIiBHXRdJI2Qhumhf6_LFTeZaNndIo'),
+                privateKey : $rootScope.urlB64ToUint8Array('xKZKYRNdFFn8iQIF2MH54KTfUHwH105zBdzMR7SI3xI')
+                // publicKey : $rootScope.urlB64ToUint8Array('BDqxBLh4W-UgDU0JU8JkkYLrw5u5yz9BMKEqyE67N9gyam75Vm2o27yS7Nadw2heDuqjaeXh6ihMT5Cu7LnzU_U'),
+                // privateKey : $rootScope.urlB64ToUint8Array('iZsK3cKJ2GHomwlRbGYjxwx1B3TK5zX2BEz6XFAqMMA')
+	        };
+            $rootScope.updateSubscriptionOnServer = function(subscription) {
+            	console.log(JSON.stringify(subscription), "subscription")
+                $rootScope.sSubscription = subscription;
+            };
+            
+            $rootScope.subscribeUser = function(){
+                
+                var applicationServerKey = $rootScope.applicationKeys.publicKey;
+                $rootScope.swRegistration.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: applicationServerKey
+                })
+                .then(function(subscription) {
+                    console.log('User is subscribed:', subscription);
+                
+                    $rootScope.updateSubscriptionOnServer(subscription);
+                
+                    $rootScope.isSubscribed = true;
+                  })
+                  .catch(function(err) {
+                    console.log('Failed to subscribe the user: ', err);
+                  });
+            };
+            
+            $rootScope.unsubscribeUser = function() {
+              $rootScope.swRegistration.pushManager.getSubscription()
+              .then(function(subscription) {
+                if (subscription) {
+                  return subscription.unsubscribe();
+                }
+              })
+              .catch(function(error) {
+                console.log('Error unsubscribing', error);
+              })
+              .then(function() {
+                $rootScope.updateSubscriptionOnServer(null);
+            
+                console.log('User is unsubscribed.');
+                $rootScope.isSubscribed = false;
+              });
+            }
+            
+            $rootScope.initialiseUI = function() {
+              // Set the initial subscription value
+              $rootScope.swRegistration.pushManager.getSubscription()
+              .then(function(subscription) {
+              	console.log(subscription,"initialiseUI")
+            	$rootScope.isSubscribed = !(subscription === null);
+            
+            	$rootScope.updateSubscriptionOnServer(subscription);
+            	if ($rootScope.isSubscribed) {
+			      $rootScope.unsubscribeUser();
+			    } else {
+			      $rootScope.subscribeUser();
+			    }	
+                if ($rootScope.isSubscribed) {
+                  console.log('User IS subscribed.');
+                } else {
+                  console.log('User is NOT subscribed.');
+                }
+              });
+            }
+            
+            $rootScope.sendPushNotif = function(data){
+                var req = {
+                 method: 'POST',
+                 url: 'https://simple-push-demo.appspot.com/api/v2/sendpush',
+                 headers: {
+                   'Content-Type': 'application/json'
+                 },
+                 data: {
+                      subscription: $rootScope.sSubscription,
+                      data: data,
+                      applicationKeys: $rootScope.applicationKeys
+                    }
+                }
+                
+            	console.log(req, "req")
+         //       $http(req).then(function successCallback(response) {
+         //          console.log(response, "success")
+         //         }, function errorCallback(response) {
+         //           if (response.status !== 200) {
+         //             return response.text()
+         //             .then((responseText) => {
+         //               throw new Error(responseText);
+         //             });
+         //           }
+         //         });
+                  var fetchOptions = {
+			        method: 'post',
+			        headers : {
+			        	"Encryption" :'salt=Q9YyTizLhHpEntBcbTqq5A',
+				        'Crypto-Key' : 'dh=' + $rootScope.applicationKeys.publicKey,
+				        'Content-Encoding': 'aesgcm',
+				        'TTL': 60,
+				        'Authorization': 'WebPush eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJodHRwczovL2ZjbS5nb29nbGVhcGlzLmNvbSIsImV4cCI6MTQ4MjU5ODM4OCwic3ViIjoibWFpbHRvOnNpbXBsZS1wdXNoLWRlbW9AZ2F1bnRmYWNlLmNvLnVrIn0.EemWZDyGLW5_jcv72XUCaRuhUkY0-Fmek7sdEUHlKSmEy0oTdrGKuzJsp8cxW0OnsYlJkAHP8E6gSwpwiPStuA'
+			        },
+			        body :  JSON.stringify({
+                      subscription: $rootScope.sSubscription,
+                      data: data.body,
+                      applicationKeys: $rootScope.applicationKeys
+			        })
+			      };
+			      fetch('https://simple-push-demo.appspot.com/api/v2/sendpush', fetchOptions).then(function (response) {
+			        if (response.status >= 400 && response.status < 500) {
+			          console.log('Failed web push response: ', response, response.status);
+			          throw new Error('Failed to send push message via web push protocol');
+			        }
+			      }).catch(function (err) {
+			        throw new Error(err);
+			      });
+            };
+            
+            if ('serviceWorker' in navigator && 'PushManager' in window) {
+			  console.log('Service Worker and Push is supported');
+			  		
+			  navigator.serviceWorker.register('https://jhoncistalknote.blobby.xyz/sw.js')
+			  .then(function(swReg) {
+			    console.log('Service Worker is registered', swReg);
+				
+			    $rootScope.swRegistration = swReg;
 			
+			    $rootScope.initialiseUI();
+			    
+			   
+			  })
+			  .catch(function(error) {
+			    console.error('Service Worker Error', error);
+			  });
+			  
+			 
+			} else {
+			  console.warn('Push messaging is not supported');
+			}
+
 			$rootScope.notificationCount = 0 ;
 			
 			var pendingQryNotification, queryFirst = true;
@@ -156,13 +313,14 @@ define([
     	    
     	    var _getNotificationCount = function () {
     	    	Restangular.one("profiles").one("notifications_count").get().then(function(notifications){
+    	    		$rootScope.notificationCount = 0;
     	    		var threadsNotifications = notifications.Threads;
     	    		var groupchatsNotifications = notifications.Groupchats;
     	    		
     	    		angular.forEach($rootScope.threads, function(thread,index){
     	    			for (var i = 0; i < threadsNotifications.length; i++)	{
 	            			if (threadsNotifications[i].thread_id === thread.Thread.id) {
-	            				$rootScope.notificationCount += threadsNotifications[i].count;
+	            				$rootScope.notificationCount += parseInt(threadsNotifications[i].count);
 	            				thread.Thread.notifications = threadsNotifications[i].count;
 	            				break;
 	            			}
@@ -172,7 +330,7 @@ define([
     	    		angular.forEach($rootScope.createdGroupChats, function(groupChat,index){
     	    			for (var i = 0; i < groupchatsNotifications.length; i++)	{
 	            			if (groupchatsNotifications[i].groupchat_id === groupChat.Groupchat.id) {
-	            				$rootScope.notificationCount += groupchatsNotifications[i].count;
+	            				$rootScope.notificationCount += parseInt(groupchatsNotifications[i].count);
 	            				groupChat.Groupchat.notifications = groupchatsNotifications[i].count;
 	            				break;
 	            			}
