@@ -29,8 +29,14 @@ class GroupchatsController extends AppController {
 		$this->Groupchat->recursive = 1;
 		
 		$id = $this->Auth->user('id');
+		$this->Groupchat->Behaviors->load('Containable');
+		$ids = $this->Groupchat->query('select groupchat_id from users_groupchats where user_id ='.$id);
+		function m($m){
+			return $m['users_groupchats']['groupchat_id'];
+		}
+		$ids = array_map('m',$ids);
 		
-		$options = array('conditions' => array('user_id'=>$id)); 
+		$options = array('conditions' => array('OR'=>array('Groupchat.id' => $ids,'Groupchat.user_id' => $id))); 
 		$groupchats =['groupchats' => $this->Groupchat->find('all', $options)];
 		
 		$this->set('groupchats', $groupchats);
