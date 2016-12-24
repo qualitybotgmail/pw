@@ -49,7 +49,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 comment_id: null
             };
             $scope.file = null;
-            // $scope.usedTemplate = 'template/thread_list.html';
+            $scope.loadFirstTime = true;
             
             // $scope.templates = ThreadFactory.templates;
             $scope.selectedHeadId = null;
@@ -182,10 +182,13 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	};
         	
         	$scope.fireMessageEvent = function(){
-                var timeout = $timeout(function() {
-                    HeadService.scrollDown();
-                    $timeout.cancel(timeout);
-                }, 1000);
+        	    if ($scope.loadFirstTime) {
+        	        $scope.loadFirstTime = false;
+        	        var timeout = $timeout(function() {
+                        HeadService.scrollDown();
+                        $timeout.cancel(timeout);
+                    }, 1000);
+        	    }
             };
         	
         	$scope.likeComment = function(indexComment, comment){

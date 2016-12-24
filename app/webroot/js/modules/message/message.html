@@ -81,7 +81,7 @@
     
     <div id="message-list-wrapper">
 		<div class="panel-body padding-sm">
-			<a href="#" class="messages-link">MORE MESSAGES</a>
+			<a class="messages-link clickable" ng-click="getLatestMessage()" ng-if="message.page_info.has_next">MORE MESSAGES</a>
 			<div class="messages-list" >
 			    <div ng-repeat="(created, filteredMessages) in message.Message | groupBy: 'created'" ng-init="$last && fireMessageEvent()">
 			        <div class="message text-center">
