@@ -533,7 +533,7 @@ class ProfilesController extends AppController {
 		
 		$uid = $this->Auth->user('id');
 		$prof = $this->Profile->findByUserId($uid);
-		$prof = $prof['Profile'];
+		$prof = @$prof['Profile'];
 		if(isset($prof['notifications'])){
 			
 			if($prof['notifications'] == 0){
