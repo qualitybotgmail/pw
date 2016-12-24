@@ -516,6 +516,7 @@ class ProfilesController extends AppController {
 			inner join groupchats Groupchat on Groupchat.id = logs.groupchat_id
 			inner join users_groupchats on Groupchat.id = users_groupchats.groupchat_id
 			where users_groupchats.user_id = '.$uid.' and logs.id not in (select log_id from users_logs where user_id = '.$uid.')
+			and logs.user_id != '.$uid.'
 			group by Groupchat.id';
 
 		$t2 = $this->Profile->query($t2q);

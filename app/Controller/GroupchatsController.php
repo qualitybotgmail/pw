@@ -37,7 +37,16 @@ class GroupchatsController extends AppController {
 		$ids = array_map('m',$ids);
 		
 		$options = array('conditions' => array('OR'=>array('Groupchat.id' => $ids,'Groupchat.user_id' => $id))); 
+		$options['contain'] = array(
+			'Message' , 'User.username','User.id', 'Owner.username','Owner.id'
+		);
 		$groupchats =['groupchats' => $this->Groupchat->find('all', $options)];
+		function gm($m){
+			$o = $m['Owner'];
+			$m['User'][] = $o;
+			return $m;
+		}
+		$groupchats['groupchats'] = array_map('gm',$groupchats['groupchats']);
 		
 		$this->set('groupchats', $groupchats);
 		//	print_r($groupchats);

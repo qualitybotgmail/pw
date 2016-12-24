@@ -211,7 +211,7 @@ class ThreadsController extends AppController {
 	}
 /**
  * add method
- *
+ *
  * @return void
  */
 	public function like($id = null) {

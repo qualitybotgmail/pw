@@ -87,16 +87,27 @@ class Groupchat extends AppModel {
 	}	
 	public function notified($id=null,$uid){
 	//	return;
-		$this->Behaviors->load('Containable');
+		$this->Log->User->Behaviors->load('Containable');
 		$r = $this->find('first',array(
 			'conditions' => array('Groupchat.id' => $id),
 			'contain' => array(
-			
-				'Log.id',
-				"Log.user_id != $uid"
-			)		
+				'Log.id' ,'Log.user_id','Log.user_id != '.$uid
+			)
 		));
-	//	print_r($r);exit;
+		$lids = array();
+		if($r){
+			foreach($r['Log'] as $log){
+				if($this->Log->UsersLog->findByUserIdAndLogId($uid,$log['id'])){
+					continue;
+				}	
+				$lids[] = array('log_id' => $log['id'],'user_id' =>$uid);
+			}
+		
+			$r = $this->Log->UsersLog->saveAll($lids);
+			
+			
+		}
+		
 	}
 	  
 }
