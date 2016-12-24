@@ -74,11 +74,11 @@ class Groupchat extends AppModel {
 	public function members($gid){
 		
 		$groupchat = $this->findById($gid);
-		
+
 		$ret = [];
 		
 		foreach($groupchat['User'] as $k => $t){
-			if (is_numeric($k))
+			
 				$ret[] = $t['id'];
 		}
 		

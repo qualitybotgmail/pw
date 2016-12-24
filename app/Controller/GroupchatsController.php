@@ -219,15 +219,22 @@ class GroupchatsController extends AppController {
 	public function userstoadd($gid){
 		header('Content-Type: application/json;charset=utf-8');
 		$members = $this->Groupchat->members($gid);
+		//$this->Groupchat->User->Behaviors->load("Containable");
+		$this->loadModel("User");
+		$this->User->recursive=-1;
 		
-		$users = $this->Groupchat->User->find("all",['fields' => ['id','username'],'conditions' => [
+		$users = $this->User->find("all",['fields' => ['id','username'],
+			
+			'conditions' => [
 			'NOT' => [
 				'User.id' => $members
 			]
 		]]);
 		
 		if(count($users) == 0){
-			$users = $this->Groupchats->User->find("all",['fields' => ['id','username']]);
+			$users = $this->User->find("all",[
+				
+				'fields' => ['id','username']]);
 		}
 		echo json_encode(['users'=> $users]);
 		exit;
