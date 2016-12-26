@@ -95,6 +95,8 @@ class Groupchat extends AppModel {
 			)
 		));
 		$lids = array();
+		
+		
 		if($r){
 			foreach($r['Log'] as $log){
 				if($this->Log->UsersLog->findByUserIdAndLogId($uid,$log['id'])){
