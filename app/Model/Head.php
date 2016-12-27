@@ -91,12 +91,10 @@ class Head extends AppModel {
 			'type' => 'Head.'. ($created? 'add' : 'edit')
 		));
 	
+	}
 
-	}	
-
-	
 	public function notified($hid,$uid){
-		
+
 		$this->Log->User->Behaviors->load('Containable');
 		$r = $this->Log->User->find('first',array(
 			'fields' => 'id',
@@ -113,6 +111,7 @@ class Head extends AppModel {
 			)
 			
 		));
+		
 		$logs = array();
 		foreach ($r['Thread'] as $t){
 			foreach($t['Head'] as $h){
@@ -122,6 +121,7 @@ class Head extends AppModel {
 				}
 			}
 		}
+		
 		$lids = $this->Log->UsersLog->find('list',array(
 			'conditions' => array(
 				'AND' => array(
@@ -136,6 +136,7 @@ class Head extends AppModel {
 		foreach(array_diff($logs,$lids) as $id){
 			$to_be_marked_viewed[] = array('user_id' => $uid, 'log_id' => $id);
 		}
+		//$this->Log->findAllById($to_be_marked_viewed);
 		$r = $this->Log->UsersLog->saveAll($to_be_marked_viewed);
 
 

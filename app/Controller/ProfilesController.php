@@ -501,12 +501,17 @@ class ProfilesController extends AppController {
 		$uid = $this->Auth->user('id');
 
 		$t = $this->Profile->query(
-			'SELECT Thread.thread_id id,count(Thread.thread_id) count FROM `users_threads` Thread
-			inner join logs L on L.thread_id = Thread.thread_id
+			'SELECT Thread.id id,count(distinct Logs.id) count FROM `users_threads` UsersThread
+			inner join logs Logs on Logs.thread_id = UsersThread.thread_id
+			inner join threads Thread on Thread.id = UsersThread.thread_id
 			
-			where Thread.user_id = '.$uid.' and L.id not in (select log_id from users_logs where users_logs.user_id = '.$uid.')
-			group by Thread.thread_id'
+			where (UsersThread.user_id = '.$uid.' or Thread.user_id = '.$uid.') 
+			and Logs.user_id != '.$uid.' 
+			and Logs.id not in 
+			(select log_id from users_logs where users_logs.user_id = '.$uid.')
+			group by UsersThread.thread_id'
 		);
+		
 		$ret = array('Threads'=>array(),'Groupchats'=>array());
 		foreach($t as $v){
 			$ret["Threads"][] = array('thread_id' => $v['Thread']['id'],'count' => $v['0']['count']);
@@ -515,7 +520,7 @@ class ProfilesController extends AppController {
 		$t2q ='SELECT Groupchat.id id,count(Groupchat.id) count FROM `logs` 
 			inner join groupchats Groupchat on Groupchat.id = logs.groupchat_id
 			inner join users_groupchats on Groupchat.id = users_groupchats.groupchat_id
-			where Groupchat.user_id = '.$uid.' or users_groupchats.user_id = '.$uid.' and logs.id not in (select log_id from users_logs where user_id = '.$uid.')
+			where (Groupchat.user_id = '.$uid.' or users_groupchats.user_id = '.$uid.') and logs.user_id != '.$uid.' and logs.id not in (select log_id from users_logs where user_id = '.$uid.')
 			group by Groupchat.id';
 
 		$t2 = $this->Profile->query($t2q);
