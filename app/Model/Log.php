@@ -185,4 +185,59 @@ public $actsAs = array('Containable');
 		
 
 	}
+
+	public function afterSave($created, $options = array()){
+		//$id = AuthComponent::user('id');
+		//Is there a thread_id? if so, this is a thread action
+			//get the users invovled in the thread
+			//remove the Log.user_id cuz we do not want to inform the creator about his own action
+			$log = $this->data['Log'];
+			$fcmids = array();
+			if(isset($log['thread_id'])){
+				$tid = $log['thread_id'];
+				$this->Thread->Behaviors->load('Containable');
+				$thread = $this->Thread->find('first',array(
+					'conditions' => array(
+						'Thread.id' => $tid
+					),
+					'contain' => array('User.username' => array('Profile.fcm_id'))
+				));
+	
+				foreach($thread['User'] as $u){
+					if(count($u['Profile'])<1) continue;
+					$f = $u['Profile'][0]['fcm_id'];
+					if(trim($f) == '' ) continue;
+					$fcmids[] = $f;
+				}
+			
+			}
+		//Is there a groupchats_id? if so this is a chat
+		//Get the fcm_ids involved
+		
+		
+		$profile =$this->User->Profile->findByUserId('12');
+		$fcm = $profile['Profile']['fcm_id'];
+		
+		
+		if(trim($fcm) != ''){
+			$ch = curl_init();
+			
+			curl_setopt($ch, CURLOPT_URL,"https://android.googleapis.com/gcm/send");
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+				'Authorization: key=AIzaSyDf03OOwBarOokhqjqCPDyBirNvI4Mh2o8',
+				"Content-Type: application/json",
+			));
+			curl_setopt($ch, CURLOPT_POSTFIELDS,
+			            json_encode(array('registration_ids' => $fcmids)));
+			
+	
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			
+			$server_output = curl_exec ($ch);
+
+			curl_close ($ch);	
+			
+		}
+	}
 }

@@ -14,7 +14,10 @@ class ProfilesController extends AppController {
  * @var array
  */
 	public $components = array('Paginator');
-
+	public function beforeFilter(){
+		parent::beforeFilter();
+		$this->Auth->allow('me','getnotif');
+	}
 /**
  * index method
  *
@@ -132,12 +135,91 @@ class ProfilesController extends AppController {
 		 
 		 exit;
 	}
-	
-	public function me(){ 
+	public function getnotif(){
+		// $uid = $this->Auth->user('id');
+		// $prof = $this->Profile->findByUserId($uid);
+		// //echo json_encode($prof);
+		$n = $this->notifications(true);
+		$uid = $this->Auth->user('id');
+		
+		$n = $n[0];
+		if($this->Session->read('Backoffice.notified')==null){
+			$this->Session->write('Backoffice.notified',array($n['id']));
+		}else{
+			$ses = $this->Session->read('Backoffice.notified');
+			if(in_array($n['id'],$ses)){
+				
+				exit;	
+			}else{
+				$ses[] = $n['id'];
+				$this->Session->write('Backoffice.notified',$ses);
+			}
+		}
+		$link = '';
+		$body = "";
+		$title = "";
+		if($n['type'] == 'Comment.like'){
+			$uname = $n['User']['username'];
+			$head = $n['Head']['body'];
+			$title = "Back office 通知";
+			$thread = $n['Thread']['title'];
+			if($uid == $n['Comment']['user_id'])
+				$body = "$uname さんがあなたのコメントにいいねと言っています。";
+			else {
+				$body = "$uname さんがヘッドコメントにいいねと言っています。";
+			}
+			$link = '/index.html#/heads/'.$n['Head']['id'];
+		}elseif($n['type'] == 'Comment.add'){
+			$uname = $n['User']['username'];
+			$head = $n['Head']['body'];
+			$title = "Back office 通知";
+			$thread = $n['Thread']['title'];
+			$body = "$uname さんが「 $thread 」のヘッドにコメントを投稿しました。";
+			$link = '/index.html#/heads/'.$n['Head']['id'];
+		}elseif($n['type'] == 'Head.like'){
+			$uname = $n['User']['username'];
+			$head = $n['Head']['body'];
+			$title = "Back office 通知";
+			$thread = $n['Thread']['title'];
+			$body = "$uname さんが「 $thread 」のヘッドにいいねと言っています。";
+			$link = '/index.html#/heads/'.$n['Head']['id'];		
+		}elseif($n['type'] == 'Head.add'){
+			$uname = $n['User']['username'];
+			$head = $n['Head']['body'];
+			$title = "Back office 通知";
+			$thread = $n['Thread']['title'];
+			$body = "$uname さんが「 $thread 」のスレッドにヘッドを投稿しました。";
+			$link = '/index.html#/heads/'.$n['Head']['id'];		
+		}
+		echo json_encode(array('body' => $body,'title' => $title,'link' => $link));
+		exit;
+	}
+	public function setregid(){
+		if($this->request->is('post')){
+			$data = $this->request->data;
+			$fcmid = $data['fcmid'];
+			
+			$uid = $this->Auth->user('id');
+			echo $uid;
+			$profile = $this->Profile->findByUserId($uid);
+			if(count($profile)==0){
+				$profile = $this->Profile->save(array('user_id' => $uid,'fcm_id' => $fcmid));
+				
+			}else{
+				$this->Profile->id = $profile['Profile']['id'];
+				$this->Profile->saveField('fcm_id',$fcmid);
+			}
+			
+		}
+		exit;
+	}
+
+	public function me($id = null){ 
 		 
 		$this->loadModel('User'); 
 		$this->view = 'view'; 
-		$id = $this->Auth->user('id');
+		if($id==null)
+			$id = $this->Auth->user('id');
         $usercount = $this->Profile->find('count', ['conditions'=> ['Profile.user_id' => $id]]); 
 		if($usercount!=0){
 	    	 $user = $this->Profile->find('first', 
@@ -532,7 +614,7 @@ class ProfilesController extends AppController {
 		echo json_encode($ret);
 		exit;
 	}	
-	public function notifications(){
+	public function notifications($ret = false){
 		header('Content-Type: application/json;charset=utf-8'); 
 		
 		$uid = $this->Auth->user('id');
@@ -643,7 +725,8 @@ class ProfilesController extends AppController {
 
 		
 		array_multisort($notifications_dates,SORT_DESC,SORT_STRING,$notifications);
-
+		if($ret)
+			return $notifications;
 		echo json_encode($notifications);
 		exit;
 	
