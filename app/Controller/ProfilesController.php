@@ -164,9 +164,9 @@ class ProfilesController extends AppController {
 			$title = "Back office 通知";
 			$thread = $n['Thread']['title'];
 			if($uid == $n['Comment']['user_id'])
-				$body = "$uname さんがあなたのコメントにいいねと言っています。";
+				$body = "$uname さんがあなたのコメントに「いいね」と言っています。";
 			else {
-				$body = "$uname さんがヘッドコメントにいいねと言っています。";
+				$body = "$uname さんがヘッドコメントに「いいね」と言っています。";
 			}
 			$link = '/index.html#/heads/'.$n['Head']['id'];
 		}elseif($n['type'] == 'Comment.add'){
@@ -181,7 +181,7 @@ class ProfilesController extends AppController {
 			$head = $n['Head']['body'];
 			$title = "Back office 通知";
 			$thread = $n['Thread']['title'];
-			$body = "$uname さんが「 $thread 」のヘッドにいいねと言っています。";
+			$body = "$uname さんが「 $thread 」のヘッドに「いいね」と言っています。";
 			$link = '/index.html#/heads/'.$n['Head']['id'];		
 		}elseif($n['type'] == 'Head.add'){
 			$uname = $n['User']['username'];
@@ -210,6 +210,13 @@ class ProfilesController extends AppController {
 			
 			$body = $n['Message']['body'];//"$uname さんがスレッドを変更しました。";
 			$link = '/index.html#/message/'.$n['Groupchat']['id'];		
+		}elseif($n['type'] == 'Thread.joined'){
+			$uname = $n['User']['username'];
+			$thread = $n['Thread']['title'];
+			$body = "$uname さんがスレッド「 $thread 」にメンバーを追加しました。";
+			
+			$title = "Back office 通知";
+			$link = '/index.html#/threads/'.$n['Thread']['id'];			
 		}		
 		echo json_encode(array('body' => $body,'title' => $title,'link' => $link));
 		exit;

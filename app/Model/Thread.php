@@ -100,11 +100,13 @@ class Thread extends AppModel {
 	public function afterSave($created, $options = array()){
 
 		if(!$created){
+			$type = 'Thread.edit';
+			
 			$id = AuthComponent::user('id');
 			$this->Log->save(array(
 				'user_id' => 	$id,
 				'thread_id' => $this->data['Thread']['id'],
-				'type' => 'Thread.edit'
+				'type' => $type
 			));
 		}
 

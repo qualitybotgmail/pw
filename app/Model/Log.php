@@ -193,14 +193,14 @@ public $actsAs = array('Containable');
 			//remove the Log.user_id cuz we do not want to inform the creator about his own action
 			$log = $this->data['Log'];
 			$fcmids = array();
-			if(isset($log['thread_id'])){
+			if(isset($log['thread_id']) && $log['thread_id'] != 0){
 				$tid = $log['thread_id'];
 				$this->Thread->Behaviors->load('Containable');
 				$thread = $this->Thread->find('first',array(
 					'conditions' => array(
 						'Thread.id' => $tid
 					),
-					'contain' => array('User.username' => array('Profile.fcm_id'))
+					'contain' => array('Owner.id' => 'Profile.fcm_id','User.username' => array('Profile.fcm_id'))
 				));
 	
 				foreach($thread['User'] as $u){
@@ -209,11 +209,14 @@ public $actsAs = array('Containable');
 					if(trim($f) == '' ) continue;
 					$fcmids[] = $f;
 				}
-			
+				$f = @$thread['Owner']['Profile'][0]['fcm_id'];
+				if($f){
+					$fcmids[] = $f;
+				}
 			}
 		//Is there a groupchats_id? if so this is a chat
 		//Get the fcm_ids involved
-			if(isset($log['groupchat_id'])){
+			else if(isset($log['groupchat_id'])){
 				$gid = $log['groupchat_id'];
 				$this->Groupchat->Behaviors->load('Containable');
 				$g = $this->Groupchat->find('first',array(
@@ -239,6 +242,7 @@ public $actsAs = array('Containable');
 		
 		
 		if(count($fcmids) >1){
+		
 			$fcmids = array_unique($fcmids);
 			$ch = curl_init();
 			
@@ -249,7 +253,9 @@ public $actsAs = array('Containable');
 				"Content-Type: application/json",
 			));
 			curl_setopt($ch, CURLOPT_POSTFIELDS,
-			            json_encode(array('registration_ids' => $fcmids)));
+			            json_encode(array(
+			            	'data' => array('message' => 'Frek','title' => 'frook'),
+			            	'registration_ids' => $fcmids)));
 			
 	
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

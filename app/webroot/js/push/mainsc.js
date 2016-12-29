@@ -1,5 +1,3 @@
-
-
 window.settings = window.settings || {};
 window.settings.Config = window.settings.Config || {
   //gcmAPIKey: 'AAAAYxohlfc:APA91bFFRnFY820AfNFXmOFmUb1xKsb1obaZhpt4p1EpQRS3MRUnMe23Ho6nAci6760CU5ybyCafXjWexSXttbjFemaKikTK8q8eQcncgKInVejsq4AuPKw-C0OGMrfMbIcREIPdIMg1NI-yI1mBDHA29B-V2t2LjQ'
@@ -15,9 +13,6 @@ var GCM_ENDPOINT = 'https://android.googleapis.com/gcm/send';
 var curlCommandDiv = document.querySelector('.js-curl-command');
 var isPushEnabled = false;
 
-// This method handles the removal of subscriptionId
-// in Chrome 44 by concatenating the subscription Id
-// to the subscription endpoint
 function endpointWorkaround(pushSubscription) {
   // Make sure we only mess with GCM
   if (pushSubscription.endpoint.indexOf('https://android.googleapis.com/gcm/send') !== 0) {
@@ -37,45 +32,25 @@ function endpointWorkaround(pushSubscription) {
 }
 
 function sendSubscriptionToServer(subscription) {
-  // TODO: Send the subscription.endpoint
-  // to your server and save it to send a
-  // push message at a later date
-  //
-  // For compatibly of Chrome 43, get the endpoint via
-  // endpointWorkaround(subscription)
-  console.log('TODO: Implement sendSubscriptionToServer()');
 
   var mergedEndpoint = endpointWorkaround(subscription);
 
-  // This is just for demo purposes / an easy to test by
-  // generating the appropriate cURL command
-  showCurlCommand(mergedEndpoint);
+  sendSub(mergedEndpoint);
 }
 
-// NOTE: This code is only suitable for GCM endpoints,
-// When another browser has a working version, alter
-// this to send a PUSH request directly to the endpoint
-function showCurlCommand(mergedEndpoint) {
+function sendSub(mergedEndpoint) {
   // The curl command to trigger a push message straight from GCM
   if (mergedEndpoint.indexOf(GCM_ENDPOINT) !== 0) {
-    window.Demo.debug.log('This browser isn\'t currently ' +
+    console.log('This browser isn\'t currently ' +
       'supported');
     return;
   }
 
   var endpointSections = mergedEndpoint.split('/');
   var subscriptionId = endpointSections[endpointSections.length - 1];
-  
-  var curlCommand = 'curl --header "Authorization: key=' + API_KEY +
-    '" --header Content-Type:"application/json" ' + GCM_ENDPOINT +
-    ' -d "{\\"notification\\":{\\"title\\":\\"frok\\"},\\"registration_ids\\":[\\"' + subscriptionId + '\\"]}"';
-
 
   $.post( "/profiles/setregid", { fcmid: subscriptionId } );
   
-  window.settings.Config.subscriptionId = subscriptionId;
-  
-  curlCommandDiv.textContent = curlCommand;
 }
 
 function unsubscribe() {
@@ -113,11 +88,11 @@ function unsubscribe() {
           // the subscription id from your data store and
           // inform the user that you disabled push
 
-          window.Demo.debug.log('Unsubscription error: ', e);
+          console.log('Unsubscription error: ', e);
           pushButton.disabled = false;
         });
       }).catch(function(e) {
-        window.Demo.debug.log('Error thrown while unsubscribing from ' +
+        console.log('Error thrown while unsubscribing from ' +
           'push messaging.', e);
       });
   });
@@ -148,13 +123,13 @@ function subscribe() {
           // means we failed to subscribe and the user will need
           // to manually change the notification permission to
           // subscribe to push messages
-          window.Demo.debug.log('Permission for Notifications was denied');
+          console.log('Permission for Notifications was denied');
           pushButton.disabled = true;
         } else {
           // A problem occurred with the subscription, this can
           // often be down to an issue or lack of the gcm_sender_id
           // and / or gcm_user_visible_only
-          window.Demo.debug.log('Unable to subscribe to push.', e);
+          console.log('Unable to subscribe to push.', e);
           pushButton.disabled = false;
           pushButton.textContent = 'Enable Push Messages';
         }
@@ -167,7 +142,7 @@ function initialiseState(reg) {
   // Are Notifications supported in the service worker?
   //reg.active.postMessage(JSON.stringify({subscriptionId: }));
   if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
-    window.Demo.debug.log('Notifications aren\'t supported.');
+    console.log('Notifications aren\'t supported.');
     return;
   }
 
@@ -175,13 +150,13 @@ function initialiseState(reg) {
   // If its denied, it's a permanent block until the
   // user changes the permission
   if (Notification.permission === 'denied') {
-    window.Demo.debug.log('The user has blocked notifications.');
+    console.log('The user has blocked notifications.');
     return;
   }
 
  // Check if push messaging is supported
   if (!('PushManager' in window)) {
-    window.Demo.debug.log('Push messaging isn\'t supported.');
+    console.log('Push messaging isn\'t supported.');
     return;
   }
 
@@ -212,7 +187,7 @@ function initialiseState(reg) {
         isPushEnabled = true;
       })
       .catch(function(err) {
-        window.Demo.debug.log('Error during getSubscription()', err);
+        console.log('Error during getSubscription()', err);
       });
   });
 }
@@ -232,15 +207,12 @@ window.addEventListener('load', function() {
   // enhance and add push messaging support, otherwise continue without it.
   
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js?v=2s44ddddd')
+    navigator.serviceWorker.register('service-worker.js')
     .then(initialiseState)
     .catch(function(err){
       alert("Error");
-    })
-    ;
-
-    
+    });
   } else {
-    window.Demo.debug.log('Service workers aren\'t supported in this browser.');
+    console.log('Service workers aren\'t supported in this browser.');
   }
 });
