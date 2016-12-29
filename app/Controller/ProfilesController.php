@@ -190,7 +190,27 @@ class ProfilesController extends AppController {
 			$thread = $n['Thread']['title'];
 			$body = "$uname さんが「 $thread 」のスレッドにヘッドを投稿しました。";
 			$link = '/index.html#/heads/'.$n['Head']['id'];		
-		}
+		
+		}elseif($n['type'] == 'Head.edit'){
+			$uname = $n['User']['username'];
+			$head = $n['Head']['body'];
+			$title = "Back office 通知";
+			$thread = $n['Thread']['title'];
+			$body = "$uname さんがヘッドのタイトルを変更しました。";
+			$link = '/index.html#/heads/'.$n['Head']['id'];		
+		}elseif($n['type'] == 'Thread.edit'){
+			$uname = $n['User']['username'];
+			$title = "Back office 通知";
+			$thread = $n['Thread']['title'];
+			$body = "$uname さんがスレッドを変更しました。";
+			$link = '/index.html#/threads/'.$n['Thread']['id'];		
+		}elseif($n['type'] == 'Message.add'){
+			$uname = $n['User']['username'];
+			$title = "$uname さんからメッセージ：";
+			
+			$body = $n['Message']['body'];//"$uname さんがスレッドを変更しました。";
+			$link = '/index.html#/message/'.$n['Groupchat']['id'];		
+		}		
 		echo json_encode(array('body' => $body,'title' => $title,'link' => $link));
 		exit;
 	}
@@ -200,7 +220,7 @@ class ProfilesController extends AppController {
 			$fcmid = $data['fcmid'];
 			
 			$uid = $this->Auth->user('id');
-			echo $uid;
+		
 			$profile = $this->Profile->findByUserId($uid);
 			if(count($profile)==0){
 				$profile = $this->Profile->save(array('user_id' => $uid,'fcm_id' => $fcmid));

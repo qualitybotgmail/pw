@@ -213,13 +213,33 @@ public $actsAs = array('Containable');
 			}
 		//Is there a groupchats_id? if so this is a chat
 		//Get the fcm_ids involved
+			if(isset($log['groupchat_id'])){
+				$gid = $log['groupchat_id'];
+				$this->Groupchat->Behaviors->load('Containable');
+				$g = $this->Groupchat->find('first',array(
+					'conditions' => array(
+						'Groupchat.id' => $gid
+					),
+					'contain' => array('Owner.id' => 'Profile.fcm_id','User.username' => array('Profile.fcm_id'))
+				));
+				
+	
+				foreach($g['User'] as $u){
+					if(count($u['Profile'])<1) continue;
+					$f = $u['Profile'][0]['fcm_id'];
+					if(trim($f) == '' ) continue;
+					$fcmids[] = $f;
+				}
+			
+				$f = @$g['Owner']['Profile'][0]['fcm_id'];
+				if($f){
+					$fcmids[] = $f;
+				}	
+			}		
 		
 		
-		$profile =$this->User->Profile->findByUserId('12');
-		$fcm = $profile['Profile']['fcm_id'];
-		
-		
-		if(trim($fcm) != ''){
+		if(count($fcmids) >1){
+			$fcmids = array_unique($fcmids);
 			$ch = curl_init();
 			
 			curl_setopt($ch, CURLOPT_URL,"https://android.googleapis.com/gcm/send");
