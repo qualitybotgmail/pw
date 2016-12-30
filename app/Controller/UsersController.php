@@ -138,7 +138,7 @@ class UsersController extends AppController {
 	    return $this->redirect($this->Auth->logout());
 	}	
 	
-	public function me(){ 
+	public function me(){
 		
 		$this->view = 'view'; 
 		$id = $this->Auth->user('id');

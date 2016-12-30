@@ -158,6 +158,7 @@ class ProfilesController extends AppController {
 		$link = '';
 		$body = "";
 		$title = "";
+		
 		if($n['type'] == 'Comment.like'){
 			$uname = $n['User']['username'];
 			$head = $n['Head']['body'];
@@ -169,6 +170,7 @@ class ProfilesController extends AppController {
 				$body = "$uname さんがヘッドコメントに「いいね」と言っています。";
 			}
 			$link = '/index.html#/heads/'.$n['Head']['id'];
+			
 		}elseif($n['type'] == 'Comment.add'){
 			$uname = $n['User']['username'];
 			$head = $n['Head']['body'];
@@ -176,6 +178,7 @@ class ProfilesController extends AppController {
 			$thread = $n['Thread']['title'];
 			$body = "$uname さんが「 $thread 」のヘッドにコメントを投稿しました。";
 			$link = '/index.html#/heads/'.$n['Head']['id'];
+			
 		}elseif($n['type'] == 'Head.like'){
 			$uname = $n['User']['username'];
 			$head = $n['Head']['body'];
@@ -213,7 +216,9 @@ class ProfilesController extends AppController {
 		}elseif($n['type'] == 'Thread.joined'){
 			$uname = $n['User']['username'];
 			$thread = $n['Thread']['title'];
-			$body = "$uname さんがスレッド「 $thread 」にメンバーを追加しました。";
+			$member = $n['member'];
+			$body = "$uname さんがスレッド「 $thread 」に 「 $member 」さんをメンバーに追加しました。";
+			//who was added here?
 			
 			$title = "Back office 通知";
 			$link = '/index.html#/threads/'.$n['Thread']['id'];			
@@ -675,6 +680,7 @@ class ProfilesController extends AppController {
 					
 					'Log.user_id != ' . $uid,
 					'Log.type',
+					'Log.member',
 					'Log.created',
 					'Log' => 
 					array(

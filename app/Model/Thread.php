@@ -101,7 +101,6 @@ class Thread extends AppModel {
 
 		if(!$created){
 			$type = 'Thread.edit';
-			
 			$id = AuthComponent::user('id');
 			$this->Log->save(array(
 				'user_id' => 	$id,

@@ -180,6 +180,7 @@ class ThreadsController extends AppController {
 	public function addmember($thread_id = null,$member_id = null) {
 		header('Content-Type: application/json;charset=utf-8');
 		$ids = explode(",",$member_id);
+	
 		$me = $this->Thread->User->findById($this->Auth->user('id'));
 		try{
 			$thread = $this->Thread->findById($thread_id);
@@ -201,11 +202,13 @@ class ThreadsController extends AppController {
 					'Thread' => array('id' => $thread_id),
 					'User' => array('User' => $users)
 				));
+				
 				foreach($users as $user){
+					$u = $this->Thread->User->findById($user,'username');
 					$this->Thread->Log->save(array(
 						'user_id' => 	$user,
 						'thread_id' => $thread_id,
-						//'owner' => $me['User']['username'],
+						'member' => $u['User']['username'],
 						'type' => 'Thread.joined'
 					));	
 				}

@@ -2,13 +2,13 @@
 
 self.addEventListener('push', function(event) {
   registration.pushManager.getSubscription().then(function(subscription) {
-    fetch('https://talknote.blobby.xyz/profiles/getnotif.json',{
+    fetch('/profiles/getnotif.json',{
       credentials: 'include'
     }).then(function(resp){
           resp.json().then(function(data){
             var title = data.title;//'Yay a message.';
             var body = data.body;//'We have received a push message.';
-            var icon = 'https://talknote.blobby.xyz/js/push/images/icon-192x192.png';
+            var icon = '/js/push/images/icon-192x192.png';
             var tag = data.link;
        
            // event.waitUntil(
