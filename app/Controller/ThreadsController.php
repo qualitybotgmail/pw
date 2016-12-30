@@ -177,6 +177,15 @@ class ThreadsController extends AppController {
  *
  * @return void
  */
+	public function ignoredt(){
+		$this->loadModel('IgnoredThread');
+		$t = $this->IgnoredThread->find('list',array(
+			'conditions' => array('thread_id' => 199),
+			'fields' => 'user_id'
+		));
+		print_r($t);
+		exit;
+	}
 	public function addmember($thread_id = null,$member_id = null) {
 		header('Content-Type: application/json;charset=utf-8');
 		$ids = explode(",",$member_id);
@@ -195,6 +204,9 @@ class ThreadsController extends AppController {
 			$oldcount = count($users);
 			$users = array_merge($ids,$users);
 			$users = array_unique($users);
+			$usernames = $this->Thread->User->find('list',array('fields' => 'username','recursive'=>-1,'conditions'=>array(
+				'User.id' => $ids	
+			)));
 			
 			if(count($users)!=$oldcount){
 				
@@ -203,15 +215,12 @@ class ThreadsController extends AppController {
 					'User' => array('User' => $users)
 				));
 				
-				foreach($users as $user){
-					$u = $this->Thread->User->findById($user,'username');
-					$this->Thread->Log->save(array(
-						'user_id' => 	$user,
+				$this->Thread->Log->save(array(
+						'user_id' => $this->Auth->user('id'),
 						'thread_id' => $thread_id,
-						'member' => $u['User']['username'],
+						'member' => serialize($usernames),
 						'type' => 'Thread.joined'
-					));	
-				}
+				));	
 				
 				echo json_encode(['status' => 'OK']);
 				exit;

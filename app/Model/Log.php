@@ -193,8 +193,16 @@ public $actsAs = array('Containable');
 			//remove the Log.user_id cuz we do not want to inform the creator about his own action
 			$log = $this->data['Log'];
 			$fcmids = array();
+			App::uses('IgnoredThread', 'Model');
+			$this->IgnoredThread = new IgnoredThread;
 			if(isset($log['thread_id']) && $log['thread_id'] != 0){
 				$tid = $log['thread_id'];
+				
+				$ignored_users = $this->IgnoredThread->find('list',array(
+					'conditions' => array('thread_id' => $tid),
+					'fields' => 'user_id'
+				));
+				
 				$this->Thread->Behaviors->load('Containable');
 				$thread = $this->Thread->find('first',array(
 					'conditions' => array(
@@ -204,19 +212,28 @@ public $actsAs = array('Containable');
 				));
 	
 				foreach($thread['User'] as $u){
+					if(in_array($u['id'],$ignored_users)){
+			
+						continue;
+					}
 					if(count($u['Profile'])<1) continue;
 					$f = $u['Profile'][0]['fcm_id'];
 					if(trim($f) == '' ) continue;
 					$fcmids[] = $f;
 				}
-				$f = @$thread['Owner']['Profile'][0]['fcm_id'];
-				if($f){
-					$fcmids[] = $f;
+			
+				$oid = @$thread['Owner']['id'];
+	
+				if(!in_array($oid,$ignored_users)){
+					$f = @$thread['Owner']['Profile'][0]['fcm_id'];
+					if($f){
+						$fcmids[] = $f;
+					}
 				}
 			}
 		//Is there a groupchats_id? if so this is a chat
 		//Get the fcm_ids involved
-			else if(isset($log['groupchat_id'])){
+			else if(isset($log['groupchat_id']) && $log['groupchat_id'] != 0){
 				$gid = $log['groupchat_id'];
 				$this->Groupchat->Behaviors->load('Containable');
 				$g = $this->Groupchat->find('first',array(

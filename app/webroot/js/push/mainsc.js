@@ -156,7 +156,7 @@ window.addEventListener('load', function() {
   // enhance and add push messaging support, otherwise continue without it.
   
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js?v=01')
+    navigator.serviceWorker.register('service-worker.js?v=0271')
     .then(initialiseState)
     .catch(function(err){
       alert("Error");

@@ -158,7 +158,14 @@ class ProfilesController extends AppController {
 		$link = '';
 		$body = "";
 		$title = "";
-		
+		if(isset($n['thread_id']) && $n['thread_id'] != 0){
+				$this->loadModel("IgnoredThread");
+				$e = $this->IgnoredThread->findByThreadIdAndUserId($n['thread_id'],$uid);
+			
+				if($e){
+					exit;
+				}
+		}
 		if($n['type'] == 'Comment.like'){
 			$uname = $n['User']['username'];
 			$head = $n['Head']['body'];
@@ -199,7 +206,7 @@ class ProfilesController extends AppController {
 			$head = $n['Head']['body'];
 			$title = "Back office 通知";
 			$thread = $n['Thread']['title'];
-			$body = "$uname さんがヘッドのタイトルを変更しました。";
+			$body = "$uname さんがヘッドを変更しました。";
 			$link = '/index.html#/heads/'.$n['Head']['id'];		
 		}elseif($n['type'] == 'Thread.edit'){
 			$uname = $n['User']['username'];
@@ -216,8 +223,11 @@ class ProfilesController extends AppController {
 		}elseif($n['type'] == 'Thread.joined'){
 			$uname = $n['User']['username'];
 			$thread = $n['Thread']['title'];
-			$member = $n['member'];
-			$body = "$uname さんがスレッド「 $thread 」に 「 $member 」さんをメンバーに追加しました。";
+			$member = unserialize($n['member']);
+			
+			$members = count($member) > 1 ? implode("さん、",$member)."さん": array_pop($member). "さん";
+			
+			$body = "$uname さんがスレッドのメンバーに\n"."$members \nを追加しました。";
 			//who was added here?
 			
 			$title = "Back office 通知";

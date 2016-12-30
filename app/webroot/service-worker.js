@@ -1,6 +1,7 @@
 'use strict';
 
 self.addEventListener('push', function(event) {
+
   registration.pushManager.getSubscription().then(function(subscription) {
     fetch('/profiles/getnotif.json',{
       credentials: 'include'
