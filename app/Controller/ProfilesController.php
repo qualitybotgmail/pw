@@ -502,7 +502,12 @@ class ProfilesController extends AppController {
 	
 	public function search($keyword = null){
 		error_reporting(0);
+		
 		header('Content-Type: application/json;charset=utf-8'); 
+		if($keyword == null || strlen(trim($keyword)) == 0) {
+			echo json_encode(array('Threads'=>null,'Heads'=>null));
+			exit;
+		}
 		$this->loadModel('Thread');
 		$this->loadModel('Head'); 
 		$this->loadModel('User'); 
@@ -576,10 +581,22 @@ class ProfilesController extends AppController {
 			// echo json_encode(array_merge($thread,$user_threads));die();
 			
 			
-			
-			// $head = $this->Head->find('all', 
-				// ['conditions' =>  ['Head.body LIKE' => '%'.$k.'%'] ]);  
-			
+			$this->Head->Behaviors->load("Containable");
+			$head = $this->Head->find('all', 
+				array(
+					'conditions' =>  array('Head.body LIKE' => '%'.$k.'%'),
+					'fields'  => array('body','id'),
+					'contain' => array(
+						'Thread' => array('User.id = ' .$this->Auth->user('id'))
+					)
+				));  
+			$heads = array();
+			foreach($head as $h){
+				if(count($h['Thread']['User'])>0){
+					$heads[] = array('Head' => $h['Head']);
+				}
+			}
+		//	print_r($heads);exit;
 			$thread = $this->Thread->find('all', 
 				['conditions' => [
 					'OR' =>
@@ -604,7 +621,7 @@ class ProfilesController extends AppController {
 			if(!empty($pusers))$data['Users'] = array_merge($pusers,[]);
 			if(!empty($thread) || !empty($user_threads))$data['Threads'] = array_merge($thread,$user_threads);
 			// if(!empty($thread))$data['Threads'] = $users_threads;
-			// if(!empty($head))$data['Heads'] = $head;
+			if(!empty($heads))$data['Heads'] = $heads;
 		
 			//$data[] = array_merge($user, $thread, $head); 
 		}
