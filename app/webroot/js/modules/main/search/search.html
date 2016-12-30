@@ -51,7 +51,7 @@
               結果が見つかりません
             </li>
           </ul>
-          <ul class="list-group" ng-if="search.Users.length" ng-if="search.Users.length">
+          <ul class="list-group" ng-if="search.Users.length">
             <li class="list-group-item" ng-repeat="c in search.Users | unique : 'id'" ng-click="selectUser(c)">
               {{c.User.username}}
             </li>

@@ -398,11 +398,14 @@ class ThreadsController extends AppController {
 		header('Content-Type: application/json;charset=utf-8');
 		$members = $this->Thread->members($thread_id);
 		$members[] = $this->Auth->user('id');
-		$users = $this->Thread->User->find("all",['fields' => ['id','username'],'conditions' => [
-			'NOT' => [
-				'User.id' => $members
-			]
-		]]);
+		$users = $this->Thread->User->find("all",
+			array(
+				'fields' => array('id','username'),
+				'conditions' => array(
+					'NOT' => array(
+						'User.id' => $members
+					)
+		)));
 		
 		if(count($users) == 0){
 			$users = $this->Thread->User->find("all",['fields' => ['id','username']]);
