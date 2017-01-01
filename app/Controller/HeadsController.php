@@ -91,11 +91,18 @@ class HeadsController extends AppController {
 		} 
 		$this->loadModel('Upload');
 		
-		$cond = array('conditions' => array('Upload.head_id' => $id));
+		$this->Upload->recursive=-1;//Behaviors->load('Containable');
+		$cond = array(
+			'conditions' => array('Upload.head_id' => $id),
+		//	'contain' => 
+		);
 		$uploads = $this->Upload->find('all', $cond);
 			// total likes of comments
+		$head['Upload'] = array();
 		
-				
+		foreach($uploads as $up){
+			$head['Upload'][] = $up['Upload'];
+		}	
 		$this->Head->notified($id,$uid);
 		$this->set('head',$head);
 	}
