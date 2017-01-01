@@ -1,11 +1,11 @@
 define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 {
-    app.filter('groupBy', function() {
-        return _.memoize(function(items, field) {
-                return _.groupBy(items, field);
-            }
-        );
-    });
+    // app.filter('groupBy', function() {
+    //     return _.memoize(function(items, field) {
+    //             return _.groupBy(items, field);
+    //         }
+    //     );
+    // });
     
     app.factory('MessageFactory', [
         'GLOBAL',
@@ -178,6 +178,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         
             $scope.getMessage = function(){
                 var messageID = $scope.selectedMessageId.toString();
+                $scope.filteredMessages= {};
+                
         	    GroupChatModel.one('paged').one(messageID).one($scope.pageLimit.toString()).one($scope.pageIndex.toString()).get().then(function(res){
         	        if (res.groupchats.Message) {
         	            res.groupchats.Message.reverse();

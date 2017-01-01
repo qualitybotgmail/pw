@@ -89,7 +89,9 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 
                 Modal.showModal(modalConfig, {}).then(function (head) {
                     // success
-                    $scope.selectedHead.Head = angular.extend($scope.selectedHead.Head, head);
+                    // console.log($scope.selectedHead.Head, 'old head');
+                    // console.log(head, 'edited');
+                    $scope.selectedHead = angular.extend($scope.selectedHead, head);
                     $scope.startInterval();
                 }, function (err) {
                     // error
@@ -258,6 +260,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
             /* Destroy non-angular objectst */
 			$scope.$on('$destroy', function (event) {
+			    $scope.selectedHead = null;
 			    $scope.stopInterval();
 			});
         }

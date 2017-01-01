@@ -84,8 +84,12 @@ define([
         'MainService',
 
         function($rootScope, $scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, HeadsModel, CommentsModel, UsersModel, ProfilesModel, GroupChatModel, Factory, MainService) {
+        	
+        	$scope.threadNotifications = [];
+            $scope.groupChatNotifications = [];
         	$scope.comment = [];
         	$scope.loadFirsttime = true;
+        	$scope.templates = Factory.templates;
         	
         	
         	$scope.fireThreadActiveEvent = function() {
@@ -271,10 +275,6 @@ define([
             };
         	
         	var start = function() {
-        	    
-                $scope.templates = Factory.templates;
-                $scope.threadNotifications = [];
-                $scope.groupChatNotifications = [];
                 
                 ProfilesModel.one('timeline').get().then(function(timeline){
                     $scope.timeline = timeline;
