@@ -50,6 +50,7 @@ require.config({
 		ngIdleJs :		'../vendor/ngIdle/angular-idle.min',
 		bootstrapSwitch:'../vendor/bootstrap-switch/bootstrap-switch.min',
 		ngNotification :'../vendor/angular-notifications/angular-notification.min',
+		ngFilter :'../vendor/angular-filter/angular-filter',
 
 	},
 	shim: {
@@ -75,6 +76,7 @@ require.config({
 		'ngIdleJs' 		: {deps: ['angular']},
 		'bootstrapSwitch': {deps: ['angular']},
 		'ngNotification': {deps: ['angular']},
+		'ngFilter': {deps: ['angular']},
 
 		'html2canvas': {
             exports: 'html2canvas',

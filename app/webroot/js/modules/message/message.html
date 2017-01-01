@@ -14,7 +14,7 @@
     padding:0 20px;
   }
   #message-list-wrapper{
-    height:580px;
+    max-height:580px;
     overflow-y:auto;
     padding-right:15px;
   }
@@ -87,11 +87,11 @@
 			        <div class="message text-center">
 			             <hr>
 			             <h5>{{created_date}}</h5>
-			         </div>    
+			        </div>    
 			        <div class="message" ng-repeat="m in filteredMessages track by $index">
-    					<div class="avatar">
+    					  <div class="avatar">
     				        <img src="/img/avatar.png" alt="">
-                        </div>
+                </div>
     				    <div class="msg">
                             <h4 class="message-subject">
                                 {{m.User.username}}

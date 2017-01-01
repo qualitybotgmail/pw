@@ -82,7 +82,7 @@
             </li>
           </ul>
           <ul class="list-group" ng-if="search.Heads.length" ng-if="search.Heads.length">
-            <li class="list-group-item" ng-repeat="h in search.Heads | unique : 'id'" ng-click="selectHead(t.Head.id)">
+            <li class="list-group-item" ng-repeat="h in search.Heads | unique : 'id'" ng-click="selectHead(h.Head.id)">
               {{h.Head.body}}
             </li>
           </ul>
