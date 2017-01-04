@@ -185,17 +185,53 @@ public $actsAs = array('Containable');
 		
 
 	}
-
+	public function push($fcmids = null){
+		file_put_contents("/tmp/lastcurl",date("g:i")."\n".print_r($fcmids,true),FILE_APPEND);
+		if($fcmids != null){
+			
+			//$fcmids = array_unique($fcmids);
+			$ch = curl_init();
+			
+			curl_setopt($ch, CURLOPT_URL,"https://android.googleapis.com/gcm/send");
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array( 
+				'Authorization: key=AIzaSyDf03OOwBarOokhqjqCPDyBirNvI4Mh2o8',
+				"Content-Type: application/json",
+			));
+			curl_setopt($ch, CURLOPT_POSTFIELDS,
+			            json_encode(array(
+			            	
+			            	'data' => array('notification' => array('message' => 'Backoffice','title' => 'Notification')),
+			            	'registration_ids' => $fcmids)));
+			
+	
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		//	file_put_contents("/tmp/lastcurl",date("g:i")." [Exec]\n".print_r($fcmids,true),FILE_APPEND);
+			$server_output = curl_exec ($ch);
+			file_put_contents("/tmp/lastcurl",date("g:i")."\n".print_r(array('Output'=>$server_output),true),FILE_APPEND);
+			curl_close ($ch);	
+			
+		}
+	}
 	public function afterSave($created, $options = array()){
+		
 		//$id = AuthComponent::user('id');
 		//Is there a thread_id? if so, this is a thread action
 			//get the users invovled in the thread
 			//remove the Log.user_id cuz we do not want to inform the creator about his own action
 			$log = $this->data['Log'];
 			$fcmids = array();
+			$uid = AuthComponent::user('id');
 			App::uses('IgnoredThread', 'Model');
 			$this->IgnoredThread = new IgnoredThread;
-			if(isset($log['thread_id']) && $log['thread_id'] != 0){
+			$profile = $this->User->Profile->findByUserId($uid);
+		
+			$myfcmid = @$profile['Profile']['fcm_id'];
+
+			if($log['type'] == 'User.logged' && $myfcmid != ''){
+				$this->push(array($myfcmid));
+				return;
+			}elseif(isset($log['thread_id']) && $log['thread_id'] != 0){
 				$tid = $log['thread_id'];
 				
 				$ignored_users = $this->IgnoredThread->find('list',array(
@@ -208,17 +244,20 @@ public $actsAs = array('Containable');
 					'conditions' => array(
 						'Thread.id' => $tid
 					),
-					'contain' => array('Owner.id' => 'Profile.fcm_id','User.username' => array('Profile.fcm_id'))
+					'contain' => array(
+						'Owner.id' => 'Profile.fcm_id',
+						'User.username' => array('Profile.fcm_id','Profile.user_id')
+					)
 				));
-	
+				
 				foreach($thread['User'] as $u){
 					if(in_array($u['id'],$ignored_users)){
-			
 						continue;
 					}
 					if(count($u['Profile'])<1) continue;
 					$f = $u['Profile'][0]['fcm_id'];
 					if(trim($f) == '' ) continue;
+						if($u['Profile'][0]['user_id'] == $log['user_id']) continue;
 					$fcmids[] = $f;
 				}
 			
@@ -234,13 +273,14 @@ public $actsAs = array('Containable');
 		//Is there a groupchats_id? if so this is a chat
 		//Get the fcm_ids involved
 			else if(isset($log['groupchat_id']) && $log['groupchat_id'] != 0){
+				
 				$gid = $log['groupchat_id'];
 				$this->Groupchat->Behaviors->load('Containable');
 				$g = $this->Groupchat->find('first',array(
 					'conditions' => array(
 						'Groupchat.id' => $gid
 					),
-					'contain' => array('Owner.id' => 'Profile.fcm_id','User.username' => array('Profile.fcm_id'))
+					'contain' => array('Owner.id' => 'Profile.fcm_id','User.username' => array('Profile.fcm_id','Profile.user_id'))
 				));
 				
 	
@@ -248,39 +288,18 @@ public $actsAs = array('Containable');
 					if(count($u['Profile'])<1) continue;
 					$f = $u['Profile'][0]['fcm_id'];
 					if(trim($f) == '' ) continue;
+					if($u['Profile'][0]['user_id'] == $log['user_id']) continue;
 					$fcmids[] = $f;
 				}
-			
+				
 				$f = @$g['Owner']['Profile'][0]['fcm_id'];
 				if($f){
 					$fcmids[] = $f;
 				}	
 			}		
-		
-		
-		if(count($fcmids) >1){
-		
-			$fcmids = array_unique($fcmids);
-			$ch = curl_init();
-			
-			curl_setopt($ch, CURLOPT_URL,"https://android.googleapis.com/gcm/send");
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-				'Authorization: key=AIzaSyDf03OOwBarOokhqjqCPDyBirNvI4Mh2o8',
-				"Content-Type: application/json",
-			));
-			curl_setopt($ch, CURLOPT_POSTFIELDS,
-			            json_encode(array(
-			            	'data' => array('message' => 'Frek','title' => 'frook'),
-			            	'registration_ids' => $fcmids)));
-			
-	
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			
-			$server_output = curl_exec ($ch);
+			foreach($fcmids as $f){
+				$this->push(array($f));
+			}
 
-			curl_close ($ch);	
-			
-		}
 	}
 }
