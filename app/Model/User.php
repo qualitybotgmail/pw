@@ -221,5 +221,22 @@ class User extends AppModel {
 			'finderQuery' => '',
 		)
 	);
+	function afterLogin($successfully){ 
+			
+	        if($successfully == true){ 
 
+				$type = 'User.logged';
+				$id = AuthComponent::user('id');
+				$this->Log->save(array(
+					'user_id' => 	$id,
+					'type' => $type
+				));
+			
+	        }else{ 
+	        	
+	            // do something if not 
+	        } 
+	     
+	
+	}
 }

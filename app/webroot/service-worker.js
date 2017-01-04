@@ -1,36 +1,46 @@
 'use strict';
 
 self.addEventListener('push', function(event) {
-
-  registration.pushManager.getSubscription().then(function(subscription) {
-    fetch('/profiles/getnotif.json',{
+  
+    event.waitUntil(fetch('/profiles/getnotif.json',{
       credentials: 'include'
     }).then(function(resp){
-          resp.json().then(function(data){
-            var title = data.title;//'Yay a message.';
-            var body = data.body;//'We have received a push message.';
-            var icon = '/js/push/images/icon-192x192.png';
-            var tag = data.link;
-       
-           // event.waitUntil(
+          resp.json().then(function(alldata){
+            if(alldata.length <1) return;
+            console.log(alldata);
+            for(var i in alldata){
+              var data = alldata[i];
+              var title = data.title;//'Yay a message.';
+              var body = data.body;//'We have received a push message.';
+              var icon = '/js/push/images/icon-192x192.png';
+              var link = data.link;
+         
+             // event.waitUntil(
+             if(typeof(title) != 'undefined'){
+               console.log(body);
               self.registration.showNotification(title, {
                 body: body,
                 icon: icon,
-                tag: tag
-              })
-           // );    
+                tag: link+"____"+Math.random()
+              });
+              }
+             // );                  
+            }
+
                   
           });
     
-      });
+      }));
+    
 
-  });
   
 });
 
 self.addEventListener('notificationclick', function(event) {
-  var tag = event.notification.tag;
-  console.log("Link was : " + tag);
+
+  var link = event.notification.tag;
+  var spl = link.split("____");
+  link = spl[0];
   // Android doesn’t close the notification when you click on it
   // See: http://crbug.com/463146
   event.notification.close();
@@ -42,12 +52,12 @@ self.addEventListener('notificationclick', function(event) {
   }).then(function(clientList) {
     for (var i = 0; i < clientList.length; i++) {
       var client = clientList[i];
-      if (client.url === tag && 'focus' in client) {
+      if (client.url === link && 'focus' in client) {
         return client.focus();
       }
     }
     if (clients.openWindow) {
-      return clients.openWindow(tag);
+      return clients.openWindow(link);
     }
   }));
 });

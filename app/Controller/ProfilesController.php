@@ -135,105 +135,115 @@ class ProfilesController extends AppController {
 		 
 		 exit;
 	}
+
 	public function getnotif(){
 		// $uid = $this->Auth->user('id');
 		// $prof = $this->Profile->findByUserId($uid);
 		// //echo json_encode($prof);
-		$n = $this->notifications(true);
+		error_reporting(0);
+		$notif = $this->notifications(true);
 		$uid = $this->Auth->user('id');
-		
-		$n = $n[0];
-		if($this->Session->read('Backoffice.notified')==null){
-			$this->Session->write('Backoffice.notified',array($n['id']));
-		}else{
-			$ses = $this->Session->read('Backoffice.notified');
-			if(in_array($n['id'],$ses)){
-				
-				exit;	
+		$return = array();
+
+		foreach($notif as $n){
+			if($n['type'] != 'User.logged' && $n['user_id'] == $uid){
+				continue;
+			}
+
+			if($this->Session->read('Backoffice.notified')==null){
+				$this->Session->write('Backoffice.notified',array($n['id']));
 			}else{
-				$ses[] = $n['id'];
-				$this->Session->write('Backoffice.notified',$ses);
-			}
-		}
-		$link = '';
-		$body = "";
-		$title = "";
-		if(isset($n['thread_id']) && $n['thread_id'] != 0){
-				$this->loadModel("IgnoredThread");
-				$e = $this->IgnoredThread->findByThreadIdAndUserId($n['thread_id'],$uid);
-			
-				if($e){
-					exit;
+				$ses = $this->Session->read('Backoffice.notified');
+				if(in_array($n['id'],$ses)){
+					continue;
+				}else{
+					$ses[] = $n['id'];
+					$this->Session->write('Backoffice.notified',$ses);
 				}
-		}
-		if($n['type'] == 'Comment.like'){
-			$uname = $n['User']['username'];
-			$head = $n['Head']['body'];
-			$title = "Back office 通知";
-			$thread = $n['Thread']['title'];
-			if($uid == $n['Comment']['user_id'])
-				$body = "$uname さんがあなたのコメントに「いいね」と言っています。";
-			else {
-				$body = "$uname さんがヘッドコメントに「いいね」と言っています。";
 			}
-			$link = '/index.html#/heads/'.$n['Head']['id'];
+			$link = '';
+			$body = "";
+			$title = "";
+			if(isset($n['thread_id']) && $n['thread_id'] != 0){
+					$this->loadModel("IgnoredThread");
+					$e = $this->IgnoredThread->findByThreadIdAndUserId($n['thread_id'],$uid);
+					if($e){
+						continue;
+					}
+			}
+			if($n['type'] == 'Comment.like'){
+				$uname = $n['User']['username'];
+				$head = $n['Head']['body'];
+				$title = "Back office 通知";
+				$thread = $n['Thread']['title'];
+				if($uid == $n['Comment']['user_id'])
+					$body = "$uname さんがあなたのコメントに「いいね」と言っています。";
+				else {
+					$body = "$uname さんがヘッドコメントに「いいね」と言っています。";
+				}
+				$link = '/index.html#/heads/'.$n['Head']['id'];
+				
+			}elseif($n['type'] == 'Comment.add'){
+				$uname = $n['User']['username'];
+				$head = $n['Head']['body'];
+				$title = "Back office 通知";
+				$thread = $n['Thread']['title'];
+				$body = "$uname さんが「 $thread 」のヘッドにコメントを投稿しました。";
+				$link = '/index.html#/heads/'.$n['Head']['id'];
+				
+			}elseif($n['type'] == 'Head.like'){
+				$uname = $n['User']['username'];
+				$head = $n['Head']['body'];
+				$title = "Back office 通知";
+				$thread = $n['Thread']['title'];
+				$body = "$uname さんが「 $thread 」のヘッドに「いいね」と言っています。";
+				$link = '/index.html#/heads/'.$n['Head']['id'];		
+				
+			}elseif($n['type'] == 'Head.add'){
+				$uname = $n['User']['username'];
+				$head = $n['Head']['body'];
+				$title = "Back office 通知";
+				$thread = $n['Thread']['title'];
+				$body = "$uname さんが「 $thread 」のスレッドにヘッドを投稿しました。";
+				$link = '/index.html#/heads/'.$n['Head']['id'];		
 			
-		}elseif($n['type'] == 'Comment.add'){
-			$uname = $n['User']['username'];
-			$head = $n['Head']['body'];
-			$title = "Back office 通知";
-			$thread = $n['Thread']['title'];
-			$body = "$uname さんが「 $thread 」のヘッドにコメントを投稿しました。";
-			$link = '/index.html#/heads/'.$n['Head']['id'];
-			
-		}elseif($n['type'] == 'Head.like'){
-			$uname = $n['User']['username'];
-			$head = $n['Head']['body'];
-			$title = "Back office 通知";
-			$thread = $n['Thread']['title'];
-			$body = "$uname さんが「 $thread 」のヘッドに「いいね」と言っています。";
-			$link = '/index.html#/heads/'.$n['Head']['id'];		
-		}elseif($n['type'] == 'Head.add'){
-			$uname = $n['User']['username'];
-			$head = $n['Head']['body'];
-			$title = "Back office 通知";
-			$thread = $n['Thread']['title'];
-			$body = "$uname さんが「 $thread 」のスレッドにヘッドを投稿しました。";
-			$link = '/index.html#/heads/'.$n['Head']['id'];		
+			}elseif($n['type'] == 'Head.edit'){
+				$uname = $n['User']['username'];
+				$head = $n['Head']['body'];
+				$title = "Back office 通知";
+				$thread = $n['Thread']['title'];
+				$body = "$uname さんがヘッドを変更しました。";
+				$link = '/index.html#/heads/'.$n['Head']['id'];		
+			}elseif($n['type'] == 'Thread.edit'){
+				$uname = $n['User']['username'];
+				$title = "Back office 通知";
+				$thread = $n['Thread']['title'];
+				$body = "$uname さんがスレッドを変更しました。";
+				$link = '/index.html#/threads/'.$n['Thread']['id'];		
+			}elseif($n['type'] == 'Message.add'){
+				$uname = $n['User']['username'];
+				$title = "$uname さんからメッセージ：";
+				
+				$body = $n['Message']['body'];//"$uname さんがスレッドを変更しました。";
+				$link = '/index.html#/message/'.$n['Groupchat']['id'];		
+			}elseif($n['type'] == 'Thread.joined'){
+				$uname = $n['User']['username'];
+				$thread = $n['Thread']['title'];
+				$member = unserialize($n['member']);
+				
+				$members = count($member) > 1 ? implode("さん、",$member)."さん": array_pop($member). "さん";
+				
+				$body = "$uname さんがスレッドのメンバーに\n"."$members \nを追加しました。";
+				//who was added here?
+				
+				$title = "Back office 通知";
+				$link = '/index.html#/threads/'.$n['Thread']['id'];			
+			}	
+			$return[] = array('body' => $body,'title' => $title,'link' => $link);
 		
-		}elseif($n['type'] == 'Head.edit'){
-			$uname = $n['User']['username'];
-			$head = $n['Head']['body'];
-			$title = "Back office 通知";
-			$thread = $n['Thread']['title'];
-			$body = "$uname さんがヘッドを変更しました。";
-			$link = '/index.html#/heads/'.$n['Head']['id'];		
-		}elseif($n['type'] == 'Thread.edit'){
-			$uname = $n['User']['username'];
-			$title = "Back office 通知";
-			$thread = $n['Thread']['title'];
-			$body = "$uname さんがスレッドを変更しました。";
-			$link = '/index.html#/threads/'.$n['Thread']['id'];		
-		}elseif($n['type'] == 'Message.add'){
-			$uname = $n['User']['username'];
-			$title = "$uname さんからメッセージ：";
-			
-			$body = $n['Message']['body'];//"$uname さんがスレッドを変更しました。";
-			$link = '/index.html#/message/'.$n['Groupchat']['id'];		
-		}elseif($n['type'] == 'Thread.joined'){
-			$uname = $n['User']['username'];
-			$thread = $n['Thread']['title'];
-			$member = unserialize($n['member']);
-			
-			$members = count($member) > 1 ? implode("さん、",$member)."さん": array_pop($member). "さん";
-			
-			$body = "$uname さんがスレッドのメンバーに\n"."$members \nを追加しました。";
-			//who was added here?
-			
-			$title = "Back office 通知";
-			$link = '/index.html#/threads/'.$n['Thread']['id'];			
-		}		
-		echo json_encode(array('body' => $body,'title' => $title,'link' => $link));
+		}
+		
+		echo json_encode($return);
 		exit;
 	}
 	public function setregid(){
@@ -245,6 +255,12 @@ class ProfilesController extends AppController {
 		
 			$profile = $this->Profile->findByUserId($uid);
 			if(count($profile)==0){
+				$existing = $this->Profile->findByFcmId($fcmid);
+				if($existing){
+					$eid = $existing['Profile']['id'];
+					$this->Profile->id = $eid;
+			//		$this->Profile->saveField('fcm_id','');
+				}
 				$profile = $this->Profile->save(array('user_id' => $uid,'fcm_id' => $fcmid));
 				
 			}else{
@@ -273,7 +289,7 @@ class ProfilesController extends AppController {
 			['conditions'=> ['User.id' => $id],
 			['fields' => ['id','username','role','created','modified']]]); 
 		}
-        
+        unset($user['User']['password']);
         $this->set('profiles',$user);
         
 	}
@@ -675,7 +691,7 @@ class ProfilesController extends AppController {
 	}	
 	public function notifications($ret = false){
 		header('Content-Type: application/json;charset=utf-8'); 
-		
+		$one  =time();
 		$uid = $this->Auth->user('id');
 		$prof = $this->Profile->findByUserId($uid);
 		$prof = @$prof['Profile'];
@@ -693,7 +709,7 @@ class ProfilesController extends AppController {
 			),
 			'fields' => 'log_id'
 		)));
-		
+		$this->Profile->User->recursive=-1;
 		$this->Profile->User->Behaviors->load('Containable');
 
 		$user = $this->Profile->User->find('first',array(
@@ -739,9 +755,10 @@ class ProfilesController extends AppController {
 				// )
 			)
 		));
+		
 	//	print_r($notifiedIds);
 		//print_r($user);exit;
-		$messages = $this->Profile->User->find('first',array(
+		$messages = $this->Profile->User->find	('first',array(
 			'conditions' => array('id' => $uid),
 			'contain' => array(
 				'Groupchat.id' => array(
@@ -785,8 +802,11 @@ class ProfilesController extends AppController {
 
 		
 		array_multisort($notifications_dates,SORT_DESC,SORT_STRING,$notifications);
+		$lasted = time()-$one;
+		$notifications['querytime'] =$lasted;		
 		if($ret)
 			return $notifications;
+
 		echo json_encode($notifications);
 		exit;
 	
