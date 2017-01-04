@@ -168,10 +168,11 @@ define([
     	    			for (var i = 0; i < $rootScope.threads.length; i++)	{
     	    				$rootScope.threads[i].Thread.notifications = 0;
 	            			if (threadNotification.thread_id === $rootScope.threads[i].Thread.id) {
+	            				// alert(123);
 	            				$rootScope.notificationCount += parseInt(threadNotification.count);
-	            				$rootScope.threads[i].Thread.notifications = threadNotification.count;
+	            				$rootScope.threads[i].Thread.notifications = parseInt(threadNotification.count);
 	            				isThreadIdExist = true;
-	            				// break;
+	            				break;
 	            			}
 	            		}
 	            		
@@ -184,12 +185,12 @@ define([
     	    		angular.forEach(groupchatsNotifications, function(groupchatsNotification, index){
     	    			var isGroupchatIdExist = false;
     	    			for (var i = 0; i < $rootScope.createdGroupChats.length; i++)	{
-    	    				$rootScope.createdGroupChats[i].Groupchat.notifications = 0;
-	            			if (groupchatsNotification.groupchat_id ===$rootScope.createdGroupChats[i].Groupchat.id) {
+    	    				// $rootScope.createdGroupChats[i].Groupchat.notifications = 0;
+	            			if (groupchatsNotification.groupchat_id === $rootScope.createdGroupChats[i].Groupchat.id) {
 	            				$rootScope.notificationCount += parseInt(groupchatsNotification.count);
-	            				$rootScope.createdGroupChats[i].Groupchat.notifications = groupchatsNotification.count;
+	            				$rootScope.createdGroupChats[i].Groupchat.notifications = parseInt(groupchatsNotification.count);
 	            				isGroupchatIdExist = true;
-	            				// break;
+	            				break;
 	            			}
 	            		}
 	            		
