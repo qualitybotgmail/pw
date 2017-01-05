@@ -1,12 +1,5 @@
 define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 {
-    // app.filter('groupBy', function() {
-    //     return _.memoize(function(items, field) {
-    //             return _.groupBy(items, field);
-    //         }
-    //     );
-    // });
-    
     app.factory('MessageFactory', [
         'GLOBAL',
         function (GLOBAL) {
@@ -57,6 +50,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	var pendingQry;
         	
         	$scope.templates = MessageFactory.templates;
+        	$scope.isLoadingMessage = false;
         	$scope.isFetching = false;
         	$scope.pageLimit = 10;
         	$scope.pageIndex = 1;
@@ -177,6 +171,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             };
         
             $scope.getMessage = function(){
+                
+                if ($scope.isLoadingMessage) return;
+                
+                $scope.isLoadingMessage = true;
                 var messageID = $scope.selectedMessageId.toString();
                 $scope.filteredMessages= {};
                 
@@ -185,6 +183,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	            res.groupchats.Message.reverse();
         	        }
         	        $scope.message = res.groupchats;
+        	        $scope.isLoadingMessage = false;
         	        $scope.startInterval();
         	    });
             };
