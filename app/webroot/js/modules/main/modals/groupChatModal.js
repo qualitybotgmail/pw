@@ -16,6 +16,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 			{
 				$scope.groupchat = {};
 				$scope.groupchat.member_ds = {};
+				$scope.isSending = false;
 				
 				var usersList = function(users) {
 	        	    var arr = [];
@@ -107,6 +108,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 	       //     };
         	
                 $scope.saveGroupChat = function() {
+                	if ($scope.isSending) return;
+                	$scope.isSending = true;
                 	var member_ids = $scope.groupchat.member_ids,
 	            		membresLength = member_ids.length,
 	            		checkingResult = null;
@@ -147,8 +150,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 								var groupChatData = {'Groupchat': angular.extend(groupChat.UsersGroupchat, {'id': groupChat.UsersGroupchat.groupchat_id}), 'User': $getSelectedUsers()};
 		                        if ($("#groupchat-modal #groupchat-attachments")[0].files.length){
 	                            	$scope.uploadAttachment(groupChatData, message);
+	                            	$scope.isSending = true;
 		                        } else {
 		                           $scope.$close(groupChatData);
+		                           $scope.isSending = true;
 		                        }
 		                        
 		                    });	
@@ -169,7 +174,11 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 Modal.destroy($scope);
                 
                 /* Destroy non-angular objectst */
-				$scope.$on('$destroy', function (event) {});
+				$scope.$on('$destroy', function (event) {
+					$scope.groupchat = {};
+					$scope.groupchat.member_ds = {};
+					$scope.isSending = false;
+				});
 			}
 	]);
 });
