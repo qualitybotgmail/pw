@@ -137,9 +137,7 @@ class ProfilesController extends AppController {
 	}
 
 	public function getnotif(){
-		// $uid = $this->Auth->user('id');
-		// $prof = $this->Profile->findByUserId($uid);
-		// //echo json_encode($prof);
+
 		error_reporting(0);
 		$notif = $this->notifications(true);
 		$uid = $this->Auth->user('id');
@@ -271,7 +269,12 @@ class ProfilesController extends AppController {
 		}
 		exit;
 	}
-
+	public function myfcmid(){
+	
+		$profile = $this->Profile->findByUserId($this->Auth->user('id'));
+		echo $profile['Profile']['fcm_id'];
+		exit;
+	}
 	public function me($id = null){ 
 		 
 		$this->loadModel('User'); 
@@ -653,160 +656,19 @@ class ProfilesController extends AppController {
 		
 		echo json_encode($data);exit;
 	}
-	public function notifications_count() { 
+	public function notifications_count($return = false) { 
 		header('Content-Type: application/json;charset=utf8');
 		$uid = $this->Auth->user('id');
-
-		$t = $this->Profile->query(
-			'SELECT Thread.id id,count(distinct Logs.id) count FROM `users_threads` UsersThread
-			inner join logs Logs on Logs.thread_id = UsersThread.thread_id
-			inner join threads Thread on Thread.id = UsersThread.thread_id
-			
-			where (UsersThread.user_id = '.$uid.' or Thread.user_id = '.$uid.') 
-			and Logs.user_id != '.$uid.' 
-			and Logs.id not in 
-			(select log_id from users_logs where users_logs.user_id = '.$uid.')
-			group by UsersThread.thread_id'
-		);
 		
-		$ret = array('Threads'=>array(),'Groupchats'=>array());
-		foreach($t as $v){
-			$ret["Threads"][] = array('thread_id' => $v['Thread']['id'],'count' => $v['0']['count']);
-		}
-
-		$t2q ='SELECT Groupchat.id id,count(Groupchat.id) count FROM `logs` 
-			inner join groupchats Groupchat on Groupchat.id = logs.groupchat_id
-			inner join users_groupchats on Groupchat.id = users_groupchats.groupchat_id
-			where (Groupchat.user_id = '.$uid.' or users_groupchats.user_id = '.$uid.') and logs.user_id != '.$uid.' and logs.id not in (select log_id from users_logs where user_id = '.$uid.')
-			group by Groupchat.id';
-
-		$t2 = $this->Profile->query($t2q);
-		
-		foreach($t2 as $v){
-			$ret["Groupchats"][] = array('groupchat_id' => $v['Groupchat']['id'],'count' =>  $v['0']['count']);
-		}
-		
+		$ret = $this->Profile->User->Log->notifications_count($uid);
 		echo json_encode($ret);
 		exit;
 	}	
 	public function notifications($ret = false){
 		header('Content-Type: application/json;charset=utf-8'); 
-		$one  =time();
-		$uid = $this->Auth->user('id');
-		$prof = $this->Profile->findByUserId($uid);
-		$prof = @$prof['Profile'];
-		if(isset($prof['notifications'])){
-			
-			if($prof['notifications'] == 0){
-				echo json_encode(array('status' => 'OFF'));
-				exit;
-			}
-		}		
-		$this->loadModel('UsersLog');
-		$notifiedIds = array_unique($this->UsersLog->find('list',array(
-			'conditions' => array(
-				'user_id' => $uid
-			),
-			'fields' => 'log_id'
-		)));
-		$this->Profile->User->recursive=-1;
-		$this->Profile->User->Behaviors->load('Containable');
-
-		$user = $this->Profile->User->find('first',array(
-			'conditions' => array('id' => $uid),
-			'contain' => array(
-				
-				'Thread' => array(
-					'Log.thread_id',
-					'Log.user_id',
-					'Log.id',
-					
-					'Log.user_id != ' . $uid,
-					'Log.type',
-					'Log.member',
-					'Log.created',
-					'Log' => 
-					array(
-						'conditions' => array(
-							'NOT' => array(
-								'id' => $notifiedIds,'user_id' => $uid)	
-						),
-						
-						'User.username',
-						'Thread.id != 0',
-						'Head.id != 0',
-						'Comment.id != 0',
-						'Like.id != 0'
-						
-						
-					),
-					
-				),
-				
-				// 'Message.id' ,
-				// 'Message' => array(
-					
-				// 	'Groupchat' => array(
-				// 		'Log' => array(
-				// 			'User.username',
-				// 			'Message.body'
-				// 		)
-				// 	),'Groupchat.id'
-				// )
-			)
-		));
+		$notifications = $this->Profile->User->Log->notifications($this->Auth->user('id'));
+		if($ret) return $notifications;
 		
-	//	print_r($notifiedIds);
-		//print_r($user);exit;
-		$messages = $this->Profile->User->find	('first',array(
-			'conditions' => array('id' => $uid),
-			'contain' => array(
-				'Groupchat.id' => array(
-					'Message.id' => array(
-						
-						'Log' => array(
-							'conditions' => array(
-								'NOT' => array('id' => $notifiedIds,'user_id' => $uid)
-							),
-							'Message.user_id' ,'Message.body','Groupchat.id', 'User.username'
-						)	
-					)	
-				)
-			)
-		));
-		
-		$notifications = [];
-		$notifications_dates = [];
-		foreach($user['Thread'] as $t){
-			foreach($t['Log'] as $log){
-				$un = array('username' => $log['User']['username']);
-				$un['id'] = $log['User']['id'];
-				$log['User'] = $un;
-				$notifications[] = $log;
-				$notifications_dates[] = $log['created'];
-			}
-		}
-
-		foreach($messages['Groupchat'] as $g){
-				
-				foreach($g['Message'] as $msg){
-					
-					foreach($msg['Log'] as $l){
-						$notifications[] = $l;
-						$notifications_dates[] = $l['created'];
-					}
-				}
-			
-		}
-		
-
-		
-		array_multisort($notifications_dates,SORT_DESC,SORT_STRING,$notifications);
-		$lasted = time()-$one;
-		$notifications['querytime'] =$lasted;		
-		if($ret)
-			return $notifications;
-
 		echo json_encode($notifications);
 		exit;
 	

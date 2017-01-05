@@ -89,7 +89,7 @@ function subscribe() {
       .then(function(subscription) {
         // The subscription was successful
         isPushEnabled = true;
-
+        console.log("Done");
         return sendSubscriptionToServer(subscription);
       })
       .catch(function(e) {
@@ -156,6 +156,7 @@ window.addEventListener('load', function() {
   // enhance and add push messaging support, otherwise continue without it.
   
   if ('serviceWorker' in navigator) {
+
     navigator.serviceWorker.register('service-worker.js?v=02322dd3e1555rerer34343eefdfdfd7sfsfdfdfdefeererfefefeeefe')
     .then(initialiseState)
     .catch(function(err){
@@ -166,3 +167,4 @@ window.addEventListener('load', function() {
   }
   subscribe();
 });
+

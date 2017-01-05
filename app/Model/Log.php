@@ -185,6 +185,7 @@ public $actsAs = array('Containable');
 		
 
 	}
+	
 	public function push($fcmids = null){
 		file_put_contents("/tmp/lastcurl",date("g:i")."\n".print_r($fcmids,true),FILE_APPEND);
 		if($fcmids != null){
@@ -225,6 +226,7 @@ public $actsAs = array('Containable');
 			App::uses('IgnoredThread', 'Model');
 			$this->IgnoredThread = new IgnoredThread;
 			$profile = $this->User->Profile->findByUserId($uid);
+			$uids = array();
 		
 			$myfcmid = @$profile['Profile']['fcm_id'];
 
@@ -256,16 +258,21 @@ public $actsAs = array('Containable');
 					}
 					if(count($u['Profile'])<1) continue;
 					$f = $u['Profile'][0]['fcm_id'];
+					$uids[] = $u['id'];
 					if(trim($f) == '' ) continue;
 						if($u['Profile'][0]['user_id'] == $log['user_id']) continue;
 					$fcmids[] = $f;
+					
 				}
 			
 				$oid = @$thread['Owner']['id'];
-	
+				//This could be buggy
+				$uids[] = $thread['Owner']['id'];	
 				if(!in_array($oid,$ignored_users)){
 					$f = @$thread['Owner']['Profile'][0]['fcm_id'];
+					
 					if($f){
+
 						$fcmids[] = $f;
 					}
 				}
@@ -287,19 +294,202 @@ public $actsAs = array('Containable');
 				foreach($g['User'] as $u){
 					if(count($u['Profile'])<1) continue;
 					$f = $u['Profile'][0]['fcm_id'];
+					$uids[] = $u['id'];
+					
 					if(trim($f) == '' ) continue;
 					if($u['Profile'][0]['user_id'] == $log['user_id']) continue;
 					$fcmids[] = $f;
+
 				}
 				
 				$f = @$g['Owner']['Profile'][0]['fcm_id'];
+				$uids[] = $g['Owner']['id'];
+				
 				if($f){
 					$fcmids[] = $f;
+					
 				}	
 			}		
 			foreach($fcmids as $f){
 				$this->push(array($f));
 			}
+			
+			//Update caches of the users
+			$uids[] = $uid;
+			foreach($uids as $uid){
+				//delete the file so that the cache is updated
+				@unlink('/tmp/chat_notifications/'.$uid.'.json');
+				@unlink('/tmp/chat_notifications/'.$uid.'_data.json');
+				
+			}
 
+	}
+
+	public function notifications_count($uid){
+		$tmpdir = '/tmp/chat_notifications/';
+		if(!file_exists($tmpdir)){
+			mkdir($tmpdir);
+		}
+		
+		if(file_exists($tmpdir.$uid.'.json')){
+
+			$json = file_get_contents($tmpdir.$uid.'.json');
+			$ret = @unserialize($json);
+			if($ret){
+				return $ret;
+			}
+			
+		}
+			
+		$ret = $this->notifications_count_main($uid);
+		file_put_contents($tmpdir.$uid.".json",serialize($ret));
+		return $ret;
+		
+	}
+	public function notifications_count_main($uid) { 
+		if($uid == null) return null;
+		
+
+		$t = $this->query(
+			'SELECT Thread.id id,count(distinct Logs.id) count FROM `users_threads` UsersThread
+			inner join logs Logs on Logs.thread_id = UsersThread.thread_id
+			inner join threads Thread on Thread.id = UsersThread.thread_id
+			
+			where (UsersThread.user_id = '.$uid.' or Thread.user_id = '.$uid.') 
+			and Logs.user_id != '.$uid.' 
+			and Logs.id not in 
+			(select log_id from users_logs where users_logs.user_id = '.$uid.')
+			group by UsersThread.thread_id'
+		);
+		
+		$ret = array('Threads'=>array(),'Groupchats'=>array());
+		foreach($t as $v){
+			$ret["Threads"][] = array('thread_id' => $v['Thread']['id'],'count' => $v['0']['count']);
+		}
+
+		$t2q ='SELECT Groupchat.id id,count(Groupchat.id) count FROM `logs` 
+			inner join groupchats Groupchat on Groupchat.id = logs.groupchat_id
+			inner join users_groupchats on Groupchat.id = users_groupchats.groupchat_id
+			where (Groupchat.user_id = '.$uid.' or users_groupchats.user_id = '.$uid.') and logs.user_id != '.$uid.' and logs.id not in (select log_id from users_logs where user_id = '.$uid.')
+			group by Groupchat.id';
+
+		$t2 = $this->query($t2q);
+		
+		foreach($t2 as $v){
+			$ret["Groupchats"][] = array('groupchat_id' => $v['Groupchat']['id'],'count' =>  $v['0']['count']);
+		}
+		
+		return $ret;
+		
+	}		
+	public function notifications($uid){
+		$cache = "/tmp/chat_notifications/$uid"."_data.json";
+		if(file_exists($cache)){
+			$f = @unserialize(file_get_contents($cache));
+			if($f) return $f;
+		}
+		$one  = time();
+		$prof = $this->User->Profile->findByUserId($uid);
+		$prof = @$prof['Profile'];
+		if(isset($prof['notifications'])){
+			
+			if($prof['notifications'] == 0){
+				echo json_encode(array('status' => 'OFF'));
+				exit;
+			}
+		}		
+		
+		$notifiedIds = array_unique($this->UsersLog->find('list',array(
+			'conditions' => array(
+				'user_id' => $uid
+			),
+			'fields' => 'log_id'
+		)));
+		$this->User->recursive=-1;
+		$this->User->Behaviors->load('Containable');
+
+		$user = $this->User->find('first',array(
+			'conditions' => array('id' => $uid),
+			'contain' => array(
+				
+				'Thread' => array(
+					'Log.thread_id',
+					'Log.user_id',
+					'Log.id',
+					
+					'Log.user_id != ' . $uid,
+					'Log.type',
+					'Log.member',
+					'Log.created',
+					'Log' => 
+					array(
+						'conditions' => array(
+							'NOT' => array(
+								'id' => $notifiedIds,'user_id' => $uid)	
+						),
+						
+						'User.username',
+						'Thread.id != 0',
+						'Head.id != 0',
+						'Comment.id != 0',
+						'Like.id != 0'
+						
+						
+					),
+					
+				),
+
+			)
+		));
+		
+		$messages = $this->User->find('first',array(
+			'conditions' => array('id' => $uid),
+			'contain' => array(
+				'Groupchat.id' => array(
+					'Message.id' => array(
+						
+						'Log' => array(
+							'conditions' => array(
+								'NOT' => array('id' => $notifiedIds,'user_id' => $uid)
+							),
+							'Message.user_id' ,'Message.body','Groupchat.id', 'User.username'
+						)	
+					)	
+				)
+			)
+		));
+		
+		$notifications = [];
+		$notifications_dates = [];
+		foreach($user['Thread'] as $t){
+			foreach($t['Log'] as $log){
+				$un = array('username' => $log['User']['username']);
+				$un['id'] = $log['User']['id'];
+				$log['User'] = $un;
+				$notifications[] = $log;
+				$notifications_dates[] = $log['created'];
+			}
+		}
+
+		foreach($messages['Groupchat'] as $g){
+				
+				foreach($g['Message'] as $msg){
+					
+					foreach($msg['Log'] as $l){
+						$notifications[] = $l;
+						$notifications_dates[] = $l['created'];
+					}
+				}
+			
+		}
+		
+
+		
+		array_multisort($notifications_dates,SORT_DESC,SORT_STRING,$notifications);
+		$lasted = time()-$one;
+		$notifications['querytime'] =$lasted;		
+		file_put_contents($cache,serialize($notifications));
+		return $notifications;
+		
 	}
 }

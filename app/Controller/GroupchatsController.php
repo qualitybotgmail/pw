@@ -70,21 +70,22 @@ class GroupchatsController extends AppController {
 		$this->view($id,$chunks,$page);
 	}
 	public function view($id = null,$chunks = null,$page = null) {
+	//	print_r($this->Groupchat->findAllById($id));exit;
 		
 		if (!$this->Groupchat->exists($id)) {
 			throw new NotFoundException(__('Invalid groupchat'));
 		}
-		$this->Groupchat->recursive = 2;
+		$this->Groupchat->recursive = -1;
 		// $this->Groupchat->recursive = 3;
 		
-		$options = array('conditions' => array('Groupchat.' . $this->Groupchat->primaryKey => $id),
+		$options = array('conditions' => array('Groupchat.id' => $id),
 			'contain' => array(
 				'Message'=>array('User.username','User.id','Upload.path','Upload.created'),'User.username','User.id','Owner.username','Owner.id'
 			)		
 		);
 		$this->Groupchat->Behaviors->load('Containable');
-		$groupchats = $this->Groupchat->find('all', $options);
-		$groupchats = $groupchats[0];
+		$groupchats = $this->Groupchat->find('first', $options);
+		// $groupchats = $groupchats[0];
 		
 		$gdates = array();
 		foreach($groupchats['Message'] as $m){
@@ -116,41 +117,58 @@ class GroupchatsController extends AppController {
  * @return void
  */
 	public function add($user_id = null) { 
+		error_reporting(E_ALL);
+		
 		header('Content-Type: application/json;charset=utf-8');
 		$this->loadModel('UsersGroupchat');
-		
+		$uid = $this->Auth->user('id');
 		$ids = explode(",",$user_id); 
+		$this->Groupchat->Behaviors->load('Containable');
+		$tmp = $this->Groupchat->find('all',array(
+			'conditions' =>  array(
+				'Groupchat.user_id' => $uid
+			),
+
+			'contain' => array('User' => array(
+				'conditions' =>array('User.id' => $ids)
+			))
+		));
 		
-		$user_id = $this->Auth->user('id');
+		$existing = array();
+		foreach($tmp as $e){
+			if(count($e['User'])>0){
+				$existing[] = $e;
+			}
+		}
+		if(count($existing)>0){
+			unset($existing[0]['User']);
+			$existing[0]['UsersGroupchat'] = array('groupchat_id'=>$existing[0]['Groupchat']['id']);
+			echo json_encode($existing[0]);
+			exit;
+		}
+		
 	//	$ids[] = $user_id;
-		
+	//	print_r($tmp);
 		$this->Groupchat->create(); 
-		$data = $this->Groupchat->save(array('user_id' => $user_id));
-	 
+		$data = $this->Groupchat->save(
+			array('user_id' => $uid)
+		);
+
 		if ($data) {
-				$groupchat_id = $this->Groupchat->getLastInsertId(); 
+				$groupchat_id = $data['Groupchat']['id'];
+				
 				foreach($ids as $id){
-					///check if user_id and groupchat_id already exists
-					$exists = $this->UsersGroupchat->find('count', array(
-    			    'conditions' => array('user_id' => $id,'groupchat_id' => $groupchat_id )
-    				));
-					
-					if($exists==0){
+
 						 $this->UsersGroupchat->create();  
-						 $data = $this->UsersGroupchat->save(array('user_id' => $id, 'groupchat_id' => $groupchat_id));
-						 if($data){
-						 	$result = $data;
-						 }else{
-						 	$result = 'failed add';
-						 } 
-					}else{
-						$result = 'user already in group';
-					} 
+						 $d = $this->UsersGroupchat->save(array('user_id' => $id, 'groupchat_id' => $groupchat_id));
+					
+	
 				}
 			} else {
 				$result = 'failed save groupchat';
 			}  
-		echo json_encode($result);
+		$data['UsersGroupchat'] = array('groupchat_id'=>$data['Groupchat']['id']);
+		echo json_encode($data);
 		exit; 
 	}
 
