@@ -200,26 +200,6 @@ define([
 	            		}
     	    		});
     	    		
-    	    		// angular.forEach($rootScope.threads, function(thread,index){
-    	    			
-    	    		// 	for (var i = 0; i < threadsNotifications.length; i++)	{
-	          //  			if (threadsNotifications[i].thread_id === thread.Thread.id) {
-	          //  				$rootScope.notificationCount += parseInt(threadsNotifications[i].count);
-	          //  				thread.Thread.notifications = threadsNotifications[i].count;
-	          //  				break;
-	          //  			}
-	          //  		}
-    	    		// });
-    	    		
-    	    		// angular.forEach($rootScope.createdGroupChats, function(groupChat,index){
-    	    		// 	for (var i = 0; i < groupchatsNotifications.length; i++)	{
-	          //  			if (groupchatsNotifications[i].groupchat_id === groupChat.Groupchat.id) {
-	          //  				$rootScope.notificationCount += parseInt(groupchatsNotifications[i].count);
-	          //  				groupChat.Groupchat.notifications = groupchatsNotifications[i].count;
-	          //  				break;
-	          //  			}
-	          //  		}
-    	    		// });
     	    		
     	    		if (queryFirst) {
     	    			queryFirst = false;
@@ -227,12 +207,73 @@ define([
     	    		}
     	    	});
     	    };
-    	    
+    	    var _getNotificationCount2 = function (notifications) {
+					console.log(notifications);
+    	    		$rootScope.notificationCount = 0;
+    	    		var threadsNotifications = notifications.Threads;
+    	    		var groupchatsNotifications = notifications.Groupchats;
+    	    		
+    	    		
+    	    		angular.forEach(threadsNotifications, function(threadNotification, index){
+    	    			var isThreadIdExist = false;
+    	    			for (var i = 0; i < $rootScope.threads.length; i++)	{
+    	    				$rootScope.threads[i].Thread.notifications = 0;
+	            			if (threadNotification.thread_id === $rootScope.threads[i].Thread.id) {
+	            				// alert(123);
+	            				$rootScope.notificationCount += parseInt(threadNotification.count);
+	            				$rootScope.threads[i].Thread.notifications = parseInt(threadNotification.count);
+	            				isThreadIdExist = true;
+	            				break;
+	            			}
+	            		}
+	            		
+	            		// if thread id not exist update the thread
+	            		if (!isThreadIdExist) {
+	            			$rootScope.getThreads();
+	            		}
+    	    		});
+    	    		
+    	    		angular.forEach(groupchatsNotifications, function(groupchatsNotification, index){
+    	    			var isGroupchatIdExist = false;
+    	    			for (var i = 0; i < $rootScope.createdGroupChats.length; i++)	{
+    	    				// $rootScope.createdGroupChats[i].Groupchat.notifications = 0;
+	            			if (groupchatsNotification.groupchat_id === $rootScope.createdGroupChats[i].Groupchat.id) {
+	            				$rootScope.notificationCount += parseInt(groupchatsNotification.count);
+	            				$rootScope.createdGroupChats[i].Groupchat.notifications = parseInt(groupchatsNotification.count);
+	            				isGroupchatIdExist = true;
+	            				break;
+	            			}
+	            		}
+	            		
+	            		// if groupchat id not exist update the groupchat
+	            		if (!isGroupchatIdExist) {
+	            			$rootScope.getGroupchat();
+	            		}
+    	    		});
+    	    		
+    
+
+    	    };    	    
+			  navigator.serviceWorker.ready.then(function (reg) {
+			
+			    // PING to service worker, later we will use this ping to identifies our client.
+			    navigator.serviceWorker.controller.postMessage("ping");
+			
+			    // listening for messages from service worker
+			    navigator.serviceWorker.addEventListener('message', function (event) {
+			      var messageFromSW = event.data;
+			      if(messageFromSW.type == 'notifications_count'){
+			        _getNotificationCount2(messageFromSW.notifications_count);
+			      }
+			      // you can also send a stringified JSON and then do a JSON.parse() here.
+			    });
+			  });    
+        	    
     	    var _startQueryNotifications = function() {
     	    	if (queryFirst){
     	    		_getNotificationCount();
     	    	} else {
-    	    		pendingQryNotification = $interval(_getNotificationCount, 10000);
+    	    		//pendingQryNotification = $interval(_getNotificationCount, 10000);
     	    	}
     	    };
     	    

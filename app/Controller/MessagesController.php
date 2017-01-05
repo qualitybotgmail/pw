@@ -130,12 +130,12 @@ class MessagesController extends AppController {
 	
 		$groupchat_id = $id;  
 		
+		
 		if ($this->request->is('post')) { 
 			$body = $this->request->data['body'];
 			// $body = 'asd';
 			$user_id = $this->Auth->user('id'); 
-			
-			$this->Message->create();
+	
 			
 			$data = array('user_id' => $user_id, 'groupchat_id' => $groupchat_id, 'body' => $body); 
 			
@@ -144,13 +144,7 @@ class MessagesController extends AppController {
 			$saved['Message']['created_date'] = $s[0];
 			echo json_encode($saved);
 			exit;
-			
-			if($saved){
-				$result = $saved; 
-			}else{
-				$result = 'failed';
-			}
-		 
+
 		} else{
 			$result = 'data unposted';
 		} 

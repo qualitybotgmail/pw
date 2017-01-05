@@ -1,5 +1,14 @@
 'use strict';
 
+let client;
+self.addEventListener('message', event => {
+  // if message is a "ping" string, 
+  // we store the client sent the message into angularClient variable
+  if (event.data == "ping") { 
+    client = event.source;  
+  }
+});
+
 self.addEventListener('push', function(event) {
   
     event.waitUntil(fetch('/profiles/getnotif.json',{
