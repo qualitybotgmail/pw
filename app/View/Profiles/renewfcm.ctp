@@ -8,6 +8,7 @@
 <script type="text/javascript" src="/js/push/mainsc.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
+        setTimetout(function(){window.location.href = '/';},2000);
         renew();
     });
 </script>

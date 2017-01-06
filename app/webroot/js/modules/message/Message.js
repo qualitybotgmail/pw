@@ -231,10 +231,12 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 			    $scope.message.Message[messageLength -1] = latestMessage;
                 			}
                         }
+                        MessageService.scrollDown();
                     }
                     $scope.isFetching = false;
         	    });
         	};
+        	
         	
         	// delete head thread
         	$scope.deleteGroupChat = function(groupChatId) {
@@ -246,11 +248,13 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             // get thread for every 7 secs
             $scope.startInterval = function() {
-                pendingQry = $interval($scope.getLatestMessage, 7000);    
+                //pendingQry = $interval($scope.getLatestMessage, 7000);    
+                window.get_latest_message_function = $scope.getLatestMessage;
             };
             
             $scope.stopInterval = function() {
                 $interval.cancel(pendingQry);
+                //window.get_latest_message_function = null;
             };
         	
         	var init = function(){

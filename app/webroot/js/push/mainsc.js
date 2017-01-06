@@ -209,23 +209,26 @@ window.addEventListener('load', function() {
       	    console.log("SW supported");
     			  navigator.serviceWorker.ready.then(function (reg) {
               console.log("SW supported and ready");  
-    			    // PING to service worker, later we will use this ping to identifies our client.
-    			    reg.active.postMessage("ping");
-    
+  
     			    // listening for messages from service worker
     			   navigator.serviceWorker.addEventListener('message', function (event) {
     
     			      var messageFromSW = event.data;
+    			      console.log(messageFromSW+ " was triggered...");
     			      if(messageFromSW == 'notifications_count'){
-    			        console.log(messageFromSW);
+    			        
     			        window.notification_count_function();
-    			        setTimeout(window.notification_count_function,3000);
+                  
+                  if(typeof(window.get_latest_message_function) != 'undefined')
+                    window.get_latest_message_function();
+    			        
+    			        
     			      }
     			      // you can also send a stringified JSON and then do a JSON.parse() here.
     			    });
     			  });    
     
-        navigator.serviceWorker.register('/service-worker.js?v=02322dd3e1eee555resrer3ddd434fff3efffffdfdfdfdfdfffdfdfefdfdfd7dddsfsfddfdfdfdfdefeererfefefeeefe')
+        navigator.serviceWorker.register('/service-worker.js?v=02322dd3e1eee555resrer3ddd434fff3efffffddfdfdfdfdfffdfdfefdfdfd7dddsfsfddfdfdfdfdefeererfefefeeefe')
           .then(function(){
             console.log("SW initializing");
             initialiseState();

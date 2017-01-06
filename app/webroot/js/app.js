@@ -157,7 +157,9 @@ define([
     	    });
     	    
     	    var _getNotificationCount = function () {
+    	    	console.log("Getting notifictions count");
     	    	Restangular.one("profiles").one("notifications_count").get().then(function(notifications){
+    	    		console.log("Got notifictions count");
     	    		$rootScope.notificationCount = 0;
     	    		var threadsNotifications = notifications.Threads;
     	    		var groupchatsNotifications = notifications.Groupchats;
@@ -185,7 +187,7 @@ define([
     	    		angular.forEach(groupchatsNotifications, function(groupchatsNotification, index){
     	    			var isGroupchatIdExist = false;
     	    			for (var i = 0; i < $rootScope.createdGroupChats.length; i++)	{
-    	    				// $rootScope.createdGroupChats[i].Groupchat.notifications = 0;
+    	    				$rootScope.createdGroupChats[i].Groupchat.notifications = 0;
 	            			if (groupchatsNotification.groupchat_id === $rootScope.createdGroupChats[i].Groupchat.id) {
 	            				$rootScope.notificationCount += parseInt(groupchatsNotification.count);
 	            				$rootScope.createdGroupChats[i].Groupchat.notifications = parseInt(groupchatsNotification.count);
@@ -207,55 +209,12 @@ define([
     	    		}
     	    	});
     	    };
-    	    var _getNotificationCountOnPush = function (notifications) {
-    	    		console.log("Here are notifications count");
-					console.log(notifications);
-    	    		$rootScope.notificationCount = 0;
-    	    		var threadsNotifications = notifications.Threads;
-    	    		var groupchatsNotifications = notifications.Groupchats;
-    	    		
-    	    		
-    	    		angular.forEach(threadsNotifications, function(threadNotification, index){
-    	    			var isThreadIdExist = false;
-    	    			for (var i = 0; i < $rootScope.threads.length; i++)	{
-    	    				$rootScope.threads[i].Thread.notifications = 0;
-	            			if (threadNotification.thread_id === $rootScope.threads[i].Thread.id) {
-	            				// alert(123);
-	            				$rootScope.notificationCount += parseInt(threadNotification.count);
-	            				$rootScope.threads[i].Thread.notifications = parseInt(threadNotification.count);
-	            				isThreadIdExist = true;
-	            				break;
-	            			}
-	            		}
-	            		
-	            		// if thread id not exist update the thread
-	            		if (!isThreadIdExist) {
-	            			$rootScope.getThreads();
-	            		}
-    	    		});
-    	    		
-    	    		angular.forEach(groupchatsNotifications, function(groupchatsNotification, index){
-    	    			var isGroupchatIdExist = false;
-    	    			for (var i = 0; i < $rootScope.createdGroupChats.length; i++)	{
-    	    				// $rootScope.createdGroupChats[i].Groupchat.notifications = 0;
-	            			if (groupchatsNotification.groupchat_id === $rootScope.createdGroupChats[i].Groupchat.id) {
-	            				$rootScope.notificationCount += parseInt(groupchatsNotification.count);
-	            				$rootScope.createdGroupChats[i].Groupchat.notifications = parseInt(groupchatsNotification.count);
-	            				isGroupchatIdExist = true;
-	            				break;
-	            			}
-	            		}
-	            		
-	            		// if groupchat id not exist update the groupchat
-	            		if (!isGroupchatIdExist) {
-	            			$rootScope.getGroupchat();
-	            		}
-    	    		});
-    	    		
-    
-
-    	    };    	  
-    	    window.notification_count_function = _getNotificationCount;
+    	   	  
+    	    window.notification_count_function = function(){
+    	    	queryFirst = true;
+    	    	_getNotificationCount();
+    	    	
+    	    };
 
     	    var _startQueryNotifications = function() {
     	    	if (queryFirst){

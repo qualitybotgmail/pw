@@ -185,7 +185,17 @@ public $actsAs = array('Containable');
 		
 
 	}
-	
+	public function pushMe(){
+		$id = AuthComponent::user('id');
+		if($id){
+			$fcm = $this->User->Profile->findByUserId($id,'fcm_id');
+			if(count($fcm)>0){
+				
+				$f = $fcm['Profile']['fcm_id'];
+				$this->push($f);
+			}
+		}
+	}	
 	public function push($fcmids = null){
 		file_put_contents("/tmp/lastcurl",date("g:i")."\n".print_r($fcmids,true),FILE_APPEND);
 		if($fcmids != null){
@@ -331,15 +341,16 @@ public $actsAs = array('Containable');
 			mkdir($tmpdir);
 		}
 		
-		if(file_exists($tmpdir.$uid.'.json')){
+		// Disable this for now		
+		// if(file_exists($tmpdir.$uid.'.json')){
 
-			$json = file_get_contents($tmpdir.$uid.'.json');
-			$ret = @unserialize($json);
-			if($ret){
-				return $ret;
-			}
+		// 	$json = file_get_contents($tmpdir.$uid.'.json');
+		// 	$ret = @unserialize($json);
+		// 	if($ret){
+		// 		return $ret;
+		// 	}
 			
-		}
+		// }
 			
 		$ret = $this->notifications_count_main($uid);
 		file_put_contents($tmpdir.$uid.".json",serialize($ret));

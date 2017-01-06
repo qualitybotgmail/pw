@@ -671,6 +671,7 @@ class ProfilesController extends AppController {
 		echo json_encode($data);exit;
 	}
 	public function notifications_count($return = false) { 
+		
 		header('Content-Type: application/json;charset=utf8');
 		$uid = $this->Auth->user('id');
 		

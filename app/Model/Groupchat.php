@@ -95,17 +95,22 @@ class Groupchat extends AppModel {
 			)
 		));
 		$lids = array();
-		//print_r($r);
+	
 		if($r){
+		
 			foreach($r['Log'] as $log){
 			//	echo $log['id'].'<br />';
-				if($this->Log->UsersLog->findByUserIdAndLogId($uid,$log['id'])){
+				$ul = $this->Log->UsersLog->findByUserIdAndLogId($uid,$log['id']);
+		
+				if($ul){
+	
 					continue;
 				}	
+		
 				$lids[] = array('log_id' => $log['id'],'user_id' =>$uid);
 			}
-			
-			$r = $this->Log->UsersLog->saveAll($lids);
+			if(count($lids) > 0)		
+				$r = $this->Log->UsersLog->saveAll($lids);
 			
 			
 		}

@@ -69,6 +69,7 @@ class GroupchatsController extends AppController {
 		$this->view = 'view';
 		$this->view($id,$chunks,$page);
 	}
+	
 	public function view($id = null,$chunks = null,$page = null) {
 	//	print_r($this->Groupchat->findAllById($id));exit;
 		
@@ -105,6 +106,7 @@ class GroupchatsController extends AppController {
 		}
 		
 		$this->Groupchat->notified($id,$this->Auth->user('id'));
+		$this->Groupchat->Log->pushMe();
 		$this->set(array(
 			'groupchats' => $groupchats, 
 			'_serialize' => array('groupchats')
