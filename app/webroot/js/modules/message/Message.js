@@ -52,6 +52,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	$scope.templates = MessageFactory.templates;
         	$scope.isLoadingMessage = false;
         	$scope.isFetching = false;
+        	$scope.isSending = false;
         	$scope.pageLimit = 10;
         	$scope.pageIndex = 1;
         	
@@ -121,7 +122,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                         $("#attachments").val('');
                         $scope.comment.body = ''; 
                         $scope.comment.message_id = null;
-                        // MessageService.scrollDown();
+                        $scope.isSending = false;
                         $scope.startInterval();
                         $scope.$apply();
                    },
@@ -144,7 +145,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             $scope.sendMessage = function(){
                 // posting comments
                 if (!$("#attachments")[0].files.length && $scope.comment.body === '') return;
+                if ($scope.isSending) return;
+                
                 $scope.stopInterval();
+                $scope.isSending = true;
                 
                 var postData = {'body': $scope.comment.body};
                 var id = $scope.message.Groupchat.id;
@@ -159,6 +163,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                             $scope.uploadAttachment(currentComment);
                         } else {
                            $scope.message.Message.push(currentComment);
+                           $scope.isSending = false;
                            $scope.startInterval();
                         }
                         $("#attachments").val('');
