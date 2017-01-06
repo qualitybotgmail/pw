@@ -207,7 +207,8 @@ define([
     	    		}
     	    	});
     	    };
-    	    var _getNotificationCount2 = function (notifications) {
+    	    var _getNotificationCountOnPush = function (notifications) {
+    	    		console.log("Here are notifications count");
 					console.log(notifications);
     	    		$rootScope.notificationCount = 0;
     	    		var threadsNotifications = notifications.Threads;
@@ -253,22 +254,9 @@ define([
     	    		
     
 
-    	    };    	    
-			  navigator.serviceWorker.ready.then(function (reg) {
-			
-			    // PING to service worker, later we will use this ping to identifies our client.
-			    navigator.serviceWorker.controller.postMessage("ping");
-			
-			    // listening for messages from service worker
-			    navigator.serviceWorker.addEventListener('message', function (event) {
-			      var messageFromSW = event.data;
-			      if(messageFromSW.type == 'notifications_count'){
-			        _getNotificationCount2(messageFromSW.notifications_count);
-			      }
-			      // you can also send a stringified JSON and then do a JSON.parse() here.
-			    });
-			  });    
-        	    
+    	    };    	  
+    	    window.notification_count_function = _getNotificationCount;
+
     	    var _startQueryNotifications = function() {
     	    	if (queryFirst){
     	    		_getNotificationCount();

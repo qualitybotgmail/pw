@@ -1,16 +1,11 @@
 'use strict';
 
-let client;
-self.addEventListener('message', event => {
-  // if message is a "ping" string, 
-  // we store the client sent the message into angularClient variable
-  if (event.data == "ping") { 
-    client = event.source;  
-  }
-});
+var fetching_counts = false;
+
 
 self.addEventListener('push', function(event) {
-  
+
+
     event.waitUntil(fetch('/profiles/getnotif.json',{
       credentials: 'include'
     }).then(function(resp){
@@ -25,13 +20,27 @@ self.addEventListener('push', function(event) {
               var link = data.link;
          
              // event.waitUntil(
-             if(typeof(title) != 'undefined'){
+             if(typeof(title) != 'undefined' && title != '' && title != null){
                console.log(body);
               self.registration.showNotification(title, {
                 body: body,
                 icon: icon,
                 tag: link+"____"+Math.random()
               });
+              if(!fetching_counts){
+                setTimeout(function(){
+                  fetching_counts = false;
+                },10000);
+                fetching_counts = true;
+                clients.matchAll().then(function(c){
+                  for(var i in c){
+                    console.log("Sending notifications_count message to "+i);
+                    c[i].postMessage('notifications_count');
+                  }
+                  
+                });
+  
+              }
               }
              // );                  
             }

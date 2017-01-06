@@ -134,9 +134,13 @@ class UsersController extends AppController {
 					'user_id' => 	$id,
 					'type' => $type
 				));
+				
+				$this->User->id = $id;
+				$this->User->saveField('fcm_id','');
+				
 			
 	        	//print_r($this->request->data);exit;
-	            return $this->redirect('/');
+	            return $this->redirect(array('controller'=>'profiles','action'=>'renewfcm'));
 	        }
 	        $this->Session->setFlash(__('Invalid username or password, try again'));
 	    }

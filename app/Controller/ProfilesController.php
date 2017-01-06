@@ -43,11 +43,25 @@ class ProfilesController extends AppController {
 		$this->set('profile', $this->Profile->find('first', $options));
 	}
 
+	public function renewfcm(){
+		$this->layout = null;
+		$id = $this->Auth->user('id');
+		$profile = $this->Profile->findByUserId($id);
+		if(!$profile){
+			$profile = $this->Profile->save(array('user_id' => $id));
+		}
+		
+		$this->Profile->id = $profile['Profile']['id'];
+		$this->Profile->saveField('fcm_id','');
+		
+		
+	}
 /**
  * add method
  *
  * @return void
- */
+ */	
+ 
 	public function add() {
 		if ($this->request->is('post')) {
 		$user_id = $this->Auth->user('id');

@@ -1,3 +1,4 @@
+'use strict';
 window.settings = window.settings || {};
 window.settings.Config = window.settings.Config || {
   //gcmAPIKey: 'AAAAYxohlfc:APA91bFFRnFY820AfNFXmOFmUb1xKsb1obaZhpt4p1EpQRS3MRUnMe23Ho6nAci6760CU5ybyCafXjWexSXttbjFemaKikTK8q8eQcncgKInVejsq4AuPKw-C0OGMrfMbIcREIPdIMg1NI-yI1mBDHA29B-V2t2LjQ'
@@ -5,7 +6,7 @@ window.settings.Config = window.settings.Config || {
   gcmAPIKey: 'AIzaSyDf03OOwBarOokhqjqCPDyBirNvI4Mh2o8'
 };
 
-'use strict';
+
 
 var API_KEY = window.settings.Config.gcmAPIKey;
 var GCM_ENDPOINT = 'https://android.googleapis.com/gcm/send';
@@ -48,8 +49,14 @@ function sendSub(mergedEndpoint) {
 
   var endpointSections = mergedEndpoint.split('/');
   var subscriptionId = endpointSections[endpointSections.length - 1];
-
-  $.post( "/profiles/setregid", { fcmid: subscriptionId } );
+  console.log("New: "+subscriptionId);
+  $.post( "/profiles/setregid",{ fcmid: subscriptionId } ,function(){
+    console.log("Pathname:"+window.location.pathname);
+    if(window.location.pathname != '/index.html'){
+      console.log("Not in home");
+      window.location.href = '/index.html';
+    }
+  });
   
 }
 
@@ -57,17 +64,17 @@ function unsubscribe() {
 
 
   navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
-
+    console.log("Unsub ready");
     serviceWorkerRegistration.pushManager.getSubscription().then(
       function(pushSubscription) {
-
+        console.log(pushSubscription+" is the ps");
         if (!pushSubscription) {
 
           isPushEnabled = false;
 
           return;
         }
-
+        console.log("Unsub");
         pushSubscription.unsubscribe().then(function() {
 
           isPushEnabled = false;
@@ -82,28 +89,68 @@ function unsubscribe() {
       });
   });
 }
+function renew() {
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+   for(let registration of registrations) {
+    registration.unregister();
+  }})
+
+  // navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
+  //   console.log("SW");
+  //   serviceWorkerRegistration.pushManager.getSubscription().then(
+  //     function(pushSubscription) {
+  //       console.log(pushSubscription+" is the ps");
+  //       if (!pushSubscription) {
+
+  //         isPushEnabled = false;
+
+         
+  //       }
+  //       console.log("Unsub");
+  //       pushSubscription.unsubscribe().then(function() {
+
+  //         isPushEnabled = false;
+  //         subscribe(function(){
+  //           window.location.href = '/';
+  //         })
+  //       }).catch(function(e) {
+     
+  //         console.log('Unsubscription error: ', e);
+
+  //       });
+  //     }).catch(function(e) {
+  //       console.log('Error thrown while unsubscribing from ' +
+  //         'push messaging.', e);
+  //     });
+  // });
+}
 
 function subscribe() {
-  navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
-    serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly: true})
-      .then(function(subscription) {
-        // The subscription was successful
-        isPushEnabled = true;
-        console.log("Done");
-        return sendSubscriptionToServer(subscription);
-      })
-      .catch(function(e) {
-        if (Notification.permission === 'denied') {
 
-          console.log('Permission for Notifications was denied');
- 
-        } else {
+    navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
+      serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly: true})
+        .then(function(subscription) {
+          // The subscription was successful
+          isPushEnabled = true;
+          
+          console.log("Done");
+          return sendSubscriptionToServer(subscription);
+        })
+        .catch(function(e) {
+          if (Notification.permission === 'denied') {
+  
+            console.log('Permission for Notifications was denied');
+   
+          } else {
+  
+            console.log('Unable to subscribe to push.', e);
+  
+          }
+        });
+      
+  
+    });
 
-          console.log('Unable to subscribe to push.', e);
-
-        }
-      });
-  });
 }
 
 // Once the service worker is registered set the initial state
@@ -154,17 +201,44 @@ window.addEventListener('load', function() {
 
   // Check that service workers are supported, if so, progressively   
   // enhance and add push messaging support, otherwise continue without it.
-  
-  if ('serviceWorker' in navigator) {
-
-    navigator.serviceWorker.register('service-worker.js?v=02322dd3e1555rerer34343eefdfdfd7sfsfdfdfdefeererfefefeeefe')
-    .then(initialiseState)
-    .catch(function(err){
- //     alert("Error initializing service worker.");
-    });
-  } else {
-    console.log('Service workers aren\'t supported in this browser.');
-  }
-  subscribe();
+  $.get('/profiles/me.json',function(data){
+    if(typeof(data.User) == 'undefined'){
+      window.location.href='/users/login';
+    }else{
+      if ('serviceWorker' in navigator) {
+      	    console.log("SW supported");
+    			  navigator.serviceWorker.ready.then(function (reg) {
+              console.log("SW supported and ready");  
+    			    // PING to service worker, later we will use this ping to identifies our client.
+    			    reg.active.postMessage("ping");
+    
+    			    // listening for messages from service worker
+    			   navigator.serviceWorker.addEventListener('message', function (event) {
+    
+    			      var messageFromSW = event.data;
+    			      if(messageFromSW == 'notifications_count'){
+    			        console.log(messageFromSW);
+    			        window.notification_count_function();
+    			        setTimeout(window.notification_count_function,3000);
+    			      }
+    			      // you can also send a stringified JSON and then do a JSON.parse() here.
+    			    });
+    			  });    
+    
+        navigator.serviceWorker.register('/service-worker.js?v=02322dd3e1eee555resrer3ddd434fff3efffffdfdfdfdfdfffdfdfefdfdfd7dddsfsfddfdfdfdfdefeererfefefeeefe')
+          .then(function(){
+            console.log("SW initializing");
+            initialiseState();
+          
+          })
+          .catch(function(err){
+            console.log("Error initializing service worker. "+err);
+          });
+      } else {
+        console.log('Service workers aren\'t supported in this browser.');
+      }
+    
+      subscribe();
+  }});
 });
 
