@@ -48,7 +48,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, $interval, Modal, Focus, MessageService, GLOABL, GroupChatModel, Restangular, MessageFactory) {
         	
         	var pendingQry;
-        	
+            window.notification_count_function();
         	$scope.templates = MessageFactory.templates;
         	$scope.isLoadingMessage = false;
         	$scope.isFetching = false;
@@ -141,9 +141,34 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                     }, 1000);   
                 }
             };
-            
+            $scope.textboxClicked = function(){
+                var gid = $scope.message.Groupchat.id;
+
+                for(var i in $rootScope.createdGroupChats){
+                    gc = $rootScope.createdGroupChats[i];
+                    if(gc.Groupchat.id == gid){
+                        gc.Groupchat.notifications = 0;
+                    }
+                }
+
+                $.get('/groupchats/setnotified/'+gid,function(res){
+                    console.log("Set notified: "+gid);
+                }).always(function(res){
+                    console.log("Set notified done: "+gid);
+                    window.notification_count_function();
+                    var n = $rootScope.createdGroupChats;
+                    for(var i in n){
+                        tmp = n[i];
+                        if(tmp.id == $scope.message.Groupchat.id){
+                            tmp.notifications = 0;
+                        }
+                    }
+                });
+            }
+
             $scope.sendMessage = function(){
                 // posting comments
+                window.notification_count_function();
                 if (!$("#attachments")[0].files.length && $scope.comment.body === '') return;
                 if ($scope.isSending) return;
                 
@@ -209,11 +234,14 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 if ($scope.isFetching) return;
                 $scope.isFetching = true;
                 var messageID = $scope.selectedMessageId.toString();
-                GroupChatModel.one('paged').one(messageID).one('1').one('1').get().then(function(res){
+                var lastMessage = $scope.message.Message[$scope.message.Message.length - 1];
+                var lastId = typeof(lastMessage) != 'undefined'?lastMessage.id:0;
+                //GroupChatModel.one('paged').one(messageID).one('1').one('1').get().then(function(res){
+                GroupChatModel.one('latest').one(messageID).one(lastId).get().then(function(res){
                     var groupChat = res.groupchats;
                     // console.log('current message length : ', $scope.message.Message.length);
                     if (groupChat.Message) {
-                        var latestMessage = res.groupchats.Message[0];
+                        var latestMessages = res.groupchats.Message;//[0];
                         
                         if (!$scope.message.Message) {
                             // console.log('message is null so need to put everyting')
@@ -221,15 +249,18 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                         } else {
                             var currentMessageLength = $scope.message.Message.length;
                 	        var messageLength = groupChat.Message.length;
-                	        var lastMessage = $scope.message.Message[currentMessageLength - 1];
+                	        //var lastMessage = $scope.message.Message[currentMessageLength - 1];
             	            
-            	            if (lastMessage.id !== latestMessage.id) {
-                				$scope.message.Message.push(latestMessage);
-                			}
-                			// console.log(lastMessage.Upload.length, '!==', latestMessage.Upload.length, ' : ', lastMessage.Upload.length !== latestMessage.Upload.length);
-                			if (lastMessage.Upload.length !== latestMessage.Upload.length){
-                			    $scope.message.Message[messageLength -1] = latestMessage;
-                			}
+            	            for(var i in latestMessages){
+            	                var latestMessage = latestMessages[i];
+                	            if (lastId < latestMessage.id) {
+                    				$scope.message.Message.push(latestMessage);
+                    			}
+                    			// console.log(lastMessage.Upload.length, '!==', latestMessage.Upload.length, ' : ', lastMessage.Upload.length !== latestMessage.Upload.length);
+                    			if (lastMessage.Upload.length !== latestMessage.Upload.length){
+                    			    $scope.message.Message[messageLength -1] = latestMessage;
+                    			}
+            	            }
                         }
                         MessageService.scrollDown();
                     }
@@ -254,7 +285,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             $scope.stopInterval = function() {
                 $interval.cancel(pendingQry);
-                //window.get_latest_message_function = null;
+                window.get_latest_message_function = null;
             };
         	
         	var init = function(){

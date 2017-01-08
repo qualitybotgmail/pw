@@ -16,7 +16,7 @@ class ProfilesController extends AppController {
 	public $components = array('Paginator');
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('me','getnotif');
+		$this->Auth->allow('me','getnotif','froks');
 	}
 /**
  * index method
@@ -152,16 +152,21 @@ class ProfilesController extends AppController {
 
 	public function getnotif(){
 
+		
 		error_reporting(0);
 		$notif = $this->notifications(true);
+		
 		$uid = $this->Auth->user('id');
 		$return = array();
-
-		foreach($notif as $n){
+		$link_head = "https://" . $_SERVER['HTTP_HOST'];
+		$skipped = array();
+		foreach($notif as $k => $n){
+			if($k == 'querytime') continue;
 			if($n['type'] != 'User.logged' && $n['user_id'] == $uid){
+				$skipped[] = $n;
 				continue;
 			}
-
+			$skipped[] = $k . ' here';
 			if($this->Session->read('Backoffice.notified')==null){
 				$this->Session->write('Backoffice.notified',array($n['id']));
 			}else{
@@ -251,11 +256,17 @@ class ProfilesController extends AppController {
 				$title = "Back office 通知";
 				$link = '/index.html#/threads/'.$n['Thread']['id'];			
 			}	
-			$return[] = array('body' => $body,'title' => $title,'link' => $link);
+			$return[] = array('body' => $body,'type' => $n['type'],'title' => $title,'link' => $link_head.$link);
 		
 		}
-		
+		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r(array(
+			'Gotnotif'=>$return,'User'=>$this->Auth->user('username'),'N'=>$notif,'S'=>$skipped
+			),true),FILE_APPEND);
 		echo json_encode($return);
+		exit;
+	}
+	public function froks(){
+		
 		exit;
 	}
 	public function setregid(){
@@ -301,10 +312,20 @@ class ProfilesController extends AppController {
 	    	 ['conditions'=> ['Profile.user_id' => $id]],
 	    	 ['fields' => ['Profile.id','Profile.user_id','User.username','Profile.firstname', 'Profile.lastname','Profile.created','Profile.modified', 'User.role','User.created','User.modified']]); 
 		}else{
-			$this->User->recursive = -1; 
+			$this->User->Behaviors->load('Containable'); 
 			$user = $this->User->find('first', 
+			['contain' => ['Profile.id','Profile.user_id','User.username','Profile.firstname', 'Profile.lastname','Profile.created','Profile.modified', 'User.role','User.created','User.modified']],
 			['conditions'=> ['User.id' => $id],
 			['fields' => ['id','username','role','created','modified']]]); 
+		}
+		if($user['Profile']['notifications_count'] == null){
+			$this->User->Profile->id = $user['Profile']['user_id'];
+			$this->User->Profile->saveField('notifications_count',json_encode(array(
+				'Threads' => array(),'Groupchats' => array()	
+			)));
+			$user['Profile']['notifications_count'] = json_encode(array(
+				'Threads' => array(),'Groupchats' => array()	
+			));
 		}
         unset($user['User']['password']);
         $this->set('profiles',$user);
@@ -328,7 +349,7 @@ class ProfilesController extends AppController {
 		$this->Profile->User->Thread->recursive=-1;
 		$this->Profile->User->Thread->Head->recursive=-1;
 		$this->Profile->User->Thread->Head->Comment->recursive=2;
-
+		
 		$u = $this->Profile->User->findById($this->Auth->user('id'));
 		$threads = array();
 		foreach($u['Thread'] as $t){
@@ -389,12 +410,17 @@ class ProfilesController extends AppController {
 		$sort = array();
 		foreach($threads as $i => $v){
 			$sort[$i] = $v['Thread']['modified'];
+			
 		}
 		arsort($sort);
 		$result = array();
+		$this->Profile->User->recursive=-1;
 		foreach($sort as $i => $v){
+			$o = $this->Profile->User->findById($threads[$i]['Thread']['user_id'],'username');
+			$threads[$i]['Owner']['username'] = $o['User']['username'];
 			$result[] = $threads[$i];
 		}
+		
 		echo json_encode($result);
 		exit;
 	}

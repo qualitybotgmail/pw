@@ -116,9 +116,10 @@ class Thread extends AppModel {
 	}
 	
 	public function notified($tid,$uid){
-		$sql = "SELECT logs.id FROM logs where logs.thread_id = $tid and logs.type = 'Thread.edit' and logs.id not in (select users_logs.log_id from users_logs where users_logs.user_id = $uid)";
+		$sql = "SELECT logs.id FROM logs where logs.thread_id = $tid and (logs.type = 'Thread.edit' or logs.type = 'Thread.joined') and logs.id not in (select users_logs.log_id from users_logs where users_logs.user_id = $uid)";
 		
 		$r = $this->query($sql);
+		
 		$lids = array();
 		if($r){
 			foreach($r as $log){

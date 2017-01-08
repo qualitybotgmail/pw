@@ -137,7 +137,7 @@
     <div style="position:relative;">
         <form role="form" id="messageFrm" name="messageFrm" method="POST" enctype="multipart/form-data" novalidate ng-submit="sendMessage()">
             <div class="form-group">
-              <textarea name="body" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
+              <textarea ng-click='textboxClicked()' name="body" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
               <div style="margin-top:8px;">
                 <input type="file" id="attachments" multiple style="display:inline-block;">
                 <button type="submit" class="btn btn-primary pull-right" ng-disabled="isSending">

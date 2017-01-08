@@ -185,22 +185,25 @@ public $actsAs = array('Containable');
 		
 
 	}
-	public function pushMe(){
-		$id = AuthComponent::user('id');
+	public function pushMe($id){
+		
 		if($id){
 			$fcm = $this->User->Profile->findByUserId($id,'fcm_id');
 			if(count($fcm)>0){
 				
 				$f = $fcm['Profile']['fcm_id'];
-				$this->push($f);
+				$this->push(array($f));
 			}
 		}
 	}	
 	public function push($fcmids = null){
-		file_put_contents("/tmp/lastcurl",date("g:i")."\n".print_r($fcmids,true),FILE_APPEND);
+		
+		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($fcmids,true),FILE_APPEND);
 		if($fcmids != null){
+			if(is_array($fcmids)){
+				$fcmids = array_unique($fcmids);
+			}
 			
-			//$fcmids = array_unique($fcmids);
 			$ch = curl_init();
 			
 			curl_setopt($ch, CURLOPT_URL,"https://android.googleapis.com/gcm/send");
@@ -219,7 +222,7 @@ public $actsAs = array('Containable');
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		//	file_put_contents("/tmp/lastcurl",date("g:i")." [Exec]\n".print_r($fcmids,true),FILE_APPEND);
 			$server_output = curl_exec ($ch);
-			file_put_contents("/tmp/lastcurl",date("g:i")."\n".print_r(array('Output'=>$server_output),true),FILE_APPEND);
+			file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r(array('Output'=>$server_output),true),FILE_APPEND);
 			curl_close ($ch);	
 			
 		}
@@ -320,37 +323,125 @@ public $actsAs = array('Containable');
 					
 				}	
 			}		
-			foreach($fcmids as $f){
-				$this->push(array($f));
-			}
+			$this->push($fcmids);
 			
 			//Update caches of the users
 			$uids[] = $uid;
+			
 			foreach($uids as $uid){
 				//delete the file so that the cache is updated
-				@unlink('/tmp/chat_notifications/'.$uid.'.json');
-				@unlink('/tmp/chat_notifications/'.$uid.'_data.json');
+				
+				if(strpos($log['type'],'Message')==0){
+					if(isset($log['groupchat_id']))
+						$this->removeCache($uid,$log['groupchat_id']);
+						
+				}else
+					$this->removeCache($uid);
 				
 			}
+			//exit;
 
 	}
+	public function setGidCache2($uid,$gid,$add = 0){
+		$f1 = '/tmp/chat_notifications/'.$uid.'.json';
+		if($gid!=null){
+			$notif_counts = unserialize(file_get_contents($f1));
+			$rm = null;
+			for($i = 0 ; $i < count($notif_counts['Groupchats']) ; $i++){
+				$groupchat = $notif_counts['Groupchats'][$i];
+				
+				if(isset($groupchat['groupchat_id'])){
+					if($groupchat['groupchat_id'] == $gid){
+						if($add != 0){
+							$groupchat['count'] = $groupchat['count']+$add;
+						}else{
+							$rm = $i;
+						}
+					}
+				}else{
+					$groupchat['count'] = $add;
+				}
+				
+				
+				$notif_counts['Groupchats'][$i]=$groupchat;
+				
+			}
+			if($rm != null && $add==0){
+				unset($notif_counts['Groupchats'][$rm]);
+			}else{
+				if($rm == null)
+					$notif_counts['Groupchats'][] = array('groupchat_id' => $gid,'count'=>$add); 
+			}
+			file_put_contents($f1,serialize($notif_counts));
+			
+		}		
+	}
+	function _inm($elem, $array,$field,$set = null)
+	{
+	    foreach($array as $k => $v){
+	    	if($v[$field]==$elem){
+	    		return true;
+	    	}
+	    }
+	    return false;
+	}	
+	public function setGidCache($uid,$gid,$add=0){
 
+
+		$f1 = '/tmp/chat_notifications/'.$uid.'.json';
+		$notif_counts = array('Threads' => array(),'Groupchats' => array());
+		if(file_exists($f1)){
+			$notif_counts = unserialize(file_get_contents($f1));
+		}
+	
+
+		if(!$this->_inm($gid,$notif_counts['Groupchats'],'groupchat_id')){
+			if($add!=0)
+				$notif_counts['Groupchats'][] = array('groupchat_id' => $gid,'count' => $add);
+		}else{
+			for($i=0;$i<count($notif_counts['Groupchats']);$i++){
+				if($notif_counts['Groupchats'][$i]['groupchat_id']==$gid){
+					if($add==0){
+						echo 'unset';
+						unset($notif_counts['Groupchats'][$i]);
+					}else{
+						echo 'count';
+						$notif_counts['Groupchats'][$i]['count'] += $add;
+					}
+					break;
+				}
+			}
+		}
+	
+		file_put_contents($f1,serialize($notif_counts));
+
+	}
+	public function removeCache($uid,$gid=null){
+			$f1 = '/tmp/chat_notifications/'.$uid.'.json';
+		//	if($gid!=null){
+		//		$this->setGidCache($uid,$gid,1);
+		//	}else{
+				@unlink($f1);
+		//	}
+			@unlink('/tmp/chat_notifications/'.$uid.'_data.json');		
+	}
 	public function notifications_count($uid){
 		$tmpdir = '/tmp/chat_notifications/';
 		if(!file_exists($tmpdir)){
 			mkdir($tmpdir);
 		}
 		
-		// Disable this for now		
-		// if(file_exists($tmpdir.$uid.'.json')){
 
-		// 	$json = file_get_contents($tmpdir.$uid.'.json');
-		// 	$ret = @unserialize($json);
-		// 	if($ret){
-		// 		return $ret;
-		// 	}
+		if(file_exists($tmpdir.$uid.'.json')){
+
+			$json = file_get_contents($tmpdir.$uid.'.json');
+			$ret = @unserialize($json);
+			if($ret){
+				$ret['cached'] = true;
+				return $ret;
+			}
 			
-		// }
+		}
 			
 		$ret = $this->notifications_count_main($uid);
 		file_put_contents($tmpdir.$uid.".json",serialize($ret));

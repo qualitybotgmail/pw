@@ -1,5 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
+App::import("Controller","Profiles");
 /**
  * Users Controller
  *
@@ -128,17 +129,32 @@ class UsersController extends AppController {
 	    if ($this->request->is('post')) {
 	        if ($this->Auth->login()) {
 	        	
-	        	$type = 'User.logged';
-				$id = $this->Auth->user('id');
-				$this->User->Log->save(array(
-					'user_id' => 	$id,
-					'type' => $type
-				));
+	   //     	$type = 'User.logged';
+				 $id = $this->Auth->user('id');
+				// $this->User->Log->save(array(
+				// 	'user_id' => 	$id,
+				// 	'type' => $type
+				// ));
 				
 				$this->User->id = $id;
 				$this->User->saveField('fcm_id','');
 				
-			
+				//Mark all notfications 'notified' to prevent pushing of notifications even not logged in
+				$notifs = $this->User->Log->notifications($id);
+				foreach($notifs as $n){
+					if($this->Session->read('Backoffice.notified')==null){
+						$this->Session->write('Backoffice.notified',array($n['id']));
+					}else{
+						$ses = $this->Session->read('Backoffice.notified');
+						if(in_array($n['id'],$ses)){
+							continue;
+						}else{
+							$ses[] = $n['id'];
+							$this->Session->write('Backoffice.notified',$ses);
+						}
+					}					
+				}
+				
 	        	//print_r($this->request->data);exit;
 	            return $this->redirect(array('controller'=>'profiles','action'=>'renewfcm'));
 	        }
@@ -147,6 +163,11 @@ class UsersController extends AppController {
 	}
 	
 	public function logout() {
+		$uid = $this->Auth->user('id');
+		$profile = $this->User->Profile->findByUserId($uid);
+		$this->User->Profile->id = $profile['Profile']['id'];
+		$this->User->Profile->saveField('fcm_id','');
+		
 	    return $this->redirect($this->Auth->logout());
 	}	
 	

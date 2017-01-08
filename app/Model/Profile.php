@@ -114,4 +114,5 @@ class Profile extends AppModel {
 		$threads = $this->User->Thread->findAllById($ids);
 		return $threads;
 	}
+
 }

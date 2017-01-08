@@ -98,7 +98,10 @@ define([
                     MainService.activeList('thread',$state.params.id);
                 }  
         	};
-        	
+        	//For debugging in dev console
+			window.enterScopeM = function(cb){
+				cb($scope);
+			}        	
         	$scope.fireMessageActiveEvent = function() {
                 if ($state.current.name === 'app.message' && $scope.loadFirsttime) {
                     $scope.loadFirsttime = false;
@@ -273,7 +276,7 @@ define([
                     $state.go('app.timeline');
                 }
             };
-        	
+      
         	var start = function() {
                 
                 ProfilesModel.one('timeline').get().then(function(timeline){

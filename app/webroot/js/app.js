@@ -128,7 +128,7 @@ define([
 		function($rootScope, $q, $state, $window, Notify, Restangular, Idle, $log, Keepalive, $notification, $interval) {
 			
 			$rootScope.notificationCount = 0 ;
-			
+
 			var pendingQryNotification, queryFirst = true;
 			
 			/**
@@ -214,8 +214,11 @@ define([
     	    	queryFirst = true;
     	    	_getNotificationCount();
     	    	
+    	    	
     	    };
-
+			window.enterScope = function(cb){
+				cb($rootScope);
+			}
     	    var _startQueryNotifications = function() {
     	    	if (queryFirst){
     	    		_getNotificationCount();

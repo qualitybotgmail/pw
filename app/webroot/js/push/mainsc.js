@@ -95,36 +95,45 @@ function renew() {
     registration.unregister();
   }})
 
-  // navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
-  //   console.log("SW");
-  //   serviceWorkerRegistration.pushManager.getSubscription().then(
-  //     function(pushSubscription) {
-  //       console.log(pushSubscription+" is the ps");
-  //       if (!pushSubscription) {
+  navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
+    console.log("SW");
+    serviceWorkerRegistration.pushManager.getSubscription().then(
+      function(pushSubscription) {
+        console.log(pushSubscription+" is the ps");
+        if (!pushSubscription) {
 
-  //         isPushEnabled = false;
+          isPushEnabled = false;
 
          
-  //       }
-  //       console.log("Unsub");
-  //       pushSubscription.unsubscribe().then(function() {
+        }
+        console.log("Unsub");
+        pushSubscription.unsubscribe().then(function() {
 
-  //         isPushEnabled = false;
-  //         subscribe(function(){
-  //           window.location.href = '/';
-  //         })
-  //       }).catch(function(e) {
+          isPushEnabled = false;
+          subscribe(function(){
+            window.location.href = '/';
+          })
+        }).catch(function(e) {
      
-  //         console.log('Unsubscription error: ', e);
+          console.log('Unsubscription error: ', e);
 
-  //       });
-  //     }).catch(function(e) {
-  //       console.log('Error thrown while unsubscribing from ' +
-  //         'push messaging.', e);
-  //     });
-  // });
+        });
+      }).catch(function(e) {
+        console.log('Error thrown while unsubscribing from ' +
+          'push messaging.', e);
+      });
+  });
 }
-
+function myfcmid(){
+    navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
+      serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly: true})
+        .then(function(subscription) {
+          alert(subscription);
+          console.log(subscription);
+          return;
+        })
+    });  
+}
 function subscribe() {
 
     navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
@@ -132,7 +141,7 @@ function subscribe() {
         .then(function(subscription) {
           // The subscription was successful
           isPushEnabled = true;
-          
+          console.log(subscription);
           console.log("Done");
           return sendSubscriptionToServer(subscription);
         })
@@ -208,7 +217,7 @@ window.addEventListener('load', function() {
       if ('serviceWorker' in navigator) {
       	    console.log("SW supported");
     			  navigator.serviceWorker.ready.then(function (reg) {
-              console.log("SW supported and ready");  
+            console.log("SW supported and ready");  
   
     			    // listening for messages from service worker
     			   navigator.serviceWorker.addEventListener('message', function (event) {
