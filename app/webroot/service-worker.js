@@ -83,6 +83,7 @@ self.addEventListener('notificationclick', function(event) {
         console.log("Navigating to: "+link);
         client.focus();
         navigated=true;
+        client.navigate(link);
       }
       
     //  return client.navigate(link);
