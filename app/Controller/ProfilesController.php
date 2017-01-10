@@ -163,15 +163,16 @@ class ProfilesController extends AppController {
 		foreach($notif as $k => $n){
 			if($k == 'querytime') continue;
 			if($n['type'] != 'User.logged' && $n['user_id'] == $uid){
-				$skipped[] = $n;
+				$skipped[] = $k;
 				continue;
 			}
-			$skipped[] = $k . ' here';
+			
 			if($this->Session->read('Backoffice.notified')==null){
 				$this->Session->write('Backoffice.notified',array($n['id']));
 			}else{
 				$ses = $this->Session->read('Backoffice.notified');
 				if(in_array($n['id'],$ses)){
+					$skipped[] = $k . ' here';
 					continue;
 				}else{
 					$ses[] = $n['id'];
@@ -185,6 +186,7 @@ class ProfilesController extends AppController {
 					$this->loadModel("IgnoredThread");
 					$e = $this->IgnoredThread->findByThreadIdAndUserId($n['thread_id'],$uid);
 					if($e){
+						$skipped[] = $k . ' here 2';
 						continue;
 					}
 			}
@@ -256,9 +258,10 @@ class ProfilesController extends AppController {
 				$title = "Back office 通知";
 				$link = '/index.html#/threads/'.$n['Thread']['id'];			
 			}	
-			$return[] = array('body' => $body,'type' => $n['type'],'title' => $title,'link' => $link_head.$link);
+			$return[$n['id']] = array('body' => $body,'type' => $n['type'],'title' => $title,'link' => $link_head.$link);
 		
 		}
+		
 		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r(array(
 			'Gotnotif'=>$return,'User'=>$this->Auth->user('username'),'N'=>$notif,'S'=>$skipped
 			),true),FILE_APPEND);
@@ -697,11 +700,22 @@ class ProfilesController extends AppController {
 		echo json_encode($data);exit;
 	}
 	public function notifications_count($return = false) { 
-		
+		$uid = $this->Auth->user("id");
+		$p = $this->Profile->findByUserId($uid);
 		header('Content-Type: application/json;charset=utf8');
-		$uid = $this->Auth->user('id');
+		$ret = array('Threads'=>array(),'Groupchats'=>array());
+		$notifs = json_decode($p['Profile']['notifications_count'],true);
 		
-		$ret = $this->Profile->User->Log->notifications_count($uid);
+		
+		foreach($notifs['Threads'] as $k => $n){
+			$ret['Threads'][] = array('thread_id' => (string)$k,'count' => (string)$n);
+		}
+		foreach($notifs['Groupchats'] as $k => $n){
+			$ret['Groupchats'][] = array('groupchat_id' => (string)$k,'count' => (string)$n);
+		}		
+		// $uid = $this->Auth->user('id');
+		
+		// $ret = $this->Profile->User->Log->notifications_count($uid);
 		echo json_encode($ret);
 		exit;
 	}	

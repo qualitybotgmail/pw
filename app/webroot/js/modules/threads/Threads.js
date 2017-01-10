@@ -32,6 +32,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             // $scope.threads = [];
             
             $scope.templates = ThreadsFactory.templates;
+            window.notification_count_function();
             
         	// get the lists of threads
         // 	$scope.getThreads = function () {

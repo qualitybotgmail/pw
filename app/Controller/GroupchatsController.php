@@ -122,7 +122,7 @@ class GroupchatsController extends AppController {
 			$groupchats['page_info'] = array('total_messages' => $total,'total_pages' => $pages,'has_next' => $hasnext,'index' =>$page);
 		}
 		
-		if($chunks!=1&&$page!=1){
+		if($lastid == 0 || ($chunks!=1&&$page!=1)){
 			$this->Groupchat->notified($id,$this->Auth->user('id'));
 		}else{
 			

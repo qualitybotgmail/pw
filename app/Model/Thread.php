@@ -116,11 +116,14 @@ class Thread extends AppModel {
 	}
 	
 	public function notified($tid,$uid){
+	
+		$this->User->Profile->clearThreadsCount($tid,$uid);
 		$sql = "SELECT logs.id FROM logs where logs.thread_id = $tid and (logs.type = 'Thread.edit' or logs.type = 'Thread.joined') and logs.id not in (select users_logs.log_id from users_logs where users_logs.user_id = $uid)";
 		
 		$r = $this->query($sql);
 		
 		$lids = array();
+		
 		if($r){
 			foreach($r as $log){
 				$lids[] = array('log_id' => $log['logs']['id'],'user_id' =>$uid);
@@ -128,6 +131,7 @@ class Thread extends AppModel {
 			$r = $this->Log->UsersLog->saveAll($lids);
 			
 		}
+		$this->User->Profile->minusNotificationCount($tid,$uid,'Threads',count($lids));
 	//	print_r($r);
 	}
 	

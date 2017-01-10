@@ -273,6 +273,12 @@ define([
 					Notify.loading.show = true;
 				}
 			);
+			$rootScope.$on('$locationChangeSuccess', function(event){
+			        var url = window.location.href;
+			    	//params = $location.search();
+			    	console.log('URL now:'+url);
+			    	window.notification_count_function();
+			})			
 
 			$state.transitionTo('app');
 		}]);

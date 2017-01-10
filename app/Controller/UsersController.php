@@ -130,14 +130,14 @@ class UsersController extends AppController {
 	        if ($this->Auth->login()) {
 	        	
 	   //     	$type = 'User.logged';
-				 $id = $this->Auth->user('id');
+				$id = $this->Auth->user('id');
 				// $this->User->Log->save(array(
 				// 	'user_id' => 	$id,
 				// 	'type' => $type
 				// ));
 				
-				$this->User->id = $id;
-				$this->User->saveField('fcm_id','');
+				//$this->User->id = $id;
+				//$this->User->saveField('fcm_id','');
 				
 				//Mark all notfications 'notified' to prevent pushing of notifications even not logged in
 				$notifs = $this->User->Log->notifications($id);
@@ -156,7 +156,7 @@ class UsersController extends AppController {
 				}
 				
 	        	//print_r($this->request->data);exit;
-	            return $this->redirect(array('controller'=>'profiles','action'=>'renewfcm'));
+	            return $this->redirect('/');//array('controller'=>'profiles','action'=>'renewfcm'));
 	        }
 	        $this->Session->setFlash(__('Invalid username or password, try again'));
 	    }

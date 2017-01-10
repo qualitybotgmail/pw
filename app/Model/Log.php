@@ -242,13 +242,15 @@ public $actsAs = array('Containable');
 			$uids = array();
 		
 			$myfcmid = @$profile['Profile']['fcm_id'];
-
+			
+			$thread_id = null;
+			$groupchat_id = null;
 			if($log['type'] == 'User.logged' && $myfcmid != ''){
 				$this->push(array($myfcmid));
 				return;
 			}elseif(isset($log['thread_id']) && $log['thread_id'] != 0){
 				$tid = $log['thread_id'];
-				
+				$thread_id = $tid;
 				$ignored_users = $this->IgnoredThread->find('list',array(
 					'conditions' => array('thread_id' => $tid),
 					'fields' => 'user_id'
@@ -295,6 +297,8 @@ public $actsAs = array('Containable');
 			else if(isset($log['groupchat_id']) && $log['groupchat_id'] != 0){
 				
 				$gid = $log['groupchat_id'];
+				$groupchat_id = $gid;
+				
 				$this->Groupchat->Behaviors->load('Containable');
 				$g = $this->Groupchat->find('first',array(
 					'conditions' => array(
@@ -331,91 +335,18 @@ public $actsAs = array('Containable');
 			foreach($uids as $uid){
 				//delete the file so that the cache is updated
 				
-				if(strpos($log['type'],'Message')==0){
-					if(isset($log['groupchat_id']))
-						$this->removeCache($uid,$log['groupchat_id']);
-						
-				}else
-					$this->removeCache($uid);
+				if($groupchat_id){
+					$this->User->Profile->incGroupchatsCount($groupchat_id,$uid);
+				}else{
+					//A thread
+					$this->User->Profile->incThreadsCount($thread_id,$uid);
+				}
 				
 			}
 			//exit;
 
 	}
-	public function setGidCache2($uid,$gid,$add = 0){
-		$f1 = '/tmp/chat_notifications/'.$uid.'.json';
-		if($gid!=null){
-			$notif_counts = unserialize(file_get_contents($f1));
-			$rm = null;
-			for($i = 0 ; $i < count($notif_counts['Groupchats']) ; $i++){
-				$groupchat = $notif_counts['Groupchats'][$i];
-				
-				if(isset($groupchat['groupchat_id'])){
-					if($groupchat['groupchat_id'] == $gid){
-						if($add != 0){
-							$groupchat['count'] = $groupchat['count']+$add;
-						}else{
-							$rm = $i;
-						}
-					}
-				}else{
-					$groupchat['count'] = $add;
-				}
-				
-				
-				$notif_counts['Groupchats'][$i]=$groupchat;
-				
-			}
-			if($rm != null && $add==0){
-				unset($notif_counts['Groupchats'][$rm]);
-			}else{
-				if($rm == null)
-					$notif_counts['Groupchats'][] = array('groupchat_id' => $gid,'count'=>$add); 
-			}
-			file_put_contents($f1,serialize($notif_counts));
-			
-		}		
-	}
-	function _inm($elem, $array,$field,$set = null)
-	{
-	    foreach($array as $k => $v){
-	    	if($v[$field]==$elem){
-	    		return true;
-	    	}
-	    }
-	    return false;
-	}	
-	public function setGidCache($uid,$gid,$add=0){
 
-
-		$f1 = '/tmp/chat_notifications/'.$uid.'.json';
-		$notif_counts = array('Threads' => array(),'Groupchats' => array());
-		if(file_exists($f1)){
-			$notif_counts = unserialize(file_get_contents($f1));
-		}
-	
-
-		if(!$this->_inm($gid,$notif_counts['Groupchats'],'groupchat_id')){
-			if($add!=0)
-				$notif_counts['Groupchats'][] = array('groupchat_id' => $gid,'count' => $add);
-		}else{
-			for($i=0;$i<count($notif_counts['Groupchats']);$i++){
-				if($notif_counts['Groupchats'][$i]['groupchat_id']==$gid){
-					if($add==0){
-						echo 'unset';
-						unset($notif_counts['Groupchats'][$i]);
-					}else{
-						echo 'count';
-						$notif_counts['Groupchats'][$i]['count'] += $add;
-					}
-					break;
-				}
-			}
-		}
-	
-		file_put_contents($f1,serialize($notif_counts));
-
-	}
 	public function removeCache($uid,$gid=null){
 			$f1 = '/tmp/chat_notifications/'.$uid.'.json';
 		//	if($gid!=null){
@@ -444,7 +375,7 @@ public $actsAs = array('Containable');
 		}
 			
 		$ret = $this->notifications_count_main($uid);
-		file_put_contents($tmpdir.$uid.".json",serialize($ret));
+	//	file_put_contents($tmpdir.$uid.".json",serialize($ret));
 		return $ret;
 		
 	}
@@ -590,7 +521,7 @@ public $actsAs = array('Containable');
 		array_multisort($notifications_dates,SORT_DESC,SORT_STRING,$notifications);
 		$lasted = time()-$one;
 		$notifications['querytime'] =$lasted;		
-		file_put_contents($cache,serialize($notifications));
+//		file_put_contents($cache,serialize($notifications));
 		return $notifications;
 		
 	}

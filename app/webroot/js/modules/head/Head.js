@@ -182,6 +182,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	        }
         	    });
         	};
+
         	
         	$scope.fireMessageEvent = function(){
         	    if ($scope.loadFirstTime) {

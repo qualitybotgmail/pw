@@ -114,5 +114,90 @@ class Profile extends AppModel {
 		$threads = $this->User->Thread->findAllById($ids);
 		return $threads;
 	}
+	public function incGroupchatsCount($gid,$uid){
+		$this->incNotificationCount($gid,$uid,'Groupchats');
+		return;
+		
+	}
+	public function incThreadsCount($gid,$uid){
+		$this->incNotificationCount($gid,$uid,'Threads');
+		return;
+		
+	}	
+	public function clearGroupchatsCount($gid,$uid){
+		$this->clearNotificationCount($gid,$uid,'Groupchats');
+	}
+	public function clearThreadsCount($gid,$uid){
+		$this->clearNotificationCount($gid,$uid,'Threads');
+	}
+	
+	public function incNotificationCount($gid,$uid,$type){
+		$p = $this->findByUserId($uid);
+		$nots = null;
+	
+		if($p['Profile']['notifications_count'] == null){
+			$nots = array('Threads'=>array(),'Groupchats'=>array());
+		}else{
+			$nots = json_decode($p['Profile']['notifications_count'],true);
+		}
+		
+		if(isset($nots[$type][$gid])){
+			$nots[$type][$gid]++;
+		}else{
+			$nots[$type][$gid]=1;
+		}
+		
+		$this->save(array(
+			'id'=>$p['Profile']['id'],
+			'notifications_count'=>json_encode($nots)
+		));
+		return;
+		
+	}
+	public function minusNotificationCount($gid,$uid,$type,$count){
+		$p = $this->findByUserId($uid);
+		$nots = null;
+	
+		if($p['Profile']['notifications_count'] == null){
+			$nots = array('Threads'=>array(),'Groupchats'=>array());
+		}else{
+			$nots = json_decode($p['Profile']['notifications_count'],true);
+		}
+		
+		if(isset($nots[$type][$gid])){
+			if($nots[$type][$gid] - $count <= 0)
+				unset($nots[$type][$gid]);
+			else
+				$nots[$type][$gid] = $nots[$type][$gid] - $count;
+		}
+		$this->save(array(
+			'id'=>$p['Profile']['id'],
+			'notifications_count'=>json_encode($nots)
+		));
+		return;
+		
+	}	
+	public function clearNotificationCount($gid,$uid,$type){
+		$p = $this->findByUserId($uid);
+		$nots = null;
+	
+		if($p['Profile']['notifications_count'] == null){
+			$nots = array('Threads'=>array(),'Groupchats'=>array());
+		}else{
+			$nots = json_decode($p['Profile']['notifications_count'],true);
+		}
+		$lids = 0;
+		if(isset($nots[$type][$gid])){
+			$lids = count($nots[$type][$gid]);
+			unset($nots[$type][$gid]);
+		}
+		
+		$this->save(array(
+			'id'=>$p['Profile']['id'],
+			'notifications_count'=>json_encode($nots)
+		));
+		return $lids;
+		
+	}	
 
 }
