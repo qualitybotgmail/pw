@@ -143,7 +143,9 @@ define([
                 
                 Modal.showModal(modalConfig, {}).then(function (result) {
                     // success
-                    $rootScope.createdGroupChats.push(result);
+                    var tempGroupChat = result;
+                    tempGroupChat.User.push($rootScope.loginUser);
+                    $rootScope.createdGroupChats.push(tempGroupChat);
                     $state.go('app.message',{id: result.Groupchat.id});
                 }, function (err) {
                     // error
