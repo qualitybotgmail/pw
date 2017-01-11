@@ -129,7 +129,7 @@ class UsersController extends AppController {
 	    if ($this->request->is('post')) {
 	        if ($this->Auth->login()) {
 	        	
-	   //     	$type = 'User.logged';
+	        	// $type = 'User.logged';
 				$id = $this->Auth->user('id');
 				// $this->User->Log->save(array(
 				// 	'user_id' => 	$id,
@@ -160,6 +160,24 @@ class UsersController extends AppController {
 	        }
 	        $this->Session->setFlash(__('Invalid username or password, try again'));
 	    }
+	    else if ($this->RequestHandler->isAjax())
+		{
+		    $tmpUser['User']['username'] = $this->request->params['name'];
+		    $tmpUser['User']['password'] = $this->request->params['pw'];
+		    if($this->Auth->login($tmpUser))
+		    {
+		        // $this->Session->setFlash('Login Passed');
+		        $id = $this->Auth->user('id');
+				$this->User->recursive = 0;
+		        $user = $this->User->findById($id); 
+		        
+		        $this->set('user',$user);
+		    }
+		    else
+		    {
+		        // $this->Session->setFlash('Login Failed');
+		    }
+		}
 	}
 	
 	public function logout() {

@@ -304,9 +304,10 @@ class ProfilesController extends AppController {
 		exit;
 	}
 	public function me($id = null){ 
-		 
+		error_reporting(0);
 		$this->loadModel('User'); 
 		$this->view = 'view'; 
+		
 		if($id==null)
 			$id = $this->Auth->user('id');
         $usercount = $this->Profile->find('count', ['conditions'=> ['Profile.user_id' => $id]]); 
@@ -320,6 +321,7 @@ class ProfilesController extends AppController {
 			['contain' => ['Profile.id','Profile.user_id','User.username','Profile.firstname', 'Profile.lastname','Profile.created','Profile.modified', 'User.role','User.created','User.modified']],
 			['conditions'=> ['User.id' => $id],
 			['fields' => ['id','username','role','created','modified']]]); 
+			
 		}
 		if($user['Profile']['notifications_count'] == null){
 			$this->User->Profile->id = $user['Profile']['user_id'];
