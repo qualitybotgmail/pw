@@ -304,7 +304,7 @@ class ProfilesController extends AppController {
 		exit;
 	}
 	public function me($id = null){ 
-		 error_reporting(0);
+		error_reporting(0);
 		$this->loadModel('User'); 
 		$this->view = 'view'; 
 		if($id==null)
