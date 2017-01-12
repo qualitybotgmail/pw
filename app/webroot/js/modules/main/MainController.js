@@ -144,8 +144,10 @@ define([
                 Modal.showModal(modalConfig, {}).then(function (result) {
                     // success
                     var tempGroupChat = result;
-                    tempGroupChat.User.push($rootScope.loginUser);
-                    $rootScope.createdGroupChats.push(tempGroupChat);
+                    if (!tempGroupChat.existed) {
+                        tempGroupChat.User.push($rootScope.loginUser);
+                        $rootScope.createdGroupChats.push(tempGroupChat);   
+                    }
                     $state.go('app.message',{id: result.Groupchat.id});
                 }, function (err) {
                     // error
