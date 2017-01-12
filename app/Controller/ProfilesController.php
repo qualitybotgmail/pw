@@ -742,10 +742,10 @@ class ProfilesController extends AppController {
 		$ret = array('Threads' => array(),'Groupchats' => array());
 		
 		foreach($not['Threads'] as $k=>$n){
-			$ret["Threads"][] = array("thread_id" => $k,"count"=> $n);
+			$ret["Threads"][] = array("thread_id" => (string)$k,"count"=>(string) $n);
 		}
 		foreach($not['Groupchats'] as $k=>$n){
-			$ret["Groupchats"][] = array("groupchat_id" => $k,"count" => $n);
+			$ret["Groupchats"][] = array("groupchat_id" => (string)$k,"count" => (string)$n);
 		}
 				
 	
