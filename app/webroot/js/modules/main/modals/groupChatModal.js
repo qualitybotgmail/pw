@@ -146,17 +146,31 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 	            	if (!checkingResult) {
 	            		// console.log('creating');
 	            		GroupChatModel.one('add').post($scope.groupchat.member_ids.join()).then(function(groupChat){
-	                		Restangular.one('messages').one('add').one(groupChat.UsersGroupchat.groupchat_id).customPOST({body: $scope.initial_message}).then(function(message){
-								var groupChatData = {'Groupchat': angular.extend(groupChat.UsersGroupchat, {'id': groupChat.UsersGroupchat.groupchat_id}), 'User': $getSelectedUsers()};
-		                        if ($("#groupchat-modal #groupchat-attachments")[0].files.length){
-	                            	$scope.uploadAttachment(groupChatData, message);
-	                            	$scope.isSending = true;
-		                        } else {
-		                           $scope.$close(groupChatData);
-		                           $scope.isSending = true;
-		                        }
-		                        
-		                    });	
+	            			if(!groupChat.existed) {
+	            				Restangular.one('messages').one('add').one(groupChat.UsersGroupchat.groupchat_id).customPOST({body: $scope.initial_message}).then(function(message){
+									var groupChatData = {'Groupchat': angular.extend(groupChat.UsersGroupchat, {'id': groupChat.UsersGroupchat.groupchat_id}), 'User': $getSelectedUsers()};
+			                        if ($("#groupchat-modal #groupchat-attachments")[0].files.length){
+		                            	$scope.uploadAttachment(groupChatData, message);
+		                            	$scope.isSending = true;
+			                        } else {
+			                           $scope.$close(groupChatData);
+			                           $scope.isSending = true;
+			                        }
+			                        
+			                    });		
+	            			} else {
+	            				Restangular.one('messages').one('add').one(groupChat.UsersGroupchat.groupchat_id).customPOST({body: $scope.initial_message}).then(function(message){
+									var groupChatData = {'Groupchat': angular.extend(groupChat.UsersGroupchat, {'id': groupChat.UsersGroupchat.groupchat_id}), 'User': $getSelectedUsers(), 'existed': true};
+			                        if ($("#groupchat-modal #groupchat-attachments")[0].files.length){
+		                            	$scope.uploadAttachment(groupChatData, message);
+		                            	$scope.isSending = true;
+			                        } else {
+			                           $scope.$close(groupChatData);
+			                           $scope.isSending = true;
+			                        }
+			                        
+			                    });	
+	            			}
 	                    });	
 	            	}
                 };
