@@ -269,10 +269,12 @@ define([
                     $state.go('app');
                 },
                 thread: function(thread) {
+                    $rootScope.notificationCount -= thread.notifications;
                     thread.notifications = 0;
                     $state.go('app.thread', { id: thread.id });
                 },
                 message: function(groupchat) {
+                    $rootScope.notificationCount -= groupchat.notifications;
                     groupchat.notifications = 0;
                     $state.go('app.message', { id: groupchat.id });
                 },
