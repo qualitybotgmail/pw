@@ -1,6 +1,6 @@
 {
-  "name": "Back office chat app",
-  "short_name": "Chat app",
+  "name": "Playwork",
+  "short_name": "Playwork",
   "icons": [{
         "src": "/js/push/images/icon-192x192.png",
         "sizes": "192x192"

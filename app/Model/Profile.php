@@ -1,4 +1,5 @@
 <?php
+App::import('Vendor','NotifCounts');
 App::uses('AppModel', 'Model');
 /**
  * Profile Model

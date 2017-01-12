@@ -122,16 +122,9 @@ class GroupchatsController extends AppController {
 			$groupchats['page_info'] = array('total_messages' => $total,'total_pages' => $pages,'has_next' => $hasnext,'index' =>$page);
 		}
 		
-		if($lastid == 0 || ($chunks!=1&&$page!=1)){
+		if($lastid == 0){
 			$this->Groupchat->notified($id,$this->Auth->user('id'));
-		}else{
-			
-			$notified = $this->Groupchat->notified($id,$this->Auth->user('id'));	
-			
-			if($notified>0) $this->Groupchat->Log->removeCache($this->Auth->user('id'));
-			
 		}
-		
 		$this->set(array(
 			'groupchats' => $groupchats, 
 			'_serialize' => array('groupchats')
@@ -177,9 +170,9 @@ class GroupchatsController extends AppController {
 					foreach($gc['User'] as $member){
 						$uids[] = $member['id'];
 					}
-					// print_r($uids);
-					// print_r($ids);
-					// echo $gc['id'].")===================\n";
+					 //print_r($uids);
+					 //print_r($ids);
+					 //echo $gc['id'].")===================\n";
 					if($this->array_equal($uids,$ids)){
 						$this->Groupchat->recursive=-1;
 						$existing = $this->Groupchat->findById($gc['id']);//['id'];
@@ -191,6 +184,7 @@ class GroupchatsController extends AppController {
 				}
 			}
 		}
+	//	exit;
 		if($existing != null){
 			echo json_encode($existing);
 			exit;
@@ -254,23 +248,26 @@ class GroupchatsController extends AppController {
 	//	print_r($tmp);
 		$uid = $this->Auth->user('id');
 		$this->Groupchat->create(); 
-		$data = $this->Groupchat->save(
-			array('user_id' => $uid)
-		);
+		
+		$data = $this->Groupchat->save(array(
+			'User' =>
+				array('User' => explode(",",$user_id)),
+			'Groupchat' =>
+				array('user_id' => $uid)
+		));
 
 		if ($data) {
-				$groupchat_id = $data['Groupchat']['id'];
+				// $groupchat_id = $data['Groupchat']['id'];
 				
-				foreach($ids as $id){
+				// foreach($ids as $id){
 
-						 $this->UsersGroupchat->create();  
-						 $d = $this->UsersGroupchat->save(array('user_id' => $id, 'groupchat_id' => $groupchat_id));
+				// 	//	 $this->Groupchat->UsersGroupchat->create();  
+				// 	$d = $this->Groupchat->UsersGroupchat->save(array('user_id' => $id, 'groupchat_id' => $groupchat_id));
 					
-	
-				}
-			} else {
+				// }
+		} else {
 				$result = 'failed save groupchat';
-			}  
+		}  
 		
 		$data['UsersGroupchat'] = array('groupchat_id'=>$data['Groupchat']['id']);
 		$data['existed'] = false;

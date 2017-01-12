@@ -127,8 +127,11 @@ class UsersController extends AppController {
 
 	public function login() {
 	    if ($this->request->is('post')) {
+	    	
 	        if ($this->Auth->login()) {
-	        	
+	        	// if($this->Auth->user('username') =='admin') {
+	        		
+	        	// }
 	        	// $type = 'User.logged';
 				$id = $this->Auth->user('id');
 				// $this->User->Log->save(array(

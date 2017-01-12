@@ -1,4 +1,5 @@
 <?php
+App::import('Vendor','NotifCounts');
 App::uses('AppModel', 'Model');
 /**
  * Log Model
@@ -334,12 +335,12 @@ public $actsAs = array('Containable');
 			
 			foreach($uids as $uid){
 				//delete the file so that the cache is updated
-				
+				$not = new NotifCounts($this->User->Profile,$uid);
 				if($groupchat_id){
-					$this->User->Profile->incGroupchatsCount($groupchat_id,$uid);
+					$not->inc('groupchat',$groupchat_id);
 				}else{
 					//A thread
-					$this->User->Profile->incThreadsCount($thread_id,$uid);
+					$not->inc('thread',$thread_id);
 				}
 				
 			}
@@ -416,11 +417,13 @@ public $actsAs = array('Containable');
 		
 	}		
 	public function notifications($uid){
+		
 		$cache = "/tmp/chat_notifications/$uid"."_data.json";
 		if(file_exists($cache)){
 			$f = @unserialize(file_get_contents($cache));
 			if($f) return $f;
 		}
+		
 		$one  = time();
 		$prof = $this->User->Profile->findByUserId($uid);
 		$prof = @$prof['Profile'];
@@ -491,7 +494,7 @@ public $actsAs = array('Containable');
 				)
 			)
 		));
-		
+	
 		$notifications = [];
 		$notifications_dates = [];
 		foreach($user['Thread'] as $t){
@@ -520,7 +523,8 @@ public $actsAs = array('Containable');
 		
 		array_multisort($notifications_dates,SORT_DESC,SORT_STRING,$notifications);
 		$lasted = time()-$one;
-		$notifications['querytime'] =$lasted;		
+		
+		//$notifications['querytime'] =$lasted;		
 //		file_put_contents($cache,serialize($notifications));
 		return $notifications;
 		
