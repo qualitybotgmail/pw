@@ -174,7 +174,7 @@
                                                         <form  role="form" id="commentFrm-{{threadIndex}}-{{headIndex}}" name="commentFrm" method="POST" enctype="multipart/form-data" 
                                                                     novalidate ng-submit="sendComment(commentFrm.$valid, threadIndex, headIndex, head.Head.id)">
                                                             <input type="file" name="attachments" id="attachments"  multiple />
-                                                            <textarea name="body" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment[threadIndex][headIndex].body"></textarea>
+                                                            <textarea ng-click='textboxClicked(head.Head.id)' name="body" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment[threadIndex][headIndex].body"></textarea>
                                                             <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin-top:4px;">コメント</button>
                                                         </form>
                                                     </li>

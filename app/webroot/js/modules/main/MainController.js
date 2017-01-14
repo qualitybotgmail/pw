@@ -264,6 +264,13 @@ define([
                 }, 1000);
             };
             
+             $scope.textboxClicked = function(headId){
+                $.get('/heads/setnotified/'+headId,function(res){
+                }).always(function(res){
+                    $rootScope._getNotificationCount();
+                });
+            }
+            
             $scope.goto = {
                 home: function() {
                     $state.go('app');

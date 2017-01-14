@@ -141,28 +141,30 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                     }, 1000);   
                 }
             };
+            
             $scope.textboxClicked = function(){
                 var gid = $scope.message.Groupchat.id;
 
-                for(var i in $rootScope.createdGroupChats){
-                    gc = $rootScope.createdGroupChats[i];
-                    if(gc.Groupchat.id == gid){
-                        gc.Groupchat.notifications = 0;
-                    }
-                }
+                // for(var i in $rootScope.createdGroupChats){
+                //     gc = $rootScope.createdGroupChats[i];
+                //     if(gc.Groupchat.id == gid){
+                //         gc.Groupchat.notifications = 0;
+                //     }
+                // }
 
                 $.get('/groupchats/setnotified/'+gid,function(res){
                     console.log("Set notified: "+gid);
                 }).always(function(res){
                     console.log("Set notified done: "+gid);
-                    window.notification_count_function();
-                    var n = $rootScope.createdGroupChats;
-                    for(var i in n){
-                        tmp = n[i];
-                        if(tmp.id == $scope.message.Groupchat.id){
-                            tmp.notifications = 0;
-                        }
-                    }
+                    $rootScope._getNotificationCount();
+                    // window.notification_count_function();
+                    // var n = $rootScope.createdGroupChats;
+                    // for(var i in n){
+                        // tmp = n[i];
+                        // if(tmp.id == $scope.message.Groupchat.id){
+                            // tmp.notifications = 0;
+                        // }
+                    // }
                 });
             }
 

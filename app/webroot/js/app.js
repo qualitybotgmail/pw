@@ -156,7 +156,7 @@ define([
 				}
     	    });
     	    
-    	    var _getNotificationCount = function () {
+    	    $rootScope._getNotificationCount = function () {
     	    	
     	    	if (isNotificationUpdating) return;
     	    	if (!$rootScope.createdGroupChats && !$rootScope.threads) return;
@@ -232,7 +232,7 @@ define([
 	            		}
     	    		});
     	    		
-    	    		
+    	    		isNotificationUpdating = false;
     	    		if (queryFirst) {
     	    			queryFirst = false;
     	    			_startQueryNotifications();
@@ -242,7 +242,7 @@ define([
     	   	  
     	    window.notification_count_function = function(){
     	    	// queryFirst = true;
-    	    	_getNotificationCount();
+    	    	$rootScope._getNotificationCount();
     	    };
     	    
 			window.enterScope = function(cb){
@@ -250,9 +250,9 @@ define([
 			}
     	    var _startQueryNotifications = function() {
     	    	// if (queryFirst){
-    	    		_getNotificationCount();
+    	    		$rootScope._getNotificationCount();
     	    	// } else {
-    	    		//pendingQryNotification = $interval(_getNotificationCount, 10000);
+    	    		//pendingQryNotification = $interval($rootScope._getNotificationCount, 10000);
     	    	// }
     	    };
     	    
