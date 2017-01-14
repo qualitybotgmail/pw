@@ -129,7 +129,7 @@ define([
 			
 			$rootScope.notificationCount = 0 ;
 
-			var pendingQryNotification, queryFirst = true;
+			var pendingQryNotification, queryFirst = true, isNotificationUpdating = false;
 			
 			/**
 			 * use to check if the user is idle
@@ -157,6 +157,12 @@ define([
     	    });
     	    
     	    var _getNotificationCount = function () {
+    	    	
+    	    	if (isNotificationUpdating) return;
+    	    	if (!$rootScope.createdGroupChats && !$rootScope.threads) return;
+    	    	
+    	    	isNotificationUpdating = true;
+    	    	
     	    	console.log("Getting notifictions count");
     	    	Restangular.one("profiles").one("notifications_count").get().then(function(notifications){
     	    		console.log("Got notifictions count");
@@ -168,14 +174,24 @@ define([
     	    		angular.forEach(threadsNotifications, function(threadNotification, index){
     	    			var isThreadIdExist = false;
     	    			for (var i = 0; i < $rootScope.threads.length; i++)	{
-    	    				$rootScope.threads[i].Thread.notifications = 0;
-	            			if (threadNotification.thread_id === $rootScope.threads[i].Thread.id) {
-	            				// alert(123);
-	            				$rootScope.notificationCount += parseInt(threadNotification.count);
-	            				$rootScope.threads[i].Thread.notifications = parseInt(threadNotification.count);
-	            				isThreadIdExist = true;
-	            				break;
-	            			}
+    	    				if (!$rootScope.threads[i].Thread.is_already_notify) {
+    	    					$rootScope.threads[i].Thread.notifications = 0;
+		            			if (threadNotification.thread_id === $rootScope.threads[i].Thread.id) {
+		            				$rootScope.notificationCount += parseInt(threadNotification.count);
+		            				$rootScope.threads[i].Thread.notifications = parseInt(threadNotification.count);
+		            				$rootScope.threads[i].Thread.is_already_notify = true;
+		            				isThreadIdExist = true;
+		            				break;
+		            			}	
+    	    				} else {
+    	    					if (threadNotification.thread_id === $rootScope.threads[i].Thread.id) {
+		            				$rootScope.notificationCount += parseInt(threadNotification.count);
+		            				$rootScope.threads[i].Thread.notifications = parseInt(threadNotification.count);
+		            				$rootScope.threads[i].Thread.is_already_notify = true;
+		            				isThreadIdExist = true;
+		            				break;
+		            			}
+    	    				}
 	            		}
 	            		
 	            		// if thread id not exist update the thread
@@ -187,12 +203,26 @@ define([
     	    		angular.forEach(groupchatsNotifications, function(groupchatsNotification, index){
     	    			var isGroupchatIdExist = false;
     	    			for (var i = 0; i < $rootScope.createdGroupChats.length; i++)	{
-    	    				//$rootScope.createdGroupChats[i].Groupchat.notifications = 0;
-	            			if (groupchatsNotification.groupchat_id === $rootScope.createdGroupChats[i].Groupchat.id) {
-	            				$rootScope.notificationCount += parseInt(groupchatsNotification.count);
-	            				$rootScope.createdGroupChats[i].Groupchat.notifications = parseInt(groupchatsNotification.count);
-	            				isGroupchatIdExist = true;
-	            				break;
+	            			
+	            			if (!$rootScope.createdGroupChats[i].Groupchat.is_already_notify) {
+	            				$rootScope.createdGroupChats[i].Groupchat.notifications = 0;
+	            			
+		            			if (groupchatsNotification.groupchat_id == $rootScope.createdGroupChats[i].Groupchat.id) {
+		            				$rootScope.notificationCount += parseInt(groupchatsNotification.count);
+		            				$rootScope.createdGroupChats[i].Groupchat.notifications = parseInt(groupchatsNotification.count);
+		            				isGroupchatIdExist = true;
+		            				$rootScope.createdGroupChats[i].Groupchat.is_already_notify = true;
+		            				break;
+		            			}	
+	            			} else {
+	            				
+	            				if (groupchatsNotification.groupchat_id == $rootScope.createdGroupChats[i].Groupchat.id) {
+		            				$rootScope.notificationCount += parseInt(groupchatsNotification.count);
+		            				$rootScope.createdGroupChats[i].Groupchat.notifications = parseInt(groupchatsNotification.count);
+		            				isGroupchatIdExist = true;
+		            				$rootScope.createdGroupChats[i].Groupchat.is_already_notify = true;
+		            				break;
+		            			}
 	            			}
 	            		}
 	            		
@@ -211,20 +241,23 @@ define([
     	    };
     	   	  
     	    window.notification_count_function = function(){
+<<<<<<< HEAD
     	    	//queryFirst = true;
+=======
+    	    	// queryFirst = true;
+>>>>>>> 701745d2be7659615f5480c711eae2e676ab717b
     	    	_getNotificationCount();
-    	    	
-    	    	
     	    };
+    	    
 			window.enterScope = function(cb){
 				cb($rootScope);
 			}
     	    var _startQueryNotifications = function() {
-    	    	if (queryFirst){
+    	    	// if (queryFirst){
     	    		_getNotificationCount();
-    	    	} else {
+    	    	// } else {
     	    		//pendingQryNotification = $interval(_getNotificationCount, 10000);
-    	    	}
+    	    	// }
     	    };
     	    
     	    var _checkThreadIsIgnored = function(ignoredThreads) {
