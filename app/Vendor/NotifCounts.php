@@ -15,6 +15,17 @@ class NotifCounts{
 		$p = $this->Profile->findByUserId($this->uid);
 		return json_decode($p['Profile']['notifications_count'],true);
 	}
+	function modified(){
+		$ifnonmatch = null;
+		if(isset($_SERVER['HTTP_IF_NONE_MATCH'])){
+			$ifnonmatch = $_SERVER['HTTP_IF_NONE_MATCH'];
+		}
+		
+		$hash = md5($this->data);
+		
+		return ($hash == $ifnonmatch);
+		
+	}
 	function saveNotif($notif){
 		$this->Profile->id = $this->data['Profile']['id'];
 		$this->Profile->saveField('notifications_count',json_encode($notif));		

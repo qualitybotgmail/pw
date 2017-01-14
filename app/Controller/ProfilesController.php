@@ -732,6 +732,25 @@ class ProfilesController extends AppController {
 		exit;
 	}
 	public function notifications_count($return = false) { 
+	// 	$ifnonmatch = null;
+	// 	if(isset($_SERVER['HTTP_IF_NONE_MATCH'])){
+	// 		$ifnonmatch = $_SERVER['HTTP_IF_NONE_MATCH'];
+	// 	}
+		
+		
+	// 	$p = $this->Profile->findByUserId($this->Auth->user('id'));
+	// 	$hash = md5($p['Profile']['notifications_count']);
+	// 	if($this->){
+	// 		header("HTTP/1.1 304 Not Modified");
+	// 		exit;
+	// 	}
+		
+	// 	header('Content-Type: application/json;charset=utf-8'); 
+	// 	header("ETag: $hash");
+	// //	echo $hash;
+		
+	// 	echo $p['Profile']['notifications_count'];
+	// 	exit;		
 		header('Content-Type: application/json;charset=utf8');
 		$uid = $this->Auth->user("id");
 		$noty = new NotifCounts($this->Profile,$uid);
@@ -786,22 +805,11 @@ class ProfilesController extends AppController {
 		
 		header('Content-Type: application/json;charset=utf-8'); 
 		header("ETag: $hash");
+	//	echo $hash;
 		
 		echo $p['Profile']['notifications_count'];
 		exit;
-		echo time();
-		exit;
-		$seconds_to_cache = 60*19900;
-		$ts = gmdate("D, d M Y H:i:s", time() + $seconds_to_cache) . " GMT";
-		
-		//echo "Expires: $ts";exit;
-		
-		$ret = array('time' => array());
-		for($i = 0 ; $i < 100000; $i++){
-			$ret['time'][] = $i;
-		}
-		echo json_encode($ret);
-		exit;
+
 	}
 	public function notificationsoff(){
 		
