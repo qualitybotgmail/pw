@@ -171,7 +171,21 @@ class HeadsController extends AppController {
 		$threads = $this->Head->Thread->find('list');
 		$this->set(compact('users', 'threads'));
 	}
-
+	public function setnotified($id = null){
+		header('Content-Type: application/json;charset=utf-8');
+		if($this->Head->exists($id)){
+			$notified = $this->Head->notified($id,$this->Auth->user('id'));	
+			
+			if($notified>0) {
+				//$this->Groupchat->Log->removeCache($this->Auth->user('id'));
+				echo '{status: "OK"}';
+			}else{
+				echo '{status: "NO_UPDATE"}';
+			}
+		}else
+			echo '{status: "ALREADY_NOTIFIED"}';
+		exit;
+	}
 /**
  * delete method
  *

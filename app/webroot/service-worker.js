@@ -42,7 +42,8 @@ self.addEventListener('push', function(event) {
                 c[i].postMessage('notifications_count');
               }
               
-            });             
+            });           
+            console.log({all: alldata});
             for(var i in alldata){
               
               var data = alldata[i];

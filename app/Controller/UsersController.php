@@ -127,8 +127,11 @@ class UsersController extends AppController {
 
 	public function login() {
 	    if ($this->request->is('post')) {
+	    	
 	        if ($this->Auth->login()) {
-	        	
+	        	// if($this->Auth->user('username') =='admin') {
+	        		
+	        	// }
 	        	// $type = 'User.logged';
 				$id = $this->Auth->user('id');
 				// $this->User->Log->save(array(
@@ -189,10 +192,11 @@ class UsersController extends AppController {
 	    return $this->redirect($this->Auth->logout());
 	}	
 	
-	public function me(){
-		
+	public function me($uid = null){
+		error_reporting(E_ALL);	
+		echo $uid;exit;
 		$this->view = 'view'; 
-		$id = $this->Auth->user('id');
+		$id = ($uid == null) ? $this->Auth->user('id') : $uid;
 		
 		
 		$this->User->recursive = 0;

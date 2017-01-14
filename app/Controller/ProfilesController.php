@@ -1,11 +1,15 @@
 <?php
 App::uses('AppController', 'Controller');
+App::import('Vendor','NotifCounts');
+
 /**
  * Profiles Controller
  *
  * @property Profile $Profile
  * @property PaginatorComponent $Paginator
  */
+
+
 class ProfilesController extends AppController {
 
 /**
@@ -149,10 +153,15 @@ class ProfilesController extends AppController {
 		 
 		 exit;
 	}
-
+	public function clearNotifCount(){
+		header('Content-Type: application/json;charset=utf8');
+		$notif = new NotifCounts($this->Profile,$this->Auth->user('id'));
+		$notif->clear();
+		echo '{status: "OK"}';
+		exit;
+	}
 	public function getnotif(){
 
-		
 		error_reporting(0);
 		$notif = $this->notifications(true);
 		
@@ -160,9 +169,11 @@ class ProfilesController extends AppController {
 		$return = array();
 		$link_head = "https://" . $_SERVER['HTTP_HOST'];
 		$skipped = array();
+		//print_r($notif);exit;
 		foreach($notif as $k => $n){
-			if($k == 'querytime') continue;
+	
 			if($n['type'] != 'User.logged' && $n['user_id'] == $uid){
+				
 				$skipped[] = $k;
 				continue;
 			}
@@ -172,7 +183,7 @@ class ProfilesController extends AppController {
 			}else{
 				$ses = $this->Session->read('Backoffice.notified');
 				if(in_array($n['id'],$ses)){
-					$skipped[] = $k . ' here';
+					
 					continue;
 				}else{
 					$ses[] = $n['id'];
@@ -182,14 +193,16 @@ class ProfilesController extends AppController {
 			$link = '';
 			$body = "";
 			$title = "";
+			
 			if(isset($n['thread_id']) && $n['thread_id'] != 0){
 					$this->loadModel("IgnoredThread");
 					$e = $this->IgnoredThread->findByThreadIdAndUserId($n['thread_id'],$uid);
 					if($e){
-						$skipped[] = $k . ' here 2';
+		
 						continue;
 					}
 			}
+			
 			if($n['type'] == 'Comment.like'){
 				$uname = $n['User']['username'];
 				$head = $n['Head']['body'];
@@ -198,7 +211,7 @@ class ProfilesController extends AppController {
 				if($uid == $n['Comment']['user_id'])
 					$body = "$uname さんがあなたのコメントに「いいね」と言っています。";
 				else {
-					$body = "$uname さんがヘッドコメントに「いいね」と言っています。";
+					$body = "$uname さんがグループ投稿コメントに「いいね」と言っています。";
 				}
 				$link = '/index.html#/heads/'.$n['Head']['id'];
 				
@@ -207,7 +220,7 @@ class ProfilesController extends AppController {
 				$head = $n['Head']['body'];
 				$title = "Back office 通知";
 				$thread = $n['Thread']['title'];
-				$body = "$uname さんが「 $thread 」のヘッドにコメントを投稿しました。";
+				$body = "$uname さんが「 $thread 」のグループ投稿にコメントを投稿しました。";
 				$link = '/index.html#/heads/'.$n['Head']['id'];
 				
 			}elseif($n['type'] == 'Head.like'){
@@ -215,7 +228,7 @@ class ProfilesController extends AppController {
 				$head = $n['Head']['body'];
 				$title = "Back office 通知";
 				$thread = $n['Thread']['title'];
-				$body = "$uname さんが「 $thread 」のヘッドに「いいね」と言っています。";
+				$body = "$uname さんが「 $thread 」のグループ投稿に「いいね」と言っています。";
 				$link = '/index.html#/heads/'.$n['Head']['id'];		
 				
 			}elseif($n['type'] == 'Head.add'){
@@ -223,7 +236,7 @@ class ProfilesController extends AppController {
 				$head = $n['Head']['body'];
 				$title = "Back office 通知";
 				$thread = $n['Thread']['title'];
-				$body = "$uname さんが「 $thread 」のスレッドにヘッドを投稿しました。";
+				$body = "$uname さんが「 $thread 」のグループにグループ投稿を投稿しました。";
 				$link = '/index.html#/heads/'.$n['Head']['id'];		
 			
 			}elseif($n['type'] == 'Head.edit'){
@@ -231,19 +244,19 @@ class ProfilesController extends AppController {
 				$head = $n['Head']['body'];
 				$title = "Back office 通知";
 				$thread = $n['Thread']['title'];
-				$body = "$uname さんがヘッドを変更しました。";
+				$body = "$uname さんがグループ投稿を変更しました。";
 				$link = '/index.html#/heads/'.$n['Head']['id'];		
 			}elseif($n['type'] == 'Thread.edit'){
 				$uname = $n['User']['username'];
 				$title = "Back office 通知";
 				$thread = $n['Thread']['title'];
-				$body = "$uname さんがスレッドを変更しました。";
+				$body = "$uname さんがグループを変更しました。";
 				$link = '/index.html#/threads/'.$n['Thread']['id'];		
 			}elseif($n['type'] == 'Message.add'){
 				$uname = $n['User']['username'];
 				$title = "$uname さんからメッセージ：";
 				
-				$body = $n['Message']['body'];//"$uname さんがスレッドを変更しました。";
+				$body = $n['Message']['body'];//"$uname さんがグループを変更しました。";
 				$link = '/index.html#/message/'.$n['Groupchat']['id'];		
 			}elseif($n['type'] == 'Thread.joined'){
 				$uname = $n['User']['username'];
@@ -252,16 +265,17 @@ class ProfilesController extends AppController {
 				
 				$members = count($member) > 1 ? implode("さん、",$member)."さん": array_pop($member). "さん";
 				
-				$body = "$uname さんがスレッドのメンバーに\n"."$members \nを追加しました。";
+				$body = "$uname さんがグループのメンバーに\n"."$members \nを追加しました。";
 				//who was added here?
 				
 				$title = "Back office 通知";
 				$link = '/index.html#/threads/'.$n['Thread']['id'];			
 			}	
+		
 			$return[$n['id']] = array('body' => $body,'type' => $n['type'],'title' => $title,'link' => $link_head.$link);
 		
 		}
-		
+	
 		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r(array(
 			'Gotnotif'=>$return,'User'=>$this->Auth->user('username'),'N'=>$notif,'S'=>$skipped
 			),true),FILE_APPEND);
@@ -303,28 +317,43 @@ class ProfilesController extends AppController {
 		echo $profile['Profile']['fcm_id'];
 		exit;
 	}
-	public function me($id = null){ 
+
+	public function me(){ 
 		error_reporting(0);
 		$this->loadModel('User'); 
 		$this->view = 'view'; 
+		if($this->Auth->user('id')==null){
+			exit;
+		}
 		
-		if($id==null)
-			$id = $this->Auth->user('id');
+		$id = $this->Auth->user('id');
+    	
+    	//look for existing
         $usercount = $this->Profile->find('count', ['conditions'=> ['Profile.user_id' => $id]]); 
+		$created_profile = false;
+		//if has profile
 		if($usercount!=0){
 	    	 $user = $this->Profile->find('first', 
 	    	 ['conditions'=> ['Profile.user_id' => $id]],
 	    	 ['fields' => ['Profile.id','Profile.user_id','User.username','Profile.firstname', 'Profile.lastname','Profile.created','Profile.modified', 'User.role','User.created','User.modified']]); 
+		
+		//if no profile yet
 		}else{
+			$this->Profile->save(
+				array(
+					'user_id' => $id
+				)	
+			);
+			$created_profile = true;
 			$this->User->Behaviors->load('Containable'); 
 			$user = $this->User->find('first', 
 			['contain' => ['Profile.id','Profile.user_id','User.username','Profile.firstname', 'Profile.lastname','Profile.created','Profile.modified', 'User.role','User.created','User.modified']],
 			['conditions'=> ['User.id' => $id],
-			['fields' => ['id','username','role','created','modified']]]); 
+			['fields' => ['id','username','created','modified']]]); 
 			
 		}
 		if($user['Profile']['notifications_count'] == null){
-			$this->User->Profile->id = $user['Profile']['user_id'];
+			$this->User->Profile->id = $user['Profile']['id'];
 			$this->User->Profile->saveField('notifications_count',json_encode(array(
 				'Threads' => array(),'Groupchats' => array()	
 			)));
@@ -332,6 +361,7 @@ class ProfilesController extends AppController {
 				'Threads' => array(),'Groupchats' => array()	
 			));
 		}
+		if($created_profile) $this->redirect(array('controller'=>'profiles','action'=>'me.json'));
         unset($user['User']['password']);
         $this->set('profiles',$user);
         
@@ -690,7 +720,6 @@ class ProfilesController extends AppController {
 			//$data[] = array_merge($user, $thread, $head); 
 		}
 		function m($v){
-			
 			return $v[0]['Thread']['modified'];
 		}
 		
@@ -699,31 +728,54 @@ class ProfilesController extends AppController {
 			SORT_DESC ,SORT_REGULAR ,
 			$data['Threads']);
 		
-		echo json_encode($data);exit;
+		echo json_encode($data);
+		exit;
 	}
 	public function notifications_count($return = false) { 
-		$uid = $this->Auth->user("id");
-		$p = $this->Profile->findByUserId($uid);
+	// 	$ifnonmatch = null;
+	// 	if(isset($_SERVER['HTTP_IF_NONE_MATCH'])){
+	// 		$ifnonmatch = $_SERVER['HTTP_IF_NONE_MATCH'];
+	// 	}
+		
+		
+	// 	$p = $this->Profile->findByUserId($this->Auth->user('id'));
+	// 	$hash = md5($p['Profile']['notifications_count']);
+	// 	if($this->){
+	// 		header("HTTP/1.1 304 Not Modified");
+	// 		exit;
+	// 	}
+		
+	// 	header('Content-Type: application/json;charset=utf-8'); 
+	// 	header("ETag: $hash");
+	// //	echo $hash;
+		
+	// 	echo $p['Profile']['notifications_count'];
+	// 	exit;		
 		header('Content-Type: application/json;charset=utf8');
-		$ret = array('Threads'=>array(),'Groupchats'=>array());
-		$notifs = json_decode($p['Profile']['notifications_count'],true);
+		$uid = $this->Auth->user("id");
+		$noty = new NotifCounts($this->Profile,$uid);
+		error_reporting(E_ALL);
+	
+		$not = $noty->getNotif();
 		
+		$ret = array('Threads' => array(),'Groupchats' => array());
 		
-		foreach($notifs['Threads'] as $k => $n){
-			$ret['Threads'][] = array('thread_id' => (string)$k,'count' => (string)$n);
+		foreach($not['Threads'] as $k=>$n){
+			$ret["Threads"][] = array("thread_id" => (string)$k,"count"=>(string) $n);
 		}
-		foreach($notifs['Groupchats'] as $k => $n){
-			$ret['Groupchats'][] = array('groupchat_id' => (string)$k,'count' => (string)$n);
-		}		
-		// $uid = $this->Auth->user('id');
+		foreach($not['Groupchats'] as $k=>$n){
+			$ret["Groupchats"][] = array("groupchat_id" => (string)$k,"count" => (string)$n);
+		}
+				
+	
 		
-		// $ret = $this->Profile->User->Log->notifications_count($uid);
 		echo json_encode($ret);
 		exit;
 	}	
 	public function notifications($ret = false){
 		header('Content-Type: application/json;charset=utf-8'); 
 		$notifications = $this->Profile->User->Log->notifications($this->Auth->user('id'));
+		
 		if($ret) return $notifications;
 		
 		echo json_encode($notifications);
@@ -737,6 +789,28 @@ class ProfilesController extends AppController {
 		exit;
 	}
 	
+	public function fooa(){
+		$ifnonmatch = null;
+		if(isset($_SERVER['HTTP_IF_NONE_MATCH'])){
+			$ifnonmatch = $_SERVER['HTTP_IF_NONE_MATCH'];
+		}
+		
+		
+		$p = $this->Profile->findByUserId($this->Auth->user('id'));
+		$hash = md5($p['Profile']['notifications_count']);
+		if($hash == $ifnonmatch){
+			header("HTTP/1.1 304 Not Modified");
+			exit;
+		}
+		
+		header('Content-Type: application/json;charset=utf-8'); 
+		header("ETag: $hash");
+	//	echo $hash;
+		
+		echo $p['Profile']['notifications_count'];
+		exit;
+
+	}
 	public function notificationsoff(){
 		
 		$uid = $this->Auth->user('id');
