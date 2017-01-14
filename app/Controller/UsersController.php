@@ -192,10 +192,11 @@ class UsersController extends AppController {
 	    return $this->redirect($this->Auth->logout());
 	}	
 	
-	public function me(){
-		
+	public function me($uid = null){
+		error_reporting(E_ALL);	
+		echo $uid;exit;
 		$this->view = 'view'; 
-		$id = $this->Auth->user('id');
+		$id = ($uid == null) ? $this->Auth->user('id') : $uid;
 		
 		
 		$this->User->recursive = 0;

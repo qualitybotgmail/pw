@@ -74,9 +74,14 @@ class GroupchatsController extends AppController {
 		if($this->Groupchat->exists($id)){
 			$notified = $this->Groupchat->notified($id,$this->Auth->user('id'));	
 			
-			if($notified>0) $this->Groupchat->Log->removeCache($this->Auth->user('id'));
-		}
-		echo '{status: "OK"}';
+			if($notified>0) {
+				//$this->Groupchat->Log->removeCache($this->Auth->user('id'));
+				echo '{status: "OK"}';
+			}else{
+				echo '{status: "NO_UPDATE"}';
+			}
+		}else
+			echo '{status: "ALREADY_NOTIFIED"}';
 		exit;
 	}
 	public function latest($id, $lastid = 0){

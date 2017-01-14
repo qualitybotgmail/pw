@@ -211,7 +211,7 @@ class ProfilesController extends AppController {
 				if($uid == $n['Comment']['user_id'])
 					$body = "$uname さんがあなたのコメントに「いいね」と言っています。";
 				else {
-					$body = "$uname さんがヘッドコメントに「いいね」と言っています。";
+					$body = "$uname さんがグループ投稿コメントに「いいね」と言っています。";
 				}
 				$link = '/index.html#/heads/'.$n['Head']['id'];
 				
@@ -220,7 +220,7 @@ class ProfilesController extends AppController {
 				$head = $n['Head']['body'];
 				$title = "Back office 通知";
 				$thread = $n['Thread']['title'];
-				$body = "$uname さんが「 $thread 」のヘッドにコメントを投稿しました。";
+				$body = "$uname さんが「 $thread 」のグループ投稿にコメントを投稿しました。";
 				$link = '/index.html#/heads/'.$n['Head']['id'];
 				
 			}elseif($n['type'] == 'Head.like'){
@@ -228,7 +228,7 @@ class ProfilesController extends AppController {
 				$head = $n['Head']['body'];
 				$title = "Back office 通知";
 				$thread = $n['Thread']['title'];
-				$body = "$uname さんが「 $thread 」のヘッドに「いいね」と言っています。";
+				$body = "$uname さんが「 $thread 」のグループ投稿に「いいね」と言っています。";
 				$link = '/index.html#/heads/'.$n['Head']['id'];		
 				
 			}elseif($n['type'] == 'Head.add'){
@@ -236,7 +236,7 @@ class ProfilesController extends AppController {
 				$head = $n['Head']['body'];
 				$title = "Back office 通知";
 				$thread = $n['Thread']['title'];
-				$body = "$uname さんが「 $thread 」のグループにヘッドを投稿しました。";
+				$body = "$uname さんが「 $thread 」のグループにグループ投稿を投稿しました。";
 				$link = '/index.html#/heads/'.$n['Head']['id'];		
 			
 			}elseif($n['type'] == 'Head.edit'){
@@ -244,7 +244,7 @@ class ProfilesController extends AppController {
 				$head = $n['Head']['body'];
 				$title = "Back office 通知";
 				$thread = $n['Thread']['title'];
-				$body = "$uname さんがヘッドを変更しました。";
+				$body = "$uname さんがグループ投稿を変更しました。";
 				$link = '/index.html#/heads/'.$n['Head']['id'];		
 			}elseif($n['type'] == 'Thread.edit'){
 				$uname = $n['User']['username'];
@@ -720,7 +720,6 @@ class ProfilesController extends AppController {
 			//$data[] = array_merge($user, $thread, $head); 
 		}
 		function m($v){
-			
 			return $v[0]['Thread']['modified'];
 		}
 		
@@ -729,7 +728,8 @@ class ProfilesController extends AppController {
 			SORT_DESC ,SORT_REGULAR ,
 			$data['Threads']);
 		
-		echo json_encode($data);exit;
+		echo json_encode($data);
+		exit;
 	}
 	public function notifications_count($return = false) { 
 		header('Content-Type: application/json;charset=utf8');
@@ -770,6 +770,39 @@ class ProfilesController extends AppController {
 		exit;
 	}
 	
+	public function fooa(){
+		$ifnonmatch = null;
+		if(isset($_SERVER['HTTP_IF_NONE_MATCH'])){
+			$ifnonmatch = $_SERVER['HTTP_IF_NONE_MATCH'];
+		}
+		
+		
+		$p = $this->Profile->findByUserId($this->Auth->user('id'));
+		$hash = md5($p['Profile']['notifications_count']);
+		if($hash == $ifnonmatch){
+			header("HTTP/1.1 304 Not Modified");
+			exit;
+		}
+		
+		header('Content-Type: application/json;charset=utf-8'); 
+		header("ETag: $hash");
+		
+		echo $p['Profile']['notifications_count'];
+		exit;
+		echo time();
+		exit;
+		$seconds_to_cache = 60*19900;
+		$ts = gmdate("D, d M Y H:i:s", time() + $seconds_to_cache) . " GMT";
+		
+		//echo "Expires: $ts";exit;
+		
+		$ret = array('time' => array());
+		for($i = 0 ; $i < 100000; $i++){
+			$ret['time'][] = $i;
+		}
+		echo json_encode($ret);
+		exit;
+	}
 	public function notificationsoff(){
 		
 		$uid = $this->Auth->user('id');

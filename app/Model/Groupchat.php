@@ -87,7 +87,7 @@ class Groupchat extends AppModel {
 	}	
 	
 	public function notified($id=null,$uid){
-	//	return;
+		
 		$this->User->Profile->clearGroupchatsCount($id,$uid);
 		
 		$this->Log->User->Behaviors->load('Containable');

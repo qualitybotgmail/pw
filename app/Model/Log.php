@@ -199,7 +199,7 @@ public $actsAs = array('Containable');
 	}	
 	public function push($fcmids = null){
 		
-		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($fcmids,true),FILE_APPEND);
+	//	file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($fcmids,true),FILE_APPEND);
 		if($fcmids != null){
 			if(is_array($fcmids)){
 				$fcmids = array_unique($fcmids);
@@ -334,6 +334,7 @@ public $actsAs = array('Containable');
 			$uids[] = $uid;
 			
 			foreach($uids as $uid){
+				if($uid == AuthComponent::user('id')) continue;
 				//delete the file so that the cache is updated
 				$not = new NotifCounts($this->User->Profile,$uid);
 				if($groupchat_id){

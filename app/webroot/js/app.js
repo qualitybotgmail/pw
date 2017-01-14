@@ -187,7 +187,7 @@ define([
     	    		angular.forEach(groupchatsNotifications, function(groupchatsNotification, index){
     	    			var isGroupchatIdExist = false;
     	    			for (var i = 0; i < $rootScope.createdGroupChats.length; i++)	{
-    	    				$rootScope.createdGroupChats[i].Groupchat.notifications = 0;
+    	    				//$rootScope.createdGroupChats[i].Groupchat.notifications = 0;
 	            			if (groupchatsNotification.groupchat_id === $rootScope.createdGroupChats[i].Groupchat.id) {
 	            				$rootScope.notificationCount += parseInt(groupchatsNotification.count);
 	            				$rootScope.createdGroupChats[i].Groupchat.notifications = parseInt(groupchatsNotification.count);
@@ -211,7 +211,7 @@ define([
     	    };
     	   	  
     	    window.notification_count_function = function(){
-    	    	queryFirst = true;
+    	    	//queryFirst = true;
     	    	_getNotificationCount();
     	    	
     	    	
@@ -273,12 +273,6 @@ define([
 					Notify.loading.show = true;
 				}
 			);
-			$rootScope.$on('$locationChangeSuccess', function(event){
-			        var url = window.location.href;
-			    	//params = $location.search();
-			    	console.log('URL now:'+url);
-			    	window.notification_count_function();
-			})			
 
 			$state.transitionTo('app');
 		}]);
