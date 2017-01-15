@@ -722,7 +722,7 @@ class ProfilesController extends AppController {
 		function m($v){
 			return $v[0]['Thread']['modified'];
 		}
-		
+		
 		array_multisort(
 			array_map('m',$data['Threads']),
 			SORT_DESC ,SORT_REGULAR ,
@@ -732,29 +732,17 @@ class ProfilesController extends AppController {
 		exit;
 	}
 	public function notifications_count($return = false) { 
-	// 	$ifnonmatch = null;
-	// 	if(isset($_SERVER['HTTP_IF_NONE_MATCH'])){
-	// 		$ifnonmatch = $_SERVER['HTTP_IF_NONE_MATCH'];
-	// 	}
-		
-		
-	// 	$p = $this->Profile->findByUserId($this->Auth->user('id'));
-	// 	$hash = md5($p['Profile']['notifications_count']);
-	// 	if($this->){
-	// 		header("HTTP/1.1 304 Not Modified");
-	// 		exit;
-	// 	}
-		
-	// 	header('Content-Type: application/json;charset=utf-8'); 
-	// 	header("ETag: $hash");
-	// //	echo $hash;
-		
-	// 	echo $p['Profile']['notifications_count'];
-	// 	exit;		
+	
 		header('Content-Type: application/json;charset=utf8');
 		$uid = $this->Auth->user("id");
 		$noty = new NotifCounts($this->Profile,$uid);
-		error_reporting(E_ALL);
+		// if(!$noty->modified()){
+		// 	header("HTTP/1.1 304 Not Modified");
+		// 	exit;
+		// }else{
+		// 	header("ETag: ".$noty->hash());
+		// }
+
 	
 		$not = $noty->getNotif();
 		
