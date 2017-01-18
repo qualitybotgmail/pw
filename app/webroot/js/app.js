@@ -69,10 +69,10 @@ define([
 
 			function($routeProvider, $locationProvider, $controllerProvider, $compileProvider, $filterProvider, $provide, $stateProvider, RestangularProvider, $httpProvider, $tooltipProvider, IdleProvider, KeepaliveProvider, GLOBAL)
 	        {
-	        	IdleProvider.idle(900); // 15 mins
-				IdleProvider.timeout(5*60); // 5 mins
-				KeepaliveProvider.interval(300); // heartbeat every 5 mins
-				KeepaliveProvider.http('/users/me.json'); // URL that makes sure session is alive
+	        	// IdleProvider.idle(900); // 15 mins
+				// IdleProvider.timeout(5*60); // 5 mins
+				// KeepaliveProvider.interval(300); // heartbeat every 5 mins
+				// KeepaliveProvider.http('/users/me.json'); // URL that makes sure session is alive
 	        	
 		        // Restangular Settings
 		        RestangularProvider.setBaseUrl(Talknote.baseUrl + "/");
@@ -134,15 +134,15 @@ define([
 			/**
 			 * use to check if the user is idle
 			 **/
-			Idle.watch();
-			$rootScope.$on('IdleStart', function() { 
-				/* Display modal warning or sth */ 
-				console.log('idle start');
-			});
-			$rootScope.$on('IdleTimeout', function() { 
-				/* Logout user if idle time last*/
-				$window.location.href = "/users/logout";
-			});
+			// Idle.watch();
+			// $rootScope.$on('IdleStart', function() { 
+			// 	/* Display modal warning or sth */ 
+			// 	console.log('idle start');
+			// });
+			// $rootScope.$on('IdleTimeout', function() { 
+			// 	/* Logout user if idle time last*/
+			// 	$window.location.href = "/users/logout";
+			// });
 			
 			// get login users information
 			Restangular.one('profiles').one('me').get().then(function(res){
