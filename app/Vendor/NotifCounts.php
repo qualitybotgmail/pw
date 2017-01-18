@@ -38,7 +38,7 @@ class NotifCounts{
 		$notif = $this->getNotif();
 		if(isset($notif[$typeName][$id])){
 			$notif[$typeName][$id]++;
-		}else {
+		}else{
 			$notif[$typeName][$id]=1;
 		}
 		$this->saveNotif($notif);

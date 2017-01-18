@@ -722,7 +722,7 @@ class ProfilesController extends AppController {
 		function m($v){
 			return $v[0]['Thread']['modified'];
 		}
-		
+		
 		array_multisort(
 			array_map('m',$data['Threads']),
 			SORT_DESC ,SORT_REGULAR ,
