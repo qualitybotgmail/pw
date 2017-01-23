@@ -17,10 +17,9 @@ var fetching_counts = false;
 
 self.addEventListener('push', function(event) {
 
-    pushReceived++;
-    console.log("-Pushed "+pushReceived);
-    
-//   event.waitUntil(
+   pushReceived++;
+
+   event.waitUntil(
       fetch('/profiles/getnotif.json',{
         credentials: 'include'
       }).then(function(resp){
@@ -44,6 +43,7 @@ self.addEventListener('push', function(event) {
               
             });           
             console.log({all: alldata});
+            var msgs = [];
             for(var i in alldata){
               
               var data = alldata[i];
@@ -66,7 +66,7 @@ self.addEventListener('push', function(event) {
                   
           });
     
-      });
+      }));
     
 
   

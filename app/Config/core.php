@@ -216,7 +216,7 @@ Configure::write('Routing.prefixes', array('admin'));
  *
  */
 	Configure::write('Session', array(
-		'defaults' => 'cake','timeout' => (60*24*30) //1 month
+		'defaults' => 'cake','timeout' => (60*24*30*12) //1 month
 		
 	));
 	

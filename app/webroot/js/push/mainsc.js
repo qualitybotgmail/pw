@@ -237,7 +237,7 @@ window.addEventListener('load', function() {
     			    });
     			  });    
     
-        navigator.serviceWorker.register('/service-worker.js?v=02322dd3e1eee555resrer3ddd434fff3efffffddfdfdfdfdfffdfdfefdfdfd7dddsfsfddfdfdfdfdefeererfefefeeefe')
+        navigator.serviceWorker.register('/service-worker.js?v=0.1')
           .then(function(){
             console.log("SW initializing");
             initialiseState();

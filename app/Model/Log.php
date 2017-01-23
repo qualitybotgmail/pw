@@ -195,7 +195,7 @@ public $actsAs = array('Containable');
 				$f = $fcm['Profile']['fcm_id'];
 				$this->push(array($f));
 			}
-		}
+		}
 	}	
 	public function push($fcmids = null){
 		
@@ -221,7 +221,7 @@ public $actsAs = array('Containable');
 			
 	
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		//	file_put_contents("/tmp/lastcurl",date("g:i")." [Exec]\n".print_r($fcmids,true),FILE_APPEND);
+			//file_put_contents("/tmp/lastcurl",date("g:i")." [Exec]\n".print_r($fcmids,true),FILE_APPEND);
 			$server_output = curl_exec ($ch);
 			file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r(array('Output'=>$server_output),true),FILE_APPEND);
 			curl_close ($ch);	
@@ -241,7 +241,7 @@ public $actsAs = array('Containable');
 			$this->IgnoredThread = new IgnoredThread;
 			$profile = $this->User->Profile->findByUserId($uid);
 			$uids = array();
-		
+			
 			$myfcmid = @$profile['Profile']['fcm_id'];
 			
 			$thread_id = null;

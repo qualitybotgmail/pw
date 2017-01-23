@@ -22,6 +22,20 @@ class ProfilesController extends AppController {
 		parent::beforeFilter();
 		$this->Auth->allow('me','getnotif','froks');
 	}
+	public function logged(){
+		$prof = $this->Profile->findByUserId($this->Auth->user('id'));
+		if(count($prof)){
+			$id = $prof['Profile']['id'];
+			$now = date("Y:m:d G:i:s");
+			
+			$this->Profile->id=$id;
+			$this->Profile->saveField('lastsync',$now);
+		//	exit;
+		}
+		file_put_contents("/tmp/loggged",date("g:i:s")."\n".print_r(array(
+			'User'=>$this->Auth->user('username')),true),FILE_APPEND);
+		exit;
+	}
 /**
  * index method
  *

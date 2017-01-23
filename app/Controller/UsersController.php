@@ -27,7 +27,7 @@ class UsersController extends AppController {
 	}
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('me','dd','notifications');
+		$this->Auth->allow('me','dd','notifications','mobilelogin');
 	}
 	
 	
@@ -124,10 +124,24 @@ class UsersController extends AppController {
 		}
 		return $this->redirect(array('action' => 'index'));
 	}
-
-	public function login() {
+	public function mobilelogin(){
+		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_SERVER,true),FILE_APPEND);
 	    if ($this->request->is('post')) {
-	    	
+	    	file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_POST,true),FILE_APPEND);
+	        if ($this->Auth->login()) {
+				echo 'OK';
+				exit;
+	        }
+	        echo 'Not ok';
+	        exit;
+	    }
+	    echo "GET?";
+	    exit;
+	}
+	public function login() {
+		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_SERVER,true),FILE_APPEND);
+	    if ($this->request->is('post')) {
+	    	file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_POST,true),FILE_APPEND);
 	        if ($this->Auth->login()) {
 	        	// if($this->Auth->user('username') =='admin') {
 	        		
