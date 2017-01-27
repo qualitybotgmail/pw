@@ -75,7 +75,7 @@ class Groupchat extends AppModel {
 		
 		$groupchat = $this->findById($gid);
 
-		$ret = [];
+		$ret = array();
 		
 		foreach($groupchat['User'] as $k => $t){
 			

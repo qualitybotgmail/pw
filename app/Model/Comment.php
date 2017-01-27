@@ -71,7 +71,7 @@ class Comment extends AppModel {
 		),
 	);
 	
-	public $hasMany = ['Like', 'Upload','Log'];
+	public $hasMany = array('Like', 'Upload','Log');
 
 // 	public function afterFind($results, $primary = false) {
 // 		$ret = [];

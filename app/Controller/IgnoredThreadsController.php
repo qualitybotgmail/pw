@@ -21,7 +21,7 @@ class IgnoredThreadsController extends AppController {
  * @return void
  */
 	public function index() {
-		$i = $this->IgnoredThread->find('list',['conditions'=>['user_id'=>$this->Auth->user('id')],'fields'=>['thread_id']]);
+		$i = $this->IgnoredThread->find('list',array('conditions'=>array('user_id'=>$this->Auth->user('id')),'fields'=>array('thread_id')));
 		$this->set('ignoredThreads',array_values($i));
 	}
 	public function off($thread_id){

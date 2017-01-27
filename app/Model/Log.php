@@ -496,8 +496,8 @@ public $actsAs = array('Containable');
 			)
 		));
 	
-		$notifications = [];
-		$notifications_dates = [];
+		$notifications = array();
+		$notifications_dates = array();
 		foreach($user['Thread'] as $t){
 			foreach($t['Log'] as $log){
 				$un = array('username' => $log['User']['username']);

@@ -70,7 +70,7 @@ class Head extends AppModel {
 		)
 	);
 	
-	public $hasMany = ['Comment','Like','Upload','Log'];
+	public $hasMany = array('Comment','Like','Upload','Log');
 	
 	public function isLiked($cid,$uid){
 		$ret = $this->Like->findByHeadIdAndUserId($cid,$uid);

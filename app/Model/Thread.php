@@ -80,7 +80,7 @@ class Thread extends AppModel {
 		
 		$thread = $this->findById($thread_id);
 		
-		$ret = [];
+		$ret = array();
 		foreach($thread['User'] as $k => $t){
 			if (is_numeric($k))
 				$ret[] = $t['id'];

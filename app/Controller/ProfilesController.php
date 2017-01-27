@@ -85,13 +85,13 @@ class ProfilesController extends AppController {
 		$user_id = $this->Auth->user('id');
 			
 			$this->Profile->create();
-			$data = [
-				'Profile' => [
+			$data = array(
+				'Profile' => array(
 						'user_id'=>$user_id, 
 						'firstname'=> $this->request->data['firstname'], 
 						'lastname'=>$this->request->data['lastname']
-					]
-				];
+					)
+				);
 			$saveResult = $this->Profile->save($data);
 			if ($saveResult) {
 				echo json_encode($saveResult);
@@ -157,12 +157,12 @@ class ProfilesController extends AppController {
 	
 	public function checkProfile($id = null){
 		$pcount = $this->Profile->find('count',
-				['conditions' => ['Profile.user_id' => $id] ]);  
+				array('conditions' => array('Profile.user_id' => $id)));  
 		
 		if($pcount!=0){ 
-		echo json_encode(['status' => 'With Profile']); 
+		echo json_encode(array('status' => 'With Profile')); 
 		}else{ 
-		echo json_encode(['status' => 'No Profile']); 
+		echo json_encode(array('status' => 'No Profile')); 
 		}
 		 
 		 exit;
@@ -343,13 +343,13 @@ class ProfilesController extends AppController {
 		$id = $this->Auth->user('id');
     	
     	//look for existing
-        $usercount = $this->Profile->find('count', ['conditions'=> ['Profile.user_id' => $id]]); 
+        $usercount = $this->Profile->find('count', array('conditions'=> array('Profile.user_id' => $id))); 
 		$created_profile = false;
 		//if has profile
 		if($usercount!=0){
 	    	 $user = $this->Profile->find('first', 
-	    	 ['conditions'=> ['Profile.user_id' => $id]],
-	    	 ['fields' => ['Profile.id','Profile.user_id','User.username','Profile.firstname', 'Profile.lastname','Profile.created','Profile.modified', 'User.role','User.created','User.modified']]); 
+	    	 array('conditions'=> array('Profile.user_id' => $id)),
+	    	 array('fields' => array('Profile.id','Profile.user_id','User.username','Profile.firstname', 'Profile.lastname','Profile.created','Profile.modified', 'User.role','User.created','User.modified'))); 
 		
 		//if no profile yet
 		}else{
@@ -361,9 +361,9 @@ class ProfilesController extends AppController {
 			$created_profile = true;
 			$this->User->Behaviors->load('Containable'); 
 			$user = $this->User->find('first', 
-			['contain' => ['Profile.id','Profile.user_id','User.username','Profile.firstname', 'Profile.lastname','Profile.created','Profile.modified', 'User.role','User.created','User.modified']],
-			['conditions'=> ['User.id' => $id],
-			['fields' => ['id','username','created','modified']]]); 
+			array('contain' => array('Profile.id','Profile.user_id','User.username','Profile.firstname', 'Profile.lastname','Profile.created','Profile.modified', 'User.role','User.created','User.modified')),
+			array('conditions'=> array('User.id' => $id),
+			array('fields' => array('id','username','created','modified')))); 
 			
 		}
 		if($user['Profile']['notifications_count'] == null){
@@ -501,13 +501,13 @@ class ProfilesController extends AppController {
 			$comment_id = $timeline['Log']['comment_id']; 
 			
 				$thread = $this->Thread->find('all',
-					['conditions' =>
-						['AND'=>[
-							['Thread.user_id' => $user_id],
-							['Thread.id' => $thread_id]
-						]],
-					],
-					['order' =>['Thread.created' => 'desc']]);
+					array('conditions' =>
+						array('AND'=>array(
+							array('Thread.user_id' => $user_id),
+							array('Thread.id' => $thread_id)
+						)),
+					),
+					array('order' =>array('Thread.created' => 'desc')));
 			
 				// $head = $this->Head->find('all',
 				// 	['conditions' =>
@@ -549,8 +549,8 @@ class ProfilesController extends AppController {
 		$this->Message->recursive = 4; 
 		$message = $this->Message->find('all', 
 		// ['fields' => ['id','user_id','groupchat_id','body','created','modified']],
-		['conditions' => ['Message.user_id' => $user_id]], 
-		['order' =>['Message.created' => 'desc']]);  
+		array('conditions' => array('Message.user_id' => $user_id)), 
+		array('order' =>array('Message.created' => 'desc')));  
 		 
 		$this->set('profile', $message); 
 	}
@@ -561,8 +561,8 @@ class ProfilesController extends AppController {
 		$user_id = $this->Auth->user('id'); 
 		$like = $this->Profile->User->Like->find('all', 
 		// ['fields' => ['id','head_id','created','modified']],
-		['conditions' => ['Like.user_id' => $user_id], ['head_id !='=>'0']], 
-		['order' =>['Like.created' => 'desc']]);   
+		array('conditions' => array('Like.user_id' => $user_id), array('head_id !='=>'0')), 
+		array('order' =>array('Like.created' => 'desc')));   
 		
 		$this->set('profile', $like); 
 	}
@@ -573,8 +573,8 @@ class ProfilesController extends AppController {
 		
 		$groupchat = $this->Groupchat->find('all', 
 		// ['fields' => ['id','created','modified']],
-		['conditions' => ['Groupchat.user_id' => $user_id]], 
-		['order' =>['Groupchat.created' => 'desc']]);   
+		array('conditions' => array('Groupchat.user_id' => $user_id)), 
+		array('order' =>array('Groupchat.created' => 'desc')));   
 		
 		$this->set('profile', $groupchat); 
 		
@@ -586,8 +586,8 @@ class ProfilesController extends AppController {
 		
 		$groupchat = $this->Upload->find('all', 
 		// ['fields' => ['id','comment_id','name','size','path','created','modified']],
-		['conditions' => ['Upload.user_id' => $user_id]], 
-		['order' =>['Upload.created' => 'desc']]);   
+		array('conditions' => array('Upload.user_id' => $user_id)), 
+		array('order' =>array('Upload.created' => 'desc')));   
 		
 		$this->set('profile', $groupchat); 
 		
@@ -601,8 +601,8 @@ class ProfilesController extends AppController {
 		$user_id = $this->Auth->user('id');
 		$like = $this->User->Like->find('all', 
 		// ['fields' => ['id','comment_id','created','modified']],
-		['conditions' => ['Like.user_id' => $user_id], ['comment_id >='=>'1']], 
-		['order' =>['Like.created' => 'desc']]);   
+		array('conditions' => array('Like.user_id' => $user_id), array('comment_id >='=>'1')), 
+		array('order' =>array('Like.created' => 'desc')));   
 		
 		$this->set('profile', $like); 
 	}
@@ -632,12 +632,12 @@ class ProfilesController extends AppController {
 		$keyword = str_replace("+", " ", $keyword);
 		$keyword = explode(" ",trim($keyword));
 		
-		$data=[];
+		$data=array();
 		foreach($keyword as $k){
 			
 			$users = $this->User->find('all',
-			['conditions' => ['User.username LIKE' => '%'.$k.'%'],
-			'fields' => ['id','username']]);
+			array('conditions' => array('User.username LIKE' => '%'.$k.'%'),
+			'fields' => array('id','username')));
 			
 			$prof_cond = array(
 					'Profile.firstname LIKE' => '%'.$k.'%',
@@ -646,43 +646,43 @@ class ProfilesController extends AppController {
 			);
 			
 			$prof = $this->Profile->find('all',
-			['fields'=>[
+			array('fields'=>array(
 					'Profile.id',
 					'Profile.user_id',
 					'Profile.firstname','Profile.lastname',
 					'User.id',
 					'User.username'
-				],
+				),
 				'conditions' =>
-				['OR'=>$prof_cond],
-			],	['order' =>['User.created' => 'desc']]);
+				array('OR'=>$prof_cond),
+			),	array('order' =>array('User.created' => 'desc')));
 			
 			
-			$pusers = [];
+			$pusers = array();
 			foreach($prof as $p){
-				$pusers[] = ['User' => $p['User']];
+				$pusers[] = array('User' => $p['User']);
 			}
 
 			$pusers = array_unique(array_merge($users,$pusers),SORT_REGULAR);
 			
 			$thread = $this->Thread->find('all', 
-				['conditions' => ['Thread.title LIKE' => '%'.$k.'%', 'user_id' => $user_id] ]);
+				array('conditions' => array('Thread.title LIKE' => '%'.$k.'%', 'user_id' => $user_id)));
 			
-			$options = [
-				'conditions' => ['Thread.title LIKE' => '%'.$k.'%'],
+			$options = array(
+				'conditions' => array('Thread.title LIKE' => '%'.$k.'%'),
 				'order' => 'Thread.created DESC',
-				'joins' => [
-					[
+				'joins' => array(
+					array(
 					   'table' => 'users_threads',
 	                   'alias' => 'users_threads',
 	                   'type' => 'INNER',
-	                   'conditions' => [
+	                   'conditions' => array(
 	                           "users_threads.thread_id = Thread.id",
 	                           "users_threads.user_id = {$user_id}",
-	                    ]
-					]
-                ]
-			];
+	                    )
+					)
+                )
+			);
 	        // this query if to get all the threads
 	        // where user is a member only
 			$user_threads = $this->Thread->find('all', $options);
@@ -706,10 +706,10 @@ class ProfilesController extends AppController {
 			}
 		//	print_r($heads);exit;
 			$thread = $this->Thread->find('all', 
-				['conditions' => [
+				array('conditions' => array(
 					'OR' =>
-					['Thread.title LIKE' => '%'.$k.'%',
-					'Thread.id' => $threadis]]]);  
+					array('Thread.title LIKE' => '%'.$k.'%',
+					'Thread.id' => $threadis))));  
 			
 			// $thread = $this->Thread->find('all', 
 			// 	['conditions' => ['Thread.title LIKE' => '%'.$k.'%'] ], 
@@ -787,7 +787,7 @@ class ProfilesController extends AppController {
 	public function notified($lid = null){
 		header('Content-Type: application/json;charset=utf-8'); 
 		$r = $this->Profile->User->Log->setNotified($lid);
-		echo json_encode(['status' => $r]);
+		echo json_encode(array('status' => $r));
 		exit;
 	}
 	

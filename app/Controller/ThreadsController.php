@@ -26,26 +26,26 @@ class ThreadsController extends AppController {
 		$user_id = $this->Auth->user('id');
 		$this->Thread->Owner->recursive=2;
 		
-		$options = [
+		$options = array(
 				'order' => 'Thread.created DESC',
-				'joins' => [
-					[
+				'joins' => array(
+					array(
 					   'table' => 'users_threads',
 	                   'alias' => 'users_threads',
 	                   'type' => 'INNER',
-	                   'conditions' => [
+	                   'conditions' => array(
 	                           "users_threads.thread_id = Thread.id",
 	                           "users_threads.user_id = {$user_id}",
-	                    ]
-					]
-                ]
-			];
+	                    )
+					)
+                )
+			);
         // this query if to get all the threads
         // where user is a member only
 		$users_threads = $this->Thread->find('all', $options);
 
 		// ['fields' => ['id','user_id','thread_id','body','created','modified']],		
-		$threads = $this->Thread->find('all',['conditions' => ['Thread.user_id' => $user_id], 'order' => 'Thread.created DESC'] ); 
+		$threads = $this->Thread->find('all',array('conditions' => array('Thread.user_id' => $user_id), 'order' => 'Thread.created DESC') ); 
 		$result = array();
 		$this->set('threads', array_merge($threads, $users_threads));
 	}
@@ -193,7 +193,7 @@ class ThreadsController extends AppController {
 		$me = $this->Thread->User->findById($this->Auth->user('id'));
 		try{
 			$thread = $this->Thread->findById($thread_id);
-			$users = [];
+			$users = array();
 						
 			foreach($thread['User'] as $i => $u){
 				if(is_numeric($i)){
@@ -222,14 +222,14 @@ class ThreadsController extends AppController {
 						'type' => 'Thread.joined'
 				));	
 				
-				echo json_encode(['status' => 'OK']);
+				echo json_encode(array('status' => 'OK'));
 				exit;
 			}
-			echo json_encode(['status' => 'EXISTS']);
+			echo json_encode(array('status' => 'EXISTS'));
 			
 			exit;
 		}catch(Exception $e){
-			echo json_encode(['status' => 'FAILED']);
+			echo json_encode(array('status' => 'FAILED'));
 			exit;
 		}
 	}
@@ -251,13 +251,13 @@ class ThreadsController extends AppController {
 		if(!$this->Thread->Like->threadLikeExists($id,$user_id)){
 			$ret = $this->Thread->Like->save($like);
 			if($ret)
-				echo json_encode(['status' => 'OK']); 
+				echo json_encode(array('status' => 'OK')); 
 			else {
-				echo json_encode(['status' => 'FAILED']);
+				echo json_encode(array('status' => 'FAILED'));
 			}
 			exit;
 		}
-		echo json_encode(['status' => 'EXISTS']);
+		echo json_encode(array('status' => 'EXISTS'));
 		exit;
 		
 		
@@ -291,13 +291,13 @@ class ThreadsController extends AppController {
 			$ret = $this->Thread->Like->threadLike($id,$user_id);
 			$this->Thread->Like->id  = $ret['Like']['id'];
 			if($this->Thread->Like->delete()){
-				echo json_encode(['status' => 'OK']);
+				echo json_encode(array('status' => 'OK'));
 			} else {
-				echo json_encode(['status' => 'FAILED']);
+				echo json_encode(array('status' => 'FAILED'));
 			}
 			exit;
 		}else{
-			echo json_encode(['status' => 'NOT_EXISTING']);
+			echo json_encode(array('status' => 'NOT_EXISTING'));
 		}
 		exit;
 		
@@ -410,9 +410,9 @@ class ThreadsController extends AppController {
 		)));
 		
 		if(count($users) == 0){
-			$users = $this->Thread->User->find("all",['fields' => ['id','username']]);
+			$users = $this->Thread->User->find("all",array('fields' => array('id','username')));
 		}
-		echo json_encode(['users'=> $users]);
+		echo json_encode(array('users'=> $users));
 		exit;
 	}
 	
@@ -424,11 +424,11 @@ class ThreadsController extends AppController {
 		try{ 
     		 $this->Thread->query("delete from users_threads where user_id = $member_id and thread_id = $thread_id");
     		// $result = $this->User->deleteAssoc($member_id,'Thread',$thread_id);
-			echo json_encode(['status' => 'DELETED']); 
+			echo json_encode(array('status' => 'DELETED')); 
 		  
 			exit;
 		}catch(Exception $e){
-			echo json_encode(['status' => 'FAILED to catch']);
+			echo json_encode(array('status' => 'FAILED to catch'));
 			exit;
 		}
 	}

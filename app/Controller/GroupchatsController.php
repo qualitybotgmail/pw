@@ -40,7 +40,7 @@ class GroupchatsController extends AppController {
 		$options['contain'] = array(
 			'Message' , 'User.username','User.id', 'Owner.username','Owner.id'
 		);
-		$groupchats =['groupchats' => $this->Groupchat->find('all', $options)];
+		$groupchats =array('groupchats' => $this->Groupchat->find('all', $options));
 		function gm($m){
 			$o = $m['Owner'];
 			$m['User'][] = $o;
@@ -339,7 +339,7 @@ class GroupchatsController extends AppController {
 			'conditions' => array('User.id !=' => $this->Auth->user('id'))
 		));
 		 
-		echo json_encode(['users'=> $users]);
+		echo json_encode(array('users'=> $users));
 		exit;
 	}
 	public function userstoadd($gid){
@@ -349,20 +349,21 @@ class GroupchatsController extends AppController {
 		$this->loadModel("User");
 		$this->User->recursive=-1;
 		
-		$users = $this->User->find("all",['fields' => ['id','username'],
+		$users = $this->User->find("all",array('fields' => array('id','username'),
 			
-			'conditions' => [
-			'NOT' => [
+			'conditions' => array(
+			'NOT' => array(
 				'User.id' => $members
-			]
-		]]);
+			)
+			))
+		);
 		
 		if(count($users) == 0){
-			$users = $this->User->find("all",[
+			$users = $this->User->find("all",array(
 				
-				'fields' => ['id','username']]);
+				'fields' => array('id','username')));
 		}
-		echo json_encode(['users'=> $users]);
+		echo json_encode(array('users'=> $users));
 		exit;
 	}
 /**
@@ -375,7 +376,7 @@ class GroupchatsController extends AppController {
 		$ids = explode(",",$member_id);
 		try{
 			$groupchat = $this->Groupchat->findById($gid);
-			$users = [];
+			$users = array();
 						
 			foreach($groupchat['User'] as $i => $u){
 				if(is_numeric($i)){
@@ -395,14 +396,14 @@ class GroupchatsController extends AppController {
 					'User' => array('User' => $users)
 				));
 				
-				echo json_encode(['status' => 'OK']);
+				echo json_encode(array('status' => 'OK'));
 				exit;
 			}
-			echo json_encode(['status' => 'EXISTS']);
+			echo json_encode(array('status' => 'EXISTS'));
 			
 			exit;
 		}catch(Exception $e){
-			echo json_encode(['status' => 'FAILED']);
+			echo json_encode(array('status' => 'FAILED'));
 			exit;
 		}
 	}

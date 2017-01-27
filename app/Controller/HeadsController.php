@@ -29,7 +29,7 @@ class HeadsController extends AppController {
 		// $options = array('conditions' => array('user_id'=>$id));
 		//$this->Paginator->settings = ['limit' =>3000];//high limit for now
 		
-		$heads = $this->Head->find('all',['order' => ['Head.created DESC']]);//$this->Paginator->paginate();
+		$heads = $this->Head->find('all',array('order' => array('Head.created DESC')));//$this->Paginator->paginate();
 	//	echo ($heads['Owner']['password']);exit;
 		
 		foreach($heads as $k => $head){
@@ -200,10 +200,10 @@ class HeadsController extends AppController {
 		}
 		$this->request->onlyAllow('post', 'delete');
 		if ($this->Head->delete()) {
-			echo json_encode(['status' => 'OK']);
+			echo json_encode(array('status' => 'OK'));
 			exit;
 		} else {
-			echo json_encode(['status' => 'FAILED']);
+			echo json_encode(array('status' => 'FAILED'));
 			exit;
 		}
 		
@@ -225,13 +225,13 @@ class HeadsController extends AppController {
 		if(!$this->Head->Like->headLikeExists($id,$user_id)){
 			$ret = $this->Head->Like->save($like);
 			if($ret)
-				echo json_encode(['status' => 'OK']); 
+				echo json_encode(array('status' => 'OK')); 
 			else {
-				echo json_encode(['status' => 'FAILED']);
+				echo json_encode(array('status' => 'FAILED'));
 			}
 			exit;
 		}
-		echo json_encode(['status' => 'EXISTS']);
+		echo json_encode(array('status' => 'EXISTS'));
 		exit;
 		 
 
@@ -248,13 +248,13 @@ class HeadsController extends AppController {
 			$ret = $this->Head->Like->headLike($id,$user_id);
 			$this->Head->Like->id  = $ret['Like']['id'];
 			if($this->Head->Like->delete()){
-				echo json_encode(['status' => 'OK']);
+				echo json_encode(array('status' => 'OK'));
 			} else {
-				echo json_encode(['status' => 'FAILED']);
+				echo json_encode(array('status' => 'FAILED'));
 			}
 			exit;
 		}else{
-			echo json_encode(['status' => 'NOT_EXISTING']);
+			echo json_encode(array('status' => 'NOT_EXISTING'));
 		}
 		exit;
 		 

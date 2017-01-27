@@ -132,13 +132,13 @@ class CommentsController extends AppController {
 		if(!$this->Comment->Like->commentLikeExists($id,$user_id)){
 			$ret = $this->Comment->Like->save($like);
 			if($ret)
-				echo json_encode(['status' => 'OK']); 
+				echo json_encode(array('status' => 'OK')); 
 			else {
-				echo json_encode(['status' => 'FAILED']);
+				echo json_encode(array('status' => 'FAILED'));
 			}
 			exit;
 		}
-		echo json_encode(['status' => 'EXISTS']);
+		echo json_encode(array('status' => 'EXISTS'));
 		exit;
 		
 		
@@ -172,13 +172,13 @@ class CommentsController extends AppController {
 			$ret = $this->Comment->Like->commentLike($id,$user_id);
 			$this->Comment->Like->id  = $ret['Like']['id'];
 			if($this->Comment->Like->delete()){
-				echo json_encode(['status' => 'OK']);
+				echo json_encode(array('status' => 'OK'));
 			} else {
-				echo json_encode(['status' => 'FAILED']);
+				echo json_encode(array('status' => 'FAILED'));
 			}
 			exit;
 		}else{
-			echo json_encode(['status' => 'NOT_EXISTING']);
+			echo json_encode(array('status' => 'NOT_EXISTING'));
 		}
 		exit;
 		
