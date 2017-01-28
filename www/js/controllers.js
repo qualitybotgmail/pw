@@ -1,6 +1,14 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {})
+.controller('DashCtrl', function($scope) {
+  var MAX_RATE = 100;
+  var rate = 64;
+  $scope.labels = ["達成率", "残り"];
+  $scope.colors = ["#0000ff", "#ffffff"];
+  $scope.data = [rate, MAX_RATE - rate];
+})
+
+.controller('IncentiveCtrl', function($scope) {})
 
 .controller('ChatsCtrl', function($scope, Chats) {
   // With the new view caching in Ionic, Controllers are only called
@@ -19,6 +27,13 @@ angular.module('starter.controllers', [])
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);
+})
+
+.controller('GroupsCtrl', function($scope, Groups) {
+  $scope.groups = Groups.all();
+  $scope.leave = function(group) {
+    Groups.leave(group);
+  };
 })
 
 .controller('AccountCtrl', function($scope) {

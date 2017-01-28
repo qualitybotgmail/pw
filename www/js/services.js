@@ -47,4 +47,43 @@ angular.module('starter.services', [])
       return null;
     }
   };
+})
+
+.factory('Groups', function() {
+  // Might use a resource here that returns a JSON array
+
+  // Some fake testing data
+  var groups = [{
+    id: 0,
+    name: 'Group Name1'
+  }, {
+    id: 1,
+    name: 'Group Name2'
+  }, {
+    id: 2,
+    name: 'Group Name3'
+  }, {
+    id: 3,
+    name: 'Group Name4'
+  }, {
+    id: 4,
+    name: 'Group Name5'
+  }];
+
+  return {
+    all: function() {
+      return groups;
+    },
+    leave: function(group) {
+      groups.splice(groups.indexOf(group), 1);
+    },
+    get: function(groupId) {
+      for (var i = 0; i < groups.length; i++) {
+        if (groups[i].id === parseInt(groupId)) {
+          return groups[i];
+        }
+      }
+      return null;
+    }
+  };
 });
