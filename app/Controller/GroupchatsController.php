@@ -41,12 +41,12 @@ class GroupchatsController extends AppController {
 			'Message' , 'User.username','User.id', 'Owner.username','Owner.id'
 		);
 		$groupchats =array('groupchats' => $this->Groupchat->find('all', $options));
-		function gm($m){
-			$o = $m['Owner'];
-			$m['User'][] = $o;
-			return $m;
-		}
-		$groupchats['groupchats'] = array_map('gm',$groupchats['groupchats']);
+		// function gm($m){
+		// 	$o = $m['Owner'];
+		// 	$m['User'][] = $o;
+		// 	return $m;
+		// }
+		//$groupchats['groupchats'] = array_map('gm',$groupchats['groupchats']);
 		
 		$this->set('groupchats', $groupchats);
 		//	print_r($groupchats);
