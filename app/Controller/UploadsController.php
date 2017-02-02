@@ -51,7 +51,7 @@ class UploadsController extends AppController {
 			
 			header('Content-Type: application/json;charset=utf-8');
             
-            $saved = ['Success' => [],'Failed' => []];
+            $saved = array('Success' => array(),'Failed' => array());
             
             $comment_id = null;
             $message_id = null;
@@ -81,13 +81,13 @@ class UploadsController extends AppController {
 				$this->Upload->create();
 			    move_uploaded_file($file['tmp_name'],$filepath);
 				$urlpath = '/files/' . $this->Auth->user('username') . '/' . time().$file['name'];
-				$data = ['path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'head_id'=>$head_id ,'name' => $file['name']];
+				$data = array('path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'head_id'=>$head_id ,'name' => $file['name']);
 				$return = $this->Upload->save($data);
 				
 				if($return){
-					$saved["Success"][] = ['name' => $file['name'], 'path' => $urlpath];
+					$saved["Success"][] = array('name' => $file['name'], 'path' => $urlpath);
 				}else{
-					$saved["Failed"][] = ['name' => $file['name'], 'path' => $urlpath];
+					$saved["Failed"][] = array('name' => $file['name'], 'path' => $urlpath);
 				}
 				
 			}
@@ -142,11 +142,11 @@ class UploadsController extends AppController {
 		$this->request->onlyAllow('post', 'delete');
 		if ($this->Upload->delete()) {
 			// $this->Session->setFlash(__('The upload has been deleted.'), 'default', array('class' => 'alert alert-success'));
-			echo json_encode(['status' => 'OK']); 
+			echo json_encode(array('status' => 'OK')); 
 			exit;
 		} else {
 			// $this->Session->setFlash(__('The upload could not be deleted. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
-			echo json_encode(['status' => 'FAILED']); 
+			echo json_encode(array('status' => 'FAILED')); 
 			exit;
 		}
 		// return $this->redirect(array('action' => 'index'));

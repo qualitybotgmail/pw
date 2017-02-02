@@ -75,7 +75,7 @@ class Groupchat extends AppModel {
 		
 		$groupchat = $this->findById($gid);
 
-		$ret = [];
+		$ret = array();
 		
 		foreach($groupchat['User'] as $k => $t){
 			
@@ -85,8 +85,11 @@ class Groupchat extends AppModel {
 		return $ret;
 		
 	}	
+	
 	public function notified($id=null,$uid){
-	//	return;
+		
+		$this->User->Profile->clearGroupchatsCount($id,$uid);
+		
 		$this->Log->User->Behaviors->load('Containable');
 		$r = $this->find('first',array(
 			'conditions' => array('Groupchat.id' => $id),
@@ -94,20 +97,32 @@ class Groupchat extends AppModel {
 				'Log.id' ,'Log.user_id','Log.user_id != '.$uid
 			)
 		));
+		
 		$lids = array();
+	
 		if($r){
+		
 			foreach($r['Log'] as $log){
-				if($this->Log->UsersLog->findByUserIdAndLogId($uid,$log['id'])){
+			//	echo $log['id'].'<br />';
+				$ul = $this->Log->UsersLog->findByUserIdAndLogId($uid,$log['id']);
+				
+				if($ul){
+					
 					continue;
-				}	
+				}
+				
+		
 				$lids[] = array('log_id' => $log['id'],'user_id' =>$uid);
 			}
-		
-			$r = $this->Log->UsersLog->saveAll($lids);
+			
+			if(count($lids) > 0)		
+				$r = $this->Log->UsersLog->saveAll($lids);
 			
 			
 		}
 		
+		return count($lids);
+		//print_r($r);exit;
 	}
 	  
 }

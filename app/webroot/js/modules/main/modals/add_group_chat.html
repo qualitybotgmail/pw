@@ -55,7 +55,8 @@
 					<i class="fa fa-ban bigger-140"></i> &nbsp;
 					キャンセル
 				</button>
-				<button type="submit" ng-click="saveGroupChat()" class="btn btn-primary btn-sm" id="btn-ok" ng-disabled="groupchatForm.$invalid || ! groupchatForm.$dirty">
+				<button type="submit" ng-click="saveGroupChat()" class="btn btn-primary btn-sm" id="btn-ok" 
+					ng-disabled="groupchatForm.$invalid || ! groupchatForm.$dirty || isSending">
 					<i class="fa fa-save bigger-140"></i> &nbsp;送信
 				</button>
 			</div>

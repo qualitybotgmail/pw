@@ -45,7 +45,7 @@ class AttachmentsController extends AppController {
 			
 			header('Content-Type: application/json;charset=utf-8');
             
-            $saved = ['Success' => [],'Failed' => []];
+            $saved = array('Success' => array(),'Failed' => array());
             
             $comment_id = null;
             $message_id = null;
@@ -65,7 +65,7 @@ class AttachmentsController extends AppController {
 				
 			    move_uploaded_file($file['tmp_name'],$filepath);
 				$urlpath = '/uploads/' . $this->Auth->user('username') . '/' . $file['name'];
-				$data = ['path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'name' => $file['name']];
+				$data = array('path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'name' => $file['name']);
 				$return = $this->Attachment->save($data);
 				
 				if($return){

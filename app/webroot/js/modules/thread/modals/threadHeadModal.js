@@ -61,7 +61,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 	                       console.log('closing with upload');
 	                    	$("#thread-head-modal #new-head-attachments").val('');
                         	$scope.$close(angular.extend(res, {'Upload': response.Success}));
-                        	$scope.$appy();
+                        	// $scope.$apply();
 	                   },
 	                   error: function(jqXHR, textStatus, errorMessage) {
 	                       console.log(errorMessage); // Optional

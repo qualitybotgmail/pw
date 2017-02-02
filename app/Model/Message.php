@@ -30,6 +30,7 @@ class Message extends AppModel {
 		),
 		'groupchat_id' => array(
 			'numeric' => array(
+		
 				'rule' => array('numeric'),
 				//'message' => 'Your custom message here',
 				//'allowEmpty' => false,
@@ -38,6 +39,7 @@ class Message extends AppModel {
 				//'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
+		
 		// 'body' => array(
 		// 	'notEmpty' => array(
 		// 		'rule' => array('notEmpty'),
@@ -88,7 +90,7 @@ class Message extends AppModel {
 
 	public function afterSave($created, $options = array()){
 		if(!$created) return;
-
+			
 		$id = AuthComponent::user('id');
 		$msg = $this->data['Message'];
 		

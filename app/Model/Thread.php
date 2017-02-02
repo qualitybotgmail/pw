@@ -80,7 +80,7 @@ class Thread extends AppModel {
 		
 		$thread = $this->findById($thread_id);
 		
-		$ret = [];
+		$ret = array();
 		foreach($thread['User'] as $k => $t){
 			if (is_numeric($k))
 				$ret[] = $t['id'];
@@ -100,11 +100,12 @@ class Thread extends AppModel {
 	public function afterSave($created, $options = array()){
 
 		if(!$created){
+			$type = 'Thread.edit';
 			$id = AuthComponent::user('id');
 			$this->Log->save(array(
 				'user_id' => 	$id,
 				'thread_id' => $this->data['Thread']['id'],
-				'type' => 'Thread.edit'
+				'type' => $type
 			));
 		}
 
@@ -115,10 +116,14 @@ class Thread extends AppModel {
 	}
 	
 	public function notified($tid,$uid){
-		$sql = "SELECT logs.id FROM logs where logs.thread_id = $tid and logs.type = 'Thread.edit' and logs.id not in (select users_logs.log_id from users_logs where users_logs.user_id = $uid)";
+	
+		$this->User->Profile->clearThreadsCount($tid,$uid);
+		$sql = "SELECT logs.id FROM logs where logs.thread_id = $tid and (logs.type = 'Thread.edit' or logs.type = 'Thread.joined') and logs.id not in (select users_logs.log_id from users_logs where users_logs.user_id = $uid)";
 		
 		$r = $this->query($sql);
+		
 		$lids = array();
+		
 		if($r){
 			foreach($r as $log){
 				$lids[] = array('log_id' => $log['logs']['id'],'user_id' =>$uid);
@@ -126,6 +131,7 @@ class Thread extends AppModel {
 			$r = $this->Log->UsersLog->saveAll($lids);
 			
 		}
+		$this->User->Profile->minusNotificationCount($tid,$uid,'Threads',count($lids));
 	//	print_r($r);
 	}
 	

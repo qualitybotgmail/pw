@@ -32,7 +32,7 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
 
-    public $components = array(
+    public $components = array("Cookie",
 	'RequestHandler',
         'Session',
         'Auth' => array(
@@ -72,6 +72,7 @@ class AppController extends Controller {
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->layout = 'bootstrap';
+
 
 		$this->Auth->allow('add','view','logout','login','findallby','findby','contains','upload');
 	}

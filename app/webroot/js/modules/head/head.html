@@ -75,7 +75,7 @@
         </div> <!-- / .panel-heading-controls -->
     </div> <!-- / .panel-heading -->
     <ul class="list-group">
-         <li class="list-group-item">
+        <li class="list-group-item">
             <div class="row">
                 <div class="col-md-12">
                     <p>
@@ -114,7 +114,7 @@
                 
                 <input type="text" name="data[Upload][comment_id]" class="hidden" id="comment-id" ng-model="comment.comment_id" />
                 <input type="file" name="data[Upload][file]" id="attachments"  multiple />
-                <textarea name="data[Upload][body]" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
+                <textarea ng-click='textboxClicked()' name="data[Upload][body]" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
                 <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin-top:4px;">コメント</button>
                 
             </form>

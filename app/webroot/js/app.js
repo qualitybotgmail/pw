@@ -13,10 +13,12 @@ define([
 	'debounce',
 	'ngIdleJs',
 	'ngNotification',
-	'underscore',
+	'ngFilter',
+	'underscore'
 	], 
-	function ($, angular, config, dependencyResolverFor,  pace) {
+	function ($, angular, config, dependencyResolverFor, pace) {
 		'use strict';
+
 		pace.start({
 			document: false
 		});
@@ -29,9 +31,11 @@ define([
 			'notify',
 			'debounce',
 			'ngIdle',
-			'notification'
+			'notification',
+			'angular.filter'
 			// 'btford.socket-io'
 		]);
+
 		talknoteApp.constant('GLOBAL', {
 			// Formats
 			default: {
@@ -65,10 +69,10 @@ define([
 
 			function($routeProvider, $locationProvider, $controllerProvider, $compileProvider, $filterProvider, $provide, $stateProvider, RestangularProvider, $httpProvider, $tooltipProvider, IdleProvider, KeepaliveProvider, GLOBAL)
 	        {
-	        	IdleProvider.idle(900); // 15 mins
-				IdleProvider.timeout(5*60); // 5 mins
-				KeepaliveProvider.interval(300); // heartbeat every 5 mins
-				KeepaliveProvider.http('/users/me.json'); // URL that makes sure session is alive
+	        	// IdleProvider.idle(900); // 15 mins
+				// IdleProvider.timeout(5*60); // 5 mins
+				// KeepaliveProvider.interval(300); // heartbeat every 5 mins
+				// KeepaliveProvider.http('/users/me.json'); // URL that makes sure session is alive
 	        	
 		        // Restangular Settings
 		        RestangularProvider.setBaseUrl(Talknote.baseUrl + "/");
@@ -121,183 +125,24 @@ define([
 			'Keepalive',
 			'$notification',
 			'$interval',
-			'$http',
-		function($rootScope, $q, $state, $window, Notify, Restangular, Idle, $log, Keepalive, $notification, $interval,$http) {
-		
-            $rootScope.isSubscribed = false;
-            $rootScope.swRegistration = null;
-            $rootScope.sSubscription = {};
-            $rootScope.urlB64ToUint8Array = function(base64String) {
-              var padding = '='.repeat((4 - base64String.length % 4) % 4);
-              var base64 = (base64String + padding)
-                .replace(/\-/g, '+')
-                .replace(/_/g, '/');
-            
-              var rawData = window.atob(base64);
-              var outputArray = new Uint8Array(rawData.length);
-            
-              for (let i = 0; i < rawData.length; ++i) {
-                outputArray[i] = rawData.charCodeAt(i);
-              }
-              return outputArray;
-            };
-            $rootScope.applicationKeys = {
-                publicKey : $rootScope.urlB64ToUint8Array('BDd3_hVL9fZi9Ybo2UUzA284WG5FZR30_95YeZJsiA' + 'pwXKpNcF1rRPF3foIiBHXRdJI2Qhumhf6_LFTeZaNndIo'),
-                privateKey : $rootScope.urlB64ToUint8Array('xKZKYRNdFFn8iQIF2MH54KTfUHwH105zBdzMR7SI3xI')
-                // publicKey : $rootScope.urlB64ToUint8Array('BDqxBLh4W-UgDU0JU8JkkYLrw5u5yz9BMKEqyE67N9gyam75Vm2o27yS7Nadw2heDuqjaeXh6ihMT5Cu7LnzU_U'),
-                // privateKey : $rootScope.urlB64ToUint8Array('iZsK3cKJ2GHomwlRbGYjxwx1B3TK5zX2BEz6XFAqMMA')
-	        };
-            $rootScope.updateSubscriptionOnServer = function(subscription) {
-            	console.log(JSON.stringify(subscription), "subscription")
-                $rootScope.sSubscription = subscription;
-            };
-            
-            $rootScope.subscribeUser = function(){
-                
-                var applicationServerKey = $rootScope.applicationKeys.publicKey;
-                $rootScope.swRegistration.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: applicationServerKey
-                })
-                .then(function(subscription) {
-                    console.log('User is subscribed:', subscription);
-                
-                    $rootScope.updateSubscriptionOnServer(subscription);
-                
-                    $rootScope.isSubscribed = true;
-                  })
-                  .catch(function(err) {
-                    console.log('Failed to subscribe the user: ', err);
-                  });
-            };
-            
-            $rootScope.unsubscribeUser = function() {
-              $rootScope.swRegistration.pushManager.getSubscription()
-              .then(function(subscription) {
-                if (subscription) {
-                  return subscription.unsubscribe();
-                }
-              })
-              .catch(function(error) {
-                console.log('Error unsubscribing', error);
-              })
-              .then(function() {
-                $rootScope.updateSubscriptionOnServer(null);
-            
-                console.log('User is unsubscribed.');
-                $rootScope.isSubscribed = false;
-              });
-            }
-            
-            $rootScope.initialiseUI = function() {
-              // Set the initial subscription value
-              $rootScope.swRegistration.pushManager.getSubscription()
-              .then(function(subscription) {
-              	console.log(subscription,"initialiseUI")
-            	$rootScope.isSubscribed = !(subscription === null);
-            
-            	$rootScope.updateSubscriptionOnServer(subscription);
-            	if ($rootScope.isSubscribed) {
-			      $rootScope.unsubscribeUser();
-			    } else {
-			      $rootScope.subscribeUser();
-			    }	
-                if ($rootScope.isSubscribed) {
-                  console.log('User IS subscribed.');
-                } else {
-                  console.log('User is NOT subscribed.');
-                }
-              });
-            }
-            
-            $rootScope.sendPushNotif = function(data){
-                var req = {
-                 method: 'POST',
-                 url: 'http://188.166.183.64:7000/api/send-push-msg',
-                 headers: {
-                   'Content-Type': 'application/json'
-                 },
-                 data: {
-                      subscription: $rootScope.sSubscription,
-                      data: data,
-                      applicationKeys: $rootScope.applicationKeys
-                    }
-                }
-                
-            	console.log(req, "req")
-         //       $http(req).then(function successCallback(response) {
-         //          console.log(response, "success")
-         //         }, function errorCallback(response) {
-         //           if (response.status !== 200) {
-         //             return response.text()
-         //             .then((responseText) => {
-         //               throw new Error(responseText);
-         //             });
-         //           }
-         //         });
-                  var fetchOptions = {
-			        method: 'post',
-			        headers : {
-			        	"Encryption" :'salt=Q9YyTizLhHpEntBcbTqq5A',
-				        'Crypto-Key' : 'dh=' + $rootScope.applicationKeys.publicKey,
-				        'Content-Encoding': 'aesgcm',
-				        'TTL': 60,
-				        'Authorization': 'WebPush eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJodHRwczovL2ZjbS5nb29nbGVhcGlzLmNvbSIsImV4cCI6MTQ4MjU5ODM4OCwic3ViIjoibWFpbHRvOnNpbXBsZS1wdXNoLWRlbW9AZ2F1bnRmYWNlLmNvLnVrIn0.EemWZDyGLW5_jcv72XUCaRuhUkY0-Fmek7sdEUHlKSmEy0oTdrGKuzJsp8cxW0OnsYlJkAHP8E6gSwpwiPStuA'
-			        },
-			        body :  JSON.stringify({
-                      subscription: $rootScope.sSubscription,
-                      data: data.body,
-                      applicationKeys: $rootScope.applicationKeys
-			        })
-			      };
-			      fetch('https://simple-push-demo.appspot.com/api/v2/sendpush', fetchOptions).then(function (response) {
-			        if (response.status >= 400 && response.status < 500) {
-			          console.log('Failed web push response: ', response, response.status);
-			          throw new Error('Failed to send push message via web push protocol');
-			        }
-			      }).catch(function (err) {
-			        throw new Error(err);
-			      });
-            };
-            
-            if ('serviceWorker' in navigator && 'PushManager' in window) {
-			  console.log('Service Worker and Push is supported');
-			  		
-			  navigator.serviceWorker.register('https://jhoncistalknote.blobby.xyz/sw.js')
-			  .then(function(swReg) {
-			    console.log('Service Worker is registered', swReg);
-				
-			    $rootScope.swRegistration = swReg;
+		function($rootScope, $q, $state, $window, Notify, Restangular, Idle, $log, Keepalive, $notification, $interval) {
 			
-			    $rootScope.initialiseUI();
-			    
-			   
-			  })
-			  .catch(function(error) {
-			    console.error('Service Worker Error', error);
-			  });
-			  
-			 
-			} else {
-			  console.warn('Push messaging is not supported');
-			}
-
 			$rootScope.notificationCount = 0 ;
-			
-			var pendingQryNotification, queryFirst = true;
+
+			var pendingQryNotification, queryFirst = true, isNotificationUpdating = false;
 			
 			/**
 			 * use to check if the user is idle
 			 **/
-			Idle.watch();
-			$rootScope.$on('IdleStart', function() { 
-				/* Display modal warning or sth */ 
-				console.log('idle start');
-			});
-			$rootScope.$on('IdleTimeout', function() { 
-				/* Logout user if idle time last*/
-				$window.location.href = "/users/logout";
-			});
+			// Idle.watch();
+			// $rootScope.$on('IdleStart', function() { 
+			// 	/* Display modal warning or sth */ 
+			// 	console.log('idle start');
+			// });
+			// $rootScope.$on('IdleTimeout', function() { 
+			// 	/* Logout user if idle time last*/
+			// 	$window.location.href = "/users/logout";
+			// });
 			
 			// get login users information
 			Restangular.one('profiles').one('me').get().then(function(res){
@@ -311,22 +156,42 @@ define([
 				}
     	    });
     	    
-    	    var _getNotificationCount = function () {
+    	    $rootScope._getNotificationCount = function () {
+    	    	
+    	    	if (isNotificationUpdating) return;
+    	    	if (!$rootScope.createdGroupChats && !$rootScope.threads) return;
+    	    	
+    	    	isNotificationUpdating = true;
+    	    	
+    	    	console.log("Getting notifictions count");
     	    	Restangular.one("profiles").one("notifications_count").get().then(function(notifications){
+    	    		console.log("Got notifictions count");
     	    		$rootScope.notificationCount = 0;
     	    		var threadsNotifications = notifications.Threads;
     	    		var groupchatsNotifications = notifications.Groupchats;
     	    		
-
+    	    		
     	    		angular.forEach(threadsNotifications, function(threadNotification, index){
     	    			var isThreadIdExist = false;
     	    			for (var i = 0; i < $rootScope.threads.length; i++)	{
-	            			if (threadNotification.thread_id === $rootScope.threads[i].Thread.id) {
-	            				$rootScope.notificationCount += parseInt(threadNotification.count);
-	            				$rootScope.threads[i].Thread.notifications = threadNotification.count;
-	            				isThreadIdExist = true;
-	            				break;
-	            			}
+    	    				if (!$rootScope.threads[i].Thread.is_already_notify) {
+    	    					$rootScope.threads[i].Thread.notifications = 0;
+		            			if (threadNotification.thread_id === $rootScope.threads[i].Thread.id) {
+		            				$rootScope.notificationCount += parseInt(threadNotification.count);
+		            				$rootScope.threads[i].Thread.notifications = parseInt(threadNotification.count);
+		            				$rootScope.threads[i].Thread.is_already_notify = true;
+		            				isThreadIdExist = true;
+		            				break;
+		            			}	
+    	    				} else {
+    	    					if (threadNotification.thread_id === $rootScope.threads[i].Thread.id) {
+		            				$rootScope.notificationCount += parseInt(threadNotification.count);
+		            				$rootScope.threads[i].Thread.notifications = parseInt(threadNotification.count);
+		            				$rootScope.threads[i].Thread.is_already_notify = true;
+		            				isThreadIdExist = true;
+		            				break;
+		            			}
+    	    				}
 	            		}
 	            		
 	            		// if thread id not exist update the thread
@@ -338,11 +203,26 @@ define([
     	    		angular.forEach(groupchatsNotifications, function(groupchatsNotification, index){
     	    			var isGroupchatIdExist = false;
     	    			for (var i = 0; i < $rootScope.createdGroupChats.length; i++)	{
-	            			if (groupchatsNotification.groupchat_id ===$rootScope.createdGroupChats[i].Groupchat.id) {
-	            				$rootScope.notificationCount += parseInt(groupchatsNotification.count);
-	            				$rootScope.createdGroupChats[i].Groupchat.notifications = groupchatsNotification.count;
-	            				isGroupchatIdExist = true;
-	            				break;
+	            			
+	            			if (!$rootScope.createdGroupChats[i].Groupchat.is_already_notify) {
+	            				$rootScope.createdGroupChats[i].Groupchat.notifications = 0;
+	            			
+		            			if (groupchatsNotification.groupchat_id == $rootScope.createdGroupChats[i].Groupchat.id) {
+		            				$rootScope.notificationCount += parseInt(groupchatsNotification.count);
+		            				$rootScope.createdGroupChats[i].Groupchat.notifications = parseInt(groupchatsNotification.count);
+		            				isGroupchatIdExist = true;
+		            				$rootScope.createdGroupChats[i].Groupchat.is_already_notify = true;
+		            				break;
+		            			}	
+	            			} else {
+	            				
+	            				if (groupchatsNotification.groupchat_id == $rootScope.createdGroupChats[i].Groupchat.id) {
+		            				$rootScope.notificationCount += parseInt(groupchatsNotification.count);
+		            				$rootScope.createdGroupChats[i].Groupchat.notifications = parseInt(groupchatsNotification.count);
+		            				isGroupchatIdExist = true;
+		            				$rootScope.createdGroupChats[i].Groupchat.is_already_notify = true;
+		            				break;
+		            			}
 	            			}
 	            		}
 	            		
@@ -352,40 +232,28 @@ define([
 	            		}
     	    		});
     	    		
-    	    		// angular.forEach($rootScope.threads, function(thread,index){
-    	    			
-    	    		// 	for (var i = 0; i < threadsNotifications.length; i++)	{
-	          //  			if (threadsNotifications[i].thread_id === thread.Thread.id) {
-	          //  				$rootScope.notificationCount += parseInt(threadsNotifications[i].count);
-	          //  				thread.Thread.notifications = threadsNotifications[i].count;
-	          //  				break;
-	          //  			}
-	          //  		}
-    	    		// });
-    	    		
-    	    		// angular.forEach($rootScope.createdGroupChats, function(groupChat,index){
-    	    		// 	for (var i = 0; i < groupchatsNotifications.length; i++)	{
-	          //  			if (groupchatsNotifications[i].groupchat_id === groupChat.Groupchat.id) {
-	          //  				$rootScope.notificationCount += parseInt(groupchatsNotifications[i].count);
-	          //  				groupChat.Groupchat.notifications = groupchatsNotifications[i].count;
-	          //  				break;
-	          //  			}
-	          //  		}
-    	    		// });
-    	    		
+    	    		isNotificationUpdating = false;
     	    		if (queryFirst) {
     	    			queryFirst = false;
     	    			_startQueryNotifications();
     	    		}
     	    	});
     	    };
+    	   	  
+    	    window.notification_count_function = function(){
+    	    	// queryFirst = true;
+    	    	$rootScope._getNotificationCount();
+    	    };
     	    
+			window.enterScope = function(cb){
+				cb($rootScope);
+			}
     	    var _startQueryNotifications = function() {
-    	    	if (queryFirst){
-    	    		_getNotificationCount();
-    	    	} else {
-    	    		pendingQryNotification = $interval(_getNotificationCount, 10000);
-    	    	}
+    	    	// if (queryFirst){
+    	    		$rootScope._getNotificationCount();
+    	    	// } else {
+    	    		//pendingQryNotification = $interval($rootScope._getNotificationCount, 10000);
+    	    	// }
     	    };
     	    
     	    var _checkThreadIsIgnored = function(ignoredThreads) {

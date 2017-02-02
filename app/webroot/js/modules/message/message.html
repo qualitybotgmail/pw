@@ -1,7 +1,22 @@
 <style type="text/css">
-    .thread-users span.comma:last-child {
-        display: 'none';
-    }
+  .glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+  }
+  
+  @-webkit-keyframes spin2 {
+      from { -webkit-transform: rotate(0deg);}
+      to { -webkit-transform: rotate(360deg);}
+  }
+  
+  @keyframes spin {
+      from { transform: scale(1) rotate(0deg);}
+      to { transform: scale(1) rotate(360deg);}
+  }
+  
+  .thread-users span.comma:last-child {
+      display: 'none';
+  }
   .company-name{
     margin-top:5px;
     margin-bottom:20px;
@@ -14,7 +29,7 @@
     padding:0 20px;
   }
   #message-list-wrapper{
-    height:580px;
+    max-height:580px;
     overflow-y:auto;
     padding-right:15px;
   }
@@ -81,17 +96,20 @@
     
     <div id="message-list-wrapper">
 		<div class="panel-body padding-sm">
-			<a class="messages-link clickable" ng-click="getPreviousMessages()" ng-if="message.page_info.has_next">MORE MESSAGES</a>
+			<a class="messages-link clickable" ng-click="getPreviousMessages()" ng-disabled="isLoadingMessage" ng-if="message.page_info.has_next">
+			  <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-if="isLoadingMessage"></span>
+			  MORE MESSAGES
+			</a>
 			<div class="messages-list" >
 			    <div ng-repeat="(created_date, filteredMessages) in message.Message | groupBy: 'created_date'" ng-init="$last && fireMessageEvent()">
 			        <div class="message text-center">
 			             <hr>
 			             <h5>{{created_date}}</h5>
-			         </div>    
+			        </div>    
 			        <div class="message" ng-repeat="m in filteredMessages track by $index">
-    					<div class="avatar">
+    					  <div class="avatar">
     				        <img src="/img/avatar.png" alt="">
-                        </div>
+                </div>
     				    <div class="msg">
                             <h4 class="message-subject">
                                 {{m.User.username}}
@@ -119,10 +137,10 @@
     <div style="position:relative;">
         <form role="form" id="messageFrm" name="messageFrm" method="POST" enctype="multipart/form-data" novalidate ng-submit="sendMessage()">
             <div class="form-group">
-              <textarea name="body" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
+              <textarea ng-click='textboxClicked()' name="body" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
               <div style="margin-top:8px;">
                 <input type="file" id="attachments" multiple style="display:inline-block;">
-                <button type="submit" class="btn btn-primary pull-right">
+                <button type="submit" class="btn btn-primary pull-right" ng-disabled="isSending">
                     送信
                 </button>
               </div>

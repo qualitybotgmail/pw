@@ -52,7 +52,10 @@ define(['jquery', 'app', 'angular'], function($, app, angular)
             $scope.showSearch = false;
             
             $scope.$watch('qrySearch', function(newV, oldV){
-                if (!$scope.qrySearch) return;
+                if (!$scope.qrySearch) {
+                    $scope.search = {};
+                    return;
+                }
                 ProfilesModel.one('search').one($scope.qrySearch).get().then(function(search){
                     $scope.search = search;
                 });

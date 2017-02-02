@@ -130,12 +130,12 @@ class MessagesController extends AppController {
 	
 		$groupchat_id = $id;  
 		
+		
 		if ($this->request->is('post')) { 
 			$body = $this->request->data['body'];
 			// $body = 'asd';
 			$user_id = $this->Auth->user('id'); 
-			
-			$this->Message->create();
+	
 			
 			$data = array('user_id' => $user_id, 'groupchat_id' => $groupchat_id, 'body' => $body); 
 			
@@ -144,13 +144,7 @@ class MessagesController extends AppController {
 			$saved['Message']['created_date'] = $s[0];
 			echo json_encode($saved);
 			exit;
-			
-			if($saved){
-				$result = $saved; 
-			}else{
-				$result = 'failed';
-			}
-		 
+
 		} else{
 			$result = 'data unposted';
 		} 
@@ -180,13 +174,13 @@ class MessagesController extends AppController {
 		if(!$this->Message->Like->messageLikeExists($id,$user_id)){
 			$ret = $this->Message->Like->save($like);
 			if($ret)
-				echo json_encode(['status' => 'OK']); 
+				echo json_encode(array('status' => 'OK')); 
 			else {
-				echo json_encode(['status' => 'FAILED']);
+				echo json_encode(array('status' => 'FAILED'));
 			}
 			exit;
 		}
-		echo json_encode(['status' => 'EXISTS']);
+		echo json_encode(array('status' => 'EXISTS'));
 		exit;
 		
 		
@@ -220,13 +214,13 @@ class MessagesController extends AppController {
 			$ret = $this->Message->Like->messageLike($id,$user_id);
 			$this->Message->Like->id  = $ret['Like']['id'];
 			if($this->Message->Like->delete()){
-				echo json_encode(['status' => 'OK']);
+				echo json_encode(array('status' => 'OK'));
 			} else {
-				echo json_encode(['status' => 'FAILED']);
+				echo json_encode(array('status' => 'FAILED'));
 			}
 			exit;
 		}else{
-			echo json_encode(['status' => 'NOT_EXISTING']);
+			echo json_encode(array('status' => 'NOT_EXISTING'));
 		}
 		exit;
 

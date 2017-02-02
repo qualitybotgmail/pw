@@ -38,6 +38,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             $scope.templates = ThreadFactory.templates;
             $scope.currentPageNumber = 1;
             
+            window.notification_count_function();
             
             var _updateThreadTitle = function(threadId){
                 for (var i = 0; i < $rootScope.threads.length; i++) {

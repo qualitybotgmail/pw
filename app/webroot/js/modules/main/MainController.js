@@ -84,8 +84,12 @@ define([
         'MainService',
 
         function($rootScope, $scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, HeadsModel, CommentsModel, UsersModel, ProfilesModel, GroupChatModel, Factory, MainService) {
+        	
+        	$scope.threadNotifications = [];
+            $scope.groupChatNotifications = [];
         	$scope.comment = [];
         	$scope.loadFirsttime = true;
+        	$scope.templates = Factory.templates;
         	
         	
         	$scope.fireThreadActiveEvent = function() {
@@ -94,7 +98,10 @@ define([
                     MainService.activeList('thread',$state.params.id);
                 }  
         	};
-        	
+        	//For debugging in dev console
+			window.enterScopeM = function(cb){
+				cb($scope);
+			}        	
         	$scope.fireMessageActiveEvent = function() {
                 if ($state.current.name === 'app.message' && $scope.loadFirsttime) {
                     $scope.loadFirsttime = false;
@@ -136,7 +143,11 @@ define([
                 
                 Modal.showModal(modalConfig, {}).then(function (result) {
                     // success
-                    $rootScope.createdGroupChats.push(result);
+                    var tempGroupChat = result;
+                    if (!tempGroupChat.existed) {
+                        tempGroupChat.User.push($rootScope.loginUser);
+                        $rootScope.createdGroupChats.push(tempGroupChat);   
+                    }
                     $state.go('app.message',{id: result.Groupchat.id});
                 }, function (err) {
                     // error
@@ -253,15 +264,24 @@ define([
                 }, 1000);
             };
             
+             $scope.textboxClicked = function(headId){
+                $.get('/heads/setnotified/'+headId,function(res){
+                }).always(function(res){
+                    $rootScope._getNotificationCount();
+                });
+            }
+            
             $scope.goto = {
                 home: function() {
                     $state.go('app');
                 },
                 thread: function(thread) {
+                    $rootScope.notificationCount -= thread.notifications;
                     thread.notifications = 0;
                     $state.go('app.thread', { id: thread.id });
                 },
                 message: function(groupchat) {
+                    $rootScope.notificationCount -= groupchat.notifications;
                     groupchat.notifications = 0;
                     $state.go('app.message', { id: groupchat.id });
                 },
@@ -269,12 +289,8 @@ define([
                     $state.go('app.timeline');
                 }
             };
-        	
+      
         	var start = function() {
-        	    
-                $scope.templates = Factory.templates;
-                $scope.threadNotifications = [];
-                $scope.groupChatNotifications = [];
                 
                 ProfilesModel.one('timeline').get().then(function(timeline){
                     $scope.timeline = timeline;

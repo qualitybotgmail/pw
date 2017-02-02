@@ -1,5 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
+App::import("Controller","Profiles");
 /**
  * Users Controller
  *
@@ -26,7 +27,7 @@ class UsersController extends AppController {
 	}
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('me','dd','notifications');
+		$this->Auth->allow('me','dd','notifications','mobilelogin');
 	}
 	
 	
@@ -123,24 +124,93 @@ class UsersController extends AppController {
 		}
 		return $this->redirect(array('action' => 'index'));
 	}
-
-	public function login() {
+	public function mobilelogin(){
+		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_SERVER,true),FILE_APPEND);
 	    if ($this->request->is('post')) {
+	    	file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_POST,true),FILE_APPEND);
 	        if ($this->Auth->login()) {
-	            return $this->redirect($this->Auth->redirectUrl());
+				echo 'OK';
+				exit;
+	        }
+	        echo 'Not ok';
+	        exit;
+	    }
+	    echo "GET?";
+	    exit;
+	}
+	public function login() {
+		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_SERVER,true),FILE_APPEND);
+	    if ($this->request->is('post')) {
+	    	file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_POST,true),FILE_APPEND);
+	        if ($this->Auth->login()) {
+	        	// if($this->Auth->user('username') =='admin') {
+	        		
+	        	// }
+	        	// $type = 'User.logged';
+				$id = $this->Auth->user('id');
+				// $this->User->Log->save(array(
+				// 	'user_id' => 	$id,
+				// 	'type' => $type
+				// ));
+				
+				//$this->User->id = $id;
+				//$this->User->saveField('fcm_id','');
+				
+				//Mark all notfications 'notified' to prevent pushing of notifications even not logged in
+				$notifs = $this->User->Log->notifications($id);
+				foreach($notifs as $n){
+					if($this->Session->read('Backoffice.notified')==null){
+						$this->Session->write('Backoffice.notified',array($n['id']));
+					}else{
+						$ses = $this->Session->read('Backoffice.notified');
+						if(in_array($n['id'],$ses)){
+							continue;
+						}else{
+							$ses[] = $n['id'];
+							$this->Session->write('Backoffice.notified',$ses);
+						}
+					}					
+				}
+				
+	        	//print_r($this->request->data);exit;
+	            return $this->redirect('/');//array('controller'=>'profiles','action'=>'renewfcm'));
 	        }
 	        $this->Session->setFlash(__('Invalid username or password, try again'));
 	    }
+	    else if ($this->RequestHandler->isAjax())
+		{
+		    $tmpUser['User']['username'] = $this->request->params['name'];
+		    $tmpUser['User']['password'] = $this->request->params['pw'];
+		    if($this->Auth->login($tmpUser))
+		    {
+		        // $this->Session->setFlash('Login Passed');
+		        $id = $this->Auth->user('id');
+				$this->User->recursive = 0;
+		        $user = $this->User->findById($id); 
+		        
+		        $this->set('user',$user);
+		    }
+		    else
+		    {
+		        // $this->Session->setFlash('Login Failed');
+		    }
+		}
 	}
 	
 	public function logout() {
+		$uid = $this->Auth->user('id');
+		$profile = $this->User->Profile->findByUserId($uid);
+		$this->User->Profile->id = $profile['Profile']['id'];
+		$this->User->Profile->saveField('fcm_id','');
+		
 	    return $this->redirect($this->Auth->logout());
 	}	
 	
-	public function me(){ 
-		
+	public function me($uid = null){
+		error_reporting(E_ALL);	
+		echo $uid;exit;
 		$this->view = 'view'; 
-		$id = $this->Auth->user('id');
+		$id = ($uid == null) ? $this->Auth->user('id') : $uid;
 		
 		
 		$this->User->recursive = 0;
@@ -158,21 +228,21 @@ class UsersController extends AppController {
 		// $this->User->Thread->Head->recursive = 4;  
 		
 		$thread = $this->User->Thread->find('all',  
-		 ['conditions' => ['Thread.user_id' => $user_id]], 
-		['order' =>['Thread.created' => 'desc']] );   
+		 array('conditions' => array('Thread.user_id' => $user_id)), 
+		array('order' =>array('Thread.created' => 'desc')) );   
 		
 		
 		$head = $this->User->Thread->Head->find('all', 
-		['conditions' => ['Head.user_id' => $user_id]], 
-		['order' =>['Head.created' => 'desc']]);  
+		array('conditions' => array('Head.user_id' => $user_id)), 
+		array('order' =>array('Head.created' => 'desc')));  
 		
 		// $like = $this->User->Like->find('all', 
 		// ['conditions' => ['Like.user_id' => $user_id]], 
 		// ['order' =>['Like.created' => 'desc']]);  
 		
 		$comment = $this->Comment->find('all',
-		['conditions'=>['Comment.user_id'=>$user_id]],
-		['order'=>['Comment.created'=>'desc']]
+		array('conditions'=>array('Comment.user_id'=>$user_id)),
+		array('order'=>array('Comment.created'=>'desc'))
 		);
 		   
 		// $values = array_merge($thread, $head, $comment); 
@@ -191,8 +261,8 @@ class UsersController extends AppController {
 		$this->Message->recursive = 4; 
 		$message = $this->Message->find('all', 
 		// ['fields' => ['id','user_id','groupchat_id','body','created','modified']],
-		['conditions' => ['Message.user_id' => $user_id]], 
-		['order' =>['Message.created' => 'desc']]);  
+		array('conditions' => array('Message.user_id' => $user_id)), 
+		array('order' =>array('Message.created' => 'desc')));  
 		 
 		$this->set('user', $message); 
 	}
@@ -202,8 +272,8 @@ class UsersController extends AppController {
 		$user_id = $this->Auth->user('id'); 
 		$like = $this->User->Like->find('all', 
 		// ['fields' => ['id','head_id','created','modified']],
-		['conditions' => ['Like.user_id' => $user_id], ['head_id !='=>'0']], 
-		['order' =>['Like.created' => 'desc']]);   
+		array('conditions' => array('Like.user_id' => $user_id), array('head_id !='=>'0')), 
+		array('order' =>array('Like.created' => 'desc')));   
 		
 		$this->set('user', $like); 
 	}
@@ -214,8 +284,8 @@ class UsersController extends AppController {
 		
 		$groupchat = $this->Groupchat->find('all', 
 		// ['fields' => ['id','created','modified']],
-		['conditions' => ['Groupchat.user_id' => $user_id]], 
-		['order' =>['Groupchat.created' => 'desc']]);   
+		array('conditions' => array('Groupchat.user_id' => $user_id)), 
+		array('order' =>array('Groupchat.created' => 'desc')));   
 		
 		$this->set('user', $groupchat); 
 		
@@ -227,8 +297,8 @@ class UsersController extends AppController {
 		
 		$groupchat = $this->Upload->find('all', 
 		// ['fields' => ['id','comment_id','name','size','path','created','modified']],
-		['conditions' => ['Upload.user_id' => $user_id]], 
-		['order' =>['Upload.created' => 'desc']]);   
+		array('conditions' => array('Upload.user_id' => $user_id)), 
+		array('order' =>array('Upload.created' => 'desc')));   
 		
 		$this->set('user', $groupchat); 
 		
@@ -240,8 +310,8 @@ class UsersController extends AppController {
 		$user_id = $this->Auth->user('id');
 		$like = $this->User->Like->find('all', 
 		// ['fields' => ['id','comment_id','created','modified']],
-		['conditions' => ['Like.user_id' => $user_id], ['comment_id >='=>'1']], 
-		['order' =>['Like.created' => 'desc']]);   
+		array('conditions' => array('Like.user_id' => $user_id), array('comment_id >='=>'1')), 
+		array('order' =>array('Like.created' => 'desc')));   
 		
 		$this->set('user', $like); 
 	}
@@ -259,16 +329,16 @@ class UsersController extends AppController {
 		$keyword = str_replace("+", " ", $keyword);
 		$keyword = explode(" ",trim($keyword));
 		
-		 $data=[];
+		 $data=array();
 		foreach($keyword as $k){
 			
 			$prof = $this->Profile->find('all',
-			['conditions' =>
-				['OR'=>[
-					['Profile.firstname LIKE' => '%'.$k.'%'],
-					['Profile.lastname LIKE' => '%'.$k.'%']
-				]],
-			],	['order' =>['User.created' => 'desc']]);
+			array('conditions' =>
+				array('OR'=>array(
+					array('Profile.firstname LIKE' => '%'.$k.'%'),
+					array('Profile.lastname LIKE' => '%'.$k.'%')
+				)),
+			),	array('order' =>array('User.created' => 'desc')));
 			
 			
 			// $user = $this->User->find('all',
@@ -283,11 +353,11 @@ class UsersController extends AppController {
 			
 			
 			$thread = $this->Thread->find('all', 
-				['conditions' => ['Thread.title LIKE' => '%'.$k.'%'] ]);  
+				array('conditions' => array('Thread.title LIKE' => '%'.$k.'%') ));  
 			
 			
 			$head = $this->Head->find('all', 
-				['conditions' =>  ['Head.body LIKE' => '%'.$k.'%'] ]);  
+				array('conditions' =>  array('Head.body LIKE' => '%'.$k.'%') ));  
 			
 			
 			// $thread = $this->Thread->find('all', 
