@@ -40,4 +40,35 @@ angular.module('starter.controllers', [])
   $scope.settings = {
     enableFriends: true
   };
-});
+})
+.controller('LoginCtrl',function($scope,$rootScope,$ionicPopup,$ionicLoading,$state,ApiService,AuthService){
+  $rootScope.user_id=-1;
+  $scope.login=function(data){
+    $ionicLoading.show({
+      template:'<i class="fa fa-spinner fa-spin"></i> Loading...'
+    });
+    ApiService.Post('users/mobilelogin/',{"User":{"username":data.username,"password":data.password}}).then(function(response){
+      if(response){
+      $ionicLoading.hide();
+      
+      if(response['user']["User"]){
+        $rootScope.user_id=response['user']["User"]['id'];
+        localStorage.setItem("talknote_user",response['user']["User"]['id']);
+        $state.go('tab.dash');
+      }else{
+        $ionicPopup.alert({
+          title:"Error",
+          template:"Login error.Please check your credentials."
+        });
+      }
+      }
+      
+    },function(error){
+      $ionicPopup.alert({
+          title:"Server Error",
+          template:"Error connecting to server"
+        });
+    });
+  }
+})
+

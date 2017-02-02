@@ -86,4 +86,50 @@ angular.module('starter.services', [])
       return null;
     }
   };
+})
+
+.service('ApiService',function($http,API_URL,$q){
+  this.Get=function(url,param){
+    var deferred=$q.defer();
+    
+    $http.get(API_URL+url+param)
+    .success(function(data){
+      deferred.resolve(data);
+    })
+    .error(function(data){
+      deferred.reject(data);
+    });
+    
+    return deferred.promise;
+  };
+  this.Post=function(url,param){
+    var deferred=$q.defer();
+    
+    $http.post(API_URL+url,param)
+    .success(function(data,status){
+     
+      deferred.resolve(data);
+    })
+    .error(function(data){
+      deferred.reject(data);
+    });
+    
+    return deferred.promise;
+  };
+})
+
+.service('AuthService',function($http,API_URL,$q){
+  this.checkCredentials=function(token){
+    var deferred=$q.defer();
+    
+    $http.get(API_URL+"users/check_token/"+token)
+    .success(function(data){
+      deferred.resolve(data);
+    })
+    .error(function(data){
+      deferred.reject(data);
+    });
+    
+    return deferred.promise;
+  }
 });

@@ -5,9 +5,9 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'chart.js'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform,$rootScope,$state,$ionicConfig) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -21,6 +21,26 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       StatusBar.styleDefault();
     }
   });
+  
+  $rootScope.$on('$stateChangeStart',function(event,toState,toParams,fromState,fromParams){
+      $rootScope.statename=toState;
+      if(toState.authenticate===true){
+        if(localStorage.getItem("talknote_user")===null){
+          $state.go('login');
+        event.preventDefault();
+          
+        }
+      }else{
+      if(toState.name.indexOf("login") > -1){
+        $ionicConfig.views.transition('android');
+        $ionicConfig.views.swipeBackEnabled(false);
+      if(localStorage.getItem("talknote_user") !== null){
+           $state.go('tab.dash');
+          event.preventDefault();
+      }
+      }
+      }
+  });
 })
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
@@ -30,11 +50,22 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
-
+  .state('login', {
+    url: '/login',
+    authenticate:false,
+     views: {
+      '': {
+        templateUrl: 'templates/auth-login.html',
+        controller: 'LoginCtrl'
+      }
+     }
+  })
+  
   // setup an abstract state for the tabs directive
   .state('tab', {
     url: '/tab',
     abstract: true,
+    authenticate:true,
     templateUrl: 'templates/tabs.html'
   })
 
@@ -42,6 +73,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
   .state('tab.dash', {
     url: '/dash',
+    authenticate:true,
     views: {
       'tab-dash': {
         templateUrl: 'templates/tab-dash.html',
@@ -52,6 +84,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
   .state('tab.incentive', {
     url: '/incentive',
+    authenticate:true,
     views: {
       'tab-incentive': {
         templateUrl: 'templates/tab-incentive.html',
@@ -62,6 +95,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
   .state('tab.chats', {
       url: '/chats',
+      authenticate:true,
       views: {
         'tab-chats': {
           templateUrl: 'templates/tab-chats.html',
@@ -71,6 +105,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     })
     .state('tab.chat-detail', {
       url: '/chats/:chatId',
+      authenticate:true,
       views: {
         'tab-chats': {
           templateUrl: 'templates/chat-detail.html',
@@ -81,6 +116,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
 
   .state('tab.groups', {
     url: '/groups',
+    authenticate:true,
     views: {
       'tab-groups': {
         templateUrl: 'templates/tab-groups.html',
@@ -88,9 +124,11 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       }
     }
   })
+  
 
   .state('tab.account', {
     url: '/account',
+    authenticate:true,
     views: {
       'tab-account': {
         templateUrl: 'templates/tab-account.html',
@@ -100,7 +138,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/login');
 
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.navBar.alignTitle('center');
