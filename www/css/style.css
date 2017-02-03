@@ -1,1 +1,24 @@
 /* Empty. Add your own CSS if you like */
+.members{
+    padding: 5px;
+}
+.members span{
+    padding: 5px;
+    margin: 5px;
+    background: aqua;
+    border-radius: 10px;
+}
+.members .icon{
+    font-size: 30px;
+    position: relative;
+    top: 5px;
+}
+.chat-img{
+    float: left;
+    margin-right: 10px;
+    height:60px;
+}
+.likes{
+    font-size:25px;
+    
+}

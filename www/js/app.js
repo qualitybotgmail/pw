@@ -11,6 +11,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','s
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
+   // console.log(angular.version);
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
@@ -25,7 +26,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','s
   $rootScope.$on('$stateChangeStart',function(event,toState,toParams,fromState,fromParams){
       $rootScope.statename=toState;
       if(toState.authenticate===true){
-        if(localStorage.getItem("talknote_user")===null){
+        if(localStorage.getItem("talknote_token")===null){
           $state.go('login');
         event.preventDefault();
           
@@ -34,7 +35,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','s
       if(toState.name.indexOf("login") > -1){
         $ionicConfig.views.transition('android');
         $ionicConfig.views.swipeBackEnabled(false);
-      if(localStorage.getItem("talknote_user") !== null){
+      if(localStorage.getItem("talknote_token") !== null){
+       
            $state.go('tab.dash');
           event.preventDefault();
       }
@@ -121,6 +123,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','s
       'tab-groups': {
         templateUrl: 'templates/tab-groups.html',
         controller: 'GroupsCtrl'
+      }
+    }
+  })
+  
+  .state('tab.group-detail', {
+    url: '/group-detail/:id',
+    authenticate:true,
+    views: {
+      'tab-groups': {
+        templateUrl: 'templates/group-detail.html',
+        controller: 'GroupDetailCtrl'
       }
     }
   })

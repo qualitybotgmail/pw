@@ -1,0 +1,27 @@
+<ion-view>
+    <ion-header-bar >
+      <h1 class="title">{{thread.Thread.title}}</h1>
+      <div class="buttons">
+        <button class="button button-icon ion-compose" ng-click="modal.show()">
+        </button>
+      </div>
+    </ion-header-bar>
+     <div class="buttons">
+        <button class="button button-icon ion-ios-settings" ng-click="groupSettingShow.show()">
+        </button>
+      </div>
+  <ion-content class="padding">
+      <p class="members"><i class="icon ion-person-add" style="float:right;font-size:25px"></i>Members: <span ng-repeat="user in thread.User" ><span ng-bind="user.username"></span> <i class="icon ion-ios-close-empty"></i></span></p>
+    <ion-list>
+      <ion-item collection-repeat="head in thread.Head" href="#/head/{{head.id}}">
+          <span style="float:right"><i class="icon ion-thumbsup likes" ng-class="{'active':head.isUserLiked}"></i> {{head.likes}}</span>
+        <ion-avatar item-left>
+          <img src="img/max.png" class="chat-img">
+        </ion-avatar>
+        <h2>{{head.Owner.username}}</h2>
+        <h4>{{head.created}}</h4>
+        <p>{{head.body}}</p>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
