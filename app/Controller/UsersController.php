@@ -14,7 +14,7 @@ class UsersController extends AppController {
  *
  * @var array
  */
-	public $components = array('Paginator');
+	public $components = array('Paginator','Session');
 
 /**
  * index method
@@ -27,7 +27,7 @@ class UsersController extends AppController {
 	}
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('me','dd','notifications','mobilelogin');
+		$this->Auth->allow('me','dd','notifications','mobilelogin','test');
 	}
 	
 	
@@ -124,25 +124,41 @@ class UsersController extends AppController {
 		}
 		return $this->redirect(array('action' => 'index'));
 	}
-	public function mobilelogin(){
+public function mobilelogin(){
 		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_SERVER,true),FILE_APPEND);
+		$userdetails=[];
+		$session_id=null;
 	    if ($this->request->is('post')) {
+	    	if($this->request->data){
 	    	file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_POST,true),FILE_APPEND);
-	        if ($this->Auth->login()) {
-				echo 'OK';
-				exit;
-	        }
-	        echo 'Not ok';
-	        exit;
+  
+	        
+		    if($this->Auth->login())
+		    {
+		        
+		        $id = $_SESSION['Auth']['User']['id'];
+				$this->User->recursive = 0;
+		        $userdetails = $this->User->findById($id); 
+		        
+		    }
+		    echo json_encode(array('user'=>$userdetails));
+	    	}
 	    }
-	    echo "GET?";
+	     
 	    exit;
+	   
+	}
+	
+	public function test(){
+		echo json_encode($this->Session->read('Auth.User'));
+		exit;
 	}
 	public function login() {
 		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_SERVER,true),FILE_APPEND);
 	    if ($this->request->is('post')) {
 	    	file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_POST,true),FILE_APPEND);
 	        if ($this->Auth->login()) {
+	        	
 	        	// if($this->Auth->user('username') =='admin') {
 	        		
 	        	// }
@@ -196,8 +212,7 @@ class UsersController extends AppController {
 		    }
 		}
 	}
-	
-	public function logout() {
+public function logout() {
 		$uid = $this->Auth->user('id');
 		$profile = $this->User->Profile->findByUserId($uid);
 		$this->User->Profile->id = $profile['Profile']['id'];
