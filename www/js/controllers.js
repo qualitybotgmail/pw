@@ -44,14 +44,120 @@ Groups.all().success(function(response){
   };
 })
 
-.controller('GroupDetailCtrl', function($scope,Groups,$http,ApiService,$rootScope,$stateParams) {
+.controller('GroupDetailCtrl', function($scope,Like,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal) {
   $scope.groupID=$stateParams['id'];
   $scope.thread=null;
-  Groups.get($scope.groupID).success(function(response){
-    $scope.thread=response;
+  $scope.allMembers=[];
+  $scope.likedHead=-1;
+  $rootScope.user_id=localStorage.getItem('user_id');
+  $ionicModal.fromTemplateUrl('templates/modal/addmember.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.addMemberModal = modal;
   });
+  $ionicModal.fromTemplateUrl('templates/modal/showmember.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.showMemberList = modal;
+  });
+  
+  $scope.showAddMember=function(){
+    console.log($scope.allMembers);
+    $scope.addMemberModal.show();
+  }
+  
+  $scope.getThread=function(){
+    Groups.get($scope.groupID).success(function(response){
+      $scope.thread=response;
+    });
+  }
+  $scope.getThread();
+  
+  $scope.getUsersToAdd=function(){
+    Groups.getNotMembers($scope.groupID).success(function(response){
+      $scope.notMembers=response;
+     
+    });
+  }
+  $scope.getUsersToAdd();
+  
+  $scope.changeLike=function(id,index){
+    $scope.likedHead=id;
+    $scope.thread['Head'][index]['isUserLiked']=!$scope.thread['Head'][index]['isUserLiked'];
+    if($scope.thread['Head'][index]['isUserLiked']){
+       $scope.thread['Head'][index]['likes']=parseInt($scope.thread['Head'][index]['likes']) + 1;
+       Like.like('heads',id);
+    }else{
+      $scope.thread['Head'][index]['likes']=parseInt($scope.thread['Head'][index]['likes']) - 1;
+       if(Like.unlike('heads',id))
+        $scope.likedHead=-1;
+    }
+
+  }
+   $scope.newMembers=[];
+   $scope.removedMembers=[];
+  $scope.addNewMember=function(user,val,index){
+    if(val){
+      $scope.thread.User.push(user);
+      $scope.newMembers.push(user.id);
+    }else{
+      $scope.newMembers.splice($scope.newMembers.indexOf(user.id),1);
+      $scope.thread.User.splice(index,1);
+    }
+    console.log($scope.newMembers);
+  }
+  
+  $scope.removeMember=function(user,val,index){
+    var x=[];
+    if(val){
+       x['User']=user;
+     $scope.notMembers.users.push(x);
+      $scope.removedMembers.push(user.id);
+    }else{
+      $scope.newMembers.push(user.id);
+      $scope.notMembers.splice(index,1);
+    }
+  }
+})
+.controller('HeadCtrl', function($scope,Like,Groups,$http,$ionicScrollDelegate,ApiService,$rootScope,$stateParams) {
+  $scope.headID=$stateParams['id'];
+  $scope.comments=null;
+  Groups.getComments($scope.headID).success(function(response){
+    $scope.comments=response;
+    $ionicScrollDelegate.scrollBottom();
+  });
+  $scope.likedComment=-1;
+ 
+  $scope.changeLike=function(id,index){
+    $scope.likedComment=id;
+    $scope.comments['Comment'][index]['isUserLiked']=!$scope.comments['Comment'][index]['isUserLiked'];
+    if($scope.comments['Comment'][index]['isUserLiked']){
+       $scope.comments['Comment'][index]['likes']=parseInt($scope.comments['Comment'][index]['likes']) + 1;
+       Like.like('comments',id);
+    }else{
+      $scope.comments['Comment'][index]['likes']=parseInt($scope.comments['Comment'][index]['likes']) - 1;
+       if(Like.unlike('comments',id))
+        $scope.likedComment=-1;
+    }
+
+  }
+  $scope.newComment='';
+  $scope.sendComment=function(id){
+    if($scope.newComment!=''){
+      Groups.sendComment(id,$scope.newComment).success(function(response){
+        if(response.Comment){
+          $scope.newComment="";
+          $scope.comments['Comment'].push(response.Comment);
+          $ionicScrollDelegate.scrollBottom();
+        }
+      });
+    }
+  }
 })
 .controller('AccountCtrl', function($scope,$rootScope,$state) {
+   $rootScope.user=localStorage.getItem('user');
   $scope.settings = {
     enableFriends: true
   };
@@ -82,6 +188,7 @@ Groups.all().success(function(response){
         var token=Base64.encode(data.username + ':' + data.password);
         localStorage.setItem("talknote_token",token);
         localStorage.setItem("user",response['user']["User"]['username']);
+        localStorage.setItem("user_id",response['user']["User"]['id']);
         $scope.data.password='';
         $scope.data.username='';
         $state.go('tab.dash');

@@ -138,6 +138,17 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','s
     }
   })
   
+  .state('tab.head', {
+    url: '/head/:id',
+    authenticate:true,
+    views: {
+      'tab-groups': {
+        templateUrl: 'templates/head.html',
+        controller: 'HeadCtrl'
+      }
+    }
+  })
+  
 
   .state('tab.account', {
     url: '/account',
@@ -155,4 +166,39 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','s
 
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.navBar.alignTitle('center');
-});
+})
+
+.directive('preventHref', ['$parse', '$rootScope',
+  function($parse, $rootScope) {
+    return {
+      
+      priority: 100,
+      restrict: 'A',
+      compile: function($element, attr) {
+        var fn = $parse(attr.preventHref);
+        return {
+          pre: function link(scope, element) {
+            var eventName = 'click';
+            element.on(eventName, function(event) {
+              var callback = function() {
+                if (fn(scope, {$event: event})) {
+                  // prevents ng-click to be executed
+                  event.stopImmediatePropagation();
+                  // prevents href 
+                  event.preventDefault();
+                  return false;
+                }
+              };
+              if ($rootScope.$$phase) {
+                scope.$evalAsync(callback);
+              } else {
+                scope.$apply(callback);
+              }
+            });
+          },
+          post: function() {}
+        }
+      }
+    }
+  }
+]);

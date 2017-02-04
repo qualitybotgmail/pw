@@ -1,27 +1,38 @@
-<ion-view>
-    <ion-header-bar >
-      <h1 class="title">{{thread.Thread.title}}</h1>
-      <div class="buttons">
-        <button class="button button-icon ion-compose" ng-click="modal.show()">
-        </button>
-      </div>
-    </ion-header-bar>
-     <div class="buttons">
-        <button class="button button-icon ion-ios-settings" ng-click="groupSettingShow.show()">
-        </button>
-      </div>
+<ion-view title="{{thread.Thread.title}}">
   <ion-content class="padding">
-      <p class="members"><i class="icon ion-person-add" style="float:right;font-size:25px"></i>Members: <span ng-repeat="user in thread.User" ><span ng-bind="user.username"></span> <i class="icon ion-ios-close-empty"></i></span></p>
-    <ion-list>
-      <ion-item collection-repeat="head in thread.Head" href="#/head/{{head.id}}">
-          <span style="float:right"><i class="icon ion-thumbsup likes" ng-class="{'active':head.isUserLiked}"></i> {{head.likes}}</span>
-        <ion-avatar item-left>
-          <img src="img/max.png" class="chat-img">
-        </ion-avatar>
+   <!-- <button class="button button-full button-positive" ng-click="showAddMember()">
+      <span ng-show="thread.Owner.id==$root.user_id">Manage</span><span ng-show="thread.Owner.id!=$root.user_id">View</span> Members
+    </button>-->
+    <div class="button-bar" ng-show="thread.Owner.id==$root.user_id">
+      <a class="button button-small button-positive" ng-click="showAddMember()">Add Members</a>
+      <a class="button button-small button-positive" ng-click="showMemberList.show()">Members</a>
+    </div>
+    <a ng-show="thread.Owner.id!=$root.user_id" class="button button-small button-positive" ng-click="showMemberList()">Add Members</a>
+<!--      <div>
+        <i class="icon ion-person-add" style="float:right;font-size:20px" ng-click="showAddMember()"></i>
+        <span>Members:</span>
+      </div>
+      <div class="row members">
+
+         <div class = "col" ng-repeat="user in thread.User">{{user.username}} <i class="icon ion-ios-close-empty"></i></div>
+       <!-- <span ng-repeat="user in thread.User" >
+          {{user.username}} <i class="icon ion-ios-close-empty"></i>
+        </span>
+      </div>-->
+      <div ng-repeat="head in thread.Head track by $index">
+     <div class="comment-list" ui-sref="tab.head({id:head.id})">
+          
+        <img class="avatar" ng-src="img/max.png">
         <h2>{{head.Owner.username}}</h2>
-        <h4>{{head.created}}</h4>
-        <p>{{head.body}}</p>
-      </ion-item>
-    </ion-list>
+        <p>{{head.created}}</p>
+        <div class = "row">
+  
+        {{head.body}}
+     
+       
+    </div>
+    <div style="width:100%;height:25px"><a class="subdued" style="float:right" prevent-href="true" > <span ng-click="changeLike(head.id,$index)"><i class="icon ion-thumbsup likes" ng-class="{'active':head.isUserLiked}"></i> {{head.likes}}</span></a></div>
+    </div>
+  </div>
   </ion-content>
 </ion-view>

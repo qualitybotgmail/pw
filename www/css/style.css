@@ -1,24 +1,50 @@
 /* Empty. Add your own CSS if you like */
-.members{
-    padding: 5px;
-}
 .members span{
-    padding: 5px;
+   padding: 4px;
     margin: 5px;
     background: aqua;
     border-radius: 10px;
 }
 .members .icon{
     font-size: 30px;
-    position: relative;
-    top: 5px;
+    float: right;
+    padding-right: 8px;
+    margin-top: -3px;
 }
-.chat-img{
-    float: left;
-    margin-right: 10px;
-    height:60px;
+.comment-list{
+    border-top: 1px solid #ccc;
+     padding-left: 72px;
+}
+.comment-list .item-avatar{
+    width: 100% !important;
+   
+}
+.comment-list h2{
+    font-size: 18px !important;
+    margin-top: 15px;
+    margin-bottom:0px;
+}
+.comment-list img{
+    position: absolute;
+    margin-top: 16px;
+    left: 16px;
+    max-width: 40px;
+    max-height: 40px;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.comment-list p{
+    margin-top: -25px;
+    position: absolute;
+    right: 12px;
+    color: gray;
 }
 .likes{
-    font-size:25px;
+    font-size:23px;
     
+}
+.active{
+    color:#0c60ee;
 }

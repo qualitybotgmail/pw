@@ -70,14 +70,57 @@ angular.module('starter.services', [])
       }
     });
     },
+    getNotMembers:function(headId){
+      return $http.get(API_URL+"threads/userstoadd/"+headId,{
+        headers:{
+          'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+        }
+      });
+    },
     getComments:function(headId) {
       return $http.get(API_URL+"heads/"+headId+".json",{
       headers:{
         'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
       }
     });
+    },
+    sendComment:function(id,comment){
+      return $http.post(API_URL+"heads/comment/"+id,{'Comment':{'body':comment}},{
+      headers:{
+        'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+      }
+    });
     }
   };
+})
+
+.factory('Like',function($http,API_URL){
+  return{
+    like:function(type,id){
+      $http.get(API_URL+""+type+"/like/"+id,{
+        headers:{
+          'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+        }
+      }).success(function(response){
+        if(response.status=='OK')
+          return true;
+        else
+          return false;
+      });
+    },
+    unlike:function(type,id){
+       $http.get(API_URL+""+type+"/unlike/"+id,{
+        headers:{
+          'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+        }
+      }).success(function(response){
+        if(response.status=='OK')
+          return true;
+        else
+          return false;
+      });
+    }
+  }
 })
 
 .service('ApiService',function($http,API_URL,$q){
