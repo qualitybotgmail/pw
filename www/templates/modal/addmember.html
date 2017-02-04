@@ -2,15 +2,22 @@
    <ion-header-bar class="bar-positive">
       <h1 class="title">Add Member</h1>
       <div class="buttons">
-          <button class="button" ng-click="addMemberModal.hide()">Close</button>
+          <button class="button" ng-click="processAddMember()">Close</button>
       </div>
+    </ion-header-bar>
+     <ion-header-bar class="bar-light bar-subheader">
+      <input type="search" ng-model="search_filter" placeholder="Filter users..."
+             ng-focus="searchFocused = true"
+             ng-blur="searchFocused = false"
+             ng-change="scrollTop()"
+             class="full-width">
     </ion-header-bar>
     <ion-content>
         <ul class="list">
-            <li class="item item-checkbox" item-height="55px" item-width="100%" collection-repeat="user in notMembers.users track by $index" >
-                {{user.User.username}}
+            <li class="item item-checkbox" item-height="55px" item-width="100%" collection-repeat="user in notMembers | filter:{username:search_filter} track by $index" >
+                {{user.username}}
                <label class="checkbox">
-               <input ng-change="addNewMember(user.User,checkedUser,$index)" type="checkbox" value="1" ng-model="checkedUser">
+               <input ng-click="addNewMember(user)" type="checkbox" value="1" ng-model="user.selected">
                </label>
             </li>
         </ul>

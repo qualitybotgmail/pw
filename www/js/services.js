@@ -70,6 +70,13 @@ angular.module('starter.services', [])
       }
     });
     },
+    edit:function(threadId,title){
+      return $http.post(API_URL+"threads/"+threadId+".json",{'title':title,'id':threadId},{
+      headers:{
+        'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+      }
+    });
+    },
     getNotMembers:function(headId){
       return $http.get(API_URL+"threads/userstoadd/"+headId,{
         headers:{

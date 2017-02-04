@@ -10,7 +10,7 @@
               <li class="item " ng-class="{'item-checkbox':thread.Owner.id==$root.user_id}" item-height="55px" item-width="100%" collection-repeat="us in thread.User track by $index" >
                 {{us.username}}
                <label class="checkbox" ng-show="thread.Owner.id==$root.user_id">
-               <input ng-show="thread.Owner.id==$root.user_id" ng-change="removeMember(us.id,$index)" type="checkbox" value="1" ng-model="checkedUser">
+               <input ng-show="thread.Owner.id==$root.user_id" ng-click="removeMember(us,$index)" type="checkbox" value="1" ng-model="us.selected">
                </label>
             </li>
           

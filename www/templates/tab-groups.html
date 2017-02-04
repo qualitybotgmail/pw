@@ -1,13 +1,14 @@
 <ion-view view-title="Groups">
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-icon-right" ng-repeat="group in groups" type="item-text-wrap" href="#/tab/group-detail/{{group.Thread.id}}">
+      <ion-item style="padding-right:0px;" class="item-remove-animate item-button-right" collection-repeat="group in groups track by $index" type="item-text-wrap" href="#/tab/group-detail/{{group.Thread.id}}">
         <h2>{{group.Thread.title}}</h2>
-        <i class="icon ion-chevron-right icon-accessory"></i>
-
-        <ion-option-button class="button-assertive" ng-click="leave(group)">
+       <!-- <a href prevent-href="true" ng-show="group.Owner.id==$root.user_id"><button style="position: absolute;top: 0px;right: 0px;" class="button button-basic" ng-click="showPopover($event,$index)">
+          <i  class="icon ion-ios-settings-strong"></i>
+        </button></a>
+        <button ng-show="group.Owner.id!=$root.user_id" class="button button-assertive" >
           Leave
-        </ion-option-button>
+        </button>-->
       </ion-item>
     </ion-list>
   </ion-content>
