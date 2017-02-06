@@ -1,0 +1,8 @@
+#!/bin/bash
+
+export ANDROID_HOME=/root/androidsdk
+/usr/local/bin/cordova plugin add cordova-plugin-imagepicker
+/usr/local/bin/cordova plugin add cordova-plugin-file
+/usr/local/bin/cordova plugin add cordova-plugin-file-transfer
+/usr/local/bin/cordova plugin add cordova-plugin-filepath
+/usr/local/bin/cordova plugin add cordova-plugin-camera

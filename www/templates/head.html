@@ -5,7 +5,7 @@
         
       <img class="avatar" ng-src="img/max.png">
       <h2>{{comment.User.username}}</h2>
-      <p>{{comment.created}}</p>
+      <p>{{comment.created}} <span ng-show="comment.user_id==$root.user_id" prevent-href="true"><i class="icon ion-chevron-down" style="font-size: 15px;color:#444" ng-click="showCommentPopover($event,$index)"></i></span></p>
       <div class = "row">
 
       {{comment.body}}
@@ -17,12 +17,13 @@
 
 </div>
   </ion-content>
-  <ion-footer-bar align-title="left" class="item-input-inset" style="padding: 5px;">
-      <label class="item-input-wrapper">
-        <input type="text" placeholder="Type here..." ng-model="newComment"/>
+  <ion-footer-bar align-title="left" class="item-input-inset" style="padding: 5px;height:100px">
+      <label class="item-input-wrapper" style="padding-left:0px;padding-right:0px">
+        <!--<input type="text" placeholder="Type here..." ng-model="newComment"/>-->
+        <textarea rows="5" ng-model="newComment" ng-Required="true" name="content" style="width:200%"></textarea>
       </label>
       <button class="button button-assertive" ng-click="sendComment(comments.Head.id)">
-        Send
+        <span ng-show="action=='edit'">Edit</span><span ng-show="action=='' || action=='add'">Send</span>
       </button>
     </ion-footer-bar> 
 </ion-view>

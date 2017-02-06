@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
+angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
 
 .run(function($ionicPlatform,$rootScope,$state,$ionicConfig) {
   $ionicPlatform.ready(function() {
@@ -201,4 +201,19 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','s
       }
     }
   }
-]);
+])
+.directive('myInput', function() {
+  return {
+    restrict: 'EA',
+    link: function(scope, element, attr){
+        var update = function(){
+            element.css("height", "auto");
+            var height = element[0].scrollHeight; 
+            element.css("height", element[0].scrollHeight + "px");
+        };
+        scope.$watch(attr.ngModel, function(){
+            update();
+        });
+    }
+  };
+});

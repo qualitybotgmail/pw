@@ -36,9 +36,9 @@
 }
 
 .comment-list p{
-    margin-top: -25px;
+   top: 5px;
     position: absolute;
-    right: 12px;
+    right: 0px;
     color: gray;
 }
 .likes{
@@ -47,4 +47,21 @@
 }
 .active{
     color:#0c60ee;
+}
+.icons-attach{
+    position: absolute;
+    right: 10px;
+    top: 20px;
+    color: darkgrey;
+}
+.icons-attach .cam{
+    padding-left:10px;
+    font-size:30px
+}
+.icons-attach .img{
+    padding-left:10px;
+    font-size:25px
+}
+.icons-attach .docu{
+    font-size:25px
 }

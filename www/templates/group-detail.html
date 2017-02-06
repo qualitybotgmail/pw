@@ -1,30 +1,20 @@
 <ion-view view-title="{{thread.Thread.title}}">
+     <ion-nav-buttons side="right" ng-show="false">
+    <button class="button button-icon button-clear ion-compose" ng-click="triggerAdd()">
+    </button>
+  </ion-nav-buttons>
   <ion-content class="padding">
-   <!-- <button class="button button-full button-positive" ng-click="showAddMember()">
-      <span ng-show="thread.Owner.id==$root.user_id">Manage</span><span ng-show="thread.Owner.id!=$root.user_id">View</span> Members
-    </button>-->
-    <div class="button-bar" ng-show="thread.Owner.id==$root.user_id">
+    <div class="button-bar" ng-show="thread.Thread.user_id==$root.user_id">
       <a class="button button-small button-positive" ng-click="showAddMember()">Add Members</a>
       <a class="button button-small button-positive" ng-click="showMemberList.show()">Members</a>
     </div>
-    <a ng-show="thread.Owner.id!=$root.user_id" class="button button-small button-positive" ng-click="showMemberList()">Add Members</a>
-<!--      <div>
-        <i class="icon ion-person-add" style="float:right;font-size:20px" ng-click="showAddMember()"></i>
-        <span>Members:</span>
-      </div>
-      <div class="row members">
-
-         <div class = "col" ng-repeat="user in thread.User">{{user.username}} <i class="icon ion-ios-close-empty"></i></div>
-       <!-- <span ng-repeat="user in thread.User" >
-          {{user.username}} <i class="icon ion-ios-close-empty"></i>
-        </span>
-      </div>-->
+    <a ng-show="thread.Thread.user_id!=$root.user_id" class="button button-small button-full button-positive" ng-click="showMemberList.show()">Members</a>
       <div ng-repeat="head in thread.Head track by $index">
      <div class="comment-list" ui-sref="tab.head({id:head.id})">
           
         <img class="avatar" ng-src="img/max.png">
         <h2>{{head.Owner.username}}</h2>
-        <p>{{head.created}}</p>
+        <p>{{head.created}} <span ng-show="head.user_id==$root.user_id" prevent-href="true"><i class="icon ion-chevron-down" style="font-size: 15px;color:#444" ng-class="{'active':comment.isUserLiked}" ng-click="showPopover($event,$index)"></i></span></p>
         <div class = "row">
   
         {{head.body}}

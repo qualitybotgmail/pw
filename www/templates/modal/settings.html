@@ -1,6 +1,6 @@
 <ion-popover-view style="height: auto;">
     <ul class="list">
-    <li class="item" ng-click="editOwnThread(settingViewed)" style="font-size: 20px;" >
+    <li class="item" ng-click="$root.modalAction='edit';threadModal.show();" style="font-size: 20px;" >
     <i class="icon ion-edit"></i> Edit
     </li>
     <li class="item" ng-click="deleteOwnThread(settingViewed)" style="font-size: 20px;" >

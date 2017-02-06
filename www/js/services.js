@@ -77,6 +77,13 @@ angular.module('starter.services', [])
       }
     });
     },
+    add:function(title){
+      return $http.post(API_URL+"threads.json",{'title':title},{
+      headers:{
+        'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+      }
+      });
+    },
     getNotMembers:function(headId){
       return $http.get(API_URL+"threads/userstoadd/"+headId,{
         headers:{
@@ -91,12 +98,20 @@ angular.module('starter.services', [])
       }
     });
     },
-    sendComment:function(id,comment){
-      return $http.post(API_URL+"heads/comment/"+id,{'Comment':{'body':comment}},{
-      headers:{
-        'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+    sendComment:function(id,comment,comment_id){
+      if(comment_id === null){
+          return $http.post(API_URL+"heads/comment/"+id,{'Comment':{'body':comment}},{
+          headers:{
+            'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+          }
+        });
+      }else{
+         return $http.post(API_URL+"comments/"+comment_id+'.json',{'body':comment,'head_id':id},{
+          headers:{
+            'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+          }
+        });
       }
-    });
     }
   };
 })
@@ -151,7 +166,29 @@ angular.module('starter.services', [])
   this.Post=function(url,param){
     var deferred=$q.defer();
     
-    $http.post(API_URL+url,param)
+    $http.post(API_URL+url,param,{
+      headers:{
+        'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+      }
+      })
+    .success(function(data,status){
+     
+      deferred.resolve(data);
+    })
+    .error(function(data){
+      deferred.reject(data);
+    });
+    
+    return deferred.promise;
+  };
+  this.Delete=function(url,param){
+    var deferred=$q.defer();
+    
+    $http.delete(API_URL+url+param,{
+      headers:{
+        'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+      }
+      })
     .success(function(data,status){
      
       deferred.resolve(data);
