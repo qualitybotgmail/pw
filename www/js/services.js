@@ -98,21 +98,20 @@ angular.module('starter.services', [])
       }
     });
     },
-    sendComment:function(id,comment,comment_id){
-      if(comment_id === null){
+    sendComment:function(id,comment){
           return $http.post(API_URL+"heads/comment/"+id,{'Comment':{'body':comment}},{
           headers:{
             'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
           }
         });
-      }else{
-         return $http.post(API_URL+"comments/"+comment_id+'.json',{'body':comment,'head_id':id},{
+    },
+    editComment:function(id,comment,comment_id){
+      return $http.post(API_URL+"comments/"+comment_id+'.json',{'id':comment_id,'body':comment,'head_id':id},{
           headers:{
             'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
           }
         });
       }
-    }
   };
 })
 

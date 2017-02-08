@@ -3,9 +3,10 @@
   <div ng-repeat="comment in comments.Comment track by $index">
    <div class="comment-list">
         
-      <img class="avatar" ng-src="img/max.png">
-      <h2>{{comment.User.username}}</h2>
-      <p>{{comment.created}} <span ng-show="comment.user_id==$root.user_id" prevent-href="true"><i class="icon ion-chevron-down" style="font-size: 15px;color:#444" ng-click="showCommentPopover($event,$index)"></i></span></p>
+      <img class="avatar" ng-src="img/avatar.png">
+      <h2 ng-show="comment.user_id !=$root.user_id">{{comment.User.username}}</h2>
+       <h2 ng-show="comment.user_id ==$root.user_id">{{$root.user}}</h2>
+      <p>{{comment.created}} <span ng-show="comment.user_id==$root.user_id" prevent-href="true" style="padding: 10px;"><i class="icon ion-chevron-down" style="font-size: 15px;color:#444" ng-click="showCommentPopover($event,$index)"></i></span></p>
       <div class = "row">
 
       {{comment.body}}
@@ -22,8 +23,11 @@
         <!--<input type="text" placeholder="Type here..." ng-model="newComment"/>-->
         <textarea rows="5" ng-model="newComment" ng-Required="true" name="content" style="width:200%"></textarea>
       </label>
-      <button class="button button-assertive" ng-click="sendComment(comments.Head.id)">
-        <span ng-show="action=='edit'">Edit</span><span ng-show="action=='' || action=='add'">Send</span>
+      <button ng-show="action=='add' || action==''" class="button button-assertive" ng-click="sendComment(comments.Head.id)">
+        Send
+      </button>
+      <button style="position: relative !important;" ng-show="action=='edit'" class="button button-assertive" ng-click="editComment(comments.Head.id)">
+        Edit
       </button>
     </ion-footer-bar> 
 </ion-view>

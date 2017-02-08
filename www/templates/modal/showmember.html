@@ -7,12 +7,16 @@
     </ion-header-bar>
     <ion-content>
         <ul class="list">
-              <li class="item " ng-class="{'item-checkbox':thread.Owner.id==$root.user_id}" item-height="55px" item-width="100%" collection-repeat="us in thread.User track by $index" >
-                {{us.username}}
-               <label class="checkbox" ng-show="thread.Owner.id==$root.user_id">
+              <!--<li class="item " ng-class="{'item-icon-left':thread.Owner.id==$root.user_id}" item-height="55px" item-width="100%" collection-repeat="us in thread.User track by $index" >-->
+                <!--{{us.username}}-->
+               <!--<label class="checkbox" ng-show="thread.Owner.id==$root.user_id">
                <input ng-show="thread.Owner.id==$root.user_id" ng-click="removeMember(us,$index)" type="checkbox" value="1" ng-model="us.selected">
-               </label>
-            </li>
+               </label>-->
+               <li class="item" ng-class="{'item-icon-left':thread.Owner.id==$root.user_id}" item-height="55px" item-width="100%" collection-repeat="us in thread.User track by $index">
+                <i class="icon ion-ios-close-outline" ng-show="thread.Owner.id==$root.user_id" style="font-size: 27px;cursor:pointer" ng-click="removeMember(us,$index)"></i>
+                {{us.username}}
+              </li>
+           <!-- </li>-->
           
         </ul> 
     </ion-content>
