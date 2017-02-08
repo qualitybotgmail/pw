@@ -37,6 +37,7 @@ angular.module('starter.controllers', [])
 .controller('GroupsCtrl', function($scope,Groups,$http,ApiService,$ionicPopover,$ionicModal,$rootScope,$ionicPopup) {
  
  $rootScope.user_id=localStorage.getItem('user_id');
+ $rootScope.user=localStorage.getItem("user");
  $rootScope.modalAction='';
  $rootScope.modalContent={'id':-1,
    'title':'',
@@ -145,6 +146,7 @@ angular.module('starter.controllers', [])
   $scope.base_url=BASE_URL;
   $scope.processedHead=-1; //for edting and delete
   $rootScope.user_id=localStorage.getItem('user_id');
+  $rootScope.user=localStorage.getItem("user");
  $scope.uploadedImgs=[];
   $ionicModal.fromTemplateUrl('templates/modal/addmember.html', {
     scope: $scope,
@@ -184,6 +186,7 @@ angular.module('starter.controllers', [])
   
   $scope.triggerAdd=function(){
     $scope.headContent.thread_id=$scope.thread.Thread.id;
+     $scope.uploadedImgs=[];
     $scope.headAction='add';
     $scope.showAddHead.show();
   };
@@ -243,13 +246,25 @@ angular.module('starter.controllers', [])
       template:'<ion-spinner name="bubbles"></ion-spinner>'
     });
     ApiService.Post('heads.json',$scope.headContent).then(function(response){
+      if("Uploads" in response.Head==false){
+        response.Head["Uploads"]=[];
+      }
+      if("likes" in response.Head==false){
+        response.Head["likes"]=0;
+      }
+      if("isUserLiked" in response.Head==false){
+        response.Head["isUserLiked"]=false;
+      }
         $scope.thread.Head.push(response.Head);
+        
          if($scope.uploadedImgs.length > 0){
             $scope.submitPhoto(response.Head.id);
          }else{
+           //angular.element("textarea").triggerHandler("click");
             $scope.showAddHead.hide();
             $scope.resetHeadForm();
             $ionicLoading.hide();
+            $ionicScrollDelegate.scrollBottom();
          }
     });
   };
@@ -379,25 +394,24 @@ $scope.selectPicture = function($act) {
       };
       
       $cordovaCamera.getPicture(options).then(function(img){
-        //$scope.uploadedImgs.push(img);
-        $scope.image=img;
+        $scope.uploadedImgs.push(img);
+        //$scope.image=img;
       },function(error){
         $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
       });
   
   }
-  if($act=="uploadPhoto"){
+  if($act=="upload"){
       options = {
         quality: 30,
-        maximumImagesCount:1,
+        maximumImagesCount:4,
         targetWidth: 600,
         targetHeight: 600
       };
       
       $cordovaImagePicker.getPictures(options).then(function(results){
           for(var i=0;i < results.length;i++){
-            //$scope.uploadedImgs.push(results[i]);
-            $scope.image=results[i];
+            $scope.uploadedImgs.push(results[i]);
           }
       },function(error){
         $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
@@ -406,72 +420,65 @@ $scope.selectPicture = function($act) {
 };
 
   $scope.removeUploadedImg=function(index){
-    $scope.image='';
-    //$scope.uploadedImgs.splice(index,1);
+    $scope.uploadedImgs.splice(index,1);
   };
   
   $scope.result=[];
-  
+  $scope.img_ctr=0;
   $scope.submitPhoto=function(id){
     
-   /*  var promises = [];
+    $scope.img_ctr=0;
     var obj={'head_id':id,'headers':'Authorization: Basic '+localStorage.getItem("talknote_token")+''};
     
-     $scope.uploadedImgs.forEach(function(i,x) {
-        var targetPath = cordova.file.documentsDirectory + "image"+x+".jpg";
-        promises.push($cordovaFileTransfer.download(i, targetPath, {}, true));
-      });
-
-      $q.all(promises).then(function(res) {
-        console.log("in theory, all done");
-        for(var i=0; i<res.length; i++) {
-          $scope.images.push(res[i].nativeURL);
-        }
-      });*/
-
-    $scope.image='';
-    var obj={'head_id':id,'headers':'Authorization: Basic '+localStorage.getItem("talknote_token")+''};
+      $scope.uploadedImgs.forEach(function(i,x) {
+       i=encodeURI(i);
     
-    //angular.forEach($scope.uploadedImgs,function(val,key){
-      $scope.image=encodeURI($scope.image);
-    
-      var o=new FileUploadOptions();
-      o.params=obj;
-      o.fileKey="file";
-      o.mimeType="image/jpeg";
-      o.fileName = $scope.image.substr($scope.image.lastIndexOf('/') + 1);
-      o.chunkedMode = false;
-    
-    
-    $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',$scope.image,o,true).then(function(result){
-       
-        //img_ctr++;
-        //$scope.headContent.body=result.response;
-        $scope.thread['Head'][id]['Uploads'].push(result.response.Success);
-      // if(img_ctr==$scope.uploadedImgs.length){
+        var o=new FileUploadOptions();
+        o.params=obj;
+        o.fileKey="file";
+        o.mimeType="image/jpeg";
+        o.fileName = i.substr(i.lastIndexOf('/') + 1);
+        o.chunkedMode = false;
+        $scope.Upload={};
+        $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i,o,true).then(function(result) {
+          $scope.thread.Head.forEach(function(v,k){
+            if(parseInt(v.id)==parseInt(id)){
+               //$scope.headContent.body=JSON.parse(result.response);
+              //var x=JSON.parse(result.response.Upload);
+              v.Uploads.push(JSON.parse(result.response)[0]);
+              //$scope.headContent.body=result.response;
+            }
+          });
          
-         $scope.showAddHead.hide();
+          $scope.img_ctr++;
+          
+          
+        });
+      });
+  };
+  
+  $scope.$watch('img_ctr',function(newVal,oldVal){
+    if(newVal==$scope.uploadedImgs.length){
+        $scope.showAddHead.hide();
          $scope.resetHeadForm();
+         $scope.uploadedImgs=[];
          $ionicLoading.hide();
-    //   }
-       
-    }, function(err) {
-      //   $scope.headContent.body=err.response;
-         $ionicPopup.alert({title:"Error",template:"Error uploading photos.try again."});
-         $ionicLoading.hide();
-   //   });
-    });
-  }
+         $ionicScrollDelegate.scrollBottom();
+    }
+      
+  })
   
 })
 
-.controller('HeadCtrl', function($scope,Like,$ionicPopover,Groups,$http,$ionicScrollDelegate,ApiService,$rootScope,$stateParams) {
+.controller('HeadCtrl', function($scope,Like,BASE_URL,$cordovaActionSheet,API_URL,$cordovaFileTransfer,$ionicPopover,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$ionicLoading,Groups,$http,$ionicScrollDelegate,ApiService,$rootScope,$stateParams) {
   $scope.headID=$stateParams['id'];
   $scope.comments=null;
   $scope.processedCommentIndex='';
   $rootScope.user_id=localStorage.getItem('user_id');
   $rootScope.user=localStorage.getItem('user');
   $scope.action='';
+  $scope.base_url=BASE_URL;
+  $scope.uploadedCommentimgs=[];
   $scope.commentPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><div><p ng-click="triggerCommentEdit()" style="font-size: 13px;width: 100%;text-align: center;margin-top: 10px;margin-bottom: 0px;" >Edit</p><p ng-click="triggerCommentDelete()" style="font-size: 13px;width: 100%;text-align: center;" >Delete</p></div></ion-popover-view>', {
     scope: $scope
   });
@@ -481,6 +488,69 @@ $scope.selectPicture = function($act) {
     $ionicScrollDelegate.scrollBottom();
   });
   $scope.likedComment=-1;
+  
+  $scope.loadImage = function() {
+    $scope.uploadedCommentimgs=[];
+      var options = {
+        title: 'Select Image Source',
+        buttonLabels: ['Load from Library', 'Use Camera'],
+        addCancelButtonWithLabel: 'Cancel',
+        androidEnableCancelButton : true,
+      };
+      $cordovaActionSheet.show(options).then(function(btnIndex) {
+        var type = null;
+        if (btnIndex === 1) {
+          type ='upload';
+        } else if (btnIndex === 2) {
+          type = 'takePhoto';
+        }
+        if (type !== null) {
+          $scope.selectPictureInComment(type);
+        }
+      });
+    };
+    
+  // Take image with the camera or from library
+
+$scope.selectPictureInComment = function($act) {
+ $scope.uploadedCommentimgs=[];
+ $scope.image='';
+ var options=null;
+  if($act=='takePhoto'){
+    
+     options = {
+        quality: 30,
+        targetWidth: 600,
+        targetHeight: 600,
+        destinationType: Camera.DestinationType.FILE_URI,
+        sourceType: Camera.PictureSourceType.CAMERA,
+        saveToPhotoAlbum: false
+      };
+      
+      $cordovaCamera.getPicture(options).then(function(img){
+        $scope.uploadedCommentimgs.push(img);
+      },function(error){
+        $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
+      });
+  
+  }
+  if($act=="upload"){
+      options = {
+        quality: 30,
+        maximumImagesCount:4,
+        targetWidth: 600,
+        targetHeight: 600
+      };
+      
+      $cordovaImagePicker.getPictures(options).then(function(results){
+          for(var i=0;i < results.length;i++){
+            $scope.uploadedCommentimgs.push(results[i]);
+          }
+      },function(error){
+        $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
+      });
+  }
+};
  
   $scope.changeLike=function(id,index){
     $scope.likedComment=id;
@@ -502,13 +572,81 @@ $scope.selectPicture = function($act) {
         
       Groups.sendComment(id,$scope.newComment).success(function(response){
         if(response.Comment){
-          $scope.newComment="";
-          $scope.comments['Comment'].push(response.Comment);
-          $ionicScrollDelegate.scrollBottom();
+          if("Uploads" in response.Comment==false){
+            response.Comment["Uploads"]=[];
+          }
+          if("likes" in response.Comment==false){
+            response.Comment["likes"]=0;
+          }
+          if("isUserLiked" in response.Comment==false){
+            response.Comment["isUserLiked"]=false;
+          }
+          $scope.newComment='';
+           $scope.comments['Comment'].push(response.Comment);
+            $ionicScrollDelegate.scrollBottom();
+            
+          if($scope.uploadedCommentimgs.length > 0){
+            
+            $scope.submitCommentPhoto(response.Comment.id);
+          }
+            
+          
+         
         }
       });
     }
   };
+  
+  $scope.img_comment_ctr=0;
+  $scope.loadingstatus=0;
+  $scope.submitCommentPhoto=function(id){
+    
+    $scope.img_comment_ctr=0;
+    var obj={'comment_id':id,'headers':'Authorization: Basic '+localStorage.getItem("talknote_token")+''};
+    
+      $scope.uploadedCommentimgs.forEach(function(i,x) {
+       i=encodeURI(i);
+    
+        var o=new FileUploadOptions();
+        o.params=obj;
+        o.fileKey="file";
+        o.mimeType="image/jpeg";
+        o.fileName = i.substr(i.lastIndexOf('/') + 1);
+        o.chunkedMode = false;
+        $scope.Upload={};
+        $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i,o,true).then(function(result) {
+          //$scope.newComment=result.response;
+           $scope.comments.Comment.forEach(function(v,k){
+            if(parseInt(v.id)==parseInt(id)){
+              v.Uploads.push(JSON.parse(result.response)[0]);
+            }
+          });
+         
+          $scope.img_comment_ctr++;
+          
+          
+        }).onprogress = function(progressEvent) {
+            if (progressEvent.lengthComputable) {
+              $scope.loadingstatus=Math.floor(progressEvent.loaded / progressEvent.total);
+            } else {
+              $scope.loadingstatus=0;
+            }
+        };
+      });
+  };
+  
+  $scope.$watch('img_comment_ctr',function(newVal,oldVal){
+    if(newVal==$scope.uploadedCommentimgs.length){
+         //$scope.resetHeadForm();
+         $scope.uploadedCommentimgs=[];
+         //$ionicLoading.hide();
+    }
+      
+  });
+  
+  $scope.removeUploadedCommentImg=function(index){
+    $scope.uploadedCommentimgs.splice(index,1);
+  }
   
   $scope.editComment=function(id){
 
@@ -527,7 +665,6 @@ $scope.selectPicture = function($act) {
   };
   
   $scope.showCommentPopover=function($event,index){
-    $scope.processedCommentIndex=index;
     $scope.commentPopover.show($event);
     
   };
@@ -538,15 +675,33 @@ $scope.selectPicture = function($act) {
      $scope.newComment=$scope.comments['Comment'][$scope.processedCommentIndex].body;
   };
   $scope.triggerCommentDelete=function(){
-    
+    var confirmPopup = $ionicPopup.confirm({
+     title: 'Delete Comment',
+     template: 'Are you sure you want to delete this comment?'
+    });
+
+   confirmPopup.then(function(res) {
+     if(res) {
+       $scope.processDeletingComment();
+     } else {
+       console.log('You are not sure');
+     }
+   });
   };
   
-  $scope.processEdit=function(){
-    
-  };
-  
-  $scope.processDelete=function(){
-    
+  $scope.processDeletingComment=function(){
+    $ionicLoading.show({
+        template:'<ion-spinner name="bubbles"></ion-spinner>'
+      });
+        ApiService.Delete('comments/'+$scope.comments['Comment'][$scope.processedCommentIndex].id+'.json','').then(function(response){
+          if(response.status=='OK'){
+             $scope.comments.Comment.splice($scope.processedCommentIndex,1);
+            $scope.commentPopover.hide();
+            $ionicLoading.hide();
+          }
+        },function(error){
+          
+        });
   };
 })
 .controller('AccountCtrl', function($scope,$rootScope,$state,$ionicHistory) {
