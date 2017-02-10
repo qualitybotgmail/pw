@@ -137,7 +137,7 @@ angular.module('starter.controllers', [])
   
 })
 
-.controller('GroupDetailCtrl', function($scope,Like,BASE_URL,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
+.controller('GroupDetailCtrl', function($scope,Like,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
   $scope.groupID=$stateParams['id'];
   $scope.thread=null;
   $scope.allMembers=[];
@@ -385,17 +385,17 @@ $scope.selectPicture = function($act) {
   if($act=='takePhoto'){
     
      options = {
-        quality: 30,
-        targetWidth: 600,
-        targetHeight: 600,
-        destinationType: Camera.DestinationType.FILE_URI,
         sourceType: Camera.PictureSourceType.CAMERA,
+        quality: 80,
+        encodingType: Camera.EncodingType.JPEG,
+        targetWidth: 800,
+        targetHeight: 800,
+        popoverOptions: CameraPopoverOptions,
         saveToPhotoAlbum: false
       };
       
       $cordovaCamera.getPicture(options).then(function(img){
         $scope.uploadedImgs.push(img);
-        //$scope.image=img;
       },function(error){
         $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
       });
@@ -403,7 +403,7 @@ $scope.selectPicture = function($act) {
   }
   if($act=="upload"){
       options = {
-        quality: 30,
+        quality: 80,
         maximumImagesCount:4,
         targetWidth: 600,
         targetHeight: 600
@@ -428,30 +428,36 @@ $scope.selectPicture = function($act) {
   $scope.submitPhoto=function(id){
     
     $scope.img_ctr=0;
-    var obj={'head_id':id,'headers':'Authorization: Basic '+localStorage.getItem("talknote_token")+''};
+    //var obj={'head_id':id,'headers':'Authorization: Basic '+localStorage.getItem("talknote_token")+''};
+    var obj={'head_id':id};
     
       $scope.uploadedImgs.forEach(function(i,x) {
        i=encodeURI(i);
-    
+       
         var o=new FileUploadOptions();
         o.params=obj;
         o.fileKey="file";
         o.mimeType="image/jpeg";
         o.fileName = i.substr(i.lastIndexOf('/') + 1);
         o.chunkedMode = false;
+        o.headers = {
+            'Connection': "close",
+            'Authorization':'Basic '+localStorage.getItem("talknote_token")+''
+        };
         $scope.Upload={};
-        $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i,o,true).then(function(result) {
+        $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i,o).then(function(result) {
           $scope.thread.Head.forEach(function(v,k){
             if(parseInt(v.id)==parseInt(id)){
-               //$scope.headContent.body=JSON.parse(result.response);
-              //var x=JSON.parse(result.response.Upload);
               v.Uploads.push(JSON.parse(result.response)[0]);
-              //$scope.headContent.body=result.response;
             }
           });
          
           $scope.img_ctr++;
           
+          
+        },function(error){
+          $ionicLoading.hide();
+          alert('Error uploading..');
           
         });
       });
@@ -583,13 +589,13 @@ $scope.selectPictureInComment = function($act) {
           }
           $scope.newComment='';
            $scope.comments['Comment'].push(response.Comment);
-            $ionicScrollDelegate.scrollBottom();
+            
             
           if($scope.uploadedCommentimgs.length > 0){
             
             $scope.submitCommentPhoto(response.Comment.id);
           }
-            
+            $ionicScrollDelegate.scrollBottom();
           
          
         }
@@ -613,6 +619,9 @@ $scope.selectPictureInComment = function($act) {
         o.mimeType="image/jpeg";
         o.fileName = i.substr(i.lastIndexOf('/') + 1);
         o.chunkedMode = false;
+         o.headers = {
+            Connection: "close"
+        };
         $scope.Upload={};
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i,o,true).then(function(result) {
           //$scope.newComment=result.response;
@@ -637,9 +646,8 @@ $scope.selectPictureInComment = function($act) {
   
   $scope.$watch('img_comment_ctr',function(newVal,oldVal){
     if(newVal==$scope.uploadedCommentimgs.length){
-         //$scope.resetHeadForm();
          $scope.uploadedCommentimgs=[];
-         //$ionicLoading.hide();
+         $ionicScrollDelegate.scrollBottom();
     }
       
   });
