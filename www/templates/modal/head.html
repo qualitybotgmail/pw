@@ -24,8 +24,8 @@
    <div class="row" ng-show="uploadedImgs.length > 0">
     <div class="col">
     <span >
-    <a class="item-thumbnail" collection-repeat="im in uploadedImgs track by $index">
-      <i ng-click="removeUploadedImg($index)" class="icon ion-ios-close" style="font-size: 30px;position: absolute;left: 60px;"></i>
+    <a class="item-thumbnail" ng-repeat="im in uploadedImgs track by $index">
+      <i ng-click="removeUploadedImg($index)" class="icon ion-ios-close" style="font-size: 30px;position: absolute;margin-left: 45px;"></i>
        <img ng-src="{{im}}">
     </a>
     </span>
@@ -38,7 +38,7 @@
 <button ng-show="headAction=='add'" class="button button-center button-positive" ng-click="processAddingHead()">
   Add
 </button>
-<button class="button button-center button-assertive" ng-click="resetHeadForm();showAddHead.hide()">
+<button class="button button-center button-assertive" ng-click="resetHeadForm();showAddHead.hide();popover.hide();">
   Cancel
 </button>
 </div>

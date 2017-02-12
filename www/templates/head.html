@@ -1,6 +1,6 @@
 <ion-view view-title="Comments">
-  <ion-content class="padding">
-  <div ng-repeat="comment in comments.Comment track by $index">
+  <ion-content class="padding has-footer" >
+  <!--<div ng-repeat="comment in comments.Comment track by $index">
    <div class="comment-list">
         
       <img class="avatar" ng-src="img/avatar.png">
@@ -13,39 +13,69 @@
    
      
   </div>
-  <div ng-show="comment.Uploads.length > 0" ng-repeat="upload in comment.Uploads track by $index" >
+<!--  <div ng-show="comment.Uploads.length > 0" ng-repeat="upload in comment.Uploads track by $index" >
         
-         <img ng-src="{{base_url}}{{upload.Upload.path}}" style="max-height: 300px;max-width: 400px;"></img>
+         <img ng-src="{{base_url}}{{upload.Upload.path}}" style="max-height: 200px;max-width: 200px;"></img>
        </div>
+  <div ng-show="comment.Uploads.length > 0" prevent-href="true">
+ <a class="item item-list-detail" style="padding: 0px;border: 0px;">
+	<ion-scroll direction="x" >
+		<img ng-repeat="upload in comment.Uploads track by $index" ng-src="{{upload.Upload.loading?upload.Upload.path:base_url+upload.Upload.path}}" ng-click="showImages({{$parent.$index}},{{$index}})" class="image-list-thumb" ng-style="{'opacity':upload.Upload.loading && typeof(upload.Upload.loading) !=='undefined'?'0.3':'1'}"/>
+        <ion-spinner icon="ios" ng-show="typeof(upload.Upload.loading)!=='undefined' && upload.Upload.loading" class="img-spinner"></ion-spinner>	
+	</ion-scroll>
+</a>
+</div>
   <div style="width:100%;height:30px"><a class="subdued" style="float:right" ng-click="changeLike(comment.id,$index)"> <span><i class="icon ion-thumbsup likes" ng-class="{'active':comment.isUserLiked}"></i> {{comment.likes}}</span></a></div>
 </div>
 
+</div>-->
+<div class="list card">
+
+  <div class="item item-avatar">
+    <img src="mcfly.jpg">
+    <h2>Marty McFly</h2>
+    <p>November 05, 1955</p>
+  </div>
+
+  <div class="item item-body">
+    <img class="full-image" src="delorean.jpg">
+    <p>
+      This is a "Facebook" styled Card. The header is created from a Thumbnail List item,
+      the content is from a card-body consisting of an image and paragraph text. The footer
+      consists of tabs, icons aligned left, within the card-footer.
+    </p>
+    <p>
+      <a href="#" class="subdued">1 Like</a>
+      <a href="#" class="subdued">5 Comments</a>
+    </p>
+  </div>
+
 </div>
   </ion-content>
-  <ion-footer-bar align-title="left" class="item-input-inset" style="padding: 5px;height:auto" keyboard-attach>
-    
-    
-      <label class="item-input-wrapper" style="padding-left:0px;padding-right:0px">
-        <textarea rows="5" ng-model="newComment" ng-Required="true" name="content" style="width:200%"></textarea>
+       
+  <ion-footer-bar align-title="left" style="padding: 0px;height:auto" keyboard-attach>
+    <div class="list" style="width:100%">
+    <div class="item item-input-inset">
+        <i class="icon ion-ios-camera" style="font-size: 35px;left:0px;color: rgba(68, 68, 68, 0.76);" ng-click="loadImage()"></i>
+      <label class="item-input-wrapper item-icon-left" style="padding-left:5px;padding-right:0px;background-color: white;">
+        
+        <textarea rows="1" auto-grow ng-model="newComment" ng-Required="true" placeholder="Type your comment.." name="content" style="width:100%;padding: 10px;border-radius: 5px;background-color: #e5e5e5;height:auto !important;"></textarea>
       </label>
-       <i class="icon ion-image" ng-click="loadImage()" style="position: absolute;right: 20px;top: 0px;font-size: 25px;"></i>
-      <button ng-show="action=='add' || action==''" class="button button-assertive" ng-click="sendComment(comments.Head.id)">
+       
+      <button ng-show="action=='add' || action==''" class="button button-basic" ng-click="sendComment(comments.Head.id)">
         Send
       </button>
-      <button style="position: relative !important;" ng-show="action=='edit'" class="button button-assertive" ng-click="editComment(comments.Head.id)">
+      <button style="position: relative !important;" ng-show="action=='edit'" class="button button-basic" ng-click="editComment(comments.Head.id)">
         Edit
       </button>
+      </div>
+       <div class="item" ng-show="uploadedCommentimgs.length > 0" style="padding: 0px;border-top: 0px;">
+        <a class="item-thumbnail" ng-repeat="im in uploadedCommentimgs track by $index">
+              <i ng-click="removeUploadedImg($index)" class="icon ion-ios-close" style="font-size: 20px;position: absolute;margin-left: 30px;"></i>
+               <img ng-src="{{im}}" style="width:45px;height:45px">
+        </a>
+      </div>
+      </div>
     </ion-footer-bar>
-<!--    <ion-footer-bar style="bottom: 32%;" ng-show="uploadedCommentimgs.length > 0">
-          <div class="row">
-    <div class="col">
-    <span >
-    <a class="item-thumbnail" collection-repeat="im in uploadedCommentimgs track by $index">
-      <i ng-click="removeUploadedCommentImg($index)" class="icon ion-ios-close" style="font-size: 30px;position: absolute;left: 60px;"></i>
-       <img ng-src="{{im}}">
-    </a>
-    </span>
-    </div>
-    </div>
-    </ion-footer-bar>-->
+   
 </ion-view>

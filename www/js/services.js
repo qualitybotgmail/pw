@@ -49,10 +49,13 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('Groups', function($http,API_URL) {
+.factory('Groups', function($http,API_URL,$ionicLoading) {
 
   return {
     all: function() {
+      $ionicLoading.show({
+        template:'<ion-spinner name="bubbles"></ion-spinner>'
+      });
       return $http.get(API_URL+"threads.json",{
       headers:{
         'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''

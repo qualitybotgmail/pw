@@ -1,4 +1,4 @@
-<ion-view view-title="{{thread.Thread.title}}">
+<ion-view view-title="<i class='icon ion-person-stalker'></i> : {{thread.Thread.title}}">
      <ion-nav-buttons side="right" ng-show="false">
     <button class="button button-icon button-clear ion-compose" ng-click="triggerAdd()">
     </button>
@@ -9,24 +9,48 @@
       <a class="button button-small button-positive" ng-click="showMemberList.show()">Members</a>
     </div>
     <a ng-show="thread.Thread.user_id!=$root.user_id" class="button button-small button-full button-positive" ng-click="showMemberList.show()">Members</a>
-      <div ng-repeat="head in thread.Head track by $index">
+     
+<!--     <ion-slide-box ng-show="sliderImages.length > 0">
+         
+       <ion-slide ng-repeat="im in sliderImages track by $index" style="padding-top:20%">
+           <i ng-click="hideImages()" class="icon ion-close-round" style="font-size: 35px;position: absolute;right: 10px;color: darkgrey;"></i>
+         <img ng-src="{{base_url}}{{im.Upload.path}}" style="width:400px;height:400px;margin:auto;display:block" >
+       </ion-slide>
+    </ion-slide-box>-->
+    <div class="card" ng-repeat="head in thread.Head track by $index">
+      <div class="item item-avatar " ui-sref="tab.head({id:head.id})">
+         <img ng-src="img/avatar.png">
+         <h2 ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</h2>
+         <h2 ng-show="head.user_id ==$root.user_id">{{$root.user}}</h2>
+         <p class="dateList">{{head.created}} <span ng-show="head.user_id==$root.user_id" prevent-href="true"><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-class="{'active':comment.isUserLiked}" ng-click="showPopover($event,$index)"></i></span></p>
+        <p class="headings"> {{head.body}} </p>
+         <div style="width:100%;height:30px;margin-top: 5px;"><a class="subdued" style="float:right" prevent-href="true" > <span ng-click="changeLike(head.id,$index)"><i class="icon ion-thumbsup likes" ng-class="{'active':head.isUserLiked}"></i> {{head.likes}}</span></a></div>
+      </div>
+    </div>
+    <!--<div ng-repeat="head in thread.Head track by $index">
      <div class="comment-list" ui-sref="tab.head({id:head.id})">
           
          <img class="avatar" ng-src="img/avatar.png">
          <h2 ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</h2>
        <h2 ng-show="head.user_id ==$root.user_id">{{$root.user}}</h2>
-        <p>{{head.created}} <span ng-show="head.user_id==$root.user_id" prevent-href="true"><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-class="{'active':comment.isUserLiked}" ng-click="showPopover($event,$index)"></i></span></p>
+        
         <div class = "row">
   
         {{head.body}} 
+    </div>-->
+<!--   <div ng-show="head.Uploads.length > 0" prevent-href="true">
+       <!--<img ng-show="head.Uploads.length == 1" ng-click="showImages({{$parent.$index}},{{$index}})" ng-src="{{base_url}}{{upload.Upload.path}}" style="max-height: 200px;max-width: 200px;" ></img>
+         <a class="item item-list-detail" style="padding: 0px;border: 0px;">
+			<ion-scroll direction="x" >
+				<img ng-repeat="upload in head.Uploads track by $index" ng-src="{{base_url}}{{upload.Upload.path}}" ng-click="showImages({{$parent.$index}},{{$index}})" class="image-list-thumb"/>
+			    
+			</ion-scroll>
+		</a>
+       </div>-->
+   <!-- <div style="width:100%;height:30px"><a class="subdued" style="float:right" prevent-href="true" > <span ng-click="changeLike(head.id,$index)"><i class="icon ion-thumbsup likes" ng-class="{'active':head.isUserLiked}"></i> {{head.likes}}</span></a></div>
     </div>
-      <div ng-show="head.Uploads.length > 0" ng-repeat="upload in head.Uploads track by $index">
-        
-         <img ng-src="{{base_url}}{{upload.Upload.path}}" style="max-height: 300px;max-width: 400px;"></img>
-        
-       </div>
-    <div style="width:100%;height:30px"><a class="subdued" style="float:right" prevent-href="true" > <span ng-click="changeLike(head.id,$index)"><i class="icon ion-thumbsup likes" ng-class="{'active':head.isUserLiked}"></i> {{head.likes}}</span></a></div>
-    </div>
-  </div>
+          
+  </div>-->
   </ion-content>
 </ion-view>
+
