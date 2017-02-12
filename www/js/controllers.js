@@ -144,7 +144,7 @@ angular.module('starter.controllers', [])
   $scope.likedHead=-1;
   $scope.search_filter='';
   $scope.base_url=BASE_URL;
-  $scope.processedHead=-1; //for edting and delete
+  $rootScope.processedHead=-1; //for edting and delete
   $rootScope.user_id=localStorage.getItem('user_id');
   $rootScope.user=localStorage.getItem("user");
  $scope.uploadedImgs=[];
@@ -164,15 +164,15 @@ angular.module('starter.controllers', [])
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(modal) {
-    $scope.showAddHead = modal;
+    $rootScope.showAddHead = modal;
   });
-  $scope.popover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><div class="list "><a href="#" class="item item-icon-left" ng-click="triggerEdit()" style="font-size: 18px;" ><i class="icon ion-edit" style="font-size: 20px;"></i> Edit</a><a href="#" class="item item-icon-left" ng-click="triggerDelete()" style="font-size: 18px;" ><i class="icon ion-ios-trash" style="font-size: 20px;"></i> Delete</a></div></ion-popover-view>', {
+  $rootScope.headPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><div class="list "><a href="#" class="item item-icon-left" ng-click="triggerEdit()" style="font-size: 18px;" ><i class="icon ion-edit" style="font-size: 20px;"></i> Edit</a><a href="#" class="item item-icon-left" ng-click="triggerDelete()" style="font-size: 18px;" ><i class="icon ion-ios-trash" style="font-size: 20px;"></i> Delete</a></div></ion-popover-view>', {
     scope: $scope
   });
   
-  $scope.showPopover=function($event,index){
-    $scope.processedHead=index;
-    $scope.popover.show($event);
+  $rootScope.showHeadPopover=function($event,index){
+    $rootScope.processedHead=index;
+    $rootScope.headPopover.show($event);
   };
   
   $scope.resetHeadForm=function(){
@@ -188,14 +188,14 @@ angular.module('starter.controllers', [])
     $scope.headContent.thread_id=$scope.thread.Thread.id;
      $scope.uploadedImgs=[];
     $scope.headAction='add';
-    $scope.showAddHead.show();
+    $rootScope.showAddHead.show();
   };
   
   $scope.triggerEdit=function(){
     $scope.headAction='edit';
     $scope.headContent.thread_id=$scope.thread.Thread.id;
-    $scope.headContent.body=$scope.thread.Head[$scope.processedHead].body;
-    $scope.showAddHead.show();
+    $scope.headContent.body=$scope.thread.Head[$rootScope.processedHead].body;
+    $rootScope.showAddHead.show();
   };
   
   $scope.triggerDelete=function(){
@@ -304,11 +304,11 @@ angular.module('starter.controllers', [])
     $ionicLoading.show({
       template:'<ion-spinner name="bubbles"></ion-spinner>'
     });
-    ApiService.Post('heads/'+$scope.thread.Head[$scope.processedHead].id+'.json',$scope.headContent).then(function(response){
-      $scope.thread.Head[$scope.processedHead].body=$scope.headContent.body;
-      $scope.showAddHead.hide();
+    ApiService.Post('heads/'+$scope.thread.Head[$rootScope.processedHead].id+'.json',$scope.headContent).then(function(response){
+      $scope.thread.Head[$rootScope.processedHead].body=$scope.headContent.body;
+      $rootScope.showAddHead.hide();
       $scope.resetHeadForm();
-      $scope.popover.hide();
+      $rootScope.popover.hide();
       $ionicLoading.hide();
     });
   };
@@ -542,12 +542,16 @@ $scope.selectPicture = function($act) {
   $scope.commentPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><div><p ng-click="triggerCommentEdit()" style="font-size: 13px;width: 100%;text-align: center;margin-top: 10px;margin-bottom: 0px;" >Edit</p><p ng-click="triggerCommentDelete()" style="font-size: 13px;width: 100%;text-align: center;" >Delete</p></div></ion-popover-view>', {
     scope: $scope
   });
-  
-  Groups.getComments($scope.headID).success(function(response){
-    $scope.comments=response;
-    $ionicScrollDelegate.scrollBottom();
-  });
   $scope.likedComment=-1;
+  
+  $scope.gethead=function(){
+      
+      Groups.getComments($scope.headID).success(function(response){
+        $scope.comments=response;
+        $ionicScrollDelegate.scrollBottom();
+      });
+  }
+  $scope.gethead();
   
   $rootScope.sliderImages=[];
   $scope.showImages = function(commentIndex,index) {

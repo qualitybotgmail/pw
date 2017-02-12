@@ -29,11 +29,12 @@
 </div>
 
 </div>-->
-<div class="list card">
+<div class="list card" >
 
   <div class="item item-avatar">
-    <img src="mcfly.jpg">
-    <h2>Marty McFly</h2>
+    <img src="img/avatar.png">
+    <h2 ng-show="comment.user_id !=$root.user_id">{{comment.User.username}}</h2>
+    <h2 ng-show="comment.user_id ==$root.user_id">{{$root.user}}</h2>
     <p>November 05, 1955</p>
   </div>
 
