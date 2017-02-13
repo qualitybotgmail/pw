@@ -203,6 +203,22 @@ angular.module('starter.services', [])
   };
 })
 
+.service('ModalService',function($q,$ionicPopover,$scope,$ionicModal){
+  this.popover= function(){
+    return $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><div class="list "><a href="" class="item item-icon-left" ng-click="triggerEdit()" style="font-size: 18px;" ><i class="icon ion-edit" style="font-size: 20px;"></i> Edit</a><a href="" class="item item-icon-left" ng-click="triggerDelete()" style="font-size: 18px;" ><i class="icon ion-ios-trash" style="font-size: 20px;"></i> Delete</a></div></ion-popover-view>', {
+    scope: $scope
+    });
+  },
+  this.modal=function(){
+      $ionicModal.fromTemplateUrl('templates/modal/head.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+      }).then(function(modal) {
+        return modal;
+      });
+  }
+})
+
 .factory('Base64', function () {
     /* jshint ignore:start */
   

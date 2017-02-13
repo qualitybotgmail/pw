@@ -137,7 +137,7 @@ angular.module('starter.controllers', [])
   
 })
 
-.controller('GroupDetailCtrl', function($scope,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
+.controller('GroupDetailCtrl', function($scope,ModalService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
   $scope.groupID=$stateParams['id'];
   $scope.thread=null;
   $scope.allMembers=[];
@@ -160,19 +160,11 @@ angular.module('starter.controllers', [])
   }).then(function(modal) {
     $scope.showMemberList = modal;
   });
-  $ionicModal.fromTemplateUrl('templates/modal/head.html', {
-    scope: $scope,
-    animation: 'slide-in-up'
-  }).then(function(modal) {
-    $rootScope.showAddHead = modal;
-  });
-  $rootScope.headPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><div class="list "><a href="#" class="item item-icon-left" ng-click="triggerEdit()" style="font-size: 18px;" ><i class="icon ion-edit" style="font-size: 20px;"></i> Edit</a><a href="#" class="item item-icon-left" ng-click="triggerDelete()" style="font-size: 18px;" ><i class="icon ion-ios-trash" style="font-size: 20px;"></i> Delete</a></div></ion-popover-view>', {
-    scope: $scope
-  });
+
   
-  $rootScope.showHeadPopover=function($event,index){
-    $rootScope.processedHead=index;
-    $rootScope.headPopover.show($event);
+  $scope.showHeadPopover=function($event,index){
+    $scope.processedHead=index;
+    ModalService.popover.show($event);
   };
   
   $scope.resetHeadForm=function(){
@@ -188,14 +180,16 @@ angular.module('starter.controllers', [])
     $scope.headContent.thread_id=$scope.thread.Thread.id;
      $scope.uploadedImgs=[];
     $scope.headAction='add';
-    $rootScope.showAddHead.show();
+    ModalService.modal.show();
   };
   
   $scope.triggerEdit=function(){
+    
     $scope.headAction='edit';
-    $scope.headContent.thread_id=$scope.thread.Thread.id;
-    $scope.headContent.body=$scope.thread.Head[$rootScope.processedHead].body;
-    $rootScope.showAddHead.show();
+     $scope.headContent.thread_id=$scope.thread.Thread.id;
+     $scope.headContent.id=$scope.thread.Head[$rootScope.processedHead].id;
+     $scope.headContent.body=$scope.thread.Head[$rootScope.processedHead].body;
+   ModalService.modal.show();
   };
   
   $scope.triggerDelete=function(){
@@ -292,7 +286,7 @@ angular.module('starter.controllers', [])
             $scope.submitPhoto(response.Head.id);
          }else{
            //angular.element("textarea").triggerHandler("click");
-            $scope.showAddHead.hide();
+            ModalService.modal.hide();
             $scope.resetHeadForm();
             $ionicLoading.hide();
             $ionicScrollDelegate.scrollBottom();
@@ -304,11 +298,15 @@ angular.module('starter.controllers', [])
     $ionicLoading.show({
       template:'<ion-spinner name="bubbles"></ion-spinner>'
     });
-    ApiService.Post('heads/'+$scope.thread.Head[$rootScope.processedHead].id+'.json',$scope.headContent).then(function(response){
-      $scope.thread.Head[$rootScope.processedHead].body=$scope.headContent.body;
-      $rootScope.showAddHead.hide();
+    ApiService.Post('heads/'+$scope.headContent.id+'.json',$scope.headContent).then(function(response){
+      if($state.current.name=='tab.head')
+        $rootScope.viewedHeadContents.body=$scope.headContent.body;
+      else
+        $scope.thread.Head[$rootScope.processedHead].body=$scope.headContent.body;
+        
       $scope.resetHeadForm();
-      $rootScope.popover.hide();
+      ModalService.modal.hide();
+      ModalService.popover.hide();
       $ionicLoading.hide();
     });
   };
@@ -320,9 +318,9 @@ angular.module('starter.controllers', [])
         ApiService.Delete('heads/'+$scope.thread.Head[$scope.processedHead].id+'.json','').then(function(response){
           if(response.status=='OK'){
              $scope.thread.Head.splice($scope.processedHead,1);
-            $scope.showAddHead.hide();
             $scope.resetHeadForm();
-            $scope.popover.hide();
+            ModalService.modal.hide();
+             ModalService.popover.hide();
             $ionicLoading.hide();
           }
         },function(error){
@@ -519,7 +517,7 @@ $scope.selectPicture = function($act) {
   
   $scope.$watch('img_ctr',function(newVal,oldVal){
     if(newVal==$scope.uploadedImgs.length){
-        $scope.showAddHead.hide();
+        ModalService.modal.hide();
          $scope.resetHeadForm();
          $scope.uploadedImgs=[];
          $ionicLoading.hide();
@@ -536,6 +534,7 @@ $scope.selectPicture = function($act) {
   $scope.processedCommentIndex='';
   $rootScope.user_id=localStorage.getItem('user_id');
   $rootScope.user=localStorage.getItem('user');
+  $rootScope.viewedHeadContents=null;
   $scope.action='';
   $scope.base_url=BASE_URL;
   $scope.uploadedCommentimgs=[];
@@ -548,6 +547,7 @@ $scope.selectPicture = function($act) {
       
       Groups.getComments($scope.headID).success(function(response){
         $scope.comments=response;
+        $rootScope.viewedHeadContents=response.Head;
         $ionicScrollDelegate.scrollBottom();
       });
   }
@@ -824,7 +824,7 @@ $scope.selectPictureInComment = function($act) {
   };
   
   $scope.logout=function(){
-   $ionicHistory.clearCache();
+   $ionicHistory.clearCache(); 
    $ionicHistory.clearHistory();
     localStorage.clear();
     $rootScope.user_id=-1;
@@ -838,7 +838,6 @@ $scope.selectPictureInComment = function($act) {
     'username':'',
     'password':''
   };
-
   $scope.login=function(data){
     $ionicLoading.show({
       template:'<ion-spinner name="bubbles"></ion-spinner>'

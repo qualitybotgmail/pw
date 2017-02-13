@@ -33,30 +33,22 @@
 
   <div class="item item-avatar">
     <img src="img/avatar.png">
-    <h2 ng-show="comments.Head.user_id !=$root.user_id">{{comments.Owner.username}}</h2>
-    <h2 ng-show="comments.Head.user_id ==$root.user_id">{{$root.user}}</h2>
-    <p class="dateList"><span ng-show="comments.Head.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showHeadPopover($event,$index)"></i></span></p>
-    <p>{{comments.Head.created}}</p>
+    <h2 ng-show="viewedHeadContents.user_id !=$root.user_id">{{comments.Owner.username}}</h2>
+    <h2 ng-show="viewedHeadContents.user_id ==$root.user_id">{{$root.user}}</h2>
+    <p class="dateList"><span ng-show="viewedHeadContents.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showHeadPopover($event,$index)"></i></span></p>
+    <p>{{viewedHeadContents.created}}</p>
   </div>
 
   <div class="item item-body">
     <p>
-     {{comments.Head.body}}
+     {{viewedHeadContents.body}}
     </p>
-    <div ng-show="comments.Upload.length > 0" prevent-href="true">
-     <a class="item item-list-detail" style="padding: 0px;border: 0px;">
-    	<ion-scroll direction="x" >
-    		<img ng-repeat="upload in comments.Upload track by $index" ng-src="{{base_url}}{{upload.path}}" ng-click="showImages({{$index}})" class="full-image" style="height:350px;width: auto;"/>
-           
-    	</ion-scroll>
-    </a>
-    </div>
     <p>
-      <a href="#" class="subdued">1 Like</a>
+      <a href="#" class="subdued">{{viewedHeadContents.likes}} Like</a>
     </p>
   </div>
 
-</div>
+</div> 
   </ion-content>
        
   <ion-footer-bar align-title="left" style="padding: 0px;height:auto" keyboard-attach>
