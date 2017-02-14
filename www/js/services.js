@@ -102,14 +102,14 @@ angular.module('starter.services', [])
     });
     },
     sendComment:function(id,comment){
-          return $http.post(API_URL+"heads/comment/"+id,{'Comment':{'body':comment}},{
+          return $http.post(API_URL+"heads/comment/"+id,{'Comment':{'body':comment.body}},{
           headers:{
             'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
           }
         });
     },
     editComment:function(id,comment,comment_id){
-      return $http.post(API_URL+"comments/"+comment_id+'.json',{'id':comment_id,'body':comment,'head_id':id},{
+      return $http.post(API_URL+"comments/"+comment_id+'.json',comment,{
           headers:{
             'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
           }
@@ -203,19 +203,24 @@ angular.module('starter.services', [])
   };
 })
 
-.service('ModalService',function($q,$ionicPopover,$scope,$ionicModal){
-  this.popover= function(){
-    return $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><div class="list "><a href="" class="item item-icon-left" ng-click="triggerEdit()" style="font-size: 18px;" ><i class="icon ion-edit" style="font-size: 20px;"></i> Edit</a><a href="" class="item item-icon-left" ng-click="triggerDelete()" style="font-size: 18px;" ><i class="icon ion-ios-trash" style="font-size: 20px;"></i> Delete</a></div></ion-popover-view>', {
-    scope: $scope
-    });
+.service('HeadService',function($http,$ionicLoading,API_URL){
+  this.edit= function($rootScope,head){
+    $rootScope.headAction='edit';
+
+     $rootScope.headContent=head;
+    $rootScope.headPopover.hide();
+      $rootScope.showAddHead.show();
   },
-  this.modal=function(){
-      $ionicModal.fromTemplateUrl('templates/modal/head.html', {
-        scope: $scope,
-        animation: 'slide-in-up'
-      }).then(function(modal) {
-        return modal;
-      });
+  this.processEdit=function($rootScope){
+     $ionicLoading.show({
+      template:'<ion-spinner name="bubbles"></ion-spinner>'
+     });
+     
+    return $http.post(API_URL+'heads/'+$rootScope.headContent.id+'.json',$rootScope.headContent,{
+      headers:{
+        'Authorization':'Basic '+localStorage.getItem('talknote_token')+''
+      }
+    });
   }
 })
 

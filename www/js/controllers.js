@@ -34,7 +34,7 @@ angular.module('starter.controllers', [])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('GroupsCtrl', function($scope,Groups,$ionicLoading,$http,ApiService,$ionicPopover,$ionicModal,$rootScope,$ionicPopup) {
+.controller('GroupsCtrl', function($scope,Groups,$ionicLoading,$http,ApiService,$ionicPopover,$ionicModal,$rootScope,$ionicPopup,API_URL,$state) {
  
  $rootScope.user_id=localStorage.getItem('user_id');
  $rootScope.user=localStorage.getItem("user");
@@ -44,6 +44,11 @@ angular.module('starter.controllers', [])
    'created':'',
    'user_id':''
  };
+ 
+ $scope.showGroupList = true;
+ $scope.showSearchList = false;
+ 
+ 
  
  $ionicPopover.fromTemplateUrl('templates/modal/settings.html', {
     scope: $scope
@@ -135,9 +140,48 @@ angular.module('starter.controllers', [])
    });
   };
   
+  $scope.searchKey = {'word': ''};
+  
+  $scope.onSearchChange = function () {
+    
+    if($scope.searchKey.word == ''){
+      
+       $scope.showGroupList = true;
+       $scope.showSearchList = false;
+      
+    }else{
+       $scope.showGroupList = false;
+       $scope.showSearchList = true;
+    }
+    
+    
+    
+    $http.get('https://jhoncistalknote.blobby.xyz/'+'profiles/search/'+$scope.searchKey.word,{ 
+    headers:{ 
+    'Authorization':'Basic '+localStorage.getItem('talknote_token')+'' 
+  } 
+  })
+    .then(function(response){
+      console.log("RESPONSE >>>> ", response.data)
+      $scope.searchUsers = response.data.Users;
+      $scope.searchThreads = response.data.Threads;
+      $scope.searchHeads = response.data.Heads;
+      
+      
+     
+    }),function(error){ 
+      
+    }
+    
+   
+}
+  
+  
+ 
+  
 })
 
-.controller('GroupDetailCtrl', function($scope,ModalService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
+.controller('GroupDetailCtrl', function($scope,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
   $scope.groupID=$stateParams['id'];
   $scope.thread=null;
   $scope.allMembers=[];
@@ -160,6 +204,12 @@ angular.module('starter.controllers', [])
   }).then(function(modal) {
     $scope.showMemberList = modal;
   });
+    $ionicModal.fromTemplateUrl('templates/modal/head.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $rootScope.showAddHead = modal;
+  });
 
   
   $scope.showHeadPopover=function($event,index){
@@ -180,7 +230,7 @@ angular.module('starter.controllers', [])
     $scope.headContent.thread_id=$scope.thread.Thread.id;
      $scope.uploadedImgs=[];
     $scope.headAction='add';
-    ModalService.modal.show();
+     $rootScope.showAddHead.show();
   };
   
   $scope.triggerEdit=function(){
@@ -260,7 +310,6 @@ angular.module('starter.controllers', [])
      angular.forEach(response.users,function(val,key){
        val['User']['selected']=false;
        $scope.notMembers[val['User']['id']]=val['User'];
-        
       });
     });
   };
@@ -831,6 +880,15 @@ $scope.selectPictureInComment = function($act) {
     $state.go('login');
   }
 })
+
+
+.controller('UserChatCtrl', function($scope,$stateParams) {
+  
+  $scope.userChatID = "Test CHAT";
+ 
+})
+
+
 .controller('LoginCtrl',function($scope,$rootScope,$ionicPopup,$ionicLoading,$state,ApiService,Base64,$http,$ionicHistory){
   $rootScope.user_id=-1;
   $rootScope.user='';

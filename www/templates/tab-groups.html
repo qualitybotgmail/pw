@@ -1,12 +1,51 @@
-<ion-view view-title="Groups">
+<ion-view view-title="">
+  
+ <ion-nav-buttons side="left">
+    <label class="item item-input">
+          <i class="icon ion-search placeholder-icon"></i>
+        <input type="text" placeholder="Search" ng-model="searchKey.word" ng-change="onSearchChange()" >
+        </label>
+  </ion-nav-buttons> 
+  
+  
   <ion-nav-buttons side="right" ng-show="false">
         <button class="button button-icon button-clear ion-plus-round" ng-click="$root.modalAction='add';$root.modalContent=[];threadModal.show();">
         </button>
-      </ion-nav-buttons>
+  </ion-nav-buttons>
+      
   <ion-content>
     
-    <ion-list>
-      <ion-item style="padding-right:0px;" class="item-remove-animate item-icon-left item-icon-right" ng-show="groups.length > 0" collection-repeat="group in groups track by $index" type="item-text-wrap" href="#/tab/group-detail/{{group.Thread.id}}">
+  <div class="item item-divider item-stable">
+       <center>Groups</center>
+  </div>
+  <div ng-show="showSearchList">
+    
+    
+
+    <div class="item item-divider item-positive">
+      <i  class="icon ion-person"></i> Users
+    </div>
+      <a class="item ion-person" ng-repeat="users in searchUsers" href="#/tab/user-chat/users.User.id">
+        {{users.User.username}}
+      </a>
+    
+    <div class="item item-divider item-positive">
+      <i  class="icon ion-ios-people"></i> Groups
+    </div>
+      <a class="item ion-ios-paper" ng-repeat="threads in searchThreads" href="#/tab/group-detail/{{threads.Thread.id}}">
+        {{threads.Thread.title}}
+      </a>
+      
+      
+    <div class="item item-divider item-positive">
+      <i class="icon ion-pin"></i> Posts
+    </div>
+      <a class="item ion-pin" ng-repeat="heads in searchHeads" href="#/tab/head/{{heads.Head.id}}">
+        {{heads.Head.body}}
+      </a>  
+  </div>  
+    <ion-list ng-show="showGroupList">
+      <ion-item style="padding-right:0px;" class="item-remove-animate item-icon-left item-icon-right" ng-show="groups.length > 0" collection-repeat="group in groups track by $index" type="item-text-wrap" href="#/tab/group-detail/{{group.Thread.id}}" >
         <i  class="icon ion-ios-people"></i>
         <h2>{{group.Thread.title}}</h2>
         <a href prevent-href="true" ng-show="group.Thread.user_id==$root.user_id" style="float:right">
@@ -20,5 +59,7 @@
          No Posts
       </div>
     </ion-list>
+    
+
   </ion-content>
 </ion-view>
