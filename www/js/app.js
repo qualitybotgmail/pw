@@ -148,6 +148,18 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
     }
   })
   
+  
+  .state('tab.user-chat', {
+    url: '/user-chat/:id',
+    authenticate:true,
+    views: {
+      'tab-groups': {
+        templateUrl: 'templates/user-chat.html',
+        controller: 'UserChatCtrl'
+      }
+    }
+  })
+  
 
   .state('tab.account', {
     url: '/account',

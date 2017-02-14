@@ -4,4 +4,6 @@
 node_modules/
 platforms/
 plugins/
-npm-debug.log
+npm-debug.log.c9/*
+.c9
+www/npm-debug.log
