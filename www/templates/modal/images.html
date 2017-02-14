@@ -1,4 +1,4 @@
-<div class="modal image-modal transparent" ng-click="closeModal()">
+<div class="modal image-modal" ng-click="closeModal()" style="background: rgba(0, 0, 0, 0.86);">
     <ion-slide-box on-slide-changed="slideChanged(index)" show-pager="true" class="has-tabs">
         <ion-slide ng-repeat="im in sliderImages">
             <img ng-src="{{base_url}}{{im.Upload.path}}" class="fullscreen-image"/>

@@ -138,7 +138,7 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
   })
   
   .state('tab.head', {
-    url: '/head/:id',
+    url: '/head/:id/:index',
     authenticate:true,
     views: {
       'tab-groups': {

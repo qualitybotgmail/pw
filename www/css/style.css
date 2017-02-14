@@ -41,6 +41,13 @@
     right: 0px;
     color: gray;
 }
+.datecomment{
+    position: absolute;
+    right: 40px;
+    margin-top: 5px;
+    padding-right: 15px !important;
+    font-size:13px !important;
+}
 .headings{
     overflow: hidden !important;
     text-overflow: ellipsis !important;
@@ -50,7 +57,7 @@
     white-space: normal !important;
 }
 .likes{
-    font-size:23px;
+    font-size:25px;
     
 }
 .active{
@@ -105,7 +112,7 @@ textarea {
  
  .image-list-thumb {
     padding: 2px 2px 2px 2px;
-    height: 200px;
+    height: 300px;
 }
  
 .image-modal {
@@ -128,10 +135,28 @@ textarea {
     overflow: auto;
     position: fixed;
     right: 0;
-    top: 0;
 }
  
 .slider {
     width: 100%;
     height: 100%;
+}
+.item-body p {
+     margin-top: 0px !important; 
+     margin-bottom: 0px !important; 
+}
+.settingComment{
+    margin-bottom: 0px !important;
+}
+.settingComment li{
+    font-size:16px;
+    text-align:left;
+    border-bottom:1px solid darkgrey !important;
+    padding-top:10px;
+    padding-bottom:10px;
+    padding-left: 40px !important;
+}
+.settingComment .item i{
+        font-size: 21px;
+    padding-bottom: 4px;
 }
