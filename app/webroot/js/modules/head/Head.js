@@ -138,7 +138,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 // posting comments
                 var postData = {'body': $scope.comment.body};
                 var id = $scope.selectedHead.Head.id.toString();
-                var currentComment =null;
+                var currentComment = null;
+                console.log(postData,"postData")
+                $rootScope.sendPushNotif(postData);
+                
                 HeadsModel.one('comment').one(id).customPOST(postData).then(function(res){
                     $scope.comment.comment_id = res.Comment.id;
                     currentComment = angular.extend(postData, res.Comment, {likes: 0,isUserLiked: false, User: $rootScope.loginUser, Upload: []});

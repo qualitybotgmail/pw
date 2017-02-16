@@ -36,6 +36,7 @@ class AppController extends Controller {
 	'RequestHandler',
         'Session',
         'Auth' => array(
+        	'loginAction' => array('controller'=>'Users', 'action'=>'login'),
             'loginRedirect' => array(
                 'controller' => 'users',
                 'action' => 'talk'
@@ -44,11 +45,6 @@ class AppController extends Controller {
                 'controller' => 'users',
                 'action' => 'talk',
                 'home'
-            ),
-            'authenticate' => array(
-                'Form' => array(
-                    'passwordHasher' => 'Blowfish'
-                )
             )
         )
     );
@@ -71,10 +67,27 @@ class AppController extends Controller {
 	
 	public function beforeFilter(){
 		parent::beforeFilter();
+		$this->Auth->authenticate = array('Form' => array(
+                    'passwordHasher' => 'Blowfish',
+                    'userModel' => 'User',
+                    'fields' => array(
+                                'username' => 'username',
+                                'password'=>'password'
+                        )
+                ));
+		//If basic authentication
+		if(isset($_SERVER['PHP_AUTH_USER'])){
+			$this->Auth->authorize=array('Controller');
+			$this->loadModel("User");
+			$this->request->data['User']['username']=$_SERVER['PHP_AUTH_USER'];
+			$this->request->data['User']['password']=$_SERVER['PHP_AUTH_PW'];
+			$this->Auth->login();
+			
+		}
+
 		$this->layout = 'bootstrap';
-
-
 		$this->Auth->allow('add','view','logout','login','findallby','findby','contains','upload');
+		
 	}
 	public function _plural(){
 		$spl =	explode("Controller",get_class($this));
