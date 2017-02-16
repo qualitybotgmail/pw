@@ -29,7 +29,7 @@
   </style>
 <link rel="manifest" href="/js/push/manifestsc.json">
 </head>
-<body class="theme-default no-main-menu">
+<body id="main-body" class="theme-default no-main-menu">
   <div id="main-wrapper">
     <div id="content-wrapper">
         <div ui-view="loading"></div>
@@ -44,6 +44,19 @@
     Talknote.version = 'v.1.0';
 		Talknote.baseUrl = window.location.origin;
 	</script>
+	<script type="text/javascript">
+	
+      function resize()
+      {
+          var heights = window.innerHeight;
+          document.getElementById("main-wrapper").style.height = heights + "px";
+      }
+      resize();
+      window.onresize = function() {
+          resize();
+      };
+
+  </script> 
 	<script src="vendor/requirejs/require.min.js" data-main="js/main.js?v=3909"></script>
 	<script src="/js/push/mainsc.js?v=1"></script>
 </html>
