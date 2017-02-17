@@ -1,6 +1,6 @@
 angular.module('starter.services', [])
 
-.factory('Chats', function() {
+.factory('Chats', function($http,API_URL) {
   // Might use a resource here that returns a JSON array
 
   // Some fake testing data
@@ -33,18 +33,35 @@ angular.module('starter.services', [])
 
   return {
     all: function() {
-      return chats;
+      return $http.get(API_URL+"groupchats/getlastmessages/",{
+        headers:{
+          'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+        }
+      });
     },
     remove: function(chat) {
       chats.splice(chats.indexOf(chat), 1);
     },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
+    get: function(chatId,page,withUsers) {
+      return $http.get(API_URL+"groupchats/pagedchatforapp/"+chatId+'/'+page+'/'+withUsers,{
+        headers:{
+          'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
         }
-      }
-      return null;
+      });
+    },
+    add:function(groupchatId,body){
+      return $http.post(API_URL+'messages/add/'+groupchatId,{'body':body},{
+        headers:{
+          'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+        }
+      });
+    },
+    edit:function(groupchatId,message_id,body){
+      return $http.post(API_URL+'messages/'+message_id+'.json',{'id':message_id,'body':body,'groupchat_id':groupchatId},{
+         headers:{
+          'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+        }
+      });
     }
   };
 })
@@ -58,7 +75,7 @@ angular.module('starter.services', [])
       });
       return $http.get(API_URL+"threads.json",{
       headers:{
-        'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+        'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
       }
     });
     },
@@ -69,49 +86,49 @@ angular.module('starter.services', [])
       
       return $http.get(API_URL+"threads/"+groupId+".json",{
       headers:{
-        'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+        'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
       }
     });
     },
     edit:function(threadId,title){
       return $http.post(API_URL+"threads/"+threadId+".json",{'title':title,'id':threadId},{
       headers:{
-        'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+        'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
       }
     });
     },
     add:function(title){
       return $http.post(API_URL+"threads.json",{'title':title},{
       headers:{
-        'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+        'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
       }
       });
     },
     getNotMembers:function(headId){
       return $http.get(API_URL+"threads/userstoadd/"+headId,{
         headers:{
-          'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+          'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
         }
       });
     },
     getComments:function(headId) {
       return $http.get(API_URL+"heads/"+headId+".json",{
       headers:{
-        'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+        'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
       }
     });
     },
     sendComment:function(id,comment){
           return $http.post(API_URL+"heads/comment/"+id,{'Comment':{'body':comment.body}},{
           headers:{
-            'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+            'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
           }
         });
     },
     editComment:function(id,comment,comment_id){
       return $http.post(API_URL+"comments/"+comment_id+'.json',comment,{
           headers:{
-            'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+            'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
           }
         });
       }
@@ -123,7 +140,7 @@ angular.module('starter.services', [])
     like:function(type,id){
       $http.get(API_URL+""+type+"/like/"+id,{
         headers:{
-          'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+          'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
         }
       }).success(function(response){
         if(response.status=='OK')
@@ -135,7 +152,7 @@ angular.module('starter.services', [])
     unlike:function(type,id){
        $http.get(API_URL+""+type+"/unlike/"+id,{
         headers:{
-          'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+          'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
         }
       }).success(function(response){
         if(response.status=='OK')
@@ -153,7 +170,7 @@ angular.module('starter.services', [])
     
     $http.get(API_URL+url+param,{
       headers:{
-        'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+        'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
       }
     })
     .success(function(data){
@@ -170,7 +187,7 @@ angular.module('starter.services', [])
     
     $http.post(API_URL+url,param,{
       headers:{
-        'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+        'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
       }
       })
     .success(function(data,status){
@@ -188,7 +205,7 @@ angular.module('starter.services', [])
     
     $http.delete(API_URL+url+param,{
       headers:{
-        'Authorization': 'Basic '+localStorage.getItem("talknote_token")+''
+        'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
       }
       })
     .success(function(data,status){
@@ -218,7 +235,7 @@ angular.module('starter.services', [])
      
     return $http.post(API_URL+'heads/'+$rootScope.headContent.id+'.json',$rootScope.headContent,{
       headers:{
-        'Authorization':'Basic '+localStorage.getItem('talknote_token')+''
+        'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
       }
     });
   }
@@ -308,4 +325,61 @@ angular.module('starter.services', [])
     };
   
     /* jshint ignore:end */
+})
+
+.service('AuthService', function($q, $http,$ionicHistory) {
+  var LOCAL_TOKEN_KEY = 'talknote_token';
+  var username = '';
+  var userid='';
+  var isAuthenticated = false;
+  var authToken;
+ 
+  function loadUserCredentials() {
+    var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
+     username=window.localStorage.getItem('user');
+     userid=window.localStorage.getItem('user_id');
+    if (token) {
+      useCredentials(token);
+    }
+  }
+ 
+  var storeUserCredentials=function(token,uname,userid) {
+    window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
+    window.localStorage.setItem('user',uname);
+    window.localStorage.setItem('user_id',userid);
+   
+    useCredentials(token);
+  }
+ 
+  function useCredentials(token) {
+    isAuthenticated = true;
+    authToken = token;
+  }
+ 
+  function destroyUserCredentials() {
+    authToken = undefined;
+    username = '';
+    userid='';
+    isAuthenticated = false;
+    window.localStorage.removeItem(LOCAL_TOKEN_KEY);
+    window.localStorage.removeItem('user');
+    window.localStorage.removeItem('user_id');
+  }
+ 
+  var logout = function() {
+    destroyUserCredentials();
+    $ionicHistory.clearCache(); 
+   $ionicHistory.clearHistory();
+  };
+ 
+  loadUserCredentials();
+ 
+  return {
+    logout: logout,
+    storeUserCredentials:storeUserCredentials,
+    isAuthenticated: function() {return isAuthenticated;},
+    username: function() {return username;},
+    userid:function(){return userid; },
+    authToken:function(){return authToken; }
+  };
 });

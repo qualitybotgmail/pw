@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
 
-.run(function($ionicPlatform,$rootScope,$state,$ionicConfig) {
+.run(function($ionicPlatform,$rootScope,$state,$ionicConfig,AuthService) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -24,8 +24,18 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
   });
   
   $rootScope.$on('$stateChangeStart',function(event,toState,toParams,fromState,fromParams){
-      $rootScope.statename=toState;
-      if(toState.authenticate===true){
+
+        if (toState.data.authenticate && !AuthService.isAuthenticated()){
+            
+            $state.transitionTo("login");
+            event.preventDefault();
+        }
+        
+        if(AuthService.isAuthenticated() && toState.name.indexOf("login") > -1){
+           $state.go("tab.dash");
+           event.preventDefault();
+        }
+   /*   if(toState.authenticate===true){
         if(localStorage.getItem("talknote_token")===null){
           $state.go('login');
         event.preventDefault();
@@ -39,7 +49,7 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
           event.preventDefault();
       }
       }
-      }
+      }*/
   });
 })
 
@@ -53,7 +63,9 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
   $stateProvider
   .state('login', {
     url: '/login',
-    authenticate:false,
+    data: {
+        authenticate: false
+    },
      views: {
       '': {
         templateUrl: 'templates/auth-login.html',
@@ -66,7 +78,9 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
   .state('tab', {
     url: '/tab',
     abstract: true,
-    authenticate:true,
+    data: {
+        authenticate: true
+    },
     templateUrl: 'templates/tabs.html'
   })
 
@@ -74,7 +88,9 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
 
   .state('tab.dash', {
     url: '/dash',
-    authenticate:true,
+    data: {
+      authenticate: true
+    },
     views: {
       'tab-dash': {
         templateUrl: 'templates/tab-dash.html',
@@ -85,7 +101,9 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
 
   .state('tab.incentive', {
     url: '/incentive',
-    authenticate:true,
+    data: {
+      authenticate: true
+    },
     views: {
       'tab-incentive': {
         templateUrl: 'templates/tab-incentive.html',
@@ -96,7 +114,9 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
 
   .state('tab.chats', {
       url: '/chats',
-      authenticate:true,
+    data: {
+      authenticate: true
+    },
       views: {
         'tab-chats': {
           templateUrl: 'templates/tab-chats.html',
@@ -106,7 +126,9 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
     })
     .state('tab.chat-detail', {
       url: '/chats/:chatId',
-      authenticate:true,
+      data: {
+        authenticate: true
+      },
       views: {
         'tab-chats': {
           templateUrl: 'templates/chat-detail.html',
@@ -117,7 +139,9 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
 
   .state('tab.groups', {
     url: '/groups',
-    authenticate:true,
+    data: {
+      authenticate: true
+    },
     views: {
       'tab-groups': {
         templateUrl: 'templates/tab-groups.html',
@@ -128,7 +152,9 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
   
   .state('tab.group-detail', {
     url: '/group-detail/:id',
-    authenticate:true,
+    data: {
+      authenticate: true
+    },
     views: {
       'tab-groups': {
         templateUrl: 'templates/group-detail.html',
@@ -139,7 +165,9 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
   
   .state('tab.head', {
     url: '/head/:id/:index',
-    authenticate:true,
+    data: {
+      authenticate: true
+    },
     views: {
       'tab-groups': {
         templateUrl: 'templates/head.html',
@@ -151,7 +179,9 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
   
   .state('tab.user-chat', {
     url: '/user-chat/:id',
-    authenticate:true,
+    data: {
+      authenticate: true
+    },
     views: {
       'tab-groups': {
         templateUrl: 'templates/user-chat.html',
@@ -163,7 +193,9 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
 
   .state('tab.account', {
     url: '/account',
-    authenticate:true,
+    data: {
+      authenticate: true
+    },
     views: {
       'tab-account': {
         templateUrl: 'templates/tab-account.html',
@@ -268,4 +300,9 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
     element.bind('keyup keydown keypress change', update);
     update();
   }
+})
+.filter('reverse', function() {
+  return function(items) {
+    return items.slice().reverse();
+  };
 });
