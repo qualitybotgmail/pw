@@ -13,7 +13,7 @@ class ThreadsController extends AppController {
  *
  * @var array
  */
-	public $components = array('Paginator');
+	public $components = array('Paginator','RequestHandler');
 
 /**
  * index method
@@ -51,7 +51,7 @@ class ThreadsController extends AppController {
 	}
 
 	public function index() { 
-		
+	
 		$user_id = $this->Auth->user('id');
 		$this->Thread->Owner->recursive=2;
 		
@@ -68,10 +68,19 @@ class ThreadsController extends AppController {
 		
 		$result = array();
 		foreach($users_threads['Thread'] as $thread){
+
 			$owner = $thread['Owner'];
 			$user = $thread['User'];
 			unset($thread['Owner']);
 			unset($thread['User']);
+			
+			$this->loadModel('IgnoredThread');
+			$this->IgnoredThread->recursive=-1;
+			$ignored=$this->IgnoredThread->find('count',array('conditions'=>array('thread_id'=>$thread['id'],'user_id'=>$user_id)));
+			if($ignored > 0)
+			 $thread['notIgnored'] = false;
+			else
+			 $thread['notIgnored'] = true;
 			
 			$result[] = array('Thread' => $thread,'Owner' => $owner,'User' => $user);
 							
@@ -102,7 +111,10 @@ class ThreadsController extends AppController {
 	
 	
 	public function beforeFilter(){
-		$this->Auth->allow('index2','notifications');
+		parent::beforeFilter();
+		$this->loadModel('User'); 
+
+			$this->Auth->allow('index','view','edit','delete','notifications','addmember','userstoadd','deletemember');
 	}
 
 /**
@@ -112,8 +124,8 @@ class ThreadsController extends AppController {
  * @param string $id
  * @return void
  */
-	public function view($id = null) {
-	
+	public function view($id) {
+	error_reporting(2);
 		if (!$this->Thread->exists($id)) {
 			throw new NotFoundException(__('Invalid thread'));
 		}
@@ -127,14 +139,18 @@ class ThreadsController extends AppController {
 		$uid = $this->Auth->user('id');
 
 		unset($thread['Owner']['password']);
-
-			
+		
+		$this->loadModel('Upload');
+		$this->Upload->recursive=-1;
 		foreach($thread['Head'] as $kk => $head){
 			$thread['Head'][$kk]['likes'] = count($head['Like']);
+			$thread['Head'][$kk]['Uploads']=$this->Upload->find('all',array('fields'=>array('name','path'),'conditions'=>array('head_id'=>$thread['Head'][$kk]['id'])));
 			$thread['Head'][$kk]['isUserLiked'] = $this->Thread->Head->isLiked($head['id'],$uid);
 			unset($thread['Head'][$kk]['Owner']['password']);
 			unset($thread['Head'][$kk]['Like']);
 			unset($thread['Head'][$kk]['Thread']);
+			
+		
 			
 		} 
 		$this->Thread->notified($id,$uid);
@@ -346,8 +362,12 @@ class ThreadsController extends AppController {
 			$options = array('conditions' => array('Thread.' . $this->Thread->primaryKey => $id));
 			$this->request->data = $this->Thread->find('first', $options);
 		}
+		
 		$users = $this->Thread->User->find('list');
-		$this->set(compact('users'));
+			
+	
+			$this->set(compact('users'));
+		
 	}
 
 	public function comment($id = null) {
@@ -387,11 +407,21 @@ class ThreadsController extends AppController {
 		}
 		$this->request->onlyAllow('post', 'delete');
 		if ($this->Thread->delete()) {
+			$message='OK';
 			$this->Session->setFlash(__('The thread has been deleted.'), 'default', array('class' => 'alert alert-success'));
 		} else {
+			$message='FAILED';
 			$this->Session->setFlash(__('The thread could not be deleted. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
 		}
+		if($this->request->params['ext']=='json'){
+		 $this->set(array(
+            'message' => $message,
+            '_serialize' => array('message')
+        ));
+        exit;
+		}else{
 		return $this->redirect(array('action' => 'index'));
+		}
 	}
 	
 	public function userstoadd($thread_id){

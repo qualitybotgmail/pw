@@ -124,5 +124,11 @@ class Groupchat extends AppModel {
 		return count($lids);
 		//print_r($r);exit;
 	}
+	function getLastQuery() {
+	  $dbo = $this->getDatasource();
+	  $logs = $dbo->getLog();
+	  $lastLog = end($logs['log']);
+	  return $lastLog['query'];
+	}
 	  
 }

@@ -13,7 +13,13 @@ class UploadsController extends AppController {
  *
  * @var array
  */
-	public $components = array('Paginator');
+	public $components = array('Paginator','RequestHandler');
+	
+	public function beforeFilter(){
+		parent::beforeFilter();
+		$this->loadModel('User'); 
+		$this->Auth->allow('add','edit','delete','mobileUploads');
+	}
 
 /**
  * index method
@@ -151,4 +157,54 @@ class UploadsController extends AppController {
 		}
 		// return $this->redirect(array('action' => 'index'));
 	}
+	
+	function mobileUploads(){
+			$saved = array();
+            
+            
+            $comment_id = null;
+            $message_id = null;
+            $head_id = null;
+            
+            if(isset($_POST['comment_id'])){
+            	$comment_id = $_POST['comment_id'];
+            	//$saved['comment_id'] = $comment_id;
+            }
+            
+            if(isset($_POST['message_id'])){
+            	$message_id = $_POST['message_id'];
+            	//$saved['message_id'] = $message_id;
+            }
+			
+            if(isset($_POST['head_id'])){
+            	$head_id = $_POST['head_id'];
+            	//$saved['head_id'] = $head_id;
+            }
+						
+		foreach($_FILES as $file){
+				$path = WWW_ROOT . 'files/' . $this->Auth->user('username');
+				
+				@mkdir($path);
+				
+				$filepath = $path . '/' .time(). $file['name'];
+				$this->Upload->create();
+			    move_uploaded_file($file['tmp_name'],$filepath);
+				$urlpath = '/files/' . $this->Auth->user('username') . '/' . time().$file['name'];
+				$data = array('path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'head_id'=>$head_id ,'name' =>$file['name']);
+				$return = $this->Upload->save($data);
+				
+				if($return){
+					
+						$this->Upload->recursive=-1;
+						$insert_id=$this->Upload->getInsertID();
+						$saved=$this->Upload->find('all',array('conditions'=>array('id'=>$insert_id)));
+				}else{
+					$saved["Failed"]= array('name' => $file['name'], 'path' => $urlpath);
+				}
+				
+			}
+			echo json_encode($saved);
+			exit;
+
+		}
 }

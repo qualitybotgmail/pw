@@ -14,11 +14,12 @@ class CommentsController extends AppController {
  *
  * @var array
  */
-	public $components = array('Paginator');
+	public $components = array('Paginator','RequestHandler');
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('upload');
+		$this->loadModel('User'); 
+		$this->Auth->allow('upload','like','unlike','edit','add','delete');
 	}
 /**
  * index method
@@ -77,9 +78,30 @@ class CommentsController extends AppController {
 			throw new NotFoundException(__('Invalid comment'));
 		}
 		if ($this->request->is(array('post', 'put'))) {
-			if ($this->Comment->save($this->request->data)) {
+			
+			$data=$this->Comment->save($this->request->data);
+			if ($data) {
+			$this->loadModel('Upload');
+			$this->Upload->recursive=-1;
+			$uploaded=$this->Upload->find('list',array('fields'=>'id','conditions'=>array('comment_id'=>$this->request->data['id'])));
+			$res=$this->Upload->delete($uploaded);
+			$data['Comment']['Uploads']=[];
+			if($res){
+				if(count($this->request->data['Uploads']) > 0)
+				foreach ($this->request->data['Uploads'] as $value) {
+					if(isset($value['Upload']['name'])){
+					$data2=array('name'=>$value['Upload']['name'],'path'=>$value['Upload']['path'],'comment_id'=>$this->request->data['id']);
+					$this->Upload->save($data2);
+					array_push($data['Comment']['Uploads'],array('Upload'=>$data2));
+					}
+				}
+					
+			}
 				$this->Session->setFlash(__('The comment has been saved.'), 'default', array('class' => 'alert alert-success'));
-				return $this->redirect(array('action' => 'index'));
+			
+				//return $this->redirect(array('action' => 'index'));
+					echo json_encode($data);
+				exit;
 			} else {
 				$this->Session->setFlash(__('The comment could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
 			}
@@ -107,8 +129,14 @@ class CommentsController extends AppController {
 		$this->request->onlyAllow('post', 'delete');
 		if ($this->Comment->delete()) {
 			$this->Session->setFlash(__('The comment has been deleted.'), 'default', array('class' => 'alert alert-success'));
+		
+			echo json_encode(array('status' => 'OK'));
+			exit;
 		} else {
 			$this->Session->setFlash(__('The comment could not be deleted. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
+		
+			echo json_encode(array('status' => 'FAILED'));
+			exit;			
 		}
 		return $this->redirect(array('action' => 'index'));
 	}

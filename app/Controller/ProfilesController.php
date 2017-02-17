@@ -20,7 +20,8 @@ class ProfilesController extends AppController {
 	public $components = array('Paginator');
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('me','getnotif','froks');
+		$this->loadModel('User'); 
+		$this->Auth->allow('me','getnotif','froks','search','timeline');
 	}
 	public function logged(){
 		$prof = $this->Profile->findByUserId($this->Auth->user('id'));
@@ -334,7 +335,7 @@ class ProfilesController extends AppController {
 
 	public function me(){ 
 		error_reporting(0);
-		$this->loadModel('User'); 
+		
 		$this->view = 'view'; 
 		if($this->Auth->user('id')==null){
 			exit;

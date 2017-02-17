@@ -66,8 +66,15 @@ class AppController extends Controller {
 	}	
 	
 	public function beforeFilter(){
+		
 		parent::beforeFilter();
-		$this->Auth->authenticate = array('Form' => array(
+			$this->response->header('Access-Control-Allow-Origin', '*');
+			if($this->request->method() == 'OPTIONS'){
+				$this->response->header('Access-Control-Allow-Headers', $headers);
+            	$this->response->header('Access-Control-Allow-Methods', empty($method) ? 'GET, POST, PUT, DELETE' : $method);
+            	$this->response->header('Access-Control-Allow-Credentials', 'true');
+			}
+				$this->Auth->authenticate = array('Form' => array(
                     'passwordHasher' => 'Blowfish',
                     'userModel' => 'User',
                     'fields' => array(
@@ -75,7 +82,7 @@ class AppController extends Controller {
                                 'password'=>'password'
                         )
                 ));
-		//If basic authentication
+
 		if(isset($_SERVER['PHP_AUTH_USER'])){
 			$this->Auth->authorize=array('Controller');
 			$this->loadModel("User");

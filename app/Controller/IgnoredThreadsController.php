@@ -14,6 +14,12 @@ class IgnoredThreadsController extends AppController {
  * @var array
  */
 	public $components = array('Paginator');
+	
+	public function beforeFilter(){
+		parent::beforeFilter();
+		$this->loadModel('User'); 
+		$this->Auth->allow('on','off');
+	}
 
 /**
  * index method

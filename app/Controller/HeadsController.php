@@ -13,7 +13,13 @@ class HeadsController extends AppController {
  *
  * @var array
  */
-	public $components = array('Paginator');
+	public $components = array('Paginator','RequestHandler');
+	
+	public function beforeFilter(){
+		parent::beforeFilter();
+		$this->loadModel('User'); 
+		$this->Auth->allow('like','unlike','comment','add','edit','delete');
+	}
 
 /**
  * index method
@@ -82,10 +88,13 @@ class HeadsController extends AppController {
 		$head['Head']['likes'] = count($head['Like']);
 		unset($head['Owner']['password']);
 		unset($head['Like']);
-			
+		$this->loadModel('Upload');
+		$this->Upload->recursive=-1;
+		
 		foreach($head['Comment'] as $kk => $comment){
 			$head['Comment'][$kk]['likes'] = count($comment['Like']);
 			$head['Comment'][$kk]['isUserLiked'] = $this->Head->Comment->isLiked($comment['id'],$uid);
+			$head['Comment'][$kk]['Uploads']=$this->Upload->find('all',array('fields'=>array('name','path'),'conditions'=>array('comment_id'=>$head['Comment'][$kk]['id'])));
 			unset($head['Comment'][$kk]['Like']);
 			unset($head['Comment'][$kk]['Head']); 
 		} 
@@ -148,14 +157,26 @@ class HeadsController extends AppController {
 		}
 		
 		if ($this->request->is(array('post', 'put'))) {
-			
-			// echo json_encode($this->request->data);
-			// exit;
-			
+	
 			$this->request->data['user_id'] = $this->Auth->user('id');
 			$result = $this->Head->save($this->request->data);
-			
+			/*echo json_encode($result);
+			exit;*/
 			if ($result) {
+					$this->loadModel('Upload');
+					$this->Upload->recursive=-1;
+					$uploaded=$this->Upload->find('list',array('fields'=>'id','conditions'=>array('head_id'=>$this->request->data['id'])));
+					$res=$this->Upload->delete($uploaded);
+					if($res){
+						if(count($this->request->data['Uploads']) > 0)
+						foreach ($this->request->data['Uploads'] as $value) {
+							if(isset($value['Upload']['name'])){
+							$data=array('name'=>$value['Upload']['name'],'path'=>$value['Upload']['path'],'head_id'=>$this->request->data['id']);
+							$this->Upload->save($data);
+							}
+						}		
+					}
+				
 				$this->Session->setFlash(__('The head has been saved.'), 'default', array('class' => 'alert alert-success'));
 				echo json_encode($result);
 				exit;

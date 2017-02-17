@@ -24,11 +24,11 @@ class MessagesController extends AppController {
  */
  
 	public $uses = array('Message');
-	public $components = array('Paginator');
+	public $components = array('Paginator','RequestHandler');
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('add');
+		$this->Auth->allow('add','view','edit','delete');
 	}
 /**
  * index method
@@ -90,9 +90,13 @@ class MessagesController extends AppController {
 		if ($this->request->is(array('post', 'put'))) {
 			if ($this->Message->save($this->request->data)) {
 				$this->Session->setFlash(__('The message has been saved.'), 'default', array('class' => 'alert alert-success'));
-				return $this->redirect(array('action' => 'index'));
+				echo json_encode(array('status' => 'OK'));
+				exit;
+				//return $this->redirect(array('action' => 'index'));
 			} else {
 				$this->Session->setFlash(__('The message could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
+				echo json_encode(array('status' => 'FAILED'));
+				exit;
 			}
 		} else {
 			$options = array('conditions' => array('Message.' . $this->Message->primaryKey => $id));
@@ -117,10 +121,15 @@ class MessagesController extends AppController {
 		}
 		$this->request->onlyAllow('post', 'delete');
 		if ($this->Message->delete()) {
+			echo json_encode(array('status' => 'OK'));
+			exit;
 			$this->Session->setFlash(__('The message has been deleted.'), 'default', array('class' => 'alert alert-success'));
 		} else {
+			echo json_encode(array('status' => 'FAILED'));
+			exit;
 			$this->Session->setFlash(__('The message could not be deleted. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
 		}
+		
 		return $this->redirect(array('action' => 'index'));
 	}
 	

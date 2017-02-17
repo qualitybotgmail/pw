@@ -14,11 +14,11 @@ class GroupchatsController extends AppController {
  *
  * @var array
  */
-	public $components = array('Paginator', 'Session');
+	public $components = array('Paginator', 'Session','RequestHandler');
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('add','view','notifications');
+		$this->Auth->allow('add','view','notifications','userstogroupchat','pagedchatforapp','getlastmessages');
 	}
 /**
  * index method
@@ -445,5 +445,88 @@ class GroupchatsController extends AppController {
 		echo json_encode(array('count'=>count(array_diff(array_unique($logs),$notifiedIds))));
 		
 		exit;
-	}	
+	}
+	
+	public function pagedchatforapp($id = null,$page = null,$includeMembers=true,$lastid=0) {
+	
+		$d=array();
+		if (!$this->Groupchat->exists($id)) {
+			throw new NotFoundException(__('Invalid groupchat'));
+		}
+		$this->loadModel('Message');
+		$this->Message->recursive = -1;
+		$this->Message->Behaviors->load('Containable');
+		$this->Message->virtualFields['date']="DATE_FORMAT(Message.created,'%m-%d-%Y')";
+		$options=array(
+					'limit'=>10,
+					'page'=>$page,
+					'order' =>'created DESC',
+					'conditions' => array('Message.id >' => $lastid,'Message.groupchat_id'=>$id),
+					'contain' => array('User.username','User.id','Upload.path','Upload.id','Upload.created')
+		);
+		$this->Paginator->settings = $options;
+		$data=$this->Paginator->paginate('Message');
+		$d['messages']=$data;
+		$d['total']=$this->Message->find('count',$options);
+
+		echo json_encode($d);
+		exit;
+	}
+	
+	public function getlastmessages(){
+	
+		$id = $this->Auth->user('id');
+
+		$groupchats=$this->Groupchat->find('list',
+			array(
+				'fields'=>array('Groupchat.id','Groupchat.user_id'),
+				'joins'=>array(
+					array(
+						'table'=>'users_groupchats',
+						'type'=>'INNER',
+						'alias'=>'belongs',
+						'conditions'=>array(
+							'Groupchat.id = belongs.groupchat_id'
+						)
+					)
+				),
+				'contain' => array('Groupchat.id' => array('User.id')),
+				'conditions'=>array(
+					'OR'=>array(
+						'Groupchat.user_id'=>$id,
+						'belongs.user_id'=>$id
+					)
+				)
+			)
+		);
+		
+		$data=array();
+		foreach ($groupchats as $k=>$v) {
+			$this->loadModel('Message');
+			$this->loadModel('User');
+			$this->User->recursive=-1;
+			$this->Message->recursive=-1;
+			$mess=$this->Message->find('first',
+			array('conditions'=>array('groupchat_id'=>$k,'Message.created=(SELECT MAX(created) FROM messages WHERE groupchat_id='.$k.' LIMIT 1)')));
+			
+			
+			$users=$this->User->find('all',array('fields'=>array('DISTINCT User.id','User.username'),
+			'joins'=>array(
+				array(
+				'table'=>'users_groupchats',
+				'alias'=>'members',
+				'type'=>'INNER',
+				'group'=>'User.id',
+				'conditions'=>array('members.user_id=User.id')
+			)),
+			'conditions'=>array('OR'=>array('members.groupchat_id'=>$k,'User.id'=>$v ))
+			));
+		
+			array_push($data,array('id'=>$k,'owner'=>$v,'message'=>$mess,'users'=>$users));
+		}
+		$data=Set::sort($data, '{n}.message.Message.id', 'desc');
+		echo json_encode($data);
+		exit;
+	}
+	
 }
