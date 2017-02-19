@@ -142,7 +142,7 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
     authenticate:true,
     views: {
       'tab-groups': {
-        templateUrl: 'templates/head.html',
+        templateUrl: 'templates/head-details.html',
         controller: 'HeadCtrl'
       }
     }
@@ -156,6 +156,17 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
       'tab-groups': {
         templateUrl: 'templates/user-chat.html',
         controller: 'UserChatCtrl'
+      }
+    }
+  })
+  
+  .state('tab.timeline', {
+    url: '/timeline',
+    authenticate:true,
+    views: {
+      'tab-groups': {
+        templateUrl: 'templates/timeline.html',
+        controller: 'TimelineCtrl'
       }
     }
   })

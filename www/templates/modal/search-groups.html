@@ -1,0 +1,30 @@
+<ion-modal-view>
+    <ion-content ng-show="showSearchList">
+      <ion-list>
+          <ion-item class="item item-divider item-positive">
+            <i  class="icon ion-person"></i> User
+          </ion-item>
+          <ion-item  ng-repeat="users in searchUsers" href="#/tab/user-chat/">
+            <i class="icon ion-person"> </i>{{users.User.username}}
+          </ion-item>
+    </ion-list>
+    
+    <ion-list>
+          <ion-item class="item item-divider item-positive">
+            <i  class="icon ion-ios-people"></i> Groups
+          </ion-item>
+          <ion-item  ng-repeat="threads in searchThreads" href="#/tab/group-detail/{{threads.Thread.id}}">
+            <i class="icon ion-ios-paper"></i> {{threads.Thread.title}}
+          </ion-item>
+    </ion-list>
+    
+    <ion-list>
+           <ion-item class="item item-divider item-positive">
+            <i  class="icon ion-pin"></i> Posts
+           </ion-item>
+          <ion-item  ng-repeat="heads in searchHeads track by $index" href="#/tab/head/{{heads.Head.id}}/{{$index}}">
+            <i class="icon ion-pin"></i> {{heads.Head.body}}
+          </ion-item>
+    </ion-list>
+    </ion-content>
+</ion-modal-view>

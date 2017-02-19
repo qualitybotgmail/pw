@@ -1,28 +1,28 @@
-<ion-view view-title="{{$root.thread.Thread.title}}: {{$root.thread.Head[headIndex].Owner.username}}" cache-view="false">
+<ion-view view-title="{{threadTitle}} : {{headOwner}}" cache-view="false">
   <ion-content class="padding has-footer" style="padding-left: 0px;padding-right: 0px;">
+     <!--<center> <span class="positive">{{threadTitle}}</span> : {{headOwner}} </center>-->
     <div class="list" >
       <div class="item item-avatar">
         <img src="img/avatar.png">
-        <h2 ng-show="$root.thread.Head[headIndex].user_id !=$root.user_id">{{comments.Owner.username}}</h2>
-        <h2 ng-show="$root.thread.Head[headIndex].user_id ==$root.user_id">{{$root.user}}</h2>
-       <!-- <p class="dateList"><span ng-show="$root.thread.Head[headIndex].user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showHeadPopover($event,headIndex)"></i></span></p>-->
-        <p>{{$root.thread.Head[headIndex].created}}</p>
+        <h2>{{headOwner}}</h2>
+        <h6>{{getHeads.created}}</h6>
       </div>
     
       <div class="item item-body" style="padding: 0px;">
         <p style="padding: 15px;">
-         {{$root.thread.Head[headIndex].body}}
+         {{getHeads.body}}
         </p>
-          <div class="item" ng-show="$root.thread.Head[headIndex].Uploads.length > 0" prevent-href="true">
+          <div class="item" ng-show="headUploads.length > 0" prevent-href="true">
          <a class="item-list-detail" style="padding: 0px;border: 0px;">
         	<ion-scroll direction="x" >
-        		<img ng-repeat="upload in $root.thread.Head[headIndex].Uploads track by $index" ng-src="{{base_url}}{{upload.Upload.path}}" ng-click="showImages({{headIndex}},{{$index}},'head')" class="full-image" style="height: 350px;"/>
-                
+        		<img ng-repeat="upload in headUploads track by $index" ng-src="{{base_url}}{{upload.path}}" ng-click="showImages({{headIndex}},{{$index}},'head')" class="full-image" style="height: 350px;"/>
+               
         	</ion-scroll>
         </a>
         </div>
         <p style="padding: 15px;">
-          <a href="#" class="subdued"><span ng-click="$root.changeHeadLike($root.thread.Head[headIndex].id,headIndex)"><i class="icon ion-thumbsup" ng-class="{'active':$root.thread.Head[headIndex].isUserLiked}" style="font-size:25px;"></i> {{$root.thread.Head[headIndex].likes}}</span></a>
+          <a class="subdued" ng-click="updateLike(getHeads.id,getHeads.likes,getHeads.isUserLiked)"> <span><i class="icon ion-thumbsup likes" ng-class="{'active':getHeads.isUserLiked}"></i> {{getHeads.likes}}</span></a>
+          <!--<a class="subdued" ng-click="updateLike(headLikes, getHeads.isUserLiked)" ><span><i class="icon ion-thumbsup" ng-class="{'active':getHeads.isUserLiked}" style="font-size:25px;"></i> {{headLikes}}</span></a>-->
         </p>
       </div>
     

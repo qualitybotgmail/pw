@@ -160,3 +160,7 @@ textarea {
         font-size: 21px;
     padding-bottom: 4px;
 }
+
+.modal{
+    top: 44px !important;
+}
