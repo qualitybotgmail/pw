@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
+angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
 
 .run(function($ionicPlatform,$rootScope,$state,$ionicConfig,AuthService) {
   $ionicPlatform.ready(function() {
@@ -53,13 +53,13 @@ angular.module('starter', ['ionic','ngCordova', 'starter.controllers', 'starter.
   });
 })
 
-.config(function($stateProvider,$urlRouterProvider, $ionicConfigProvider) {
+.config(function($stateProvider,$urlRouterProvider, $ionicConfigProvider,CacheFactoryProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
-
+  angular.extend(CacheFactoryProvider.defaults, { maxAge: 30 * 60 * 1000 });
   $stateProvider
   .state('login', {
     url: '/login',

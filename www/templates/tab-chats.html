@@ -4,7 +4,7 @@
   </ion-nav-buttons>
   <ion-content>
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" on-hold="chat.owner==$root.user_id?gcPopover.show($event):''" ng-repeat="chat in chatsPreview track by $index" type="item-text-wrap" ng-click="viewChat(chat.id,$index)">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" on-hold="chat.owner==$root.user_id?showgcpopover($event,$index):''" ng-repeat="chat in chatsPreview | limitTo:numberOfGCToDisplay track by $index" type="item-text-wrap" ng-click="viewChat(chat.id,$index)">
         <img ng-src="img/avatar.png">
         <h2>
           <span ng-repeat="user in chat.users" ng-if="user.User.id!=$root.user_id">
@@ -18,5 +18,6 @@
        
       </ion-item>
     </ion-list>
+    <ion-infinite-scroll ng-if="numberOfGCToDisplay < chats.length" on-infinite="loadMoreGC()" distance="1%"></ion-infinite-scroll>
   </ion-content>
 </ion-view>

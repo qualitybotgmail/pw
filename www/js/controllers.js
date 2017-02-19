@@ -15,7 +15,7 @@ angular.module('starter.controllers', [])
 
 .controller('IncentiveCtrl', function($scope) {})
 
-.controller('ChatsCtrl', function($scope,$ionicPopup,$rootScope,$ionicLoading,$ionicPopover,Chats,$ionicModal,ApiService,$state) {
+.controller('ChatsCtrl', function($scope,checkInternet,$ionicPopup,$rootScope,$ionicLoading,$ionicPopover,Chats,$ionicModal,ApiService,$state) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -23,21 +23,62 @@ angular.module('starter.controllers', [])
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
+  
   $scope.userNames=[];
-   $rootScope.user_id=window.localStorage.getItem('user_id');
+  $rootScope.user_id=window.localStorage.getItem('user_id');
   $rootScope.user=window.localStorage.getItem('user');
   $scope.users=null;
   $rootScope.chatMembers=[];
   $scope.numberOfUsersToDisplay=10;
   $rootScope.chatsPreview=[];
+  $scope.numberOfGCToDisplay=10;
   $scope.gcPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerGCDelete()"><i class="icon ion-ios-trash"></i> Delete</li></ul></ion-popover-view>', {
     scope: $scope
   });
   
-   Chats.all().then(function(response){
-    $rootScope.chatsPreview=response.data;
+  
+  Chats.all().then(function(response){
+	    $rootScope.chatsPreview=response;
+	  });;
+ 
+  $scope.processedGC=null;
+  $scope.showgcpopover=function(event,$index){
+    $scope.gcPopover.show(event);
+     $scope.processedGC=$index;
+  }
+  
+  $scope.loadMoreGC=function(){
+    if ($scope.chatsPreview.length == 0){
+      $scope.$broadcast('scroll.infiniteScrollComplete');
+      return;
+    }
+
+    if ($scope.numberOfGCToDisplay < $scope.chatsPreview.length)
+      $scope.numberOfGCToDisplay+=10;
     
-  });
+    $scope.$broadcast('scroll.infiniteScrollComplete');
+
+  }
+  
+  
+  $scope.triggerGCDelete=function(){
+    $scope.gcPopover.hide();
+    var confirmPopup = $ionicPopup.confirm({
+     title: 'Delete Chat',
+     template: 'Are you sure to delete this conversation?'
+    });
+
+    confirmPopup.then(function(res) {
+      if(res){
+          Chats.remove($rootScope.chatsPreview[$scope.processedGC].id).then(function(response){
+            if(response.data.status=='OK'){
+              $rootScope.chatsPreview.splice($scope.processedGC,1);
+              $scope.processedGC=null;
+            }
+          });
+      } 
+    });
+  }
   
   $scope.viewChat=function(id,index){
     $rootScope.chatMembers=$scope.chatsPreview[index].users.map(function(k){ return k.User.id!=$rootScope.user_id?k.User.username:''; }).filter(function(e){return e});

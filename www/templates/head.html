@@ -1,8 +1,8 @@
 <ion-view view-title="{{$root.thread.Thread.title}}: {{$root.thread.Head[headIndex].Owner.username}}">
   <ion-content class="padding has-footer" style="padding-left: 0px;padding-right: 0px;">
-    <div class="list" >
+    <div class="list" style="margin-bottom:0px">
     
-      <div class="item item-avatar">
+      <div class="item item-avatar" style="border-top:0px">
         <img src="img/avatar.png">
         <h2 ng-show="$root.thread.Head[headIndex].user_id !=$root.user_id">{{comments.Owner.username}}</h2>
         <h2 ng-show="$root.thread.Head[headIndex].user_id ==$root.user_id">{{$root.user}}</h2>
@@ -22,11 +22,11 @@
         	</ion-scroll>
         </a>
         </div>
-        <p style="padding: 15px;">
+       
+      </div>
+     <p style="padding-left: 15px;padding-top: 10px;margin-bottom: 0px;">
           <a href="#" class="subdued"><span ng-click="$root.changeHeadLike($root.thread.Head[headIndex].id,headIndex)"><i class="icon ion-thumbsup" ng-class="{'active':$root.thread.Head[headIndex].isUserLiked}" style="font-size:25px;"></i> {{$root.thread.Head[headIndex].likes}}</span></a>
         </p>
-      </div>
-    
     </div>
     <ion-list>
     <ion-item ng-repeat="comment in comments.Comment | limitTo:numberOfItemsToDisplay track by $index" style="padding: 0px;" ng-style="{'padding-bottom':$last?'20px':'0px'}">
