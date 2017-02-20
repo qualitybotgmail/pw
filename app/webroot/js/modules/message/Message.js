@@ -179,7 +179,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 var currentComment = null;
                 // if ($("#attachments")[0].files.length){ 
                     console.log(postData, "postData")
-                    $rootScope.sendPushNotif(postData);
+                    //$rootScope.sendPushNotif(postData);
                     Restangular.one('messages').one('add').one(id).customPOST(postData).then(function(res){
                         // console.log($scope.comment, 'the comment');
                         if (!$scope.message.Message) $scope.message.Message = [];

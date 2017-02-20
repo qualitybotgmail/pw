@@ -140,7 +140,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 var id = $scope.selectedHead.Head.id.toString();
                 var currentComment = null;
                 console.log(postData,"postData")
-                $rootScope.sendPushNotif(postData);
+                //$rootScope.sendPushNotif(postData);
                 
                 HeadsModel.one('comment').one(id).customPOST(postData).then(function(res){
                     $scope.comment.comment_id = res.Comment.id;
