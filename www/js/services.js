@@ -14,7 +14,7 @@ angular.module('starter.services', [])
 
   return {
     all: function() {
-      console.log(hasInternet);
+    
       var deferred=$q.defer();
       var groupchats = CacheFactory.get('groupchats');
       if (groupchats.get('groupchat')) {

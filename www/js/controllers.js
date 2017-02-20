@@ -201,11 +201,11 @@ angular.module('starter.controllers', [])
   });
   $scope.getchats=function(withUsers){
     Chats.get($stateParams.chatId,$scope.page,withUsers).then(function(response){
-      
+      if(response.data.messages.length > 0){
       $scope.chats = $scope.chats.concat(response.data.messages);
       $scope.total=response.data.total;
-      $ionicScrollDelegate.scrollBottom();
-        
+     
+      }
       //Stop the ion-refresher from spinning
       $scope.$broadcast('scroll.refreshComplete');
     });
@@ -242,11 +242,14 @@ angular.module('starter.controllers', [])
             $scope.newChat='';
             if($scope.uploadedChatImgs.length > 0){
               $scope.uploadChatPhotos(response.data.Message.id);
+            }else{
+              if($scope.sendingCount-$scope.countSent==0){
+                $scope.sendingCount=0;
+                $scope.countSent=0;
+              }
             }
             
-            if(($scope.sendingCount-$scope.countSent)==0){
-              $scope.sendingCount=0;
-              $scope.countSent=0;
+          
               $rootScope.chatsPreview.forEach(function(k,v){
                 if(k.id==$stateParams.chatId){
                   k.message=response.data;
@@ -255,8 +258,7 @@ angular.module('starter.controllers', [])
                   $rootScope.chatsPreview.unshift(gc);
                 }
               });
-              
-            }
+
           }
         },function(error){
           $scope.errorSending=true;
@@ -306,9 +308,21 @@ angular.module('starter.controllers', [])
       
     }
     
-    $scope.removeUploadedChatImg=function(index){
-      $scope.uploadedChatImgs.splice(index,1);
+  $scope.$watch('image_chat_ctr',function(newVal,oldVal){
+    if(newVal==$scope.uploadedChatImgs.length){
+         $scope.uploadedChatImgs=[];
+         $ionicScrollDelegate.scrollBottom();
+         if($scope.sendingCount-$scope.countSent==0){
+            $scope.sendingCount=0;
+            $scope.countSent=0;
+          }
     }
+      
+  });
+    
+  $scope.removeUploadedChatImg=function(index){
+    $scope.uploadedChatImgs.splice(index,1);
+  }
   
   $scope.triggerChatEdit=function(){
     $scope.chatPopover.hide();
