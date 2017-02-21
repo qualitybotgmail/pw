@@ -3,6 +3,7 @@
         <i ng-click="showAddChats()" class="icon ion-plus-circled chat-add"></i>
   </ion-nav-buttons>
   <ion-content>
+     
     <ion-list>
       <ion-item class="item-remove-animate item-avatar item-icon-right" on-hold="chat.owner==$root.user_id?showgcpopover($event,$index):''" ng-repeat="chat in chatsPreview | limitTo:numberOfGCToDisplay track by $index" type="item-text-wrap" ng-click="viewChat(chat.id,$index)">
         <img ng-src="img/avatar.png">

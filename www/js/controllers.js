@@ -89,98 +89,8 @@ angular.module('starter.controllers', [])
     Chats.remove(chat);
   };
   
-  $ionicModal.fromTemplateUrl('templates/modal/addchat.html', {
-		scope: $scope,
-		animation: 'slide-in-up'
-	}).then(function(modal) {
-		$scope.addModal = modal;
-	});
   
-  $scope.showAddChats = function() {
-		$scope.addModal.show();
-	};
-	
-	$scope.getUsers=function(){
-	  ApiService.Get('groupchats/userstogroupchat','').then(function(response){
-	    $scope.users=response.users;
-	  });
-	}
-	$scope.getUsers();
-	
-	 $scope.loadMoreUsers = function(){
-    if ($scope.users.length == 0){
-      $scope.$broadcast('scroll.infiniteScrollComplete');
-      return;
-    }
-
-    if ($scope.numberOfUsersToDisplay < $scope.users.length)
-      $scope.numberOfUsersToDisplay+=10;
-    $scope.$broadcast('scroll.infiniteScrollComplete');
-  }
   
-  $rootScope.usersToadd='';
-  $rootScope.addedUserIds=[];
-  $rootScope.showList=true;
-  $rootScope.addedUsernames=[];
-
-  $scope.addUser=function(user){
-    if($rootScope.addedUserIds.indexOf(user.User.id) == -1){ 
-      $rootScope.addedUsernames.push(user.User.username);
-      $rootScope.showList=false;
-      $rootScope.usersToadd='';
-      $rootScope.addedUserIds.push(user.User.id);
-      
-      
-    }else{
-      $ionicPopup.alert({title:"Duplicate",template:user.User.username+" has already been added"});
-    }
-    
-  }
-  
-  $scope.resetForm=function(){
-    $rootScope.addedUsernames=[];
-    $rootScope.showList=true;
-    $rootScope.addedUserIds=[];
-    $rootScope.usersToadd='';
-    $scope.addModal.hide();
-  };
-  
-  $scope.createGroupChat=function(){
-    $ionicLoading.show({
-      template:'<ion-spinner name="bubbles"></ion-spinner>'
-    });
-    ApiService.Get('groupchats/add/',$rootScope.addedUserIds.join()).then(function(response){
-      
-      $rootScope.chatMembers = $rootScope.addedUsernames;
-      if(!response.existed){
-        var users=[];
-        $rootScope.addedUserIds.forEach(function(val,key){
-          users.push({'User':{'id':val,'username':$rootScope.addedUsernames[key]}});
-          if($rootScope.addedUserIds.length==users.length)
-            $rootScope.chatsPreview.push({'id':response.Groupchat.id,'message':[],'users':users});
-        });
-        
-        
-      }
-      $scope.resetForm();
-      $ionicLoading.hide();
-     $state.go('tab.chat-detail',{chatId:response.Groupchat.id});
-    });
-  }
-  $scope.checkSearch=function(e){
-    if(e.keyCode === 8 && $rootScope.usersToadd=='')
-       $rootScope.showList=false;
-    else
-    $rootScope.showList=true;
-  }
-  
-  $scope.removeUserChat=function(index){
-    $rootScope.addedUserIds.splice(index,1);
-    $rootScope.addedUsernames.splice(index,1);
-    if($rootScope.addedUserIds.length==0){
-      $rootScope.showList=true;
-    }
-  }
 })
 
 .controller('ChatDetailCtrl', function($scope,BASE_URL,$ionicPopover,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
@@ -461,8 +371,59 @@ angular.module('starter.controllers', [])
     $scope.chatPopover.show($event);
   }
 })
+.controller('TimelineCtrl', function($scope, $stateParams,$http,API_URL,$rootScope,$state,BASE_URL,$filter,$ionicLoading) {
+  
+    $rootScope.searchGroups.hide();
+    
+    $scope.base_url = BASE_URL;
+    
+    $ionicLoading.show({
+        template:'<ion-spinner name="bubbles"></ion-spinner>'
+      });
+  
+  $http.get(API_URL+'/profiles/timeline.json',{ 
+    headers:{ 
+    'Authorization':'Basic '+localStorage.getItem('talknote_token')+'' 
+    } 
+    })
+    .then(function(response){
+      
+      $scope.timelines = response.data;
+      $scope.timelineVal = [];
+      $scope.getHead = [];
+      var getIndex;
+    
+      angular.forEach($scope.timelines,function(val,key){
+        $rootScope.thread =val;
+      
+        angular.extend(val.Thread,{"Owner" : val.Owner});
+        $scope.timelineVal.push(val.Thread);
+      
+        angular.forEach(val.Head, function(val, key) {
+                
+                angular.extend(val.Head, {"Comment" : val.Comment}, {"Like": val.Comment}, {"Upload": val.Upload}, {"index": key});
+                $scope.timelineVal.push(val.Head);
+                $ionicLoading.hide();
+          
+        });
+        
+      });
+    }),function(error){ 
+      
+    }
+    
+    $scope.gotoDetails = function(id,index) {
+      if(index===undefined){
+         $state.go('tab.group-detail',({'id': id})); 
+      }else{
+          $state.go('tab.head',({'id': id, 'index': index}));
+      }
+      
+    }
+  
+})
 
-.controller('GroupsCtrl', function($scope,Groups,$ionicLoading,$http,AuthService,ApiService,$ionicPopover,$ionicModal,$rootScope,$ionicPopup,API_URL,$state) {
+.controller('GroupsCtrl', function($scope,Groups,$ionicLoading,$http,ApiService,$ionicPopover,$ionicModal,$rootScope,$ionicPopup,API_URL,$state) {
  
  $rootScope.user_id=window.localStorage.getItem('user_id');
   $rootScope.user=window.localStorage.getItem('user');
@@ -473,10 +434,8 @@ angular.module('starter.controllers', [])
    'user_id':''
  };
  
- $scope.showGroupList = true;
- $scope.showSearchList = false;
- 
- 
+ $rootScope.showGroupList = true;
+ $rootScope.showSearchList = false;
  
  $ionicPopover.fromTemplateUrl('templates/modal/settings.html', {
     scope: $scope
@@ -488,6 +447,12 @@ angular.module('starter.controllers', [])
     animation: 'slide-in-up'
   }).then(function(modal) {
     $scope.threadModal = modal;
+  });
+  
+  $ionicModal.fromTemplateUrl('templates/modal/search-groups.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $rootScope.searchGroups = modal;
   });
   
   Groups.all().success(function(response){
@@ -590,18 +555,19 @@ angular.module('starter.controllers', [])
    });
   };
   
-  $scope.searchKey = {'word': ''};
+  $rootScope.searchKey = {'word': ''};
   
   $scope.onSearchChange = function () {
     
-    if($scope.searchKey.word == ''){
-      
-       $scope.showGroupList = true;
-       $scope.showSearchList = false;
+    if($rootScope.searchKey.word == ''){
+      $rootScope.searchGroups.hide();
+       $rootScope.showGroupList = true;
+       $rootScope.showSearchList = false;
       
     }else{
-       $scope.showGroupList = false;
-       $scope.showSearchList = true;
+      $rootScope.searchGroups.show();
+       $rootScope.showGroupList = false;
+       $rootScope.showSearchList = true;
     }
     
     
@@ -616,19 +582,11 @@ angular.module('starter.controllers', [])
       $scope.searchUsers = response.data.Users;
       $scope.searchThreads = response.data.Threads;
       $scope.searchHeads = response.data.Heads;
-      
-      
-     
     }),function(error){ 
       
     }
-    
-   
 }
-  
-  
- 
-  
+
 })
 
 .controller('GroupDetailCtrl', function($scope,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
@@ -641,6 +599,8 @@ angular.module('starter.controllers', [])
   $rootScope.processedHead=-1; //for edting and delete
   $rootScope.user_id=AuthService.userid();
   $rootScope.user=AuthService.username();
+  $rootScope.searchGroups.hide();
+  
  $scope.uploadedImgs=[];
   $ionicModal.fromTemplateUrl('templates/modal/addmember.html', {
     scope: $scope,
@@ -658,7 +618,7 @@ angular.module('starter.controllers', [])
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(modal) {
-    $rootScope.showAddHead = modal;
+     $rootScope.showAddHead = modal;
   });
   $rootScope.headPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerEdit()"><i class="icon ion-edit"></i>  Edit</li><li class="item item-icon-left" ng-click="triggerDelete()"><i class="icon ion-ios-trash"></i> Delete</li></ul></ion-popover-view>', {
     scope: $scope
@@ -1009,7 +969,7 @@ $scope.selectPicture = function($act) {
   $scope.$watch('img_ctr',function(newVal,oldVal){
     if(newVal==$scope.uploadedImgs.length){
 
-         $rootScope.showAddHead.hide();
+       //  $rootScope.showAddHead.hide();
          $scope.resetHeadForm();
          $scope.uploadedImgs=[];
          $ionicLoading.hide();
@@ -1018,17 +978,21 @@ $scope.selectPicture = function($act) {
       
   })
   
+
+  
 })
 
 .controller('HeadCtrl', function($scope,Like,$ionicModal,AuthService,BASE_URL,$cordovaDevice,$ionicSlideBoxDelegate,$cordovaActionSheet,API_URL,$cordovaFileTransfer,$ionicPopover,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$ionicLoading,Groups,$http,$ionicScrollDelegate,ApiService,$rootScope,$stateParams) {
   $scope.headID=$stateParams['id'];
   $scope.headIndex=$stateParams['index'];
+  $scope.headLikes =$stateParams['likes'];
   $scope.comments=null;
   $scope.processedCommentIndex='';
   $rootScope.user_id=window.localStorage.getItem('user_id');
   $rootScope.user=window.localStorage.getItem('user');
   $rootScope.processedHead=$scope.headIndex;
   $rootScope.viewedHeadContents=null;
+  $rootScope.searchGroups.hide();
   $scope.action='';
   $scope.base_url=BASE_URL;
   $scope.uploadedCommentimgs=[];
@@ -1038,11 +1002,22 @@ $scope.selectPicture = function($act) {
   });
   $scope.likedComment=-1;
   
+ 
+    $ionicLoading.show({
+        template:'<ion-spinner name="bubbles"></ion-spinner>'
+      });
   $scope.gethead=function(){
       
       Groups.getComments($scope.headID).success(function(response){
+       // console.log("REsponse >>>> " , response);
+        
+        $scope.threadTitle = response.Thread.title;
+        $scope.headOwner = response.Owner.username;
+        $scope.getHeads = response.Head;
+        $scope.headUploads = response.Upload;
         $scope.comments=response;
         $rootScope.viewedHeadContents=response.Head;
+        $ionicLoading.hide();
 
       });
   }
@@ -1178,6 +1153,37 @@ $scope.selectPictureInComment = function($act) {
       });
   }
 };
+
+$rootScope.changeHeadLike=function(id,index){
+    $scope.likedHead=id;
+    $rootScope.thread['Head'][index]['isUserLiked']=!$rootScope.thread['Head'][index]['isUserLiked'];
+    if($rootScope.thread['Head'][index]['isUserLiked']){
+       $rootScope.thread['Head'][index]['likes']=parseInt($rootScope.thread['Head'][index]['likes']) + 1;
+       Like.like('heads',id);
+    }else{
+      $rootScope.thread['Head'][index]['likes']=parseInt($rootScope.thread['Head'][index]['likes']) - 1;
+       if(Like.unlike('heads',id))
+        $scope.likedHead=-1;
+    }
+
+  }
+
+ $scope.updateLike = function(id,likes,isUserLiked){
+    $scope.likedHead=id;
+    console.log("ID = "+ id+ " isUserLiked ="+ isUserLiked+ " LIKES " + likes);
+    if(isUserLiked!=true){
+        $scope.getHeads.likes=parseInt(likes) + 1;
+        $scope.getHeads.isUserLiked =true;
+        Like.like('heads',id);
+    }else{
+        $scope.getHeads.likes=parseInt(likes) - 1;
+        $scope.getHeads.isUserLiked =false;
+        if(Like.unlike('heads',id))
+         $scope.likedHead=-1;
+       
+    }
+
+  };
  
   $scope.changeLike=function(id,index){
     $scope.likedComment=id;
@@ -1388,12 +1394,14 @@ $scope.selectPictureInComment = function($act) {
   }
 })
 
-.controller('UserChatCtrl', function($scope,$rootScope,ApiService,$ionicModal,AuthService,$stateParams) {
+.controller('UserChatCtrl', function($scope,$stateParams,$rootScope) {
   
   $scope.userChatID = "Test CHAT";
+  $rootScope.searchGroups.hide();
   
- 
-})
+  $rootScope.showGroupList = true;
+  $rootScope.showSearchList = false;
+ })
 
 .controller('LoginCtrl',function($scope,$rootScope,$ionicPopup,$ionicLoading,$state,ApiService,AuthService,Base64,$http,$ionicHistory){
   $scope.data={

@@ -160,6 +160,10 @@ textarea {
         font-size: 21px;
     padding-bottom: 4px;
 }
+
+.modal{
+    top: 44px !important;
+}
 .chat-add{
     font-size: 35px;
     padding-right: 5px;

@@ -18,7 +18,7 @@
        </ion-slide>
     </ion-slide-box>-->
     <div class="card" ng-repeat="head in thread.Head track by $index">
-      <div class="item item-avatar " ui-sref="tab.head({id:head.id,index:$index})">
+      <div class="item item-avatar " ui-sref="tab.head({id:head.id,index:$index,likes:head.likes})">
          <img ng-src="img/avatar.png">
          <h2 ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</h2>
          <h2 ng-show="head.user_id ==$root.user_id">{{$root.user}}</h2>
