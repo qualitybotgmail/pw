@@ -207,7 +207,7 @@ angular.module('starter.controllers', [])
           //$scope.chats[$scope.sendingCount-$scope.countSent].Upload=JSON.parse(result.response)[0];
           $scope.chats.forEach(function(v,k){
             if(parseInt(v.id,10)==parseInt(message_id,10)){
-              v.Upload[x]=JSON.parse(result.response)[0]['Upload'];
+              v.Upload.push(JSON.parse(result.response)[0]['Upload']);
             }
           });
           $scope.image_chat_ctr++;
