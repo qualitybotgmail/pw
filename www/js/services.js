@@ -8,13 +8,14 @@ angular.module('starter.services', [])
     deleteOnExpire: 'aggressive',
     storageMode:'localStorage'// Items will be deleted from this cache when they expire
   });
-  var hasInternet=checkInternet();
+  
   
   
 
   return {
     all: function() {
-    
+      var hasInternet=checkInternet();
+      console.log(hasInternet);    
       var deferred=$q.defer();
       var groupchats = CacheFactory.get('groupchats');
       if (groupchats.get('groupchat')) {

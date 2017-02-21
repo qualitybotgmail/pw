@@ -201,11 +201,12 @@ angular.module('starter.controllers', [])
   });
   $scope.getchats=function(withUsers){
     Chats.get($stateParams.chatId,$scope.page,withUsers).then(function(response){
-      if(response.data.messages.length > 0){
+      if(response.data.messages){
       $scope.chats = $scope.chats.concat(response.data.messages);
       $scope.total=response.data.total;
      
       }
+      //alert(response.data);
       //Stop the ion-refresher from spinning
       $scope.$broadcast('scroll.refreshComplete');
     });
@@ -293,7 +294,7 @@ angular.module('starter.controllers', [])
             'Authorization':'Basic '+window.localStorage.getItem("talknote_token")+''
         };
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i,o,true).then(function(result) {
-          $scope.chats[$scope.sendingCount-$scope.countSent].Upload=JSON.parse(result.response)[0];
+          //$scope.chats[$scope.sendingCount-$scope.countSent].Upload=JSON.parse(result.response)[0];
           $scope.chats.forEach(function(v,k){
             if(parseInt(v.id,10)==parseInt(message_id,10)){
               v.Upload[x]=JSON.parse(result.response)[0]['Upload'];

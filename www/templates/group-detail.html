@@ -24,7 +24,7 @@
          <h2 ng-show="head.user_id ==$root.user_id">{{$root.user}}</h2>
          <p class="dateList"><span ng-show="head.user_id==$root.user_id" prevent-href="true"><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showHeadPopover($event,$index)"></i></span></p>
         <p class="headings"> {{head.body}} </p>
-        <div style="width:100%;height:30px;padding-top: 5px;"><a class="subdued datecomment">{{head.created}}</a><a class="subdued" prevent-href="true" style="float:right" ng-click="changeHeadLike(head.id,$index)"> <span><i class="icon ion-thumbsup likes" ng-class="{'active':head.isUserLiked}"></i> {{head.likes}}</span></a></div>      
+        <div style="width:100%;height:30px;padding-top: 5px;"><a class="subdued datecomment">{{head.created}}</a><a class="subdued" prevent-href="true" style="float:right" ng-click="changeHeadLike(head.id,$index)"> <span style="font-size:15px"><i class="icon ion-thumbsup likes" ng-class="{'active':head.isUserLiked}"></i> {{head.likes}}</span></a></div>      
       </div>
     </div>
     <!--<div ng-repeat="head in thread.Head track by $index">
