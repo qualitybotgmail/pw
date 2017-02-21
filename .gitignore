@@ -10,3 +10,6 @@ www/npm-debug.log
 .c9*
 .ssh/*
 .bash*
+.cache*
+.profile
+.ionic/*

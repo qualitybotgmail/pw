@@ -1,7 +1,7 @@
 <ion-view view-title="{{threadTitle}} : {{headOwner}}" cache-view="false">
-  <ion-content class="padding has-footer" style="padding-left: 0px;padding-right: 0px;">
+  <ion-content class="padding has-footer" style="padding-left: 0px;padding-right: 0px;padding-top: 0px;">
      <!--<center> <span class="positive">{{threadTitle}}</span> : {{headOwner}} </center>-->
-    <div class="list" >
+    <div class="list" style="margin-bottom:0px">
       <div class="item item-avatar">
         <img src="img/avatar.png">
         <h2>{{headOwner}}</h2>
@@ -12,7 +12,7 @@
         <p style="padding: 15px;">
          {{getHeads.body}}
         </p>
-          <div class="item" ng-show="headUploads.length > 0" prevent-href="true">
+          <div class="item" ng-show="headUploads.length > 0" prevent-href="true" style="padding-left: 0px;padding-right: 0px;border-bottom:0px;">
          <a class="item-list-detail" style="padding: 0px;border: 0px;">
         	<ion-scroll direction="x" >
         		<img ng-repeat="upload in headUploads track by $index" ng-src="{{base_url}}{{upload.path}}" ng-click="showImages({{headIndex}},{{$index}},'head')" class="full-image" style="height: 350px;"/>
@@ -20,7 +20,7 @@
         	</ion-scroll>
         </a>
         </div>
-        <p style="padding: 15px;">
+        <p style="padding-left: 15px;">
           <a class="subdued" ng-click="updateLike(getHeads.id,getHeads.likes,getHeads.isUserLiked)"> <span><i class="icon ion-thumbsup likes" ng-class="{'active':getHeads.isUserLiked}"></i> {{getHeads.likes}}</span></a>
           <!--<a class="subdued" ng-click="updateLike(headLikes, getHeads.isUserLiked)" ><span><i class="icon ion-thumbsup" ng-class="{'active':getHeads.isUserLiked}" style="font-size:25px;"></i> {{headLikes}}</span></a>-->
         </p>
