@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
 
-.run(function($ionicPlatform,$rootScope,$state,$ionicConfig,AuthService) {
+.run(function($ionicPlatform,$rootScope,$state,$ionicConfig,AuthService,CacheFactory,InternetService,$cordovaNetwork) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -21,7 +21,30 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+    
   });
+  
+  document.addEventListener("deviceready", function () {
+
+    var type = $cordovaNetwork.getNetwork()
+
+    var isOnline = $cordovaNetwork.isOnline()
+
+    var isOffline = $cordovaNetwork.isOffline()
+
+
+    // listen for Online event
+    $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
+      InternetService.onOnline();
+    });
+
+    // listen for Offline event
+    $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
+      InternetService.onOffline();
+    });
+ 
+
+  }, false);
   
   $rootScope.$on('$stateChangeStart',function(event,toState,toParams,fromState,fromParams){
 
@@ -35,21 +58,22 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
            $state.go("tab.dash");
            event.preventDefault();
         }
-   /*   if(toState.authenticate===true){
-        if(localStorage.getItem("talknote_token")===null){
-          $state.go('login');
-        event.preventDefault();
-          
-        }
-      }else{
-      if(toState.name.indexOf("login") > -1){
-      if(localStorage.getItem("talknote_token") !== null){
-       
-           $state.go('tab.dash');
-          event.preventDefault();
-      }
-      }
-      }*/
+        
+          if(!CacheFactory.get('groupchats')){
+            CacheFactory('groupchats', {
+              deleteOnExpire: 'passive',
+              storageMode:'localStorage'
+            });
+            console.log('SET CACHE');
+            
+         }
+         if(!CacheFactory.get('threads')){
+            CacheFactory('threads', {
+              deleteOnExpire: 'passive',
+              storageMode:'localStorage'
+            });
+            
+         }
   });
 })
 
