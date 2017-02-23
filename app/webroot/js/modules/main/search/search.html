@@ -52,7 +52,7 @@
             </li>
           </ul>
           <ul class="list-group" ng-if="search.Users.length">
-            <li class="list-group-item" ng-repeat="c in search.Users | unique : 'id'" ng-click="selectUser(c)">
+            <li class="list-group-item" ng-repeat="c in search.Users" ng-click="selectUser(c)">
               {{c.User.username}}
             </li>
           </ul>  
@@ -68,7 +68,7 @@
             </li>
           </ul>
           <ul class="list-group" ng-if="search.Threads.length" ng-if="search.Threads.length">
-            <li class="list-group-item" ng-repeat="t in search.Threads | unique : 'id'" ng-click="selectThread(t.Thread.id)">
+            <li class="list-group-item" ng-repeat="t in search.Threads" ng-click="selectThread(t.Thread.id)">
               {{t.Thread.title}}
             </li>
           </ul>
@@ -82,7 +82,7 @@
             </li>
           </ul>
           <ul class="list-group" ng-if="search.Heads.length" ng-if="search.Heads.length">
-            <li class="list-group-item" ng-repeat="h in search.Heads | unique : 'id'" ng-click="selectHead(h.Head.id)">
+            <li class="list-group-item" ng-repeat="h in search.Heads" ng-click="selectHead(h.Head.id)">
               {{h.Head.body}}
             </li>
           </ul>
