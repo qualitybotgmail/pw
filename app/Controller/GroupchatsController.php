@@ -18,7 +18,7 @@ class GroupchatsController extends AppController {
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('add','view','notifications','userstogroupchat','pagedchatforapp','getlastmessages');
+		$this->Auth->allow('add','view','delete','notifications','userstogroupchat','pagedchatforapp','getlastmessages');
 	}
 /**
  * index method
@@ -322,9 +322,14 @@ class GroupchatsController extends AppController {
 		$this->request->onlyAllow('post', 'delete');
 		if ($this->Groupchat->delete()) {
 			$this->Session->setFlash(__('The groupchat has been deleted.'), 'default', array('class' => 'alert alert-success'));
+			echo json_encode(array('status'=>'OK'));
+			exit;
 		} else {
 			$this->Session->setFlash(__('The groupchat could not be deleted. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
+			echo json_encode(array('status'=>'FAILED'));
+			exit;
 		}
+		
 		return $this->redirect(array('action' => 'index'));
 	}
 	
@@ -447,7 +452,7 @@ class GroupchatsController extends AppController {
 		exit;
 	}
 	
-	public function pagedchatforapp($id = null,$page = null,$includeMembers=true,$lastid=0) {
+	public function pagedchatforapp($id = null,$page = null,$lastid=0) {
 	
 		$d=array();
 		if (!$this->Groupchat->exists($id)) {
@@ -457,6 +462,7 @@ class GroupchatsController extends AppController {
 		$this->Message->recursive = -1;
 		$this->Message->Behaviors->load('Containable');
 		$this->Message->virtualFields['date']="DATE_FORMAT(Message.created,'%m-%d-%Y')";
+		$this->Message->virtualFields['loading']="false";
 		$options=array(
 					'limit'=>10,
 					'page'=>$page,
@@ -473,7 +479,7 @@ class GroupchatsController extends AppController {
 		exit;
 	}
 	
-	public function getlastmessages(){
+	public function getlastmessages($lastid=0){
 	
 		$id = $this->Auth->user('id');
 
@@ -495,7 +501,8 @@ class GroupchatsController extends AppController {
 					'OR'=>array(
 						'Groupchat.user_id'=>$id,
 						'belongs.user_id'=>$id
-					)
+					),
+					'Groupchat.id >'=>$lastid
 				)
 			)
 		);
