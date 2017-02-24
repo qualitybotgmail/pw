@@ -33,11 +33,12 @@ angular.module('starter.services', [])
         
         
         var cacheData=groupchats.get(cacheKey);
-        
+        var maxgc=0;
         if(InternetService.hasInternet()){
           
             if(cacheKey=='groupchat'){
-              var maxgc=Math.max.apply(Math,groupchats.get('groupchat').map(function(o){return o.id;}));
+              if(groupchats.get('groupchat').length > 0)
+                maxgc=Math.max.apply(Math,groupchats.get('groupchat').map(function(o){return o.id;}));
                $http.get(API_URL+"groupchats/getlastmessages/"+maxgc,{
                     headers:{
                       'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
@@ -62,11 +63,12 @@ angular.module('starter.services', [])
     updateMessageCache:function(cacheKey,chatId,page){
       var deferred=$q.defer();
       var groupchats = CacheFactory.get('groupchats');
-      
+      var maxMess=0;
       if(groupchats.get(cacheKey)){
       var cacheData=groupchats.get(cacheKey);
-      
-      var maxMess=Math.max.apply(Math,groupchats.get(cacheKey).messages.map(function(o){return o.Message.id;}));
+    
+    if(groupchats.get(cacheKey).messages.length > 0)  
+     maxMess=Math.max.apply(Math,groupchats.get(cacheKey).messages.map(function(o){return o.Message.id;}));
    
         if(InternetService.hasInternet()){
           $http.get(API_URL+"groupchats/pagedchatforapp/"+chatId+'/'+page+'/'+maxMess,{
@@ -173,9 +175,11 @@ angular.module('starter.services', [])
     updateThreadCache: function(cacheKey){
       var threads = CacheFactory.get('threads');
       var deferred=$q.defer();
+      var maxThread=0;
       if(threads.get(cacheKey)){
-        
-        var maxThread=Math.max.apply(Math,threads.get(cacheKey).map(function(o){return o.Thread.id;}));
+      
+      if(threads.get(cacheKey).length > 0)
+        maxThread=Math.max.apply(Math,threads.get(cacheKey).map(function(o){return o.Thread.id;}));
         var cacheData=threads.get(cacheKey);
         if(InternetService.hasInternet()){
           $http.get(API_URL+"threads/updates/"+maxThread,{
@@ -184,7 +188,7 @@ angular.module('starter.services', [])
             }
           }).success(function(data){
             if(data.length > 0){
-              cacheData=data.concat(cacheData);
+              cacheData=cacheData.concat(data);
               threads.put(cacheKey, cacheData);
               deferred.resolve(cacheData);
             }else{
@@ -198,6 +202,64 @@ angular.module('starter.services', [])
           deferred.resolve([]);
         }
       }else{deferred.resolve([]);};
+      
+      return deferred.promise;
+    },
+    updateHeadCache:function(id,cacheKey,type){
+      var threads = CacheFactory.get('threads');
+      var deferred=$q.defer();
+      var max=0;
+      var cacheData=null;
+      var uri='';
+      if(threads.get(cacheKey)){
+        
+        cacheData=threads.get(cacheKey);
+        
+        if(type=='head'){
+          if(threads.get(cacheKey).Head.length > 0)
+            max=Math.max.apply(Math,threads.get(cacheKey).Head.map(function(o){return o.id;}));
+            
+          uri="threads/updateThread/";
+        }
+        
+        if(type=='comment'){
+          if(threads.get(cacheKey).Comment.length > 0)
+            max=Math.max.apply(Math,threads.get(cacheKey).Comment.map(function(o){return o.id;}));
+          uri="heads/updateHead/";
+        }
+        
+        if(InternetService.hasInternet()){
+          $http.get(API_URL+uri+id+'/'+max,{
+            headers:{
+              'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+            }
+          }).success(function(data){
+            
+            if(type=='head'){
+              if(data && data.Head.length > 0){
+                cacheData.Head=cacheData.Head.concat(data.Head);
+                threads.put('threads/'+id, cacheData);
+                deferred.resolve(cacheData);
+              }else{
+                deferred.resolve([]);
+              }
+            }else{
+              if(data && data.Comment.length > 0){
+                cacheData.Comment=cacheData.Comment.concat(data.Comment);
+                threads.put('heads/'+id, cacheData);
+                deferred.resolve(cacheData);
+              }else{
+                deferred.resolve([]);
+              }
+            }
+          })
+          .error(function(){ deferred.resolve([]); });
+        }else{
+          deferred.resolve([]);
+        }
+      }else{
+        deferred.resolve([]);
+      }
       
       return deferred.promise;
     },
@@ -247,11 +309,25 @@ angular.module('starter.services', [])
       });
     },
     getComments:function(headId) {
-      return $http.get(API_URL+"heads/"+headId+".json",{
-      headers:{
-        'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+      var threads = CacheFactory.get('threads');
+      var deferred=$q.defer();
+      
+      if(threads.get('heads/'+headId)){
+        deferred.resolve(threads.get('heads/'+headId));
+      }else{
+        $http.get(API_URL+"heads/"+headId+".json",{
+          headers:{
+            'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+          }
+        }).success(function(data){
+           deferred.resolve(data);
+          threads.put('heads/'+headId, data);
+        }).error(function(data){
+          deferred.reject(data);
+        });
       }
-    });
+      
+      return deferred.promise;
     },
     sendComment:function(id,comment){
           return $http.post(API_URL+"heads/comment/"+id,{'Comment':{'body':comment.body}},{

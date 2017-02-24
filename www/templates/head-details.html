@@ -35,7 +35,7 @@
           <h2 ng-show="comment.user_id !=$root.user_id">{{comment.User.username}}</h2>
            <h2 ng-show="comment.user_id ==$root.user_id">{{$root.user}}</h2>
           <p class="dateList"><span ng-show="comment.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showCommentPopover($event,$index)"></i></span></p>
-          <div class = "row">
+          <div class = "row" style="font-size: 14px;">
     
           {{comment.body}}
        

@@ -1,14 +1,50 @@
 {
-  "name": "chart.js",
-  "homepage": "http://www.chartjs.org",
-  "description": "Simple HTML5 charts using the canvas element.",
-  "version": "2.4.0",
-  "license": "MIT",
-  "main": "src/chart.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/chartjs/Chart.js.git"
+  "_args": [
+    [
+      "chart.js",
+      "/daryl"
+    ]
+  ],
+  "_from": "chart.js@latest",
+  "_id": "chart.js@2.5.0",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/chart.js",
+  "_nodeVersion": "5.10.1",
+  "_npmOperationalInternal": {
+    "host": "packages-18-east.internal.npmjs.com",
+    "tmp": "tmp/chart.js-2.5.0.tgz_1486583551400_0.04586766008287668"
   },
+  "_npmUser": {
+    "email": "chartjs-ci@abysscorp.org",
+    "name": "chartjs-ci"
+  },
+  "_npmVersion": "3.8.3",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "chart.js",
+    "raw": "chart.js",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/chart.js/-/chart.js-2.5.0.tgz",
+  "_shasum": "fe6e751a893769f56e72bee5ad91207e1c592957",
+  "_shrinkwrap": null,
+  "_spec": "chart.js",
+  "_where": "/daryl",
+  "bugs": {
+    "url": "https://github.com/chartjs/Chart.js/issues"
+  },
+  "dependencies": {
+    "chartjs-color": "^2.0.0",
+    "moment": "^2.10.6"
+  },
+  "description": "Simple HTML5 charts using the canvas element.",
   "devDependencies": {
     "browserify": "^13.0.0",
     "browserify-istanbul": "^0.2.1",
@@ -25,7 +61,7 @@
     "gulp-replace": "^0.5.4",
     "gulp-size": "~0.4.0",
     "gulp-streamify": "^1.0.2",
-    "gulp-uglify": "~0.2.x",
+    "gulp-uglify": "~2.0.x",
     "gulp-util": "~2.2.x",
     "gulp-zip": "~3.2.0",
     "jasmine": "^2.3.2",
@@ -42,11 +78,43 @@
     "watchify": "^3.7.0",
     "yargs": "^5.0.0"
   },
+  "directories": {},
+  "dist": {
+    "shasum": "fe6e751a893769f56e72bee5ad91207e1c592957",
+    "tarball": "https://registry.npmjs.org/chart.js/-/chart.js-2.5.0.tgz"
+  },
+  "gitHead": "06467f50b74875d54bac4793ef82f410c633cf8a",
+  "homepage": "http://www.chartjs.org",
+  "license": "MIT",
+  "main": "src/chart.js",
+  "maintainers": [
+    {
+      "name": "chartjs-ci",
+      "email": "chartjs-ci@abysscorp.org"
+    },
+    {
+      "name": "etimberg",
+      "email": "evert.timberg+npm@gmail.com"
+    },
+    {
+      "name": "nnnick",
+      "email": "hello@nickdownie.com"
+    },
+    {
+      "name": "tannerlinsley",
+      "email": "tannerlinsley@gmail.com"
+    }
+  ],
+  "name": "chart.js",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chartjs/Chart.js.git"
+  },
+  "scripts": {},
   "spm": {
     "main": "Chart.js"
   },
-  "dependencies": {
-    "chartjs-color": "^2.0.0",
-    "moment": "^2.10.6"
-  }
+  "version": "2.5.0"
 }

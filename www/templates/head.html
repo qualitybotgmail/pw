@@ -1,4 +1,4 @@
-<ion-view view-title="{{$root.thread.Thread.title}}: {{$root.thread.Head[headIndex].Owner.username}}" cache-view="false">
+<ion-view view-title="{{$root.threadTitle}}: {{$root.headOwner}}" cache-view="false">
   <ion-content class="padding has-footer" style="padding-left: 0px;padding-right: 0px;">
     <div class="list" style="margin-bottom:0px">
     
@@ -36,7 +36,7 @@
           <h2 ng-show="comment.user_id !=$root.user_id">{{comment.User.username}}</h2>
            <h2 ng-show="comment.user_id ==$root.user_id">{{$root.user}}</h2>
           <p class="dateList"><span ng-show="comment.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showCommentPopover($event,$index)"></i></span></p>
-          <div class = "row">
+          <div class = "row" style="font-size: 14px;">
     
           {{comment.body}}
        

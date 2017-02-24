@@ -47,7 +47,16 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
   }, false);
   
   $rootScope.$on('$stateChangeStart',function(event,toState,toParams,fromState,fromParams){
-
+        
+        if(toState.name=='tab.group-detail'){
+          
+          if(CacheFactory.get('threads')){
+            var thread=CacheFactory.get('threads');
+            if(thread.get('threads/'+toParams.id))
+            $rootScope.groupTitle=thread.get('threads/'+toParams.id).Thread.title;
+          }
+        }
+        
         if (toState.data.authenticate && !AuthService.isAuthenticated()){
             
             $state.transitionTo("login");

@@ -1,14 +1,15 @@
-<ion-view view-title="<i class='icon ion-person-stalker'></i> : {{thread.Thread.title}}">
+<ion-view view-title="<i class='icon ion-person-stalker'></i> : {{$root.groupTitle}}">
      <ion-nav-buttons side="right" ng-show="false">
     <button class="button button-icon button-clear ion-compose" ng-click="triggerAdd()">
     </button>
   </ion-nav-buttons>
   <ion-content class="padding">
-    <div class="button-bar" ng-show="thread.Thread.user_id==$root.user_id">
+      
+    <div class="button-bar" ng-show="$root.thread.Thread.user_id==$root.user_id">
       <a class="button button-small button-positive" ng-click="showAddMember()">Add Members</a>
       <a class="button button-small button-positive" ng-click="showMemberList.show()">Members</a>
     </div>
-    <a ng-show="thread.Thread.user_id!=$root.user_id" class="button button-small button-full button-positive" ng-click="showMemberList.show()">Members</a>
+    <a ng-show="$root.thread.Thread.user_id!=$root.user_id" class="button button-small button-full button-positive" ng-click="showMemberList.show()">Members</a>
      
 <!--     <ion-slide-box ng-show="sliderImages.length > 0">
          

@@ -169,9 +169,9 @@ angular.module('starter.controllers', [])
   }
   $scope.checkSearch=function(e){
     if(e.keyCode === 8 && $rootScope.usersToadd=='')
-       $rootScope.showList=false;
+       $rootScope.showList=true;
     else
-    $rootScope.showList=true;
+      $rootScope.showList=true;
   }
   
   $scope.removeUserChat=function(index){
@@ -720,7 +720,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('GroupDetailCtrl', function($scope,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
+.controller('GroupDetailCtrl', function($scope,$timeout,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
   $scope.groupID=$stateParams['id'];
   $rootScope.thread=null;
   $scope.allMembers=[];
@@ -728,8 +728,8 @@ angular.module('starter.controllers', [])
   $scope.search_filter='';
   $scope.base_url=BASE_URL;
   $rootScope.processedHead=-1; //for edting and delete
-  $rootScope.user_id=AuthService.userid();
-  $rootScope.user=AuthService.username();
+  $rootScope.user_id=window.localStorage.getItem('user_id');
+  $rootScope.user=window.localStorage.getItem('user');
   $rootScope.searchGroups.hide();
   
  $scope.uploadedImgs=[];
@@ -806,8 +806,25 @@ angular.module('starter.controllers', [])
     $scope.addMemberModal.show();
   }
   
+  $scope.cancelAddMember=function(){
+    $scope.newMembers=[];
+    $scope.newIndexes=[];
+    $scope.search_filter='';
+    $scope.addMemberModal.hide();
+  }
+  
+  $scope.updateCache=function(){
+    Groups.updateHeadCache($scope.groupID,'threads/'+$scope.groupID,'head').then(function(response){
+      console.log(response);
+      if("Head" in response && (response.Head.length > 0)){
+            $rootScope.thread = response;
+      }
+    });
+  };
+  
   $scope.getThread=function(){
     Groups.get($scope.groupID).then(function(response){
+      $rootScope.groupTitle=response.Thread.title;
       $rootScope.thread=response;
       $rootScope.headContent.thread_id=$rootScope.thread.Thread.id;
       angular.forEach($rootScope.thread.User,function(val,key){
@@ -816,7 +833,8 @@ angular.module('starter.controllers', [])
     });
   }
   $scope.getThread();
-    
+  $scope.updateCache();
+  
   $scope.notMembers=[];
   $scope.getUsersToAdd=function(){
     Groups.getNotMembers($scope.groupID).success(function(response){
@@ -1132,18 +1150,28 @@ $scope.selectPicture = function($act) {
     scope: $scope
   });
   $scope.likedComment=-1;
+  $rootScope.threadTitle = $rootScope.thread.Thread.title;
+  $rootScope.headOwner = $rootScope.thread.Head[$scope.headIndex].Owner.username;
+        
+  $ionicLoading.show({
+    template:'<ion-spinner name="bubbles"></ion-spinner>'
+  });
   
- 
-    $ionicLoading.show({
-        template:'<ion-spinner name="bubbles"></ion-spinner>'
-      });
+  $scope.updateCache=function(){
+    Groups.updateHeadCache($scope.headID,'heads/'+$scope.headID,'comment').then(function(response){
+  
+      if("Comment" in response && (response.Comment.length > 0)){
+            $scope.comments = response;
+      }
+    });
+  };
+  
   $scope.gethead=function(){
       
-      Groups.getComments($scope.headID).success(function(response){
-       // console.log("REsponse >>>> " , response);
+      Groups.getComments($scope.headID).then(function(response){
         
-        $scope.threadTitle = response.Thread.title;
-        $scope.headOwner = response.Owner.username;
+        $rootScope.threadTitle = response.Thread.title;
+        $rootScope.headOwner = response.Owner.username;
         $scope.getHeads = response.Head;
         $scope.headUploads = response.Upload;
         $scope.comments=response;
@@ -1153,6 +1181,7 @@ $scope.selectPicture = function($act) {
       });
   }
   $scope.gethead();
+  $scope.updateCache();
   
   	$scope.showModal = function() {
 		$ionicModal.fromTemplateUrl('templates/modal/images.html', {
