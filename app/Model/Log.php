@@ -195,7 +195,7 @@ public $actsAs = array('Containable');
 				$f = $fcm['Profile']['fcm_id'];
 				$this->push(array($f));
 			}
-		}
+		}
 	}	
 	public function push($fcmids = null){
 		
@@ -207,7 +207,7 @@ public $actsAs = array('Containable');
 			
 			$ch = curl_init();
 			
-			curl_setopt($ch, CURLOPT_URL,"https://android.googleapis.com/gcm/send");
+			curl_setopt($ch, CURLOPT_URL,"https://fcm.googleapis.com/fcm/send");
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array( 
 				'Authorization: key=AIzaSyDf03OOwBarOokhqjqCPDyBirNvI4Mh2o8',

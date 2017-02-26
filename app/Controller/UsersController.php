@@ -149,10 +149,6 @@ public function mobilelogin(){
 	   
 	}
 	
-	public function test(){
-		echo json_encode($this->Session->read('Auth.User'));
-		exit;
-	}
 	public function login() {
 		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_SERVER,true),FILE_APPEND);
 	    if ($this->request->is('post')) {

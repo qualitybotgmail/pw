@@ -18,7 +18,7 @@ class HeadsController extends AppController {
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('User'); 
-		$this->Auth->allow('like','unlike','comment','add','edit','delete');
+		$this->Auth->allow('like','unlike','comment','add','edit','delete','updateHead');
 	}
 
 /**
@@ -70,7 +70,7 @@ class HeadsController extends AppController {
  * @return void
  */
 
-	public function view($id = null) {
+	public function view($id = null,$lastid=0,$ajax=false) {
 	
 		if (!$this->Head->exists($id)) {
 			throw new NotFoundException(__('Invalid head'));
@@ -79,7 +79,7 @@ class HeadsController extends AppController {
 		//$this->Head->recursive = 3;
 		$head = $this->Head->find('first',array(
 			'conditions' => array('Head.id' => $id),
-			'contain' => array('Thread','Like','Comment.created','Comment.body','Comment.id' => array('Like','User.id','User.username'),'Owner')
+			'contain' => array('Thread','Like','Comment.created','Comment.body','Comment.id' => array('Like','User.id','User.username'),'Comment'=>array('conditions'=>array('Comment.id >'=>$lastid)),'Owner')
 		));//ById($id);
 		$tid = $id;
 		$uid = $this->Auth->user('id');
@@ -113,7 +113,22 @@ class HeadsController extends AppController {
 			$head['Upload'][] = $up['Upload'];
 		}	
 		$this->Head->notified($id,$uid);
-		$this->set('head',$head);
+	
+		if($ajax)
+			return $head;
+		else
+			$this->set('head',$head);
+		
+	}
+	
+	public function updateHead($id,$lastid){
+		if(!isset($lastid))
+			exit;
+		
+		$newthreads=$this->view($id,$lastid,true);
+		
+		echo json_encode($newthreads);
+		exit;
 	}
 /**
  * add method

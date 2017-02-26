@@ -21,7 +21,7 @@ class ProfilesController extends AppController {
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('User'); 
-		$this->Auth->allow('me','getnotif','froks','search','timeline');
+		$this->Auth->allow('me','getnotif','froks','search','timeline','renewdevice');
 	}
 	public function logged(){
 		$prof = $this->Profile->findByUserId($this->Auth->user('id'));
@@ -72,6 +72,21 @@ class ProfilesController extends AppController {
 		
 		$this->Profile->id = $profile['Profile']['id'];
 		$this->Profile->saveField('fcm_id','');
+		
+		
+	}
+	
+	public function renewdevice($token){
+		$this->layout = null;
+		$id = $this->Auth->user('id');
+		$profile = $this->Profile->findByUserId($id);
+		if(!$profile){
+			exit;
+			//$profile = $this->Profile->save(array('user_id' => $id));
+		}
+		
+		$this->Profile->id = $profile['Profile']['id'];
+		$this->Profile->saveField('device_token',$token);
 		
 		
 	}

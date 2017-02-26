@@ -50,7 +50,7 @@ class ThreadsController extends AppController {
 		$this->set('threads', array_merge($threads, $users_threads));
 	}
 
-	public function index() { 
+	public function index($lastid=0) { 
 	
 		$user_id = $this->Auth->user('id');
 		$this->Thread->Owner->recursive=2;
@@ -61,7 +61,7 @@ class ThreadsController extends AppController {
         $this->Thread->Owner->Behaviors->load("Containable");
 		$users_threads = $this->Thread->Owner->find('first', array(
 			'conditions' => array('Owner.id' => $user_id),
-			'contain' => array('Thread.id','Thread.title','Thread.created','Thread' => array('Owner.id','Owner.username','User.id','User.username')),
+			'contain' => array('Thread.id','Thread.title','Thread.created','Thread' => array('Owner.id','Owner.username','User.id','User.username','conditions'=>array('Thread.id >'=>$lastid))),
 			'fields' => array('id','username')
 		));
 
@@ -86,6 +86,45 @@ class ThreadsController extends AppController {
 							
 		}
 		$this->set('threads', $result);
+	}
+	
+	public function updates($lastid=0) { 
+	
+		$user_id = $this->Auth->user('id');
+		$this->Thread->Owner->recursive=2;
+		
+
+        // this query if to get all the threads
+        // where user is a member only
+        $this->Thread->Owner->Behaviors->load("Containable");
+		$users_threads = $this->Thread->Owner->find('first', array(
+			'conditions' => array('Owner.id' => $user_id),
+			'contain' => array('Thread.id','Thread.title','Thread.created','Thread' => array('Owner.id','Owner.username','User.id','User.username','conditions'=>array('Thread.id >'=>$lastid))),
+			'fields' => array('id','username')
+		));
+
+		
+		$result = array();
+		foreach($users_threads['Thread'] as $thread){
+
+			$owner = $thread['Owner'];
+			$user = $thread['User'];
+			unset($thread['Owner']);
+			unset($thread['User']);
+			
+			$this->loadModel('IgnoredThread');
+			$this->IgnoredThread->recursive=-1;
+			$ignored=$this->IgnoredThread->find('count',array('conditions'=>array('thread_id'=>$thread['id'],'user_id'=>$user_id)));
+			if($ignored > 0)
+			 $thread['notIgnored'] = false;
+			else
+			 $thread['notIgnored'] = true;
+			
+			$result[] = array('Thread' => $thread,'Owner' => $owner,'User' => $user);
+							
+		}
+	echo json_encode($result);
+	exit;
 	}
 
 	private function formatQuery($threads) {
@@ -114,7 +153,7 @@ class ThreadsController extends AppController {
 		parent::beforeFilter();
 		$this->loadModel('User'); 
 
-			$this->Auth->allow('index','view','edit','delete','notifications','addmember','userstoadd','deletemember');
+			$this->Auth->allow('index','updateThread','view','updates','edit','delete','notifications','addmember','userstoadd','deletemember');
 	}
 
 /**
@@ -124,7 +163,7 @@ class ThreadsController extends AppController {
  * @param string $id
  * @return void
  */
-	public function view($id) {
+	public function view($id,$lastid=0,$ajax=false) {
 	error_reporting(2);
 		if (!$this->Thread->exists($id)) {
 			throw new NotFoundException(__('Invalid thread'));
@@ -133,7 +172,7 @@ class ThreadsController extends AppController {
 		$this->Thread->Behaviors->load('Containable');
 		$thread = $this->Thread->find('first',array(
 			'conditions' => array('Thread.id' => $id),
-			'contain' => array('Head'=>array('Like','Owner'),'User.username','User.id','Owner.username','Owner.id')
+			'contain' => array('Head'=>array('Like','Owner','conditions'=>array('Head.id >'=>$lastid)),'User.username','User.id','Owner.username','Owner.id')
 		));
 		$tid = $id;
 		$uid = $this->Auth->user('id');
@@ -155,8 +194,20 @@ class ThreadsController extends AppController {
 		} 
 		$this->Thread->notified($id,$uid);
 		//set viewed for the user
-		
+	if($ajax)
+		return $thread;
+	else
 		$this->set('thread',$thread);
+	}
+	
+	public function updateThread($id,$lastid){
+		if(!$lastid)
+			exit;
+		
+		$newthreads=$this->view($id,$lastid,true);
+		
+		echo json_encode($newthreads);
+		exit;
 	}
 
 /**
