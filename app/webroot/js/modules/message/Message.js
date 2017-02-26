@@ -290,6 +290,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             };
         	
         	var init = function(){
+        	    $scope.selectedMessageId = $stateParams.id;
                 $scope.getMessage();
         	};
         	init();
