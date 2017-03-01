@@ -38,16 +38,16 @@ angular.module('starter.services', [])
           
             if(cacheKey=='groupchat'){
               if(groupchats.get('groupchat').length > 0)
-                maxgc=Math.max.apply(Math,groupchats.get('groupchat').map(function(o){return o.id;}));
-               $http.get(API_URL+"groupchats/getlastmessages/"+maxgc,{
+                //maxgc=Math.max.apply(Math,groupchats.get('groupchat').map(function(o){return o.id;}));
+               $http.get(API_URL+"groupchats/getlastmessages/",{
                     headers:{
                       'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
                     }
                 }).success(function(data){
                   if(data.length > 0){
-                    cacheData=data.concat(cacheData);
-                    groupchats.put(cacheKey, cacheData);
-                    $rootScope.chatsPreview=cacheData;
+                    //cacheData=data.concat(cacheData);
+                    groupchats.put(cacheKey, data);
+                    $rootScope.chatsPreview=data;
                   }
                     
                 })
@@ -67,19 +67,19 @@ angular.module('starter.services', [])
       if(groupchats.get(cacheKey)){
       var cacheData=groupchats.get(cacheKey);
     
-    if(groupchats.get(cacheKey).messages.length > 0)  
-     maxMess=Math.max.apply(Math,groupchats.get(cacheKey).messages.map(function(o){return o.Message.id;}));
+    //if(groupchats.get(cacheKey).messages.length > 0)  
+     //maxMess=Math.max.apply(Math,groupchats.get(cacheKey).messages.map(function(o){return o.Message.id;}));
    
         if(InternetService.hasInternet()){
-          $http.get(API_URL+"groupchats/pagedchatforapp/"+chatId+'/'+page+'/'+maxMess,{
+          $http.get(API_URL+"groupchats/pagedchatforapp/"+chatId+'/'+page+'/',{
             headers:{
               'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
             }
           }).success(function(data){
             if(data.messages.length > 0){
-              cacheData=data.messages.concat(cacheData.messages);
-              groupchats.put(cacheKey, {'messages':cacheData});
-              deferred.resolve(cacheData);
+              //cacheData=data.messages.concat(cacheData.messages);
+              groupchats.put(cacheKey, data);
+              deferred.resolve(data);
             }else{
               deferred.resolve([]);
             }
@@ -179,18 +179,18 @@ angular.module('starter.services', [])
       if(threads.get(cacheKey)){
       
       if(threads.get(cacheKey).length > 0)
-        maxThread=Math.max.apply(Math,threads.get(cacheKey).map(function(o){return o.Thread.id;}));
+        //maxThread=Math.max.apply(Math,threads.get(cacheKey).map(function(o){return o.Thread.id;}));
         var cacheData=threads.get(cacheKey);
         if(InternetService.hasInternet()){
-          $http.get(API_URL+"threads/updates/"+maxThread,{
-            headers:{
-              'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
-            }
-          }).success(function(data){
+           $http.get(API_URL+"threads.json",{
+              headers:{
+                'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+              }
+            }).success(function(data){
             if(data.length > 0){
-              cacheData=cacheData.concat(data);
-              threads.put(cacheKey, cacheData);
-              deferred.resolve(cacheData);
+              //cacheData=cacheData.concat(data);
+              threads.put(cacheKey, data);
+              deferred.resolve(data);
             }else{
               deferred.resolve([]);
             }
@@ -300,6 +300,35 @@ angular.module('starter.services', [])
         'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
       }
       });
+    },
+    getThreadDetails: function(groupId) {
+      var deferred=$q.defer();
+      
+        $http.get(API_URL+"threads/"+groupId+".json",{
+          headers:{
+            'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+          }
+        }).success(function(data){
+           deferred.resolve(data);
+        }).error(function(data){
+          deferred.reject(data);
+        });
+
+      return deferred.promise;
+    },
+    getHeadDetails:function(headId){
+      var deferred=$q.defer();
+       $http.get(API_URL+"heads/"+headId+".json",{
+          headers:{
+            'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+          }
+        }).success(function(data){
+           deferred.resolve(data);
+         
+        }).error(function(data){
+          deferred.reject(data);
+        });
+      return deferred.promise;
     },
     getNotMembers:function(headId){
       return $http.get(API_URL+"threads/userstoadd/"+headId,{
@@ -434,7 +463,6 @@ angular.module('starter.services', [])
 .service('HeadService',function($http,$ionicLoading,API_URL){
   this.edit= function($rootScope,head){
     $rootScope.headAction='edit';
-
      $rootScope.headContent=head;
     $rootScope.headPopover.hide();
       $rootScope.showAddHead.show();
@@ -538,12 +566,13 @@ angular.module('starter.services', [])
     /* jshint ignore:end */
 })
 
-.service('AuthService', function($q, $http,$ionicHistory,CacheFactory) {
+.service('AuthService', function($q, $http,$ionicHistory,CacheFactory,API_URL) {
   var LOCAL_TOKEN_KEY = 'talknote_token';
   var username = '';
   var userid='';
   var isAuthenticated = false;
   var authToken;
+  var devicetoken;
  
   function loadUserCredentials() {
     var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
@@ -553,18 +582,32 @@ angular.module('starter.services', [])
       useCredentials(token);
     }
   }
- 
+ var setdeviceToken=function(){
+      
+      devicetoken=window.localStorage.getItem('devicetoken');
+
+      if(isAuthenticated){
+        $http.post(API_URL+'profiles/setregid',{'fcmid':devicetoken},{
+          headers:{
+          'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
+        }
+        }).success(function(data){
+        }).error(function(data){});
+      }
+    
+  }
   var storeUserCredentials=function(token,uname,userid) {
     window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
     window.localStorage.setItem('user',uname);
     window.localStorage.setItem('user_id',userid);
-   
     useCredentials(token);
   }
  
   function useCredentials(token) {
     isAuthenticated = true;
     authToken = token;
+    var fcmid=window.localStorage.getItem('devicetoken');
+    
   }
  
   function destroyUserCredentials() {
@@ -592,7 +635,32 @@ angular.module('starter.services', [])
     isAuthenticated: function() {return isAuthenticated;},
     username: function() {return username;},
     userid:function(){return userid; },
-    authToken:function(){return authToken; }
+    authToken:function(){return authToken; },
+    setdeviceToken:setdeviceToken,
+    trytoken:function(){
+      $http.post('https://fcm.googleapis.com/fcm/send',
+        {
+          "notification":{
+            "title":"Notification title",
+            "body":"Notification body",
+            "sound":"default",
+            "click_action":"FCM_PLUGIN_ACTIVITY",
+            "icon":"fcm_push_icon"
+          },
+          "data":{
+            "id":userid,
+            "param2":"value2"
+          },
+            "to": "d2EK_EVvhEE:APA91bFDf1w9vBZ_8G8ZsaxBHjVHWSW3T7Xq41CLWWPau9nsKBzkNOTgmKR9Fy138T4gqG381O3vdMp_ZD4BPznnJadLap_at0eCO5OYB0xjYjky0tXCScgqGZHzm4gXmZqgaBtX9o2t",
+            "priority":"high",
+            "restricted_package_name":""
+        },{
+        headers:{
+          'Authorization':'key=AIzaSyDf03OOwBarOokhqjqCPDyBirNvI4Mh2o8',
+          'Content-type': 'application/json'
+        }
+      });
+    }
   };
 })
 

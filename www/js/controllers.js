@@ -9,7 +9,9 @@ angular.module('starter.controllers', [])
   $rootScope.user=AuthService.username();
   ApiService.Get('profiles/me.json','').then(function(response){
 
-  }),function(error){ }
+  }),function(error){ };
+  
+  //AuthService.trytoken();
   
 })
 
@@ -720,8 +722,9 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('GroupDetailCtrl', function($scope,$timeout,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
+.controller('GroupDetailCtrl', function($scope,CacheFactory,$timeout,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
   $scope.groupID=$stateParams['id'];
+  
   $rootScope.thread=null;
   $scope.allMembers=[];
   $scope.likedHead=-1;
@@ -730,8 +733,9 @@ angular.module('starter.controllers', [])
   $rootScope.processedHead=-1; //for edting and delete
   $rootScope.user_id=window.localStorage.getItem('user_id');
   $rootScope.user=window.localStorage.getItem('user');
-  $rootScope.searchGroups.hide();
-  
+  //$rootScope.searchGroups.hide(); --conflict if refresh
+  var threads = CacheFactory.get('threads');
+ 
  $scope.uploadedImgs=[];
   $ionicModal.fromTemplateUrl('templates/modal/addmember.html', {
     scope: $scope,
@@ -756,7 +760,7 @@ angular.module('starter.controllers', [])
   });
   
   $scope.showHeadPopover=function($event,index){
-    $scope.processedHead=index;
+    $rootScope.processedHead=index;
     $rootScope.headPopover.show($event);
   };
   
@@ -863,15 +867,17 @@ angular.module('starter.controllers', [])
       }
         $rootScope.thread.Head.push(response.Head);
         
-         if($scope.uploadedImgs.length > 0){
+        
+         if($scope.uploadedImgs.length > 0)
             $scope.submitPhoto(response.Head.id);
-         }else{
-
+         else
+            $scope.updateCache();
+            
             $rootScope.showAddHead.hide();
             $scope.resetHeadForm();
             $ionicLoading.hide();
-            $state.go('tab.head',{id:response.Head.id,index:$rootScope.thread.Head.length -1});
-         }
+            $state.go('tab.head',{id:response.Head.id});
+         
     });
   };
   
@@ -879,7 +885,10 @@ angular.module('starter.controllers', [])
   $rootScope.processEditingHead=function(){
     
    HeadService.processEdit($rootScope).then(function(response){
-        $rootScope.thread.Head[$rootScope.processedHead].body=$rootScope.headContent.body;
+      $rootScope.thread.Head[$rootScope.processedHead].body=$rootScope.headContent.body;
+     /* threads.put('threads/'+$scope.groupID, $rootScope.thread);
+      if(threads.get('heads/'+$rootScope.thread.Head[$rootScope.processedHead].id))
+        threads.put('heads/'+$rootScope.thread.Head[$rootScope.processedHead].id, response);*/
       $scope.resetHeadForm();
       $rootScope.showAddHead.hide();
       $rootScope.headPopover.hide();
@@ -1094,13 +1103,16 @@ $scope.selectPicture = function($act) {
         o.chunkedMode = false;
         o.headers = {
             'Connection': "close",
-            'Authorization':'Basic '+localStorage.getItem("talknote_token")+''
+            'Authorization':'Basic '+window.localStorage.getItem("talknote_token")+''
         };
         $scope.Upload={};
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i,o).then(function(result) {
           $rootScope.thread.Head.forEach(function(v,k){
             if(parseInt(v.id)==parseInt(id)){
               v.Uploads.push(JSON.parse(result.response)[0]);
+               threads.put('threads/'+$scope.groupID, $rootScope.thread);
+               if(threads.get('heads/'+id))
+                  threads.put('heads/'+id,v);
             }
           });
          
@@ -1118,11 +1130,11 @@ $scope.selectPicture = function($act) {
   $scope.$watch('img_ctr',function(newVal,oldVal){
     if(newVal==$scope.uploadedImgs.length){
 
-       //  $rootScope.showAddHead.hide();
          $scope.resetHeadForm();
          $scope.uploadedImgs=[];
          $ionicLoading.hide();
          $ionicScrollDelegate.scrollBottom();
+         $scope.updateCache();
     }
       
   })
@@ -1132,16 +1144,17 @@ $scope.selectPicture = function($act) {
 })
 
 .controller('HeadCtrl', function($scope,Like,$ionicModal,AuthService,BASE_URL,$cordovaDevice,$ionicSlideBoxDelegate,$cordovaActionSheet,API_URL,$cordovaFileTransfer,$ionicPopover,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$ionicLoading,Groups,$http,$ionicScrollDelegate,ApiService,$rootScope,$stateParams) {
+  
   $scope.headID=$stateParams['id'];
-  $scope.headIndex=$stateParams['index'];
+  //$scope.headIndex=$stateParams['index'];
   $scope.headLikes =$stateParams['likes'];
   $scope.comments=null;
   $scope.processedCommentIndex='';
   $rootScope.user_id=window.localStorage.getItem('user_id');
   $rootScope.user=window.localStorage.getItem('user');
-  $rootScope.processedHead=$scope.headIndex;
+  //$rootScope.processedHead=$scope.headIndex;
   $rootScope.viewedHeadContents=null;
-  $rootScope.searchGroups.hide();
+  //$rootScope.searchGroups.hide(); --conflict when refresh
   $scope.action='';
   $scope.base_url=BASE_URL;
   $scope.uploadedCommentimgs=[];
@@ -1150,8 +1163,11 @@ $scope.selectPicture = function($act) {
     scope: $scope
   });
   $scope.likedComment=-1;
-  $rootScope.threadTitle = $rootScope.thread.Thread.title;
-  $rootScope.headOwner = $rootScope.thread.Head[$scope.headIndex].Owner.username;
+ /* $rootScope.threadTitle = $rootScope.thread.Thread.title;
+  if($rootScope.thread.Head[$scope.headIndex].user_id !==$rootScope.user_id)
+    $rootScope.headOwner = $rootScope.thread.Head[$scope.headIndex].Owner.username;
+  else
+    $rootScope.headOwner = $rootScope.user;*/
         
   $ionicLoading.show({
     template:'<ion-spinner name="bubbles"></ion-spinner>'
@@ -1169,7 +1185,6 @@ $scope.selectPicture = function($act) {
   $scope.gethead=function(){
       
       Groups.getComments($scope.headID).then(function(response){
-        
         $rootScope.threadTitle = response.Thread.title;
         $rootScope.headOwner = response.Owner.username;
         $scope.getHeads = response.Head;
@@ -1196,7 +1211,7 @@ $scope.selectPicture = function($act) {
   $scope.sliderImages=[];
   $scope.showImages = function(parentIndex,index,type) {
        if(type=='head')
-          $scope.sliderImages = $rootScope.thread.Head[parentIndex].Uploads;
+          $scope.sliderImages = $scope.headUploads.Uploads;
        if(type=='comment')
           $scope.sliderImages =  $scope.comments['Comment'][parentIndex].Uploads;
       
@@ -1335,6 +1350,7 @@ $rootScope.changeHeadLike=function(id,index){
         $scope.getHeads.likes=parseInt(likes) + 1;
         $scope.getHeads.isUserLiked =true;
         Like.like('heads',id);
+        
     }else{
         $scope.getHeads.likes=parseInt(likes) - 1;
         $scope.getHeads.isUserLiked =false;
@@ -1388,6 +1404,8 @@ $rootScope.changeHeadLike=function(id,index){
           if(response.Comment.Uploads.length > 0){
             
             $scope.submitCommentPhoto(response.Comment);
+          }else{
+            $scope.updateCache();
           }
             
          
@@ -1436,14 +1454,13 @@ $rootScope.changeHeadLike=function(id,index){
        } });
       
   };
-  /*
+  
   $scope.$watch('img_comment_ctr',function(newVal,oldVal){
     if(newVal==$scope.uploadedCommentimgs.length){
-        // $scope.uploadedCommentimgs=[];
-         $ionicScrollDelegate.scrollBottom();
+       $scope.updateCache();
     }
       
-  });*/
+  });
   
   $scope.loadMore = function(){
     if ($scope.comments.Comment.length == 0){
@@ -1544,6 +1561,7 @@ $rootScope.changeHeadLike=function(id,index){
 .controller('AccountCtrl', function($scope,$rootScope,AuthService,$state,$ionicHistory) {
   $rootScope.user_id=window.localStorage.getItem('user_id');
   $rootScope.user=window.localStorage.getItem('user');
+  
   $scope.settings = {
     enableFriends: true
   };
@@ -1580,6 +1598,7 @@ $rootScope.changeHeadLike=function(id,index){
         $rootScope.user_id=response['user']["User"]['id'];
         var token=Base64.encode(data.username + ':' + data.password);
         AuthService.storeUserCredentials(token,response['user']["User"]['username'],response['user']["User"]['id']);
+        AuthService.setdeviceToken();
         $scope.data.password='';
         $scope.data.username='';
         $state.go('tab.dash');

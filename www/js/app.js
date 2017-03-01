@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
 
-.run(function($ionicPlatform,$rootScope,$state,$ionicConfig,AuthService,CacheFactory,InternetService,$cordovaNetwork) {
+.run(function($ionicPlatform,$rootScope,$state,$ionicConfig,AuthService,Groups,CacheFactory,InternetService,$cordovaNetwork) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -42,7 +42,27 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
     $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
       InternetService.onOffline();
     });
- 
+    
+    FCMPlugin.onTokenRefresh(function(token){
+      window.localStorage.setItem('devicetoken',token);
+       AuthService.setdeviceToken(); 
+    });
+    
+    FCMPlugin.onNotification(function(data){
+      if(data.wasTapped){
+        if("head_id" in data){
+          if(data.head_id==0){
+            $state.go('tab.group-detail',{id:data.id});
+          }else{
+            $state.go('tab.head',{id:data.head_id});
+          }
+        }else{
+          $state.go('tab.chat-detail',{chatId:data.id});
+        }
+      }else{
+       
+      }
+  });
 
   }, false);
   
@@ -54,6 +74,21 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
             var thread=CacheFactory.get('threads');
             if(thread.get('threads/'+toParams.id))
             $rootScope.groupTitle=thread.get('threads/'+toParams.id).Thread.title;
+          }
+        }
+        
+        if(toState.name=='tab.head'){
+          if(CacheFactory.get('threads')){
+            var thread=CacheFactory.get('threads');
+            if(thread.get('heads/'+toParams.id)){
+            $rootScope.threadTitle=thread.get('heads/'+toParams.id).Thread.title;
+            $rootScope.headOwner =thread.get('heads/'+toParams.id).Owner.username;
+            }
+          }else{
+            Groups.getHeadDetails(toParams.id).then(function(data){
+              $rootScope.threadTitle=data.Thread.title;
+              $rootScope.headOwner =data.Owner.username;
+            });
           }
         }
         
@@ -197,7 +232,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
   })
   
   .state('tab.head', {
-    url: '/head/:id/:index',
+    url: '/head/:id',
     data: {
       authenticate: true
     },

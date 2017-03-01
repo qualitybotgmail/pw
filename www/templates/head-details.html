@@ -15,7 +15,7 @@
           <div class="item" ng-show="headUploads.length > 0" prevent-href="true" style="padding-left: 0px;padding-right: 0px;border-bottom:0px;">
          <a class="item-list-detail" style="padding: 0px;border: 0px;">
         	<ion-scroll direction="x" >
-        		<img ng-repeat="upload in headUploads track by $index" ng-src="{{base_url}}{{upload.path}}" ng-click="showImages({{headIndex}},{{$index}},'head')" class="full-image" style="height: 350px;"/>
+        		<img ng-repeat="upload in headUploads track by $index" ng-src="{{base_url}}{{upload.path}}" ng-click="showImages(0,{{$index}},'head')" class="full-image" style="height: 350px;"/>
                
         	</ion-scroll>
         </a>

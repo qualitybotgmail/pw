@@ -27,3 +27,51 @@ ls node*
 sudo su
 ionic serve
 sudo su
+screen -x
+sudo su
+ls
+ls
+sudo ioinc build android
+sudo ionic build android
+ls -lh
+sudo ionic build android
+ls
+sudo ionic platform add android
+nano androidbuild
+chmod 777 androidbuild
+./androidbuild
+chmod 777 androidbuild
+nano and*
+nano and*
+sudo sh androidbuild
+sudo ionic platform add android
+ls
+cd ..
+ls
+ls 
+cd /
+ls
+cd codes
+ls
+cd ../daryl
+git status
+git log
+date
+git log
+ls
+cd ../codes
+ls
+cd daryl
+ls
+l s-a
+ls -a
+cat buildandroid
+sudo sh buildandroid
+echo ANDROID_HOME
+nano build*
+ls /root/androidsdk
+sudo ./buildandroid
+sudo su
+sudo su
+npm install angular-chart.js --save
+sudo su
