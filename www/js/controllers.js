@@ -227,7 +227,7 @@ angular.module('starter.controllers', [])
     
   $scope.updateChatCache=function(){
     Chats.updateMessageCache('groupchats/pagedchatforapp/'+$stateParams.chatId+'/'+$scope.page+'',$stateParams.chatId,$scope.page).then(function(response){
-      if(response.length > 0){
+      if(response.messages.length > 0){
          setInterval(function() {
             $scope.$apply(function(){
               $scope.chats = response;
