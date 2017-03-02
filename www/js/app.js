@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
 
-.run(function($ionicPlatform,$rootScope,$state,$ionicConfig,AuthService,Groups,CacheFactory,InternetService,$cordovaNetwork) {
+.run(function($ionicPlatform,$rootScope,NotificationService,$cordovaBadge,$state,$ionicConfig,AuthService,Groups,CacheFactory,InternetService,$cordovaNetwork) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -23,6 +23,21 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
     }
     
   });
+   if(AuthService.isAuthenticated() && InternetService.hasInternet())
+          NotificationService.setNotif();
+          
+   $rootScope.$on('gotNotif', function(event, data){
+    
+       $rootScope.threadNotifCount=NotificationService.getThreadCount();
+       $rootScope.chatNotifCount=NotificationService.getGroupchatCount();
+       $rootScope.threadNotif=NotificationService.getThreadNotif();
+       $rootScope.groupchatNotif=NotificationService.getGroupchatNotif();
+       $rootScope.totalNotif=NotificationService.gettotalcount();
+       if (window.cordova && window.cordova.plugins && window.cordova.plugins.notification) {
+       cordova.plugins.notification.badge.set($rootScope.totalNotif);
+       }
+       
+  });
   
   document.addEventListener("deviceready", function () {
 
@@ -31,11 +46,12 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
     var isOnline = $cordovaNetwork.isOnline()
 
     var isOffline = $cordovaNetwork.isOffline()
-
+    cordova.plugins.notification.badge.set(0);
 
     // listen for Online event
     $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
       InternetService.onOnline();
+      NotificationService.setNotif();
     });
 
     // listen for Offline event
@@ -49,25 +65,64 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
     });
     
     FCMPlugin.onNotification(function(data){
+      
       if(data.wasTapped){
+        NotificationService.setNotif();
         if("head_id" in data){
+          $rootScope.$emit('update_thread',data.id);
           if(data.head_id==0){
             $state.go('tab.group-detail',{id:data.id});
           }else{
             $state.go('tab.head',{id:data.head_id});
           }
+          
         }else{
+          $rootScope.$emit('update_groupchat',data.id);
           $state.go('tab.chat-detail',{chatId:data.id});
         }
       }else{
-       
+        NotificationService.setNotif();
+        if("head_id" in data){
+          $rootScope.$emit('updatesforthread',data.id);
+        }else{
+          $rootScope.$emit('updatesforgroupchat',data.id);
+        }
       }
   });
+ 
 
   }, false);
   
   $rootScope.$on('$stateChangeStart',function(event,toState,toParams,fromState,fromParams){
         
+        if (toState.data.authenticate && !AuthService.isAuthenticated()){
+            
+            $state.transitionTo("login");
+            event.preventDefault();
+        }
+        
+        if(AuthService.isAuthenticated() && toState.name.indexOf("login") > -1){
+          NotificationService.setNotif();
+           $state.go("tab.dash");
+           event.preventDefault();
+        }
+      
+          if(!CacheFactory.get('groupchats')){
+            CacheFactory('groupchats', {
+              deleteOnExpire: 'passive',
+              storageMode:'localStorage'
+            });
+            console.log('SET CACHE');
+            
+         }
+         if(!CacheFactory.get('threads')){
+            CacheFactory('threads', {
+              deleteOnExpire: 'passive',
+              storageMode:'localStorage'
+            });
+            
+         }
+         
         if(toState.name=='tab.group-detail'){
           
           if(CacheFactory.get('threads')){
@@ -91,33 +146,6 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
             });
           }
         }
-        
-        if (toState.data.authenticate && !AuthService.isAuthenticated()){
-            
-            $state.transitionTo("login");
-            event.preventDefault();
-        }
-        
-        if(AuthService.isAuthenticated() && toState.name.indexOf("login") > -1){
-           $state.go("tab.dash");
-           event.preventDefault();
-        }
-        
-          if(!CacheFactory.get('groupchats')){
-            CacheFactory('groupchats', {
-              deleteOnExpire: 'passive',
-              storageMode:'localStorage'
-            });
-            console.log('SET CACHE');
-            
-         }
-         if(!CacheFactory.get('threads')){
-            CacheFactory('threads', {
-              deleteOnExpire: 'passive',
-              storageMode:'localStorage'
-            });
-            
-         }
   });
 })
 
@@ -284,7 +312,10 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/login');
+   $urlRouterProvider.otherwise( function($injector, $location) {
+            var $state = $injector.get("$state");
+            $state.go("login");
+        });
 
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.navBar.alignTitle('center');
@@ -336,6 +367,19 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
         scope.$watch(attr.ngModel, function(){
             update();
         });
+    }
+  };
+})
+.directive('showBadge',function(){
+  return {
+    restrict: 'A',
+    link: function(scope, element, attr){
+       element.parent().on('click', function(event) {
+        if(!element.hasClass('ng-hide')){
+          
+          scope.$emit('update_'+attr.badgeType,attr.badgeId);
+        }
+       });
     }
   };
 })

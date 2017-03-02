@@ -29,6 +29,7 @@ angular.module('starter.services', [])
     },
     updateCache:function(cacheKey){
       var groupchats = CacheFactory.get('groupchats');
+      var deferred=$q.defer();
       if(typeof(groupchats) !=='undefined' && groupchats.get(cacheKey)){
         
         
@@ -47,18 +48,26 @@ angular.module('starter.services', [])
                   if(data.length > 0){
                     //cacheData=data.concat(cacheData);
                     groupchats.put(cacheKey, data);
-                    $rootScope.chatsPreview=data;
+                    deferred.resolve(data);
+                  }else{
+                    deferred.resolve([]);
                   }
                     
                 })
-                 .error(function(data){});
+                 .error(function(data){deferred.reject(data);
+                 });
                  
+            }else{
+              deferred.resolve([]);
             }
               
             
+        }else{
+          deferred.resolve([]);
         }
 
       }
+      return deferred.promise;
     },
     updateMessageCache:function(cacheKey,chatId,page){
       var deferred=$q.defer();
@@ -216,20 +225,20 @@ angular.module('starter.services', [])
         cacheData=threads.get(cacheKey);
         
         if(type=='head'){
-          if(threads.get(cacheKey).Head.length > 0)
-            max=Math.max.apply(Math,threads.get(cacheKey).Head.map(function(o){return o.id;}));
+          //if(threads.get(cacheKey).Head.length > 0)
+           // max=Math.max.apply(Math,threads.get(cacheKey).Head.map(function(o){return o.id;}));
             
           uri="threads/updateThread/";
         }
         
         if(type=='comment'){
-          if(threads.get(cacheKey).Comment.length > 0)
-            max=Math.max.apply(Math,threads.get(cacheKey).Comment.map(function(o){return o.id;}));
+          //if(threads.get(cacheKey).Comment.length > 0)
+          //  max=Math.max.apply(Math,threads.get(cacheKey).Comment.map(function(o){return o.id;}));
           uri="heads/updateHead/";
         }
         
         if(InternetService.hasInternet()){
-          $http.get(API_URL+uri+id+'/'+max,{
+          $http.get(API_URL+uri+id,{
             headers:{
               'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
             }
@@ -237,17 +246,17 @@ angular.module('starter.services', [])
             
             if(type=='head'){
               if(data && data.Head.length > 0){
-                cacheData.Head=cacheData.Head.concat(data.Head);
-                threads.put('threads/'+id, cacheData);
-                deferred.resolve(cacheData);
+                //cacheData.Head=cacheData.Head.concat(data.Head);
+                threads.put('threads/'+id, data);
+                deferred.resolve(data);
               }else{
                 deferred.resolve([]);
               }
             }else{
               if(data && data.Comment.length > 0){
-                cacheData.Comment=cacheData.Comment.concat(data.Comment);
-                threads.put('heads/'+id, cacheData);
-                deferred.resolve(cacheData);
+                //cacheData.Comment=cacheData.Comment.concat(data.Comment);
+                threads.put('heads/'+id, data);
+                deferred.resolve(data);
               }else{
                 deferred.resolve([]);
               }
@@ -417,6 +426,21 @@ angular.module('starter.services', [])
       deferred.resolve(data);
     })
     .error(function(data){
+      deferred.reject(data);
+    });
+    
+    return deferred.promise;
+  };
+    this.setNotified=function(chatId,type){
+    var deferred=$q.defer();
+    
+    $http.get(API_URL+'profiles/clearNotif/'+type+'/'+chatId,{
+      headers:{
+        'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
+      }
+    }).success(function(data){
+      deferred.resolve(data);
+    }).error(function(data){
       deferred.reject(data);
     });
     
@@ -663,6 +687,13 @@ angular.module('starter.services', [])
     }
   };
 })
+.factory('broadcastService', function($rootScope) {
+    return {
+        send: function(msg, data) {
+            $rootScope.$emit(msg, data);
+        }
+    }
+})
 
 .service('InternetService', function() {
     
@@ -693,4 +724,64 @@ angular.module('starter.services', [])
       hasInternet:function(){return hasInternet; }
     }
   
+})
+
+.service('NotificationService',function($q,$http,API_URL,broadcastService){
+  
+  var notifications=[];
+  var total=0;
+  var totalThread=0;
+  var totalChat=0;
+  var setNotif=function(){
+    
+    $http.get(API_URL+'profiles/notifications_count',{
+      headers:{
+        'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
+      }
+    }).success(function(data){
+      notifications=data;
+      broadcastService.send('gotNotif',data);
+    }).error(function(data){
+      notifications=[];
+    });
+
+  };
+  function countTotal(){
+    
+    total=totalThread+totalChat;
+  }
+  return{
+    getallnotif:function(){return notifications; },
+    gettotalcount:function(){return total; },
+    getThreadCount:function(){
+      var t=notifications.Threads.map(function(k){ return parseInt(k.count); });
+      totalThread=t.reduce(function(a, b) { return a + b; }, 0);
+      return totalThread;
+    },
+    getGroupchatCount:function(){ 
+      var t = notifications.Groupchats.map(function(k){ return parseInt(k.count); });
+      totalChat=t.reduce(function(a, b) { return a + b; }, 0);
+      return totalChat;
+    },
+    getThreadNotif:function(){
+      var ids=[];
+      if(notifications.Threads.length > 0){
+        notifications.Threads.forEach(function(val,key){
+          ids[val.groupchat_id]=val.count;
+        })
+      }
+      return ids;
+      
+    },
+    getGroupchatNotif:function(){
+      var ids=[];
+      if(notifications.Groupchats.length > 0){
+        notifications.Groupchats.forEach(function(val,key){
+          ids[val.groupchat_id]=val.count;
+        })
+      }
+      return ids;
+    },
+    setNotif:setNotif
+  };
 });

@@ -7,9 +7,7 @@ angular.module('starter.controllers', [])
   $scope.colors = ["#0000ff", "#ffffff"];
   $scope.data = [rate, MAX_RATE - rate];
   $rootScope.user=AuthService.username();
-  ApiService.Get('profiles/me.json','').then(function(response){
-
-  }),function(error){ };
+  ApiService.Get('profiles/me.json','').then(function(response){}),function(error){ };
   
   //AuthService.trytoken();
   
@@ -17,7 +15,7 @@ angular.module('starter.controllers', [])
 
 .controller('IncentiveCtrl', function($scope) {})
 
-.controller('ChatsCtrl', function($scope,$ionicPopup,$cordovaNetwork,$rootScope,$ionicLoading,$ionicPopover,Chats,$ionicModal,ApiService,$state) {
+.controller('ChatsCtrl', function($scope,$ionicPopup,$cordovaNetwork,$rootScope,NotificationService,$ionicLoading,$ionicPopover,Chats,$ionicModal,ApiService,$state) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -38,10 +36,34 @@ angular.module('starter.controllers', [])
     scope: $scope
   });
   
+  $scope.cacheUpdate=function(){
+    Chats.updateCache('groupchat').then(function(response){
+      if(response.length > 0){
+        $rootScope.chatsPreview=response;
+        setInterval(function() {
+            $scope.$apply() 
+        }, 500);
+      }
+    });
+  }
+  
+  $scope.$on('update_groupchat',function(event,id){
+    var chatid=id;
+    ApiService.setNotified(chatid,'groupchat').then(function(response){NotificationService.setNotif(); });
+    //Chats.updateMessageCache('groupchats/pagedchatforapp/'+chatid+'/1',chatid,1).then(function(response){});
+     $scope.cacheUpdate();  
+    
+  });
+   $rootScope.$on('updatesforgroupchat',function(event,id){
+     $scope.cacheUpdate();  
+     //Chats.updateMessageCache('groupchats/pagedchatforapp/'+id+'/1',id,1).then(function(response){});
+  });
+ 
+  
   Chats.all().then(function(response){
     $rootScope.chatsPreview=response;
   });
-  Chats.updateCache('groupchat');
+  
   
   $scope.processedGC=null;
   $scope.showgcpopover=function(event,$index){
@@ -202,22 +224,33 @@ angular.module('starter.controllers', [])
   $scope.chatPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerChatEdit()" ng-show="showEdit"><i class="icon ion-edit"></i>  Edit</li><li class="item item-icon-left" ng-click="triggerChatDelete()"><i class="icon ion-ios-trash"></i> Delete</li></ul></ion-popover-view>', {
     scope: $scope
   });
-  
     
   $scope.updateChatCache=function(){
     Chats.updateMessageCache('groupchats/pagedchatforapp/'+$stateParams.chatId+'/'+$scope.page+'',$stateParams.chatId,$scope.page).then(function(response){
       if(response.length > 0){
-        $scope.chats = response.concat($scope.chats);
+         setInterval(function() {
+            $scope.chats = response;
+            $scope.$apply() 
+        }, 500);
         if($scope.page==1)
           $ionicScrollDelegate.scrollBottom();
-        
+       
       }
     });
     
   }
+   $scope.$on('update_groupchat',function(event,id){
+    var chatid=id;
+    ApiService.setNotified(chatid,'groupchat').then(function(response){NotificationService.setNotif(); });
+   $scope.updateChatCache();
+    
+  });
+   $rootScope.$on('updatesforgroupchat',function(event,id){
+     $scope.updateChatCache();
+  });
+  
   
   $scope.getchats=function(){
-    $scope.updateChatCache();
     Chats.get($stateParams.chatId,$scope.page).then(function(response){
       if(response.messages){
       $scope.chats = $scope.chats.concat(response.messages);
@@ -232,6 +265,7 @@ angular.module('starter.controllers', [])
     });
    
   };
+  $scope.updateChatCache();
   $scope.getchats();
   
   $scope.doRefresh=function(top) {
@@ -264,8 +298,8 @@ angular.module('starter.controllers', [])
             $scope.countSent++;
             $scope.errorSending=false;
             $scope.chats[$scope.sendingCount-$scope.countSent].Message=response.data.Message;
+            $scope.updateChatCache();
             
-            console.log(mess.Upload);
             if(mess.Upload.length > 0){
               
               $scope.uploadChatPhotos($scope.chats[$scope.sendingCount-$scope.countSent]);
@@ -345,6 +379,7 @@ angular.module('starter.controllers', [])
     
   $scope.$watch('image_chat_ctr',function(newVal,oldVal){
     if(newVal==$scope.uploadedChatImgs.length){
+         $scope.updateChatCache();
          $scope.uploadedChatImgs=[];
          $ionicScrollDelegate.scrollBottom();
          if($scope.sendingCount-$scope.countSent==0){
@@ -547,7 +582,7 @@ angular.module('starter.controllers', [])
   
 })
 
-.controller('GroupsCtrl', function($scope,Groups,$ionicLoading,$http,ApiService,$ionicPopover,$ionicModal,$rootScope,$ionicPopup,API_URL,$state) {
+.controller('GroupsCtrl', function($scope,Groups,$ionicLoading,NotificationService,$http,ApiService,$ionicPopover,$ionicModal,$rootScope,$ionicPopup,API_URL,$state) {
  
  $rootScope.user_id=window.localStorage.getItem('user_id');
   $rootScope.user=window.localStorage.getItem('user');
@@ -557,6 +592,13 @@ angular.module('starter.controllers', [])
    'created':'',
    'user_id':''
  };
+  $scope.$on('update_thread',function(event,id){
+    ApiService.setNotified(id,'thread').then(function(response){NotificationService.setNotif(); });
+     Groups.updateHeadCache(id,'threads/'+id,'head').then(function(response){});
+  });
+   $rootScope.$on('updatesforthread',function(event,id){
+     Groups.updateHeadCache(id,'threads/'+id,'head').then(function(response){});
+  });
  
  $rootScope.showGroupList = true;
  $rootScope.showSearchList = false;
@@ -587,10 +629,17 @@ angular.module('starter.controllers', [])
   };
   $scope.getGroups();
   
-  Groups.updateThreadCache('thread').then(function(response){
-   if(response.length > 0)
-      $scope.groups=response;
-  });
+  $scope.updateCache=function(){
+    Groups.updateThreadCache('thread').then(function(response){
+     if(response.length > 0){
+        $scope.groups=response;
+        setInterval(function() {
+            $scope.$apply();
+        }, 500);
+     }
+    });
+  }
+  $scope.updateCache();
   $scope.leave = function(group) {
     Groups.leave(group);
   };
@@ -598,7 +647,7 @@ angular.module('starter.controllers', [])
   $scope.notifSettings=function(index){
     if($scope.groups[index].Thread.notIgnored){
       ApiService.Get('ignored_threads/on/'+$scope.groups[index].Thread.id,'').then(function(response){
-        
+        $scope.updateCache();
       });
     }else{
       var confirmPopup = $ionicPopup.confirm({
@@ -608,13 +657,16 @@ angular.module('starter.controllers', [])
     
        confirmPopup.then(function(res) {
          if(res) {
-            ApiService.Get('ignored_threads/off/'+$scope.groups[index].Thread.id,'').then(function(response){});
+            ApiService.Get('ignored_threads/off/'+$scope.groups[index].Thread.id,'').then(function(response){
+              $scope.updateCache();
+            });
          } else {
            $scope.groups[index].Thread.notIgnored=!$scope.groups[index].Thread.notIgnored;
          }
        });
       
     }
+    
   };
   
   $scope.showPopover=function($event,index){
@@ -635,6 +687,7 @@ angular.module('starter.controllers', [])
         ApiService.Delete('threads/delete/'+$scope.groups[$scope.settingViewed].Thread.id+'.json','').then(function(response){
           $scope.groups.splice(index,1);
           $scope.settingsPopover.hide();
+          $scope.updateCache();
         },function(error){
           
         });
@@ -651,6 +704,7 @@ angular.module('starter.controllers', [])
       $rootScope.modalAction='';
       $scope.threadModal.hide();
       $scope.settingsPopover.hide();
+      $scope.updateCache();
     });
   
   };
@@ -662,6 +716,7 @@ angular.module('starter.controllers', [])
         $rootScope.modalAction='';
         $scope.threadModal.hide();
         $scope.settingsPopover.hide();
+        $scope.updateCache();
     });
   };
   
@@ -679,6 +734,7 @@ angular.module('starter.controllers', [])
         ApiService.Get('threads/deletemember/'+$scope.groups[index]['Thread']['id']+'/'+$rootScope.user_id,'').then(function(response){
             
             $scope.groups.splice(index,1);
+            $scope.updateCach();
         },function(error){
           
         });
@@ -707,7 +763,7 @@ angular.module('starter.controllers', [])
     
     ApiService.Get('profiles/search/'+$scope.searchKey.word,{ 
       headers:{ 
-      'Authorization':'Basic '+AuthService.authToken()+'' 
+      'Authorization':'Basic '+window.localStorage.getItem("talknote_token")+'' 
       } 
     })
     .then(function(response){
@@ -819,9 +875,12 @@ angular.module('starter.controllers', [])
   
   $scope.updateCache=function(){
     Groups.updateHeadCache($scope.groupID,'threads/'+$scope.groupID,'head').then(function(response){
-      console.log(response);
+      //console.log(response);
       if("Head" in response && (response.Head.length > 0)){
             $rootScope.thread = response;
+            setInterval(function() {
+                $scope.$apply() 
+            }, 500);
       }
     });
   };
@@ -886,19 +945,19 @@ angular.module('starter.controllers', [])
     
    HeadService.processEdit($rootScope).then(function(response){
       $rootScope.thread.Head[$rootScope.processedHead].body=$rootScope.headContent.body;
-     /* threads.put('threads/'+$scope.groupID, $rootScope.thread);
-      if(threads.get('heads/'+$rootScope.thread.Head[$rootScope.processedHead].id))
-        threads.put('heads/'+$rootScope.thread.Head[$rootScope.processedHead].id, response);*/
+      
+      $scope.updateCache();
       $scope.resetHeadForm();
       $rootScope.showAddHead.hide();
       $rootScope.headPopover.hide();
       $ionicLoading.hide();
+       $state.go('tab.head',{id:$rootScope.thread.Head[$rootScope.processedHead].id,index:$rootScope.processedHead});
     });
     
     if($scope.uploadedImgs.length > 0){
       $scope.submitPhoto($rootScope.thread.Head[$rootScope.processedHead].id);
     }
-    $state.go('tab.head',{id:$rootScope.thread.Head[$rootScope.processedHead].id,index:$rootScope.processedHead});
+   
   };
   
   $scope.processDeletingHead=function(){
@@ -912,7 +971,7 @@ angular.module('starter.controllers', [])
             $rootScope.showAddHead.hide();
             $scope.resetHeadForm();
             $rootScope.headPopover.hide();
-
+            $scope.updateCache();
             $ionicLoading.hide();
           }
         },function(error){
@@ -1129,12 +1188,12 @@ $scope.selectPicture = function($act) {
   
   $scope.$watch('img_ctr',function(newVal,oldVal){
     if(newVal==$scope.uploadedImgs.length){
-
          $scope.resetHeadForm();
          $scope.uploadedImgs=[];
          $ionicLoading.hide();
          $ionicScrollDelegate.scrollBottom();
          $scope.updateCache();
+        
     }
       
   })
@@ -1143,7 +1202,7 @@ $scope.selectPicture = function($act) {
   
 })
 
-.controller('HeadCtrl', function($scope,Like,$ionicModal,AuthService,BASE_URL,$cordovaDevice,$ionicSlideBoxDelegate,$cordovaActionSheet,API_URL,$cordovaFileTransfer,$ionicPopover,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$ionicLoading,Groups,$http,$ionicScrollDelegate,ApiService,$rootScope,$stateParams) {
+.controller('HeadCtrl', function($scope,Like,CacheFactory,$ionicModal,AuthService,BASE_URL,$cordovaDevice,$ionicSlideBoxDelegate,$cordovaActionSheet,API_URL,$cordovaFileTransfer,$ionicPopover,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$ionicLoading,Groups,$http,$ionicScrollDelegate,ApiService,$rootScope,$stateParams) {
   
   $scope.headID=$stateParams['id'];
   //$scope.headIndex=$stateParams['index'];
@@ -1163,6 +1222,7 @@ $scope.selectPicture = function($act) {
     scope: $scope
   });
   $scope.likedComment=-1;
+  var threads=CacheFactory.get('threads');
  /* $rootScope.threadTitle = $rootScope.thread.Thread.title;
   if($rootScope.thread.Head[$scope.headIndex].user_id !==$rootScope.user_id)
     $rootScope.headOwner = $rootScope.thread.Head[$scope.headIndex].Owner.username;
@@ -1175,10 +1235,12 @@ $scope.selectPicture = function($act) {
   
   $scope.updateCache=function(){
     Groups.updateHeadCache($scope.headID,'heads/'+$scope.headID,'comment').then(function(response){
-  
+          $scope.getHeads=response.Head
+          $scope.headUploads = response.Upload;
       if("Comment" in response && (response.Comment.length > 0)){
             $scope.comments = response;
       }
+      
     });
   };
   
@@ -1188,6 +1250,7 @@ $scope.selectPicture = function($act) {
         $rootScope.threadTitle = response.Thread.title;
         $rootScope.headOwner = response.Owner.username;
         $scope.getHeads = response.Head;
+        $scope.thread=response.Thread;
         $scope.headUploads = response.Upload;
         $scope.comments=response;
         $rootScope.viewedHeadContents=response.Head;
@@ -1209,12 +1272,15 @@ $scope.selectPicture = function($act) {
 	}
   
   $scope.sliderImages=[];
+  $scope.imageType='';
   $scope.showImages = function(parentIndex,index,type) {
+    $scope.imageType=type;
        if(type=='head')
-          $scope.sliderImages = $scope.headUploads.Uploads;
+          $scope.sliderImages = $scope.headUploads;
        if(type=='comment')
           $scope.sliderImages =  $scope.comments['Comment'][parentIndex].Uploads;
       
+    console.log($scope.sliderImages[index]);
       setTimeout(function() {
               $ionicSlideBoxDelegate.slide(index);
               $ionicSlideBoxDelegate.update();
@@ -1358,7 +1424,8 @@ $rootScope.changeHeadLike=function(id,index){
          $scope.likedHead=-1;
        
     }
-
+    if(threads.get('threads/'+ $scope.thread.id))
+      Groups.updateHeadCache($scope.thread.id,'threads/'+$scope.thread.id,'head').then(function(response){});
   };
  
   $scope.changeLike=function(id,index){
@@ -1372,7 +1439,6 @@ $rootScope.changeHeadLike=function(id,index){
        if(Like.unlike('comments',id))
         $scope.likedComment=-1;
     }
-
   };
   $scope.newComment=null;
     
@@ -1500,7 +1566,7 @@ $rootScope.changeHeadLike=function(id,index){
           }
         
           $scope.comments['Comment'][$scope.processedCommentIndex]=response.Comment;
-
+          $scope.updateCache();
        $scope.uploadedCommentimgs=[];
        $scope.newComment=null;
        $scope.action='';
@@ -1549,6 +1615,7 @@ $rootScope.changeHeadLike=function(id,index){
         ApiService.Delete('comments/'+$scope.comments['Comment'][$scope.processedCommentIndex].id+'.json','').then(function(response){
           if(response.status=='OK'){
              $scope.comments.Comment.splice($scope.processedCommentIndex,1);
+             $scope.updateCache();
             $scope.commentPopover.hide();
             $ionicLoading.hide();
           }
@@ -1581,7 +1648,7 @@ $rootScope.changeHeadLike=function(id,index){
   $rootScope.showSearchList = false;
  })
 
-.controller('LoginCtrl',function($scope,$rootScope,$ionicPopup,$ionicLoading,$state,ApiService,AuthService,Base64,$http,$ionicHistory){
+.controller('LoginCtrl',function($scope,$rootScope,NotificationService,$ionicPopup,$ionicLoading,$state,ApiService,AuthService,Base64,$http,$ionicHistory){
   $scope.data={
     'username':'',
     'password':''

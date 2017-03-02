@@ -27,6 +27,7 @@
       <ion-item style="padding-right:0px;" class="item-remove-animate item-icon-left item-icon-right" ng-show="groups.length > 0" ng-repeat="group in groups track by $index" type="item-text-wrap" href="#/tab/group-detail/{{group.Thread.id}}" >
         <i  class="icon ion-ios-people"></i>
         <h2>{{group.Thread.title}}</h2>
+         <span ng-show="$root.threadNotif[group.Thread.id]" style="float: right;margin-right: 6%;" class="badge badge-assertive" show-badge badge-id="{{group.Thread.id}}" badge-type="thread">{{$root.threadNotif[group.Thread.id]}}</span>
         <a href prevent-href="true" ng-show="group.Thread.user_id==$root.user_id" style="position: absolute;top: 25px;right: 40px;">
           <i  class="icon ion-compose" ng-click="showPopover($event,$index)" style="font-size: 30px;color: #444;"></i>
         </a>
@@ -40,7 +41,7 @@
                <div class="handle"></div>
            </div>
        </label>
-   
+      
       </ion-item>
       
      <div ng-show="groups.length == 0" style="font-size: 30px;text-align: center;padding: 30%;" class="row">
