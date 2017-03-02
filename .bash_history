@@ -75,3 +75,12 @@ sudo su
 sudo su
 npm install angular-chart.js --save
 sudo su
+ls
+git status
+git log
+git add --all
+sudo git add --all
+sudo git commit
+git push origin master
+sudo git push origin master
+dde

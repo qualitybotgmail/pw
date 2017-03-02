@@ -208,7 +208,7 @@ angular.module('starter.controllers', [])
   
 })
 
-.controller('ChatDetailCtrl', function($scope,BASE_URL,$ionicPopover,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
+.controller('ChatDetailCtrl', function($scope,BASE_URL,$ionicPopover,NotificationService,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
   $scope.base_url=BASE_URL
   $rootScope.user_id=window.localStorage.getItem('user_id');
   $rootScope.user=window.localStorage.getItem('user');
@@ -229,8 +229,9 @@ angular.module('starter.controllers', [])
     Chats.updateMessageCache('groupchats/pagedchatforapp/'+$stateParams.chatId+'/'+$scope.page+'',$stateParams.chatId,$scope.page).then(function(response){
       if(response.length > 0){
          setInterval(function() {
-            $scope.chats = response;
-            $scope.$apply() 
+            $scope.$apply(function(){
+              $scope.chats = response;
+            }); 
         }, 500);
         if($scope.page==1)
           $ionicScrollDelegate.scrollBottom();
