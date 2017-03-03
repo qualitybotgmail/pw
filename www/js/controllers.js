@@ -23,7 +23,9 @@ angular.module('starter.controllers', [])
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
-  
+  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+        viewData.enableBack = false;
+    });
   $scope.userNames=[];
   $rootScope.user_id=window.localStorage.getItem('user_id');
   $rootScope.user=window.localStorage.getItem('user');
@@ -40,9 +42,7 @@ angular.module('starter.controllers', [])
     Chats.updateCache('groupchat').then(function(response){
       if(response.length > 0){
         $rootScope.chatsPreview=response;
-        setInterval(function() {
-            $scope.$apply() 
-        }, 500);
+       
       }
     });
   }
@@ -208,7 +208,13 @@ angular.module('starter.controllers', [])
   
 })
 
-.controller('ChatDetailCtrl', function($scope,BASE_URL,$ionicPopover,NotificationService,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
+.controller('ChatDetailCtrl', function($scope,$state,BASE_URL,$ionicPopover,NotificationService,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
+  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+        viewData.enableBack = true;
+    });
+    $rootScope.$ionicGoBack = function() {
+        $state.go('tab.chat-detail');
+    };
   $scope.base_url=BASE_URL
   $rootScope.user_id=window.localStorage.getItem('user_id');
   $rootScope.user=window.localStorage.getItem('user');
@@ -227,16 +233,12 @@ angular.module('starter.controllers', [])
     
   $scope.updateChatCache=function(){
     Chats.updateMessageCache('groupchats/pagedchatforapp/'+$stateParams.chatId+'/'+$scope.page+'',$stateParams.chatId,$scope.page).then(function(response){
-      if(response.messages.length > 0){
-         setInterval(function() {
-            $scope.$apply(function(){
-              $scope.chats = response;
-            }); 
-        }, 500);
+      if(response.messages.length > 0)
+              $scope.chats = response.messages;
         if($scope.page==1)
           $ionicScrollDelegate.scrollBottom();
        
-      }
+      
     });
     
   }
@@ -247,6 +249,7 @@ angular.module('starter.controllers', [])
     
   });
    $rootScope.$on('updatesforgroupchat',function(event,id){
+     $scope.page=1;
      $scope.updateChatCache();
   });
   
@@ -584,7 +587,9 @@ angular.module('starter.controllers', [])
 })
 
 .controller('GroupsCtrl', function($scope,Groups,$ionicLoading,NotificationService,$http,ApiService,$ionicPopover,$ionicModal,$rootScope,$ionicPopup,API_URL,$state) {
- 
+ $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+    viewData.enableBack = false;
+});
  $rootScope.user_id=window.localStorage.getItem('user_id');
   $rootScope.user=window.localStorage.getItem('user');
  $rootScope.modalAction='';
@@ -634,9 +639,7 @@ angular.module('starter.controllers', [])
     Groups.updateThreadCache('thread').then(function(response){
      if(response.length > 0){
         $scope.groups=response;
-        setInterval(function() {
-            $scope.$apply();
-        }, 500);
+       
      }
     });
   }
@@ -781,7 +784,12 @@ angular.module('starter.controllers', [])
 
 .controller('GroupDetailCtrl', function($scope,CacheFactory,$timeout,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
   $scope.groupID=$stateParams['id'];
-  
+  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+    viewData.enableBack = true;
+});
+$rootScope.$ionicGoBack = function() {
+    $state.go('tab.groups');
+};
   $rootScope.thread=null;
   $scope.allMembers=[];
   $scope.likedHead=-1;
@@ -879,9 +887,7 @@ angular.module('starter.controllers', [])
       //console.log(response);
       if("Head" in response && (response.Head.length > 0)){
             $rootScope.thread = response;
-            setInterval(function() {
-                $scope.$apply() 
-            }, 500);
+           
       }
     });
   };
@@ -1203,8 +1209,13 @@ $scope.selectPicture = function($act) {
   
 })
 
-.controller('HeadCtrl', function($scope,Like,CacheFactory,$ionicModal,AuthService,BASE_URL,$cordovaDevice,$ionicSlideBoxDelegate,$cordovaActionSheet,API_URL,$cordovaFileTransfer,$ionicPopover,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$ionicLoading,Groups,$http,$ionicScrollDelegate,ApiService,$rootScope,$stateParams) {
-  
+.controller('HeadCtrl', function($scope,$state,Like,CacheFactory,$ionicModal,backButtonOverride,AuthService,BASE_URL,$cordovaDevice,$ionicSlideBoxDelegate,$cordovaActionSheet,API_URL,$cordovaFileTransfer,$ionicPopover,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$ionicLoading,Groups,$http,$ionicScrollDelegate,ApiService,$rootScope,$stateParams) {
+    $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+        viewData.enableBack = true;
+    });
+     backButtonOverride.setup($scope, function() {
+         $state.go('tab.group-detail',{chatId:$scope.thread.id});
+    });
   $scope.headID=$stateParams['id'];
   //$scope.headIndex=$stateParams['index'];
   $scope.headLikes =$stateParams['likes'];
@@ -1236,6 +1247,7 @@ $scope.selectPicture = function($act) {
   
   $scope.updateCache=function(){
     Groups.updateHeadCache($scope.headID,'heads/'+$scope.headID,'comment').then(function(response){
+          $scope.thread=response.Thread;
           $scope.getHeads=response.Head
           $scope.headUploads = response.Upload;
       if("Comment" in response && (response.Comment.length > 0)){
