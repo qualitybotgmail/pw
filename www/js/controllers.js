@@ -208,13 +208,22 @@ angular.module('starter.controllers', [])
   
 })
 
-.controller('ChatDetailCtrl', function($scope,$state,BASE_URL,$ionicPopover,NotificationService,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
-  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+.controller('ChatDetailCtrl', function($scope,$state,BASE_URL,backButtonOverride,$ionicPopover,NotificationService,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
+ /* $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
-    });
+  });
     $rootScope.$ionicGoBack = function() {
-        $state.go('tab.chat-detail');
-    };
+        $state.go('tab.chats');
+    };*/
+    $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+      viewData.enableBack = true;
+    });
+    backButtonOverride.setup($scope, function() {
+         $state.go('tab.chats');
+    });
+  
+  $rootScope.$emit('hideModal');
+  
   $scope.base_url=BASE_URL
   $rootScope.user_id=window.localStorage.getItem('user_id');
   $rootScope.user=window.localStorage.getItem('user');
@@ -231,12 +240,14 @@ angular.module('starter.controllers', [])
     scope: $scope
   });
     
-  $scope.updateChatCache=function(){
-    Chats.updateMessageCache('groupchats/pagedchatforapp/'+$stateParams.chatId+'/'+$scope.page+'',$stateParams.chatId,$scope.page).then(function(response){
+  $scope.updateChatCache=function(page=1){
+    Chats.updateMessageCache('groupchats/pagedchatforapp/'+$stateParams.chatId+'/'+page+'',$stateParams.chatId,page).then(function(response){
+      if(response.messages){
       if(response.messages.length > 0)
-              $scope.chats = response.messages;
-        if($scope.page==1)
-          $ionicScrollDelegate.scrollBottom();
+          $scope.chats = response.messages;
+      }
+      /*  if($scope.page==1)
+          $ionicScrollDelegate.scrollBottom();*/
        
       
     });
@@ -249,7 +260,7 @@ angular.module('starter.controllers', [])
     
   });
    $rootScope.$on('updatesforgroupchat',function(event,id){
-     $scope.page=1;
+     //$scope.page=1;
      $scope.updateChatCache();
   });
   
@@ -263,14 +274,13 @@ angular.module('starter.controllers', [])
         $ionicScrollDelegate.scrollBottom();
       }
       }
-      //alert(response.data);
-      //Stop the ion-refresher from spinning
       $scope.$broadcast('scroll.refreshComplete');
     });
    
   };
-  $scope.updateChatCache();
   $scope.getchats();
+  $scope.updateChatCache();
+  
   
   $scope.doRefresh=function(top) {
         $scope.page++;
@@ -339,6 +349,11 @@ angular.module('starter.controllers', [])
         
        });
     }
+  }
+  
+  $scope.checkForUpdates=function(){
+    $scope.updateChatCache();
+     $scope.$broadcast('scroll.infiniteScrollComplete');
   }
     
     $scope.uploadChatPhotos=function(chat){
@@ -536,7 +551,8 @@ angular.module('starter.controllers', [])
 })
 .controller('TimelineCtrl', function($scope, $stateParams,$http,API_URL,$rootScope,$state,BASE_URL,$filter,$ionicLoading) {
   
-    $rootScope.searchGroups.hide();
+    //$rootScope.searchGroups.hide();
+    $rootScope.$emit('hideModal');
     
     $scope.base_url = BASE_URL;
     
@@ -586,7 +602,7 @@ angular.module('starter.controllers', [])
   
 })
 
-.controller('GroupsCtrl', function($scope,Groups,$ionicLoading,NotificationService,$http,ApiService,$ionicPopover,$ionicModal,$rootScope,$ionicPopup,API_URL,$state) {
+.controller('GroupsCtrl', function($scope,Groups,$ionicLoading,NewModalService,NotificationService,$http,ApiService,$ionicPopover,$ionicModal,$rootScope,$ionicPopup,API_URL,$state) {
  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
     viewData.enableBack = false;
 });
@@ -621,10 +637,14 @@ angular.module('starter.controllers', [])
     $scope.threadModal = modal;
   });
   
-  $ionicModal.fromTemplateUrl('templates/modal/search-groups.html', {
+ /* $ionicModal.fromTemplateUrl('templates/modal/search-groups.html', {
     scope: $scope
   }).then(function(modal) {
     $rootScope.searchGroups = modal;
+  });*/
+  
+  $rootScope.$on('hideModal',function(){
+    NewModalService.hideModal($scope);
   });
   
   $scope.getGroups=function(){
@@ -750,46 +770,69 @@ angular.module('starter.controllers', [])
   
   $rootScope.searchKey = {'word': ''};
   
-  $scope.onSearchChange = function () {
-    
+  $scope.focused=function(){
+     NewModalService.showModal($scope);
+     $rootScope.showGroupList = false;
+     $rootScope.showSearchList = true;
+  };
+  $scope.blurred=function(){
     if($rootScope.searchKey.word == ''){
-      $rootScope.searchGroups.hide();
+       NewModalService.hideModal($scope);
+       $rootScope.showGroupList = true;
+       $rootScope.showSearchList = false;
+      
+    }
+  }
+  
+  $scope.onSearchChange = function () {
+    if($rootScope.searchKey.word == ''){
+       NewModalService.hideModal($scope);
        $rootScope.showGroupList = true;
        $rootScope.showSearchList = false;
       
     }else{
-      $rootScope.searchGroups.show();
-       $rootScope.showGroupList = false;
-       $rootScope.showSearchList = true;
+      
     }
     
-    
-    
-    ApiService.Get('profiles/search/'+$scope.searchKey.word,{ 
+    ApiService.Get('profiles/search/'+$scope.searchKey.word,'',{ 
       headers:{ 
       'Authorization':'Basic '+window.localStorage.getItem("talknote_token")+'' 
       } 
     })
     .then(function(response){
-      console.log("RESPONSE >>>> ", response.data)
-      $scope.searchUsers = response.data.Users;
-      $scope.searchThreads = response.data.Threads;
-      $scope.searchHeads = response.data.Heads;
+      $scope.searchUsers = response.Users;
+      $scope.searchThreads = response.Threads;
+      $scope.searchHeads = response.Heads;
     }),function(error){ 
       
     }
 }
+  $rootScope.chatMembers=[];
+  $scope.createChat=function(user){
+    $ionicLoading.show({
+      template:'<ion-spinner name="bubbles"></ion-spinner>'
+    });
+    ApiService.Get('groupchats/add/',user.id).then(function(response){
+      
+      $rootScope.chatMembers.push(user.username);
+      $ionicLoading.hide();
+      NewModalService.hideModal($scope);
+     $state.go('tab.chat-detail',{chatId:response.Groupchat.id});
+    });
+  }
 
 })
 
-.controller('GroupDetailCtrl', function($scope,CacheFactory,$timeout,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
+.controller('GroupDetailCtrl', function($scope,CacheFactory,$timeout,NotificationService,backButtonOverride,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
   $scope.groupID=$stateParams['id'];
-  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
-    viewData.enableBack = true;
-});
-$rootScope.$ionicGoBack = function() {
-    $state.go('tab.groups');
-};
+    $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+        viewData.enableBack = true;
+    });
+   backButtonOverride.setup($scope, function() {
+     console.log("BACK");
+         $state.go('tab.groups');
+    });
+   $rootScope.$emit('hideModal');
   $rootScope.thread=null;
   $scope.allMembers=[];
   $scope.likedHead=-1;
@@ -798,9 +841,12 @@ $rootScope.$ionicGoBack = function() {
   $rootScope.processedHead=-1; //for edting and delete
   $rootScope.user_id=window.localStorage.getItem('user_id');
   $rootScope.user=window.localStorage.getItem('user');
-  //$rootScope.searchGroups.hide(); --conflict if refresh
+
   var threads = CacheFactory.get('threads');
- 
+  $scope.$on('update_thread',function(event,id){
+     ApiService.setNotified(id,'thread').then(function(response){NotificationService.setNotif(); });
+     Groups.updateHeadCache(id,'threads/'+id,'head').then(function(response){});
+  });
  $scope.uploadedImgs=[];
   $ionicModal.fromTemplateUrl('templates/modal/addmember.html', {
     scope: $scope,
@@ -1214,8 +1260,9 @@ $scope.selectPicture = function($act) {
         viewData.enableBack = true;
     });
      backButtonOverride.setup($scope, function() {
-         $state.go('tab.group-detail',{chatId:$scope.thread.id});
+         $state.go('tab.group-detail',{id:$rootScope.threadId});
     });
+     $rootScope.$emit('hideModal');
   $scope.headID=$stateParams['id'];
   //$scope.headIndex=$stateParams['index'];
   $scope.headLikes =$stateParams['likes'];
@@ -1225,7 +1272,7 @@ $scope.selectPicture = function($act) {
   $rootScope.user=window.localStorage.getItem('user');
   //$rootScope.processedHead=$scope.headIndex;
   $rootScope.viewedHeadContents=null;
-  //$rootScope.searchGroups.hide(); --conflict when refresh
+  
   $scope.action='';
   $scope.base_url=BASE_URL;
   $scope.uploadedCommentimgs=[];
@@ -1247,9 +1294,11 @@ $scope.selectPicture = function($act) {
   
   $scope.updateCache=function(){
     Groups.updateHeadCache($scope.headID,'heads/'+$scope.headID,'comment').then(function(response){
+        if(response.length > 0){
           $scope.thread=response.Thread;
           $scope.getHeads=response.Head
           $scope.headUploads = response.Upload;
+        }
       if("Comment" in response && (response.Comment.length > 0)){
             $scope.comments = response;
       }
@@ -1260,6 +1309,7 @@ $scope.selectPicture = function($act) {
   $scope.gethead=function(){
       
       Groups.getComments($scope.headID).then(function(response){
+       
         $rootScope.threadTitle = response.Thread.title;
         $rootScope.headOwner = response.Owner.username;
         $scope.getHeads = response.Head;
@@ -1271,8 +1321,9 @@ $scope.selectPicture = function($act) {
 
       });
   }
-  $scope.gethead();
   $scope.updateCache();
+  $scope.gethead();
+  
   
   	$scope.showModal = function() {
 		$ionicModal.fromTemplateUrl('templates/modal/images.html', {
@@ -1678,7 +1729,7 @@ $rootScope.changeHeadLike=function(id,index){
         $rootScope.user_id=response['user']["User"]['id'];
         var token=Base64.encode(data.username + ':' + data.password);
         AuthService.storeUserCredentials(token,response['user']["User"]['username'],response['user']["User"]['id']);
-        AuthService.setdeviceToken();
+        AuthService.setdeviceToken(false);
         $scope.data.password='';
         $scope.data.username='';
         $state.go('tab.dash');

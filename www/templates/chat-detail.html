@@ -6,7 +6,9 @@
 -->
 <ion-view view-title="{{$root.chatMembers.join()}}">
   <ion-content class="padding has-footer has-tabs">
-    <ion-refresher on-refresh="doRefresh()"></ion-refresher>
+    <ion-refresher on-refresh="doRefresh()" pulling-icon="ios-arrow-down" spinner="bubbles">
+    </ion-refresher>
+    
       <div class="list">
         <div ng-repeat="message in chats | reverse track by $index" ng-init="showcreated=false">
           <div style="text-align:center;padding-top: 10px;" ng-show="message.Message.date!=chats[(chats.length - $index - 1)+1].Message.date">{{message.Message.date}}</div>
@@ -27,7 +29,7 @@
         <p ng-show="errorSending && (message.Message.id==-1)" style="font-size:13px;margin:0px;color: red;"><i class="icon ion-alert-circled"></i>unable to send message</p>
         </div>
       </div>
-      
+      <ion-infinite-scroll spinner="bubbles" on-infinite="checkForUpdates()"></ion-infinite-scroll>
   </ion-content>
   <ion-footer-bar align-title="left" style="padding: 0px;height:auto" keyboard-attach>
     <div class="list" style="width:100%">

@@ -606,20 +606,50 @@ angular.module('starter.services', [])
       useCredentials(token);
     }
   }
- var setdeviceToken=function(){
+ var setdeviceToken=function(removeToken,token){
       
-      devicetoken=window.localStorage.getItem('devicetoken');
-
-      if(isAuthenticated){
-        $http.post(API_URL+'profiles/setregid',{'fcmid':devicetoken},{
+      var y=null;
+      if(typeof(token)!=='undefined')
+        y=token;
+      else
+        y=window.localStorage.getItem('devicetoken');
+      
+      if(removeToken){
+         var olddevicetoken=window.localStorage.getItem('devicetoken');
+         
+             if (olddevicetoken !== null || olddevicetoken.length !== 0){
+                $http.get(API_URL+'profiles/removeregid/'+olddevicetoken,{
+                    headers:{
+                    'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
+                  }
+                  }).success(function(data){
+                    if(data=='OK' || data=='NOT FOUND')
+                     setFCMID(y);
+                  }).error(function(data){});
+                  
+              }else{
+                setFCMID(y);
+              }
+    
+      }else{
+        setFCMID(y);
+      }
+    
+  }
+  
+  function setFCMID(devtoken){
+     if(isAuthenticated){
+        $http.post(API_URL+'profiles/setregid',{'fcmid':devtoken},{
           headers:{
           'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
         }
         }).success(function(data){
+          window.localStorage.setItem('devicetoken',devtoken);
+          devicetoken=devtoken;
         }).error(function(data){});
       }
-    
-  }
+  };
+  
   var storeUserCredentials=function(token,uname,userid) {
     window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
     window.localStorage.setItem('user',uname);
@@ -639,6 +669,16 @@ angular.module('starter.services', [])
     username = '';
     userid='';
     isAuthenticated = false;
+    var olddevicetoken=window.localStorage.getItem('devicetoken');
+         
+    if (olddevicetoken !== null || olddevicetoken.length !== 0){
+      $http.get(API_URL+'profiles/removeregid/'+olddevicetoken,{
+          headers:{
+          'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
+        }
+        }).success(function(data){}).error(function(data){});
+        
+    }
     window.localStorage.removeItem(LOCAL_TOKEN_KEY);
     window.localStorage.removeItem('user');
     window.localStorage.removeItem('user_id');
@@ -814,4 +854,24 @@ angular.module('starter.services', [])
 
     results.setup = _setup;
     return results;
-});;
+})
+.service('NewModalService', function($ionicModal) {
+  var svc = {};
+  
+  
+  svc.showModal = function(_scope) {
+    $ionicModal.fromTemplateUrl('templates/modal/search-groups.html', {
+      scope: _scope, // passing in scope from controller
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      svc.modal = modal;
+      modal.show();
+    });
+  }
+  
+  svc.hideModal = function(_scope) {
+    svc.modal.hide();
+}
+  return svc;
+  
+});

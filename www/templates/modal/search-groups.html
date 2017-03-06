@@ -1,10 +1,10 @@
 <ion-modal-view>
-    <ion-content ng-show="showSearchList">
+    <ion-content>
       <ion-list>
           <ion-item class="item item-divider item-positive">
             <i  class="icon ion-person"></i> User
           </ion-item>
-          <ion-item  ng-repeat="users in searchUsers" href="#/tab/user-chat/">
+          <ion-item  ng-repeat="users in searchUsers" ng-click="createChat(users.User)">
             <i class="icon ion-person"> </i>{{users.User.username}}
           </ion-item>
     </ion-list>

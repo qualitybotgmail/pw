@@ -23,9 +23,10 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
     }
     
   });
-   if(AuthService.isAuthenticated() && InternetService.hasInternet())
+   if(AuthService.isAuthenticated() && InternetService.hasInternet()){
           NotificationService.setNotif();
-          
+          console.log('HHHHH');
+   }
    $rootScope.$on('gotNotif', function(event, data){
     
        $rootScope.threadNotifCount=NotificationService.getThreadCount();
@@ -60,8 +61,8 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
     });
     
     FCMPlugin.onTokenRefresh(function(token){
-      window.localStorage.setItem('devicetoken',token);
-       AuthService.setdeviceToken(); 
+      window.localStorage.setItem('newdevicetoken',token);
+       AuthService.setdeviceToken(true,token); 
     });
     
     FCMPlugin.onNotification(function(data){
@@ -128,7 +129,8 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
           if(CacheFactory.get('threads')){
             var thread=CacheFactory.get('threads');
             if(thread.get('threads/'+toParams.id))
-            $rootScope.groupTitle=thread.get('threads/'+toParams.id).Thread.title;
+            if($rootScope.groupTitle=thread.get('threads/'+toParams.id).Thread)
+              $rootScope.groupTitle=thread.get('threads/'+toParams.id).Thread.title;
           }
         }
         
@@ -138,13 +140,16 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
             if(thread.get('heads/'+toParams.id)){
             $rootScope.threadTitle=thread.get('heads/'+toParams.id).Thread.title;
             $rootScope.headOwner =thread.get('heads/'+toParams.id).Owner.username;
+            $rootScope.threadId=thread.get('heads/'+toParams.id).Thread.id;
             }
           }else{
             Groups.getHeadDetails(toParams.id).then(function(data){
               $rootScope.threadTitle=data.Thread.title;
               $rootScope.headOwner =data.Owner.username;
+              $rootScope.threadId=data.Thread.id;
             });
           }
+       
         }
   });
 })
@@ -385,7 +390,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
 })
 .directive('autoGrow', function() {
   return function(scope, element, attr){
-    var minHeight = element[0].offsetHeight,
+    var minHeight = '36px',
       paddingLeft = element.css('paddingLeft'),
       paddingRight = element.css('paddingRight');
 
