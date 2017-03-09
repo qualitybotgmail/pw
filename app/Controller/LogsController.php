@@ -39,6 +39,12 @@ class LogsController extends AppController {
 		$options = array('conditions' => array('Log.' . $this->Log->primaryKey => $id));
 		$this->set('log', $this->Log->find('first', $options));
 	}
+	
+	
+	public function testpush($id){
+		$this->Log->pushme($id);
+		exit;
+	}
 
 /**
  * add method

@@ -193,16 +193,26 @@ public $actsAs = array('Containable');
 			if(count($fcm)>0){
 				
 				$f = $fcm['Profile']['fcm_id'];
-				$this->push(array($f));
+				$f=json_decode($f);
+				$data=array('title'=>'test','body'=>'body','data'=>array('id'=>1));
+				$this->push($f,$data);
 			}
 		}
 	}	
-	public function push($fcmids = null){
+	public function push($fcmids = null,$notifdata=null){
+	
 		
-	//	file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($fcmids,true),FILE_APPEND);
+		$title='Backoffice';
+		$body='Notification';
+		$data=array();
 		if($fcmids != null){
 			if(is_array($fcmids)){
 				$fcmids = array_unique($fcmids);
+			}
+			if($notifdata!=null){
+				$title=$notifdata['title'];
+				$body=$notifdata['body'];
+				$data=$notifdata['data'];
 			}
 			
 			$ch = curl_init();
@@ -215,16 +225,27 @@ public $actsAs = array('Containable');
 			));
 			curl_setopt($ch, CURLOPT_POSTFIELDS,
 			            json_encode(array(
-			            	
-			            	'data' => array('notification' => array('message' => 'Backoffice','title' => 'Notification')),
-			            	'registration_ids' => $fcmids)));
+			            		'notification' => array(
+			            			'title' => $title,
+			            			'body' => $body,
+			            			 'sound'=>'default',
+						             'click_action'=>'FCM_PLUGIN_ACTIVITY',
+						             'icon'=>'fcm_push_icon'
+			            		),
+			            	  'data'=>$data,
+			            	'registration_ids' => $fcmids,
+			            	'priority'=>'high',
+        					'restricted_package_name'=>''
+        					)
+			            ));
 			
 	
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			//file_put_contents("/tmp/lastcurl",date("g:i")." [Exec]\n".print_r($fcmids,true),FILE_APPEND);
 			$server_output = curl_exec ($ch);
 			file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r(array('Output'=>$server_output),true),FILE_APPEND);
-			curl_close ($ch);	
+			curl_close ($ch);
+			var_dump($server_output);
 			
 		}
 	}
@@ -235,7 +256,9 @@ public $actsAs = array('Containable');
 			//get the users invovled in the thread
 			//remove the Log.user_id cuz we do not want to inform the creator about his own action
 			$log = $this->data['Log'];
+			
 			$fcmids = array();
+			$notifdata=array('data'=>array(),'title'=>'','body'=>'');
 			$uid = AuthComponent::user('id');
 			App::uses('IgnoredThread', 'Model');
 			$this->IgnoredThread = new IgnoredThread;
@@ -244,10 +267,14 @@ public $actsAs = array('Containable');
 			
 			$myfcmid = @$profile['Profile']['fcm_id'];
 			
+			//added by dada
+			$myfcmid=json_decode($myfcmid);
+			
 			$thread_id = null;
 			$groupchat_id = null;
 			if($log['type'] == 'User.logged' && $myfcmid != ''){
-				$this->push(array($myfcmid));
+				//$this->push(array($myfcmid)); ---dada
+				$this->push($myfcmid);
 				return;
 			}elseif(isset($log['thread_id']) && $log['thread_id'] != 0){
 				$tid = $log['thread_id'];
@@ -267,6 +294,36 @@ public $actsAs = array('Containable');
 						'User.username' => array('Profile.fcm_id','Profile.user_id')
 					)
 				));
+				$notifdata['title']=$thread['Thread']['title'];
+				
+				if($log['head_id'] && $log['head_id']!=0){
+					App::uses('Head', 'Model');
+					$this->Head->recursive=-1;
+					$head=$this->Head->find('first',array('conditions'=>array('id'=>$log['head_id'])));
+				}
+				
+				if(isset($log['like_id']) && $log['like_id']!=0){
+					if($log['type']=='Head.like')
+						$notifdata['body']=$profile['User']['username'].' liked your post: '.$head['Head']['body'];
+					else
+						$notifdata['body']=$profile['User']['username'].' liked your comment in '.$head['Head']['body'];
+					
+				}else{
+					if($log['type']=='Head.add')
+						$notifdata['body']=$profile['User']['username'].' add '.$head['Head']['body'];
+					
+					if($log['type']=='Head.edit')
+						$notifdata['body']=$profile['User']['username'].' edited '.$head['Head']['body'];
+						
+					if($log['type']=='Comment.add')
+						$notifdata['body']=$profile['User']['username'].' commented in "'.$head['Head']['body'];
+					
+					if($log['type']=='Comment.edit')
+						$notifdata['body']=$profile['User']['username'].' edited his comment in "'.$head['Head']['body'];
+					
+				}
+				$notifdata['data']=array('id'=>$tid,'head_id'=>$log['head_id']);
+				
 				
 				foreach($thread['User'] as $u){
 					if(in_array($u['id'],$ignored_users)){
@@ -276,8 +333,8 @@ public $actsAs = array('Containable');
 					$f = $u['Profile'][0]['fcm_id'];
 					$uids[] = $u['id'];
 					if(trim($f) == '' ) continue;
-						if($u['Profile'][0]['user_id'] == $log['user_id']) continue;
-					$fcmids[] = $f;
+					if($u['Profile'][0]['user_id'] == $log['user_id']) continue;
+					$fcmids=array_merge($fcmids,json_decode($f));
 					
 				}
 			
@@ -288,8 +345,11 @@ public $actsAs = array('Containable');
 					$f = @$thread['Owner']['Profile'][0]['fcm_id'];
 					
 					if($f){
-
-						$fcmids[] = $f;
+						if(@$thread['Owner']['Profile'][0]['user_id'] != $log['user_id']){
+							//$fcmids[] = json_decode($f);
+							$fcmids=array_merge($fcmids,json_decode($f));
+							file_put_contents("/tmp/dadacurl",date("g:i:s")."\n".print_r($fcmids,true));
+						}
 					}
 				}
 			}
@@ -307,7 +367,15 @@ public $actsAs = array('Containable');
 					),
 					'contain' => array('Owner.id' => 'Profile.fcm_id','User.username' => array('Profile.fcm_id','Profile.user_id'))
 				));
-				
+				App::uses('Message', 'Model');
+				$this->Message->recursive=-1;
+				$message=$this->Message->find('first',array(
+					'conditions'=>array('Message.id'=>$log['message_id'])
+				));
+				//file_put_contents("/tmp/dadacurl",date("g:i:s")."\n".print_r($message,true),FILE_APPEND);
+				$notifdata['data']=array('id'=>$gid);
+				$notifdata['title']=$profile['User']['username'];
+				$notifdata['body']=$message['Message']['body'];
 	
 				foreach($g['User'] as $u){
 					if(count($u['Profile'])<1) continue;
@@ -316,7 +384,8 @@ public $actsAs = array('Containable');
 					
 					if(trim($f) == '' ) continue;
 					if($u['Profile'][0]['user_id'] == $log['user_id']) continue;
-					$fcmids[] = $f;
+					//$fcmids[] = json_decode($f);
+					$fcmids=array_merge($fcmids,json_decode($f));
 
 				}
 				
@@ -324,12 +393,15 @@ public $actsAs = array('Containable');
 				$uids[] = $g['Owner']['id'];
 				
 				if($f){
-					$fcmids[] = $f;
+					//$fcmids[] = json_decode($f);
+					$fcmids=array_merge($fcmids,json_decode($f));
 					
 				}	
-			}		
-			$this->push($fcmids);
+			}	
 			
+			$this->push($fcmids,$notifdata);
+			
+		
 			//Update caches of the users
 			$uids[] = $uid;
 			

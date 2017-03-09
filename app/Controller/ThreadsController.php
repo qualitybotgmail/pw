@@ -200,9 +200,7 @@ class ThreadsController extends AppController {
 		$this->set('thread',$thread);
 	}
 	
-	public function updateThread($id,$lastid){
-		if(!$lastid)
-			exit;
+	public function updateThread($id,$lastid=0){
 		
 		$newthreads=$this->view($id,$lastid,true);
 		

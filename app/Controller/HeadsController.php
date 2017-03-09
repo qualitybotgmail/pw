@@ -121,9 +121,7 @@ class HeadsController extends AppController {
 		
 	}
 	
-	public function updateHead($id,$lastid){
-		if(!isset($lastid))
-			exit;
+	public function updateHead($id,$lastid=0){
 		
 		$newthreads=$this->view($id,$lastid,true);
 		

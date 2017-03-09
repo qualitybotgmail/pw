@@ -21,7 +21,7 @@ class ProfilesController extends AppController {
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('User'); 
-		$this->Auth->allow('me','getnotif','froks','search','timeline','renewdevice');
+		$this->Auth->allow('me','getnotif','froks','search','timeline','removeregid','setregid','notifications_count','clearNotif');
 	}
 	public function logged(){
 		$prof = $this->Profile->findByUserId($this->Auth->user('id'));
@@ -190,6 +190,17 @@ class ProfilesController extends AppController {
 		echo '{status: "OK"}';
 		exit;
 	}
+	public function clearNotif($type,$id){
+		$user_id = $this->Auth->user('id');
+		if($type=='groupchat')
+			$this->Profile->clearGroupchatsCount($id,$user_id);
+		
+		if($type=='thread')
+			$this->clearThreadsCount($id,$user_id);
+		
+		echo json_encode("OK");
+		exit;
+	}
 	public function getnotif(){
 
 		error_reporting(0);
@@ -202,6 +213,8 @@ class ProfilesController extends AppController {
 		//print_r($notif);exit;
 		foreach($notif as $k => $n){
 	
+			//If this notification type if 'User login', we do not need to inform them
+			//about this
 			if($n['type'] != 'User.logged' && $n['user_id'] == $uid){
 				
 				$skipped[] = $k;
@@ -316,11 +329,45 @@ class ProfilesController extends AppController {
 		
 		exit;
 	}
+	
+	public function removeregid(){
+		$return='';
+		
+		if($this->request->is('post')){
+			$data = $this->request->data;
+			if($data['fcmid']==null || $data['fcmid']=='null')
+			exit;	
+			$uid = $this->Auth->user('id');
+			$profile=$this->Profile->findByUserId($uid);
+		
+			if(count($profile) > 0){
+				$fcmids=json_decode($profile['Profile']['fcm_id']);
+			
+			if(in_array($data['fcmid'],$fcmids)){
+				$index=array_search($data['fcmid'],$fcmids);
+				unset($fcmids[$index]);
+				$this->Profile->id=$profile['Profile']['id'];
+				if($this->Profile->saveField('fcm_id',json_encode($fcmids)))
+					$return='OK';
+				else
+					$return='FAILED';
+			}else{
+				$return="NOT FOUND";
+			}
+			
+			}
+		}
+		echo json_encode($return);
+		exit;
+	}
 	public function setregid(){
 		if($this->request->is('post')){
 			$data = $this->request->data;
-			$fcmid = $data['fcmid'];
+			if($data['fcmid']==null || $data['fcmid']=='null')
+			exit;
 			
+			$fcmid = $data['fcmid'];
+			$fcmids=array();
 			$uid = $this->Auth->user('id');
 		
 			$profile = $this->Profile->findByUserId($uid);
@@ -335,7 +382,16 @@ class ProfilesController extends AppController {
 				
 			}else{
 				$this->Profile->id = $profile['Profile']['id'];
-				$this->Profile->saveField('fcm_id',$fcmid);
+				$fcmids=json_decode($profile['Profile']['fcm_id']);
+				
+				if(count($fcmids) > 0){
+					if(!in_array($fcmid,$fcmids))
+						array_push($fcmids,$fcmid);
+				}else{
+					$fcmids[]=$fcmid;
+				}
+
+				$this->Profile->saveField('fcm_id',json_encode($fcmids));
 			}
 			
 		}
@@ -789,7 +845,9 @@ class ProfilesController extends AppController {
 		
 		echo json_encode($ret);
 		exit;
-	}	
+	}
+	
+
 	public function notifications($ret = false){
 		header('Content-Type: application/json;charset=utf-8'); 
 		$notifications = $this->Profile->User->Log->notifications($this->Auth->user('id'));
