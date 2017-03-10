@@ -49,4 +49,7 @@
     </div><!-- /.container -->
 
   </body>
+  <script type="text/javascript">
+    document.cookie = "hash="+window.location.hash;
+  </script>
 </html>

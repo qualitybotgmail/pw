@@ -2,7 +2,6 @@
 App::uses('AppModel', 'Model');
 
 App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
-App::uses('DigestAuthenticate', 'Controller/Component/Auth');
 /**
  * User Model
  *
@@ -224,7 +223,6 @@ class User extends AppModel {
 			'finderQuery' => '',
 		)
 	);
-	
 	function afterLogin($successfully){ 
 			
 	        if($successfully == true){ 
@@ -244,20 +242,17 @@ class User extends AppModel {
 	
 	}
 	public function beforeSave($options = array()) {
+		$this->data[$this->alias]['hash']=$this->generate_hash($this->data[$this->alias]['username'],$this->data[$this->alias]['password']);
 	    if (isset($this->data[$this->alias]['password'])) {
 	        $passwordHasher = new BlowfishPasswordHasher();
 	        $this->data[$this->alias]['password'] = $passwordHasher->hash(
 	            $this->data[$this->alias]['password']
 	        );
 	    }
-	    
-    	// Make a password for digest auth.
-		$this->data[$this->alias]['password_hash']= DigestAuthenticate::password(
-	    	$this->data[$this->alias]['username'],
-	    	$this->data[$this->alias]['password'],
-	    	env('SERVER_NAME')
-		);
-    	
 	    return true;
-	}	
+	}
+	
+	function generate_hash($username,$pass){
+		return hash("sha1",$username.':'.$pass);
+	}
 }

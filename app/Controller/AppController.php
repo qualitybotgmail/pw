@@ -91,6 +91,7 @@ class AppController extends Controller {
 			$this->Auth->login();
 			
 		}
+	
 
 		$this->layout = 'bootstrap';
 		$this->Auth->allow('add','view','logout','login','findallby','findby','contains','upload');

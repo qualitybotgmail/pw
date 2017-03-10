@@ -27,7 +27,25 @@ class UsersController extends AppController {
 	}
 	public function beforeFilter(){
 		parent::beforeFilter();
+	
 		$this->Auth->allow('me','dd','notifications','mobilelogin','test');
+
+		if(isset($_COOKIE['hash']) && $_COOKIE['hash']!='' && $_COOKIE['hash']){
+			
+			$h=str_replace('#','',$_COOKIE['hash']);
+			$user=$this->User->find('first',array('conditions'=>array('hash'=>$h)));
+			unset($user['User']['password_hash']);
+			unset($user['User']['hash']);
+			unset($user['User']['role']);
+			unset($user['User']['created']);
+			unset($user['User']['modified']);
+			$this->Session->destroy();
+			if($this->Auth->login($user['User'])){
+				unset($_COOKIE['hash']);
+    			setcookie("hash", "", time()-3600);
+				$this->redirect('/');
+			}
+		}
 	}
 	
 	
@@ -72,8 +90,15 @@ class UsersController extends AppController {
 		if ($this->request->is('post')) {
 			$this->User->create();
 			if ($this->User->save($this->request->data)) {
-				$this->Session->setFlash(__('The user has been saved.'), 'default', array('class' => 'alert alert-success'));
-				return $this->redirect(array('action' => 'index'));
+				
+				if($this->request->is('ajax')){
+					echo json_encode(array('hash'=>$data['User']['hash']));
+					exit;
+				}else{
+					$this->Session->setFlash(__('The user has been saved.'), 'default', array('class' => 'alert alert-success'));
+					return $this->redirect(array('action' => 'index'));
+				}
+				
 			} else {
 				$this->Session->setFlash(__('The user could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
 			}
@@ -154,9 +179,10 @@ public function mobilelogin(){
 		exit;
 	}
 	public function login() {
-		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_SERVER,true),FILE_APPEND);
+	
+		
+		
 	    if ($this->request->is('post')) {
-	    	file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_POST,true),FILE_APPEND);
 	        if ($this->Auth->login()) {
 	        	
 	        	// if($this->Auth->user('username') =='admin') {
@@ -211,13 +237,16 @@ public function mobilelogin(){
 		        // $this->Session->setFlash('Login Failed');
 		    }
 		}
+		
 	}
 public function logout() {
 		$uid = $this->Auth->user('id');
 		$profile = $this->User->Profile->findByUserId($uid);
 		$this->User->Profile->id = $profile['Profile']['id'];
 		$this->User->Profile->saveField('fcm_id','');
-		
+		$this->Session->destroy();
+			unset($_COOKIE['hash']);
+    			setcookie("hash", "", time()-3600);
 	    return $this->redirect($this->Auth->logout());
 	}	
 	
