@@ -49,7 +49,7 @@ class AppController extends Controller {
         )
     );
     public function status($s){
-        echo json_encode(['status' => $s]);
+        echo json_encode(array('status' => $s));
         exit;
     }
 	public function ok(){

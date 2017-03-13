@@ -151,7 +151,7 @@ class UsersController extends AppController {
 	}
 public function mobilelogin(){
 		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_SERVER,true),FILE_APPEND);
-		$userdetails=[];
+		$userdetails=array();
 		$session_id=null;
 	    if ($this->request->is('post')) {
 	    	if($this->request->data){
