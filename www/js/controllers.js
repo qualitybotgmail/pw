@@ -1,16 +1,34 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope,$rootScope,$cordovaNetwork,AuthService,ApiService,$http,$location) {
+.controller('DashCtrl', function($scope,$rootScope,$timeout,$cordovaNetwork,AuthService,Progress,$http,$location) {
+  
   var MAX_RATE = 100;
-  var rate = 64;
   $scope.labels = ["達成率", "残り"];
   $scope.colors = ["#0000ff", "#ffffff"];
-  $scope.data = [rate, MAX_RATE - rate];
-  $rootScope.user=AuthService.username();
-  ApiService.Get('profiles/me.json','').then(function(response){}),function(error){ };
-  
-  //AuthService.trytoken();
-  
+  $scope.data = [0, MAX_RATE];
+  $scope.progress = 0;
+  $scope.goalBp = 0;
+  $scope.bp = 0;
+
+  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+    viewData.enableBack = false;
+  });
+
+  $timeout(function(){
+    $rootScope.user=AuthService.username();
+
+    var now = new Date();
+    var yyyymm = now.getFullYear()+('0'+(now.getMonth())).slice(-2);
+    getProgress_(yyyymm);
+  });
+
+  var getProgress_ = function(yyyymm){
+    Progress.get(yyyymm).then(function(response){
+      $scope.data = [response.data.progress, MAX_RATE - response.data.progress];
+      $scope.progress = response.data.progress;
+      $scope.goalBp = response.data.goalBp;
+    }),function(error){};
+  };
 })
 
 .controller('IncentiveCtrl', function($scope) {})
@@ -1728,7 +1746,7 @@ $rootScope.changeHeadLike=function(id,index){
       if(response['user']["User"]){
         $rootScope.user_id=response['user']["User"]['id'];
         var token=Base64.encode(data.username + ':' + data.password);
-        AuthService.storeUserCredentials(token,response['user']["User"]['username'],response['user']["User"]['id']);
+        AuthService.storeUserCredentials(token,response['user']["User"]['username'],response['user']["User"]['id'],response['user']["User"]['outside_user_id']);
         AuthService.setdeviceToken(false);
         $scope.data.password='';
         $scope.data.username='';
