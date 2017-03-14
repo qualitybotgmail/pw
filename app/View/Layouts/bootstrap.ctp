@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
 	<title>
-		<?php echo $title_for_layout; ?>
+		<?php //echo $title_for_layout; ?>
+		PlayWork Chat
 	</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
