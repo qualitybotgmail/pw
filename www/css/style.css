@@ -291,3 +291,70 @@ textarea {
      border-radius:20px;
      padding-right:5px
  }
+ 
+.summary-header {
+  position:relative;
+  width:90%;
+  background:#13348B;
+  padding:15px;
+  margin:auto;
+}
+.summary-header-child{
+  color:white;
+  font-weight:600;
+}
+.summary-header-child span{
+  font-size:160%;
+}
+.progress-parent {
+  position:relative;
+  width:80%;
+  margin:auto;
+}
+.progress-parent .progress {
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:100%;
+  margin:auto;
+  display:inline-table;
+  color:#666;
+}
+.incentive-parent {
+  position:relative;
+  width:90%;
+  padding:15px;
+  margin:0 auto;
+  background-color: #ffffff;
+  border:1px solid #ddd;
+  display: box;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -o-box;
+  display: -ms-box;
+  box-pack: justify;
+  -moz-box-pack: justify;
+  -webkit-box-pack: justify;
+  -o-box-pack: justify;
+  -ms-box-pack: justify; 
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+}
+.incentive-child {
+  padding:15px;
+  font-weight:600;
+  color:#666;
+}
+.incentive-child.head {
+  width:150px;
+  background:#13348B;
+  font-size:140%;
+  color:white;
+  padding:20px 0;
+}
+.incentive-child span{
+  font-size:250%;
+  color:#13348B;
+}

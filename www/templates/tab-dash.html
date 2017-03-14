@@ -1,14 +1,15 @@
 <ion-view view-title="Progress">
   <ion-content class="padding text-center">
     <br>
-    <div style="position:relative;width:90%;background:#13348B;padding:10px;margin:auto;">
-      <h3 style="color:white;">現在 <span style="font-size:150%;">{{bp}}</span> BP</h3>
-      <h4 style="color:white;">目標達成まであと <span style="font-size:180%;">{{goalBp-bp}}</span> BP</h4>
+    <div class="summary-header">
+      <h3 class="summary-header-child">現在 <span>{{data.bp}}</span> BP</h3>
+      <h4 class="summary-header-child">目標達成まであと <span>{{data.goalBp-bp}}</span> BP</h4>
     </div>
+    <br>
     <h2 style="color:#13348B;font-weight:bold;">進捗達成率</h2>
-    <div style="position:relative;width:100%;">
-      <h2 style="position:absolute;left:0;top:0;bottom:0;width:100%;margin:auto;display:inline-table;">{{progress}}%</h2>
-      <canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels" chart-colors="colors"></canvas>
+    <div class="progress-parent">
+      <h2 class="progress">{{data.progress}}%</h2>
+      <canvas id="doughnut" class="chart chart-doughnut" chart-data="graph" chart-labels="labels" chart-colors="colors"></canvas>
     </div>
   </ion-content>
 </ion-view>

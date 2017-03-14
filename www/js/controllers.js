@@ -4,11 +4,12 @@ angular.module('starter.controllers', [])
   
   var MAX_RATE = 100;
   $scope.labels = ["達成率", "残り"];
-  $scope.colors = ["#0000ff", "#ffffff"];
-  $scope.data = [0, MAX_RATE];
-  $scope.progress = 0;
-  $scope.goalBp = 0;
-  $scope.bp = 0;
+  $scope.colors = ["#328EE4", "#ffffff"];
+  $scope.graph = [0, MAX_RATE];
+  $scope.data = {};
+  $scope.data.progress = 0;
+  $scope.data.goalBp = 0;
+  $scope.data.bp = 0;
 
   $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
     viewData.enableBack = false;
@@ -24,14 +25,39 @@ angular.module('starter.controllers', [])
 
   var getProgress_ = function(yyyymm){
     Progress.get(yyyymm).then(function(response){
-      $scope.data = [response.data.progress, MAX_RATE - response.data.progress];
-      $scope.progress = response.data.progress;
-      $scope.goalBp = response.data.goalBp;
+      $scope.graph = [response.data.progress, MAX_RATE - response.data.progress];
+      $scope.data = response.data;
     }),function(error){};
   };
 })
 
-.controller('IncentiveCtrl', function($scope) {})
+.controller('IncentiveCtrl', function($scope,$rootScope,$timeout,$cordovaNetwork,AuthService,Incentive,$http,$location) {
+  $scope.data = {};
+  $scope.data.salary = 0;
+  $scope.data.pay = 0;
+  $scope.data.incentive = 0;
+  $scope.data.hourlyIncentive = 0;
+  $scope.data.monthlyIncentive = 0;
+  
+
+  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+    viewData.enableBack = false;
+  });
+
+  $timeout(function(){
+    $rootScope.user=AuthService.username();
+
+    var now = new Date();
+    var yyyymm = now.getFullYear()+('0'+(now.getMonth())).slice(-2);
+    getIncentive_(yyyymm);
+  });
+
+  var getIncentive_ = function(yyyymm){
+    Incentive.get(yyyymm).then(function(response){
+      $scope.data = response.data;
+    }),function(error){};
+  };
+})
 
 .controller('ChatsCtrl', function($scope,$ionicPopup,$cordovaNetwork,$rootScope,NotificationService,$ionicLoading,$ionicPopover,Chats,$ionicModal,ApiService,$state) {
   // With the new view caching in Ionic, Controllers are only called
