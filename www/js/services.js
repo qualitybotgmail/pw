@@ -883,8 +883,7 @@ angular.module('starter.services', [])
       var pwork_user_id = window.localStorage.getItem('pwork_user_id');
       $http.get(PWORK_API_URL + "progress/"+pwork_user_id+"/"+month,{
           headers:{
-            'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+'',
-            'X-Requested-With': 'XMLHttpRequest'
+            'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
           }
       }).success(function(data){
           if(data.status == 'OK'){
@@ -903,4 +902,29 @@ angular.module('starter.services', [])
     }
   }
 })
-;
+.factory('Incentive', function($http,$q,PWORK_API_URL) {
+  return{
+    get:function(month) {
+      var deferred=$q.defer();
+      var pwork_user_id = window.localStorage.getItem('pwork_user_id');
+      $http.get(PWORK_API_URL + "incentive/"+pwork_user_id+"/"+month,{
+          headers:{
+            'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+          }
+      }).success(function(data){
+          if(data.status == 'OK'){
+              deferred.resolve(data);
+          }
+          else{
+              console.error(JSON.stringify(data));
+              deferred.reject(data);
+          }
+      })
+      .error(function(data){
+          console.error(JSON.stringify(data));
+          deferred.reject(data);
+      });
+      return deferred.promise;
+    }
+  }
+});
