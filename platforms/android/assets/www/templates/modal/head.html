@@ -1,0 +1,57 @@
+<ion-modal-view>
+   <ion-header-bar class="bar-positive">
+      <h1 class="title">共有したい情報を投稿</h1>
+      <div class="buttons">
+          <button class="button" ng-click="resetHeadForm();$root.showAddHead.hide();$root.headPopover.hide();">Close</button>
+      </div>
+    </ion-header-bar>
+    <ion-content>
+    <div class="row">
+      <h4>本文:</h4>
+      
+        <i class="icon ion-image img" ng-click="selectPicture('upload')"></i>
+        <i class="icon ion-ios-camera cam" ng-click="selectPicture('takePhoto')"></i>
+      
+    </div>
+    <div class="row">
+      <div class="col"> 
+        <label class="item item-input text">
+          <textarea rows="10" ng-model="$root.headContent.body" id="headBody" ng-Required="true" name="content" data-tap-disabled="true"></textarea>
+        </label>
+        
+      </div>
+    </div>
+    <div class="row" ng-show="$root.headContent.Uploads.length > 0 && $root.headAction=='edit'" >
+    <div class="col">
+    <span >
+    <a class="item-thumbnail" ng-repeat="i in $root.headContent.Uploads track by $index">
+      <i ng-click="removeUploads($index)" class="icon ion-ios-close" style="font-size: 30px;position: absolute;margin-left: 45px;"></i>
+       <img ng-show="i.Upload.name" ng-src="{{base_url}}{{i.Upload.path}}">
+       <img ng-show="!i.Upload.name" ng-src="{{i.Upload.path}}">
+    </a>
+    </span>
+    </div>
+    </div>
+   <div class="row" ng-show="uploadedImgs.length > 0 && $root.headAction=='add'" >
+    <div class="col">
+    <span >
+    <a class="item-thumbnail" ng-repeat="im in uploadedImgs track by $index">
+      <i ng-click="removeUploadedImg($index)" class="icon ion-ios-close" style="font-size: 30px;position: absolute;margin-left: 45px;"></i>
+       <img ng-src="{{im}}">
+    </a>
+    </span>
+    </div>
+    </div>
+<div style="text-align:center">
+<button ng-show="headAction=='edit'" class="button button-center button-positive" ng-click="$root.processEditingHead()">
+  Save
+</button>
+<button ng-show="headAction=='add'" class="button button-center button-positive" ng-click="processAddingHead()">
+  Add
+</button>
+<button class="button button-center button-assertive" ng-click="resetHeadForm();$root.showAddHead.hide();$root.headPopover.hide();">
+  Cancel
+</button>
+</div>
+ </ion-content>
+  </ion-modal-view>
