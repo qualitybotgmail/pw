@@ -1,0 +1,25 @@
+<ion-view hide-nav-bar="true">
+  <div class="bar bar-header bar-light" style="background-color: #ddd;">
+    <h1 class="title" style="color: #a2a2a2;font-weight: 900;font-size: 22px;">Chats</h1>
+    <button class="button icon button-clear ion-plus-circled chat-add"  ng-click="showAddChats()"></button>
+  </div>
+  <ion-content class="has-header">
+     
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" on-hold="chat.owner==$root.user_id?showgcpopover($event,$index):''" ng-repeat="chat in chatsPreview | limitTo:numberOfGCToDisplay track by $index" type="item-text-wrap" ng-click="viewChat(chat.id,$index)">
+        <img ng-src="img/avatar.png">
+        <h2>
+          <span ng-repeat="user in chat.users" ng-if="user.User.id!=$root.user_id">
+            {{user.User.username}}
+            <span ng-if="!$last">,</span>
+          </span>
+        </h2>
+        <p>{{chat.message.Message.body}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      
+       <span ng-show="$root.groupchatNotif[chat.id]" show-badge badge-id="{{chat.id}}" badge-type="groupchat" class="badge badge-assertive">{{$root.groupchatNotif[chat.id]}}</span>
+      </ion-item>
+    </ion-list>
+    <ion-infinite-scroll ng-if="numberOfGCToDisplay < chats.length" on-infinite="loadMoreGC()" distance="1%"></ion-infinite-scroll>
+  </ion-content>
+</ion-view>

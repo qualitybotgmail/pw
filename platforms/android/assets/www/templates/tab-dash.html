@@ -1,0 +1,36 @@
+<ion-view hide-nav-bar="true">
+    <div class="bar bar-header bar-light" style="background-color: #ddd;">
+  <h1 class="title" style="color: #a2a2a2;font-weight: 900;font-size: 22px;">Progress</h1>
+</div>
+  <ion-content class="padding text-center dash has-header" style="padding-top:20px;padding-bottom:20px">
+   <!-- <br>
+    <h2>目標 2000BP</h2>
+    <br>
+    <h2>達成率</h2>
+    <div style="position:relative;width:100%;">
+      <h2 style="position:absolute;left:0;top:0;bottom:0;width:100%;margin:auto;display:inline-table;">64%</h2>
+      <canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels" chart-colors="colors"></canvas>
+    </div>-->
+    <div>
+      <div class="header">
+       <p style="margin: 0px;"><span class="text">現在</span> <span class="num">81</span> BP</p>
+       <p style="font-size:17px;margin: 0px;"><span class="text" ><span style="letter-spacing: -1px;">次のランクアップまで</span>獲得残</span> <span class="num" style="padding: 3px;">90</span> BP</p>
+       
+      </div>
+      <p class="subheader">進捗達成率</p>
+      <div class="card" style="margin: 0px;border: 0px;box-shadow: none;">
+        <div class="item item-text-wrap" style="padding-top: 5px;">
+          <h2>64<span>%</span></h2>
+          <canvas id="doughnut" class="chart chart-doughnut" chart-data="data" chart-labels="labels" chart-colors="colors"></canvas>
+        </div>
+    </div>
+        
+            <button class="button button-stable left icon-right ion-chevron-right">今月実績</button>
+            <button class="button button-stable right icon-right ion-chevron-right">先月実績</button>
+            <button class="button button-stable left icon-right ion-chevron-right">先月着地ランク</button>
+            <button class="button button-stable right icon-right ion-chevron-right">生涯累計実績</button>
+         <div style="clear:both"></div>
+        
+    </div>
+  </ion-content>
+</ion-view>
