@@ -1,16 +1,28 @@
-<ion-view view-title="Incentive">
+<ion-view view-title="Individual">
   <ion-content class="padding text-center">
     <br>
-    <h3>給与</h3>
-    <h2>1,500円</h2>
+    <div class="summary-header">
+      <h4 class="summary-header-child">現在総支給額 <span> {{data.salary | number: 0}}</span> 円</h4>
+    </div>
     <br>
-    <h3>突発インセン</h3>
-    <h2>20,000円</h2>
+    <div class="incentive-parent">
+      <div class="incentive-child head">基本給</div>
+      <div class="incentive-child"><span>{{data.pay | number: 0}}</span> 円</div>
+    </div>
     <br>
-    <h3>時給インセン</h3>
-    <h2>500円</h2>
+    <div class="incentive-parent">
+      <div class="incentive-child head">突発インセン</div>
+      <div class="incentive-child"><span>{{data.incentive | number: 0}}</span> 円</div>
+    </div>
     <br>
-    <h3>月次インセン</h3>
-    <h2>60,000円</h2>
+    <div class="incentive-parent">
+      <div class="incentive-child head">時給インセン</div>
+      <div class="incentive-child"><span>{{data.hourlyIncentive | number: 0}}</span> 円</div>
+    </div>
+    <br>
+    <div class="incentive-parent">
+      <div class="incentive-child head">月次インセン</div>
+      <div class="incentive-child"><span>{{data.monthlyIncentive | number: 0}}</span> 円</div>
+    </div>
   </ion-content>
 </ion-view>

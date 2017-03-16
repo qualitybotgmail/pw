@@ -1,19 +1,63 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope,$rootScope,$cordovaNetwork,AuthService,ApiService,$http,$location) {
+.controller('DashCtrl', function($scope,$rootScope,$timeout,$cordovaNetwork,AuthService,Progress,$http,$location) {
+  
   var MAX_RATE = 100;
-  var rate = 64;
   $scope.labels = ["達成率", "残り"];
-  $scope.colors = ["#0000ff", "#ffffff"];
-  $scope.data = [rate, MAX_RATE - rate];
-  $rootScope.user=AuthService.username();
-  ApiService.Get('profiles/me.json','').then(function(response){}),function(error){ };
-  
-  //AuthService.trytoken();
-  
+  $scope.colors = ["#328EE4", "#ffffff"];
+  $scope.graph = [0, MAX_RATE];
+  $scope.data = {};
+  $scope.data.progress = 0;
+  $scope.data.goalBp = 0;
+  $scope.data.bp = 0;
+
+  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+    viewData.enableBack = false;
+  });
+
+  $timeout(function(){
+    $rootScope.user=AuthService.username();
+
+    var now = new Date();
+    var yyyymm = now.getFullYear()+('0'+(now.getMonth())).slice(-2);
+    getProgress_(yyyymm);
+  });
+
+  var getProgress_ = function(yyyymm){
+    Progress.get(yyyymm).then(function(response){
+      $scope.graph = [response.data.progress, MAX_RATE - response.data.progress];
+      $scope.data = response.data;
+    }),function(error){};
+  };
 })
 
-.controller('IncentiveCtrl', function($scope) {})
+.controller('IncentiveCtrl', function($scope,$rootScope,$timeout,$cordovaNetwork,AuthService,Incentive,$http,$location) {
+  $scope.data = {};
+  $scope.data.salary = 0;
+  $scope.data.pay = 0;
+  $scope.data.incentive = 0;
+  $scope.data.hourlyIncentive = 0;
+  $scope.data.monthlyIncentive = 0;
+  
+
+  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+    viewData.enableBack = false;
+  });
+
+  $timeout(function(){
+    $rootScope.user=AuthService.username();
+
+    var now = new Date();
+    var yyyymm = now.getFullYear()+('0'+(now.getMonth())).slice(-2);
+    getIncentive_(yyyymm);
+  });
+
+  var getIncentive_ = function(yyyymm){
+    Incentive.get(yyyymm).then(function(response){
+      $scope.data = response.data;
+    }),function(error){};
+  };
+})
 
 .controller('ChatsCtrl', function($scope,$ionicPopup,$cordovaNetwork,$rootScope,NotificationService,$ionicLoading,$ionicPopover,Chats,$ionicModal,ApiService,$state) {
   // With the new view caching in Ionic, Controllers are only called
@@ -1728,7 +1772,7 @@ $rootScope.changeHeadLike=function(id,index){
       if(response['user']["User"]){
         $rootScope.user_id=response['user']["User"]['id'];
         var token=Base64.encode(data.username + ':' + data.password);
-        AuthService.storeUserCredentials(token,response['user']["User"]['username'],response['user']["User"]['id']);
+        AuthService.storeUserCredentials(token,response['user']["User"]['username'],response['user']["User"]['id'],response['user']["User"]['outside_user_id']);
         AuthService.setdeviceToken(false);
         $scope.data.password='';
         $scope.data.username='';

@@ -650,10 +650,11 @@ angular.module('starter.services', [])
       }
   };
   
-  var storeUserCredentials=function(token,uname,userid) {
+  var storeUserCredentials=function(token,uname,userid,pworkid) {
     window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
     window.localStorage.setItem('user',uname);
     window.localStorage.setItem('user_id',userid);
+    window.localStorage.setItem('pwork_user_id',pworkid);
     useCredentials(token);
   }
  
@@ -874,4 +875,56 @@ angular.module('starter.services', [])
 }
   return svc;
   
+})
+.factory('Progress', function($http,$q,PWORK_API_URL) {
+  return{
+    get:function(month) {
+      var deferred=$q.defer();
+      var pwork_user_id = window.localStorage.getItem('pwork_user_id');
+      $http.get(PWORK_API_URL + "progress/"+pwork_user_id+"/"+month,{
+          headers:{
+            'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+          }
+      }).success(function(data){
+          if(data.status == 'OK'){
+              deferred.resolve(data);
+          }
+          else{
+              console.error(JSON.stringify(data));
+              deferred.reject(data);
+          }
+      })
+      .error(function(data){
+          console.error(JSON.stringify(data));
+          deferred.reject(data);
+      });
+      return deferred.promise;
+    }
+  }
+})
+.factory('Incentive', function($http,$q,PWORK_API_URL) {
+  return{
+    get:function(month) {
+      var deferred=$q.defer();
+      var pwork_user_id = window.localStorage.getItem('pwork_user_id');
+      $http.get(PWORK_API_URL + "incentive/"+pwork_user_id+"/"+month,{
+          headers:{
+            'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+          }
+      }).success(function(data){
+          if(data.status == 'OK'){
+              deferred.resolve(data);
+          }
+          else{
+              console.error(JSON.stringify(data));
+              deferred.reject(data);
+          }
+      })
+      .error(function(data){
+          console.error(JSON.stringify(data));
+          deferred.reject(data);
+      });
+      return deferred.promise;
+    }
+  }
 });
