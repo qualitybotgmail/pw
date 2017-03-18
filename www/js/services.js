@@ -69,7 +69,7 @@ angular.module('starter.services', [])
       }
       return deferred.promise;
     },
-    updateMessageCache:function(cacheKey,chatId,page){
+    updateMessageCache:function(cacheKey,chatId,page,lastid){
       var deferred=$q.defer();
       var groupchats = CacheFactory.get('groupchats');
       var maxMess=0;
@@ -80,14 +80,17 @@ angular.module('starter.services', [])
      //maxMess=Math.max.apply(Math,groupchats.get(cacheKey).messages.map(function(o){return o.Message.id;}));
    
         if(InternetService.hasInternet()){
-          $http.get(API_URL+"groupchats/pagedchatforapp/"+chatId+'/'+page+'/',{
+          $http.get(API_URL+"groupchats/pagedchatforapp/"+chatId+'/'+page+'/'+lastid,{
             headers:{
               'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
             }
           }).success(function(data){
             if(data.messages.length > 0){
-              //cacheData=data.messages.concat(cacheData.messages);
-              groupchats.put(cacheKey, data);
+              if(lastid > 0)
+                cacheData=data.messages.concat(cacheData.messages);
+              else
+                cacheData=data;
+              groupchats.put(cacheKey, cacheData);
               deferred.resolve(data);
             }else{
               deferred.resolve([]);
@@ -98,6 +101,7 @@ angular.module('starter.services', [])
             deferred.reject(data);
           });
         }else{
+          $rootScope.isOffline=true;
           deferred.resolve([]);
         }
       }else{
@@ -214,7 +218,7 @@ angular.module('starter.services', [])
       
       return deferred.promise;
     },
-    updateHeadCache:function(id,cacheKey,type){
+    updateHeadCache:function(id,cacheKey,type,lastid=0){
       var threads = CacheFactory.get('threads');
       var deferred=$q.defer();
       var max=0;
@@ -238,7 +242,7 @@ angular.module('starter.services', [])
         }
         
         if(InternetService.hasInternet()){
-          $http.get(API_URL+uri+id,{
+          $http.get(API_URL+uri+id+'/'+lastid,{
             headers:{
               'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
             }
@@ -606,55 +610,57 @@ angular.module('starter.services', [])
       useCredentials(token);
     }
   }
- var setdeviceToken=function(removeToken,token){
+ var setdeviceToken=function(removeToken){
       
       var y=null;
-      if(typeof(token)!=='undefined')
-        y=token;
+      if(window.localStorage.getItem('newdevicetoken') !==null)
+        y=window.localStorage.getItem('newdevicetoken');
       else
         y=window.localStorage.getItem('devicetoken');
-      
       if(removeToken){
          var olddevicetoken=window.localStorage.getItem('devicetoken');
          
-             if (olddevicetoken !== null || olddevicetoken.length !== 0){
-                $http.get(API_URL+'profiles/removeregid/'+olddevicetoken,{
+             if (olddevicetoken !== null){
+                $http.post(API_URL+'profiles/removeregid',{'fcmid':olddevicetoken},{
                     headers:{
                     'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
                   }
                   }).success(function(data){
-                    if(data=='OK' || data=='NOT FOUND')
-                     setFCMID(y);
+                     window.localStorage.setItem('devicetoken',window.localStorage.getItem('newdevicetoken'));
+                     setFCMID();
+                    
                   }).error(function(data){});
                   
               }else{
-                setFCMID(y);
+                window.localStorage.setItem('devicetoken',window.localStorage.getItem('newdevicetoken'));
+                setFCMID();
               }
     
       }else{
-        setFCMID(y);
+        window.localStorage.setItem('devicetoken',window.localStorage.getItem('newdevicetoken'));
+        setFCMID();
       }
     
   }
   
-  function setFCMID(devtoken){
+  function setFCMID(){
      if(isAuthenticated){
-        $http.post(API_URL+'profiles/setregid',{'fcmid':devtoken},{
+        
+        $http.post(API_URL+'profiles/setregid',{'fcmid':window.localStorage.getItem('devicetoken')},{
           headers:{
           'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
         }
         }).success(function(data){
-          window.localStorage.setItem('devicetoken',devtoken);
-          devicetoken=devtoken;
+           devicetoken=window.localStorage.getItem('devicetoken');
+           
         }).error(function(data){});
       }
   };
   
-  var storeUserCredentials=function(token,uname,userid,pworkid) {
+  var storeUserCredentials=function(token,uname,userid) {
     window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
     window.localStorage.setItem('user',uname);
     window.localStorage.setItem('user_id',userid);
-    window.localStorage.setItem('pwork_user_id',pworkid);
     useCredentials(token);
   }
  
@@ -673,7 +679,7 @@ angular.module('starter.services', [])
     var olddevicetoken=window.localStorage.getItem('devicetoken');
          
     if (olddevicetoken !== null || olddevicetoken.length !== 0){
-      $http.get(API_URL+'profiles/removeregid/'+olddevicetoken,{
+      $http.post(API_URL+'profiles/removeregid/',{'fcmid':olddevicetoken},{
           headers:{
           'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
         }

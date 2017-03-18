@@ -17,7 +17,7 @@
        under the License.
  */
 
-package io.cordova.helloCordova;
+package com.widsley.playwork.android;
 
 import android.os.Bundle;
 import org.apache.cordova.*;

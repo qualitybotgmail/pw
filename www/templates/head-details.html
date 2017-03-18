@@ -1,6 +1,11 @@
 <ion-view view-title="{{threadTitle}} : {{headOwner}}" cache-view="false">
-  <ion-content class="padding has-footer" style="padding-left: 0px;padding-right: 0px;padding-top: 0px;">
-     <!--<center> <span class="positive">{{threadTitle}}</span> : {{headOwner}} </center>-->
+  <ion-nav-buttons side="left">
+    <button class="button back-button buttons button-clear header-item" ng-click="goBack()">
+      <i class="icon ion-ios-arrow-back"> Back</i> 
+    </button>
+  </ion-nav-buttons>
+  <ion-content class="padding has-footer" style="padding-left: 0px;padding-right: 0px;padding-top: 0px;" on-scroll="checkForUpdates()">
+     
     <div class="list" style="margin-bottom:0px">
       <div class="item item-avatar">
         <img src="img/avatar.png">

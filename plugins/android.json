@@ -1,0 +1,62 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-android-permissions": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-app-event": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-badge": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-crosswalk-webview": {
+            "XWALK_VERSION": "23+",
+            "XWALK_LITEVERSION": "xwalk_core_library_canary:17+",
+            "XWALK_COMMANDLINE": "--disable-pull-to-refresh-effect",
+            "XWALK_MODE": "embedded",
+            "XWALK_MULTIPLEAPK": "true",
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-filepath": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-firebase": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-image-picker": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-actionsheet": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        }
+    },
+    "dependent_plugins": {}
+}

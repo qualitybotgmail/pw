@@ -34,20 +34,19 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
        $rootScope.threadNotif=NotificationService.getThreadNotif();
        $rootScope.groupchatNotif=NotificationService.getGroupchatNotif();
        $rootScope.totalNotif=NotificationService.gettotalcount();
-       if (window.cordova && window.cordova.plugins && window.cordova.plugins.notification) {
-       cordova.plugins.notification.badge.set($rootScope.totalNotif);
-       }
+       window.FirebasePlugin.setBadgeNumber($rootScope.totalNotif);
        
   });
   
   document.addEventListener("deviceready", function () {
-
+    
+    window.FirebasePlugin.grantPermission();
+    
     var type = $cordovaNetwork.getNetwork()
 
     var isOnline = $cordovaNetwork.isOnline()
 
     var isOffline = $cordovaNetwork.isOffline()
-    cordova.plugins.notification.badge.set(0);
 
     // listen for Online event
     $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
@@ -60,33 +59,30 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
       InternetService.onOffline();
     });
     
-    FCMPlugin.onTokenRefresh(function(token){
-      window.localStorage.setItem('newdevicetoken',token);
-       AuthService.setdeviceToken(true,token); 
-    });
+      window.FirebasePlugin.onTokenRefresh(function(token){
+        window.localStorage.setItem('newdevicetoken',token);
+        AuthService.setdeviceToken(true); 
+     });
     
-    FCMPlugin.onNotification(function(data){
-      
-      if(data.wasTapped){
-        NotificationService.setNotif();
-        if("head_id" in data){
-          $rootScope.$emit('update_thread',data.id);
-          if(data.head_id==0){
-            $state.go('tab.group-detail',{id:data.id});
-          }else{
-            $state.go('tab.head',{id:data.head_id});
-          }
-          
-        }else{
-          $rootScope.$emit('update_groupchat',data.id);
-          $state.go('tab.chat-detail',{chatId:data.id});
-        }
-      }else{
-        NotificationService.setNotif();
+     window.FirebasePlugin.onNotificationOpen(function(data){
+       NotificationService.setNotif();
+      if("tap" in data){
+        
         if("head_id" in data){
           $rootScope.$emit('updatesforthread',data.id);
         }else{
           $rootScope.$emit('updatesforgroupchat',data.id);
+        }
+        
+      }else{
+        if("head_id" in data){
+          $rootScope.$emit('update_thread',data.id);
+          $state.go('tab.group-detail',{id:data.id});
+          
+          
+        }else{
+          $rootScope.$emit('update_groupchat',data.id);
+          $state.go('tab.chats');
         }
       }
   });
@@ -95,6 +91,8 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
   }, false);
   
   $rootScope.$on('$stateChangeStart',function(event,toState,toParams,fromState,fromParams){
+    
+        $rootScope.$broadcast('stopinterval');
         
         if (toState.data.authenticate && !AuthService.isAuthenticated()){
             
@@ -135,20 +133,12 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
         }
         
         if(toState.name=='tab.head'){
-          if(CacheFactory.get('threads')){
-            var thread=CacheFactory.get('threads');
-            if(thread.get('heads/'+toParams.id)){
-            $rootScope.threadTitle=thread.get('heads/'+toParams.id).Thread.title;
-            $rootScope.headOwner =thread.get('heads/'+toParams.id).Owner.username;
-            $rootScope.threadId=thread.get('heads/'+toParams.id).Thread.id;
-            }
-          }else{
             Groups.getHeadDetails(toParams.id).then(function(data){
               $rootScope.threadTitle=data.Thread.title;
               $rootScope.headOwner =data.Owner.username;
               $rootScope.threadId=data.Thread.id;
             });
-          }
+          
        
         }
   });

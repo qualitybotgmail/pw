@@ -24,6 +24,12 @@
     margin-top: 15px;
     margin-bottom:0px;
 }
+.offline{
+    padding: 5px;
+    text-align: center;
+    color: #fff;
+    background-color: #000;
+}
 .comment-list .avatar{
     position: absolute;
     margin-top: 16px;

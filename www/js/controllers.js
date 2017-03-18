@@ -93,14 +93,13 @@ angular.module('starter.controllers', [])
   
   $scope.$on('update_groupchat',function(event,id){
     var chatid=id;
+    $scope.cacheUpdate();
     ApiService.setNotified(chatid,'groupchat').then(function(response){NotificationService.setNotif(); });
-    //Chats.updateMessageCache('groupchats/pagedchatforapp/'+chatid+'/1',chatid,1).then(function(response){});
-     $scope.cacheUpdate();  
     
   });
    $rootScope.$on('updatesforgroupchat',function(event,id){
      $scope.cacheUpdate();  
-     //Chats.updateMessageCache('groupchats/pagedchatforapp/'+id+'/1',id,1).then(function(response){});
+     
   });
  
   
@@ -253,18 +252,14 @@ angular.module('starter.controllers', [])
 })
 
 .controller('ChatDetailCtrl', function($scope,$state,BASE_URL,backButtonOverride,$ionicPopover,NotificationService,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
- /* $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
-        viewData.enableBack = true;
-  });
-    $rootScope.$ionicGoBack = function() {
-        $state.go('tab.chats');
-    };*/
+ 
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
-      viewData.enableBack = true;
+      viewData.enableBack = false;
     });
-    backButtonOverride.setup($scope, function() {
+    $scope.goBack=function() {
+     console.log("BACK");
          $state.go('tab.chats');
-    });
+    };
   
   $rootScope.$emit('hideModal');
   
@@ -284,19 +279,31 @@ angular.module('starter.controllers', [])
     scope: $scope
   });
     
-  $scope.updateChatCache=function(page=1){
-    Chats.updateMessageCache('groupchats/pagedchatforapp/'+$stateParams.chatId+'/'+page+'',$stateParams.chatId,page).then(function(response){
+  $scope.updateChatCache=function(page=1,lastid=0){
+    Chats.updateMessageCache('groupchats/pagedchatforapp/'+$stateParams.chatId+'/'+page+'',$stateParams.chatId,page,lastid).then(function(response){
       if(response.messages){
       if(response.messages.length > 0)
+        if(lastid > 0)
+           $scope.chats = response.messages.concat($scope.chats);
+        else
           $scope.chats = response.messages;
       }
-      /*  if($scope.page==1)
+      /*  if(page==1)
           $ionicScrollDelegate.scrollBottom();*/
        
       
     });
     
   }
+  $rootScope.$on('isOnline',function(event,data){
+      $scope.updateChatCache(1);
+      $rootScope.isOffline=false;
+  });
+  
+  $rootScope.$on('isOffline',function(event,data){
+      $rootScope.isOffline=true;
+  });
+  
    $scope.$on('update_groupchat',function(event,id){
     var chatid=id;
     ApiService.setNotified(chatid,'groupchat').then(function(response){NotificationService.setNotif(); });
@@ -307,28 +314,41 @@ angular.module('starter.controllers', [])
      //$scope.page=1;
      $scope.updateChatCache();
   });
+  $rootScope.$on('stopinterval',function(event,data){
+    if(interval!==null)
+      clearInterval(interval);
+  });
   
-  
-  $scope.getchats=function(){
+  $scope.getchats=function(x){
     Chats.get($stateParams.chatId,$scope.page).then(function(response){
       if(response.messages){
-      $scope.chats = $scope.chats.concat(response.messages);
-      $scope.total=response.total;
-      if($scope.page==1){
-        $ionicScrollDelegate.scrollBottom();
+        $scope.chats = $scope.chats.concat(response.messages);
+        $scope.total=response.total;
+        if($scope.page==1){
+          $ionicScrollDelegate.scrollBottom();
+        }else{
+          
+        }
       }
-      }
+      $timeout(function() {
+        if(typeof(x)!=='undefined')
+            $ionicScrollDelegate.scrollTo($ionicScrollDelegate.getScrollPosition().left, parseInt($scope.scrolly)+parseInt($scope.scrolly), true);
       $scope.$broadcast('scroll.refreshComplete');
+      },0);
     });
    
   };
   $scope.getchats();
   $scope.updateChatCache();
   
-  
+  $scope.scrolly=0;
+  $scope.disabledScroll=function(){
+    $scope.scrolly=$ionicScrollDelegate.getScrollView().__maxScrollTop;
+  }
   $scope.doRefresh=function(top) {
         $scope.page++;
-        $scope.getchats();
+        $scope.getchats(true);
+        
   };
   $scope.errorSending=false;
   $scope.sendingCount=0;
@@ -356,7 +376,7 @@ angular.module('starter.controllers', [])
             $scope.countSent++;
             $scope.errorSending=false;
             $scope.chats[$scope.sendingCount-$scope.countSent].Message=response.data.Message;
-            $scope.updateChatCache();
+            //$scope.updateChatCache();
             
             if(mess.Upload.length > 0){
               
@@ -394,11 +414,31 @@ angular.module('starter.controllers', [])
        });
     }
   }
-  
+  $scope.intervalrunning=false;
+  var interval=null;
   $scope.checkForUpdates=function(){
-    $scope.updateChatCache();
-     $scope.$broadcast('scroll.infiniteScrollComplete');
+    
+     var currentTop = $ionicScrollDelegate.getScrollPosition().top;
+        var maxScrollableDistanceFromTop = $ionicScrollDelegate.getScrollView().__maxScrollTop;
+ 
+        if (currentTop >= maxScrollableDistanceFromTop)
+        {
+          if(!$scope.intervalrunning){
+            console.log('FFFFF');
+           $scope.intervalrunning=true;
+           interval=setInterval(function(){
+             var maxMessage=Math.max.apply(Math,$scope.chats.map(function(o){return o.Message.id;}));
+             $scope.updateChatCache(1,maxMessage);
+           },10000);
+          }
+        }else{
+          $scope.intervalrunning=false;
+            clearInterval(interval);
+        }
+  /*  $scope.updateChatCache();
+     $scope.$broadcast('scroll.infiniteScrollComplete');*/
   }
+ 
     
     $scope.uploadChatPhotos=function(chat){
       
@@ -420,17 +460,17 @@ angular.module('starter.controllers', [])
         };
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i.path,o,true).then(function(result) {
           console.log(result);
-          /*
+          
           $scope.chats.forEach(function(v,k){
             if(parseInt(v.Message.id)==parseInt(chat.Message.id)){
               var up=JSON.parse(result.response)[0]['Upload'];
               up['loading']=false;
               v.Upload[x]=up;
             }
-          });*/
-          i.loading=false;
+          });
+          /*i.loading=false;
           i.path=JSON.parse(result.response)[0]['Upload']['path'];
-          i.name=JSON.parse(result.response)[0]['Upload']['name'];
+          i.name=JSON.parse(result.response)[0]['Upload']['name'];*/
           $scope.image_chat_ctr++;
           
         },function(error){
@@ -659,8 +699,10 @@ angular.module('starter.controllers', [])
    'user_id':''
  };
   $scope.$on('update_thread',function(event,id){
-    ApiService.setNotified(id,'thread').then(function(response){NotificationService.setNotif(); });
-     Groups.updateHeadCache(id,'threads/'+id,'head').then(function(response){});
+    
+     Groups.updateHeadCache(id,'threads/'+id,'head').then(function(response){
+       ApiService.setNotified(id,'thread').then(function(response){NotificationService.setNotif(); });
+     });
   });
    $rootScope.$on('updatesforthread',function(event,id){
      Groups.updateHeadCache(id,'threads/'+id,'head').then(function(response){});
@@ -870,12 +912,12 @@ angular.module('starter.controllers', [])
 .controller('GroupDetailCtrl', function($scope,CacheFactory,$timeout,NotificationService,backButtonOverride,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
   $scope.groupID=$stateParams['id'];
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
-        viewData.enableBack = true;
+        viewData.enableBack = false;
     });
-   backButtonOverride.setup($scope, function() {
+   $scope.goBack=function() {
      console.log("BACK");
          $state.go('tab.groups');
-    });
+    };
    $rootScope.$emit('hideModal');
   $rootScope.thread=null;
   $scope.allMembers=[];
@@ -1301,11 +1343,11 @@ $scope.selectPicture = function($act) {
 
 .controller('HeadCtrl', function($scope,$state,Like,CacheFactory,$ionicModal,backButtonOverride,AuthService,BASE_URL,$cordovaDevice,$ionicSlideBoxDelegate,$cordovaActionSheet,API_URL,$cordovaFileTransfer,$ionicPopover,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$ionicLoading,Groups,$http,$ionicScrollDelegate,ApiService,$rootScope,$stateParams) {
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
-        viewData.enableBack = true;
+        viewData.enableBack = false;
     });
-     backButtonOverride.setup($scope, function() {
+    $scope.goBack=function() {
          $state.go('tab.group-detail',{id:$rootScope.threadId});
-    });
+    };
      $rootScope.$emit('hideModal');
   $scope.headID=$stateParams['id'];
   //$scope.headIndex=$stateParams['index'];
@@ -1335,15 +1377,22 @@ $scope.selectPicture = function($act) {
   $ionicLoading.show({
     template:'<ion-spinner name="bubbles"></ion-spinner>'
   });
+  $rootScope.$on('stopinterval',function(event,data){
+    if(interval!==null)
+      clearInterval(interval);
+  });
   
-  $scope.updateCache=function(){
-    Groups.updateHeadCache($scope.headID,'heads/'+$scope.headID,'comment').then(function(response){
+  $scope.updateCache=function(lastid=0){
+    Groups.updateHeadCache($scope.headID,'heads/'+$scope.headID,'comment',lastid).then(function(response){
         if(response.length > 0){
           $scope.thread=response.Thread;
           $scope.getHeads=response.Head
           $scope.headUploads = response.Upload;
         }
       if("Comment" in response && (response.Comment.length > 0)){
+        if(lastid > 0)
+          $scope.comments.Comment = $scope.comments.Comment.concat(response.Comment);
+        else
             $scope.comments = response;
       }
       
@@ -1396,6 +1445,8 @@ $scope.selectPicture = function($act) {
       });
       $scope.showModal();
   };
+  
+  
 
  
 	// Close the modal
@@ -1647,6 +1698,31 @@ $rootScope.changeHeadLike=function(id,index){
     $scope.$broadcast('scroll.infiniteScrollComplete');
   }
   
+  $scope.intervalrunning=false;
+  var interval=null;
+  $scope.checkForUpdates=function(){
+    
+     var currentTop = $ionicScrollDelegate.getScrollPosition().top;
+        var maxScrollableDistanceFromTop = $ionicScrollDelegate.getScrollView().__maxScrollTop;
+ 
+        if ((currentTop >= maxScrollableDistanceFromTop) && ($scope.comments.Comment.length < $scope.numberOfItemsToDisplay))
+        {
+          if(!$scope.intervalrunning){
+            console.log('FFFFF');
+           $scope.intervalrunning=true;
+           interval=setInterval(function(){
+             var maxComment=Math.max.apply(Math,$scope.comments.Comment.map(function(o){return o.id;}));
+             $scope.updateCache(maxComment);
+           },10000);
+          }
+        }else{
+          $scope.intervalrunning=false;
+            clearInterval(interval);
+        }
+  /*  $scope.updateChatCache();
+     $scope.$broadcast('scroll.infiniteScrollComplete');*/
+  }
+  
   $scope.removeUploadedCommentImg=function(index){
     $scope.uploadedCommentimgs.splice(index,1);
   }
@@ -1772,8 +1848,9 @@ $rootScope.changeHeadLike=function(id,index){
       if(response['user']["User"]){
         $rootScope.user_id=response['user']["User"]['id'];
         var token=Base64.encode(data.username + ':' + data.password);
-        AuthService.storeUserCredentials(token,response['user']["User"]['username'],response['user']["User"]['id'],response['user']["User"]['outside_user_id']);
+        AuthService.storeUserCredentials(token,response['user']["User"]['username'],response['user']["User"]['id']);
         AuthService.setdeviceToken(false);
+        NotificationService.setNotif();
         $scope.data.password='';
         $scope.data.username='';
         $state.go('tab.dash');
@@ -1794,4 +1871,3 @@ $rootScope.changeHeadLike=function(id,index){
     });
   }
 })
-

@@ -4,9 +4,14 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view view-title="{{$root.chatMembers.join()}}">
-  <ion-content class="padding has-footer has-tabs">
-    <ion-refresher on-refresh="doRefresh()" pulling-icon="ios-arrow-down" spinner="bubbles">
+  <ion-view view-title="{{$root.chatMembers.join()}}">
+ <ion-nav-buttons side="left">
+    <button class="button back-button buttons button-clear header-item" ng-click="goBack()">
+      <i class="icon ion-ios-arrow-back"> Back</i> 
+    </button>
+  </ion-nav-buttons>
+  <ion-content class="padding has-footer has-tabs has-header" on-scroll="checkForUpdates()" style="bottom: 100px !important;">
+    <ion-refresher on-refresh="doRefresh()" pulling-icon="ios-arrow-down" spinner="bubbles" on-pulling="disabledScroll()">
     </ion-refresher>
     
       <div class="list">
@@ -26,13 +31,14 @@
         <div ng-style="{'text-align':message.Message.user_id == $root.user_id?'right':'left'}" ng-show="message.Upload.length > 0">
             <img on-hold="showChatPopover($event,'image',{{$parent.$index}},{{$index}})" ng-repeat="upload in message.Upload track by $index" ng-src="{{upload.loading?upload.path:base_url+upload.path}}" ng-style="{'height':message.Upload.length > 1?'100px':'230px','width':message.Upload.length > 1?'100px':'200px'}" class="chatimages"/>
         </div>
-        <p ng-show="errorSending && (message.Message.id==-1)" style="font-size:13px;margin:0px;color: red;"><i class="icon ion-alert-circled"></i>unable to send message</p>
+        <p ng-show="errorSending && (message.Message.id==-1)" style="font-size:10px;margin:0px;color: red;text-align:right;width:100%"><i class="icon ion-alert-circled"></i> unable to send message</p>
         </div>
       </div>
-      <ion-infinite-scroll spinner="bubbles" on-infinite="checkForUpdates()"></ion-infinite-scroll>
   </ion-content>
   <ion-footer-bar align-title="left" style="padding: 0px;height:auto" keyboard-attach>
+     
     <div class="list" style="width:100%">
+      <div class="item offline" ng-show="$root.isOffline"><i class="icon ion-android-alert"></i> No internet connection</div>
     <div class="item item-input-inset" style="padding:0px">
         <i ng-show="!isEdit" class="icon ion-ios-camera" style="font-size: 35px;padding-left: 5px;color: rgba(68, 68, 68, 0.76);" ng-click="loadImage()"></i>
       <label class="item-input-wrapper item-icon-left" style="padding-left:5px;padding-right:0px;background-color: white;">

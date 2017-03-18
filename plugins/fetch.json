@@ -71,11 +71,42 @@
         "is_top_level": true,
         "variables": {}
     },
-    "cordova-plugin-actionsheet": {
+    "cordova-plugin-firebase": {
         "source": {
-            "type": "git",
-            "url": "https://github.com/EddyVerbruggen/cordova-plugin-actionsheet.git",
-            "subdir": "."
+            "type": "registry",
+            "id": "cordova-plugin-firebase@~0.1.19"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-crosswalk-webview": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-crosswalk-webview"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-firebase-hooks": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-firebase-hooks"
+        },
+        "is_top_level": false,
+        "variables": {}
+    },
+    "cordova-plugin-cocoapod-support": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-cocoapod-support"
+        },
+        "is_top_level": false,
+        "variables": {}
+    },
+    "cordova-plugin-splashscreen": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-splashscreen@~3.1.0"
         },
         "is_top_level": true,
         "variables": {}
@@ -87,8 +118,15 @@
             "subdir": "."
         },
         "is_top_level": true,
-        "variables": {
-            "PHOTO_LIBRARY_USAGE_DESCRIPTION": " "
-        }
+        "variables": {}
+    },
+    "cordova-plugin-actionsheet": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/EddyVerbruggen/cordova-plugin-actionsheet.git",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

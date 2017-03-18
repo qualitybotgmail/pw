@@ -1,19 +1,20 @@
 cordova.define('cordova/plugin_list', function(require, exports, module) {
 module.exports = [
     {
-        "id": "cordova-plugin-actionsheet.ActionSheet",
-        "file": "plugins/cordova-plugin-actionsheet/www/ActionSheet.js",
-        "pluginId": "cordova-plugin-actionsheet",
-        "clobbers": [
-            "window.plugins.actionsheet"
-        ]
-    },
-    {
         "id": "cordova-plugin-android-permissions.Permissions",
         "file": "plugins/cordova-plugin-android-permissions/www/permissions.js",
         "pluginId": "cordova-plugin-android-permissions",
         "clobbers": [
             "cordova.plugins.permissions"
+        ]
+    },
+    {
+        "id": "cordova-plugin-badge.Badge",
+        "file": "plugins/cordova-plugin-badge/www/badge.js",
+        "pluginId": "cordova-plugin-badge",
+        "clobbers": [
+            "plugin.notification.badge",
+            "cordova.plugins.notification.badge"
         ]
     },
     {
@@ -254,11 +255,11 @@ module.exports = [
         ]
     },
     {
-        "id": "cordova-plugin-image-picker.ImagePicker",
-        "file": "plugins/cordova-plugin-image-picker/www/imagepicker.js",
-        "pluginId": "cordova-plugin-image-picker",
+        "id": "cordova-plugin-firebase.FirebasePlugin",
+        "file": "plugins/cordova-plugin-firebase/www/firebase.js",
+        "pluginId": "cordova-plugin-firebase",
         "clobbers": [
-            "plugins.imagePicker"
+            "FirebasePlugin"
         ]
     },
     {
@@ -279,15 +280,6 @@ module.exports = [
         ]
     },
     {
-        "id": "ionic-plugin-keyboard.keyboard",
-        "file": "plugins/ionic-plugin-keyboard/www/android/keyboard.js",
-        "pluginId": "ionic-plugin-keyboard",
-        "clobbers": [
-            "cordova.plugins.Keyboard"
-        ],
-        "runs": true
-    },
-    {
         "id": "cordova-plugin-splashscreen.SplashScreen",
         "file": "plugins/cordova-plugin-splashscreen/www/splashscreen.js",
         "pluginId": "cordova-plugin-splashscreen",
@@ -296,42 +288,40 @@ module.exports = [
         ]
     },
     {
-        "id": "cordova-plugin-badge.Badge",
-        "file": "plugins/cordova-plugin-badge/www/badge.js",
-        "pluginId": "cordova-plugin-badge",
+        "id": "cordova-plugin-image-picker.ImagePicker",
+        "file": "plugins/cordova-plugin-image-picker/www/imagepicker.js",
+        "pluginId": "cordova-plugin-image-picker",
         "clobbers": [
-            "plugin.notification.badge",
-            "cordova.plugins.notification.badge"
+            "plugins.imagePicker"
         ]
     },
     {
-        "id": "cordova-plugin-firebase.FirebasePlugin",
-        "file": "plugins/cordova-plugin-firebase/www/firebase.js",
-        "pluginId": "cordova-plugin-firebase",
+        "id": "cordova-plugin-actionsheet.ActionSheet",
+        "file": "plugins/cordova-plugin-actionsheet/www/ActionSheet.js",
+        "pluginId": "cordova-plugin-actionsheet",
         "clobbers": [
-            "FirebasePlugin"
+            "window.plugins.actionsheet"
         ]
     }
 ];
 module.exports.metadata = 
 // TOP OF METADATA
 {
-    "cordova-plugin-actionsheet": "2.3.3",
     "cordova-plugin-android-permissions": "0.10.0",
+    "cordova-plugin-app-event": "1.2.0",
+    "cordova-plugin-badge": "0.7.4",
     "cordova-plugin-camera": "2.1.1",
-    "cordova-plugin-device": "1.1.4",
+    "cordova-plugin-crosswalk-webview": "2.3.0",
+    "cordova-plugin-device": "1.1.5",
     "cordova-plugin-file": "4.1.1",
     "cordova-plugin-file-transfer": "1.5.1",
     "cordova-plugin-filepath": "1.0.2",
-    "cordova-plugin-image-picker": "1.1.1",
-    "cordova-plugin-network-information": "1.2.1",
+    "cordova-plugin-firebase": "0.1.19",
     "cordova-plugin-whitelist": "1.2.2",
-    "ionic-plugin-keyboard": "2.2.1",
-    "cordova-plugin-crosswalk-webview": "2.3.0",
-    "cordova-plugin-splashscreen": "4.0.3-dev",
-    "cordova-plugin-app-event": "1.2.0",
-    "cordova-plugin-badge": "0.7.4",
-    "cordova-plugin-firebase": "0.1.19"
+    "cordova-plugin-network-information": "1.2.1",
+    "cordova-plugin-splashscreen": "3.1.0",
+    "cordova-plugin-image-picker": "1.1.1",
+    "cordova-plugin-actionsheet": "2.3.3"
 };
 // BOTTOM OF METADATA
 });
