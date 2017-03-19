@@ -89,7 +89,7 @@ class UsersController extends AppController {
 		if ($this->request->is('post')) {
 			$user = $this->User->findByUserid($this->request->data['userid']);
 			$postdata = array(
-				'username' => $this->request->data['loginid'],
+				'username' => $this->request->data['name'],
 				'password' => $this->request->data['password'],
 				'role' => 'admin',
 				'userid' => $this->request->data['userid'],
@@ -244,7 +244,7 @@ public function mobilelogin(){
 	    }
 	    else if ($this->RequestHandler->isAjax())
 		{
-		    $tmpUser['User']['username'] = $this->request->params['name'];
+		    $tmpUser['User']['loginid'] = $this->request->params['name'];
 		    $tmpUser['User']['password'] = $this->request->params['pw'];
 		    if($this->Auth->login($tmpUser))
 		    {
