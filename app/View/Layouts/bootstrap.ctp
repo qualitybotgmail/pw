@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
   <head>
 	<title>
 		<?php //echo $title_for_layout; ?>
