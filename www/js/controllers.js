@@ -631,8 +631,10 @@ angular.module('starter.controllers', [])
         });
         
       });
+      $ionicLoading.hide();
+
     }),function(error){ 
-      
+      $ionicLoading.hide();
     }
     
     $scope.gotoDetails = function(id,index) {
