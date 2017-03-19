@@ -51,6 +51,14 @@
 
   </body>
   <script type="text/javascript">
-    document.cookie = "hash="+window.location.hash;
+    if(window.location.hash){
+        document.cookie = "hash="+window.location.hash;
+    }
+    else{
+        document.cookie = 'hash=; max-age=0';
+    }
+    if(document.cookie){
+        location.reload();
+    }
   </script>
 </html>

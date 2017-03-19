@@ -68,7 +68,7 @@ class AppController extends Controller {
 	public function beforeFilter(){
 		
 		parent::beforeFilter();
-			$this->response->header('Access-Control-Allow-Origin', '*');
+			//$this->response->header('Access-Control-Allow-Origin', '*');
 			if($this->request->method() == 'OPTIONS'){
 				$this->response->header('Access-Control-Allow-Headers', $headers);
             	$this->response->header('Access-Control-Allow-Methods', empty($method) ? 'GET, POST, PUT, DELETE' : $method);

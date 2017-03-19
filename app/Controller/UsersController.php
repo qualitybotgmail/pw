@@ -34,7 +34,6 @@ class UsersController extends AppController {
 			
 			$h=str_replace('#','',$_COOKIE['hash']);
 			$user=$this->User->find('first',array('conditions'=>array('hash'=>$h)));
-			unset($user['User']['password_hash']);
 			unset($user['User']['hash']);
 			unset($user['User']['role']);
 			unset($user['User']['created']);
@@ -88,9 +87,33 @@ class UsersController extends AppController {
  */
 	public function add() {
 		if ($this->request->is('post')) {
-			$this->User->create();
-			if ($this->User->save($this->request->data)) {
-				
+			$user = $this->User->findByUserid($this->request->data['userid']);
+			$postdata = array(
+				'username' => $this->request->data['loginid'],
+				'password' => $this->request->data['password'],
+				'role' => 'admin',
+				'userid' => $this->request->data['userid'],
+				'loginid' => $this->request->data['loginid'],
+				'name' => $this->request->data['name'],
+				'affiliation' => $this->request->data['affiliation']
+			);
+			if(!$user){
+				$this->User->create();
+			}
+			else{
+				$postdata['id'] = $user['User']['id'];
+			}
+			// $this->User->create();
+			// if ($this->User->save($this->request->data)) {
+			if ($this->User->save($postdata)) {
+				if(!$user){
+					$id = $this->User->getLastInsertID();
+				}
+				else{
+					$id = $user['User']['id'];
+				}
+					
+				$data = $this->User->findById($id);
 				if($this->request->is('ajax')){
 					echo json_encode(array('hash'=>$data['User']['hash']));
 					exit;
