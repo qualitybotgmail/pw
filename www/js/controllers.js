@@ -1103,14 +1103,20 @@ angular.module('starter.controllers', [])
   $scope.processAddMember=function(){
     if($scope.newMembers.length > 0){
       
-      angular.forEach($scope.notMembers,function(val,key){
-        if($scope.newMembers.indexOf(val.id) > -1){
-          val.selected=false;
-          $rootScope.thread.User.push(val);
-          $scope.notMembers.splice(key,1);
+      // angular.forEach($scope.notMembers,function(val,key){
+      //   if($scope.newMembers.indexOf(val.id) > -1){
+      //     val.selected=false;
+      //     $rootScope.thread.User.push(val);
+      //     $scope.notMembers.splice(key,1);
+      // })
+      for (var i = $scope.notMembers.length - 1; i >= 0; i--) {
+        if(!$scope.notMembers[i]) continue;
+        if($scope.newMembers.indexOf($scope.notMembers[i].id) > -1){
+          $scope.notMembers[i].selected=false;
+          $rootScope.thread.User.push($scope.notMembers[i]);
+          $scope.notMembers.splice(i,1);
         }
-        
-      })
+      }
       
     ApiService.Get('threads/addmember/'+$scope.groupID+'/',$scope.newMembers.concat()).then(function(response){
         
