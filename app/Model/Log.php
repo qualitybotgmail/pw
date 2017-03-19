@@ -245,7 +245,7 @@ public $actsAs = array('Containable');
 			$server_output = curl_exec ($ch);
 			file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r(array('Output'=>$server_output),true),FILE_APPEND);
 			curl_close ($ch);
-			var_dump($server_output);
+			// var_dump($server_output);
 			
 		}
 	}
@@ -334,8 +334,8 @@ public $actsAs = array('Containable');
 					$uids[] = $u['id'];
 					if(trim($f) == '' ) continue;
 					if($u['Profile'][0]['user_id'] == $log['user_id']) continue;
-					$fcmids=array_merge($fcmids,json_decode($f));
-					
+					// $fcmids=array_merge($fcmids,json_decode($f));
+					$fcmids[] = json_decode($f);
 				}
 			
 				$oid = @$thread['Owner']['id'];
