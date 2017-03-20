@@ -552,7 +552,7 @@ class ProfilesController extends AppController {
 		$this->loadModel('Head'); 
 		$this->loadModel('Comment'); 
 		$user_id = $this->Auth->user('id'); 
-		 $data=[];
+		 $data=array();
 		 
 		// $this->Thread->recursive = 2; 
 		$this->Thread->recursive = 3; 
@@ -563,7 +563,7 @@ class ProfilesController extends AppController {
 		// );
 		///////////////////////////////////////
 		$timelines = $this->Log->find('all', 
-		['order' =>['Log.created' => 'desc']] 
+		array('order' =>array('Log.created' => 'desc'))
 		);
 		 
 		foreach($timelines as $timeline){
@@ -798,7 +798,7 @@ class ProfilesController extends AppController {
 			// echo json_encode(array($user,$head));
 
 			// if(!empty($users))$data['Users'] = $users;
-			if(!empty($pusers))$data['Users'] = array_merge($pusers,[]);
+			if(!empty($pusers))$data['Users'] = array_merge($pusers,array());
 			if(!empty($thread) || !empty($user_threads))$data['Threads'] = array_merge($thread,$user_threads);
 			// if(!empty($thread))$data['Threads'] = $users_threads;
 			if(!empty($heads))$data['Heads'] = $heads;
