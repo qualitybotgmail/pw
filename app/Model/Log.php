@@ -220,7 +220,7 @@ public $actsAs = array('Containable');
 			curl_setopt($ch, CURLOPT_URL,"https://fcm.googleapis.com/fcm/send");
 			curl_setopt($ch, CURLOPT_POST, 1);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, array( 
-				'Authorization: key=AIzaSyDf03OOwBarOokhqjqCPDyBirNvI4Mh2o8',
+				'Authorization: key=AIzaSyDlevTKpf3-ouSprb4a_fhTk43Iw0hvuyA',
 				"Content-Type: application/json",
 			));
 			curl_setopt($ch, CURLOPT_POSTFIELDS,
@@ -229,13 +229,12 @@ public $actsAs = array('Containable');
 			            			'title' => $title,
 			            			'body' => $body,
 			            			 'sound'=>'default',
-						             'click_action'=>'FCM_PLUGIN_ACTIVITY',
+						             'badge'=>1,
 						             'icon'=>'fcm_push_icon'
 			            		),
 			            	  'data'=>$data,
 			            	'registration_ids' => $fcmids,
-			            	'priority'=>'high',
-        					'restricted_package_name'=>''
+			            	'priority'=>'high'
         					)
 			            ));
 			
@@ -245,7 +244,6 @@ public $actsAs = array('Containable');
 			$server_output = curl_exec ($ch);
 			file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r(array('Output'=>$server_output),true),FILE_APPEND);
 			curl_close ($ch);
-			var_dump($server_output);
 			
 		}
 	}

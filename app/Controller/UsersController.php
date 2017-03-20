@@ -28,24 +28,8 @@ class UsersController extends AppController {
 	public function beforeFilter(){
 		parent::beforeFilter();
 	
+		
 		$this->Auth->allow('me','dd','notifications','mobilelogin','test');
-
-		if(isset($_COOKIE['hash']) && $_COOKIE['hash']!='' && $_COOKIE['hash']){
-			
-			$h=str_replace('#','',$_COOKIE['hash']);
-			$user=$this->User->find('first',array('conditions'=>array('hash'=>$h)));
-			unset($user['User']['password_hash']);
-			unset($user['User']['hash']);
-			unset($user['User']['role']);
-			unset($user['User']['created']);
-			unset($user['User']['modified']);
-			$this->Session->destroy();
-			if($this->Auth->login($user['User'])){
-				unset($_COOKIE['hash']);
-    			setcookie("hash", "", time()-3600);
-				$this->redirect('/');
-			}
-		}
 	}
 	
 	
@@ -87,23 +71,57 @@ class UsersController extends AppController {
  * @return void
  */
 	public function add() {
+		$exist=null;
+		$this->loadModel('Profile');
+		
 		if ($this->request->is('post')) {
-			$this->User->create();
-			if ($this->User->save($this->request->data)) {
+			$this->request->data['username']=$this->request->data['loginid'];
+			$this->request->data['outside_userid']=$this->request->data['userid'];
+			
+			if(isset($this->request->data['userid']) && $this->request->data['userid']!='')
+				$exist=$this->User->find('first',array('conditions'=>array('outside_userid'=>$this->request->data['userid'])));
 				
-				if($this->request->is('ajax')){
-					echo json_encode(array('hash'=>$data['User']['hash']));
-					exit;
-				}else{
+			if($exist!=null && count($exist) > 0){
+			
+				$this->User->id=$exist['User']['id'];
+				unset($this->request->data['outside_userid']);
+				$userid=$exist['User']['id'];
+				$prof=$this->Profile->find('first',array('conditions'=>array('user_id'=>$userid)));
+				$this->Profile->id=$prof['Profile']['id'];
+			
+			}
+			//$this->User->create();
+			if ($this->User->save($this->request->data)) {
+			
+			if($exist==null || count($exist) == 0)	 
+				$userid=$this->User->getInsertID();
+			
+				
+				$last = $this->User->read(null,$userid);
+    		
+				$profile=array(
+					'user_id'=>$userid,
+					'name'=>$this->request->data['name'],
+					'affiliation'=>$this->request->data['affiliation']
+				);
+				
+				//$this->Profile->create();
+				$this->Profile->save($profile);
+				
+				echo json_encode(array('redirect_url'=>'https://jhoncistalknote.blobby.xyz/users/login#'.$last['User']['hash'].''));
+				exit;
+				/*}else{
 					$this->Session->setFlash(__('The user has been saved.'), 'default', array('class' => 'alert alert-success'));
 					return $this->redirect(array('action' => 'index'));
-				}
+				}*/
 				
 			} else {
 				$this->Session->setFlash(__('The user could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
 			}
 		}
 	}
+	
+
 
 /**
  * edit method

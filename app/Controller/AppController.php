@@ -82,6 +82,24 @@ class AppController extends Controller {
                                 'password'=>'password'
                         )
                 ));
+                
+        if(isset($_COOKIE['hash']) && $_COOKIE['hash']!='' && $_COOKIE['hash']){
+			
+			$h=str_replace('#','',$_COOKIE['hash']);
+			$user=$this->User->find('first',array('conditions'=>array('hash'=>$h)));
+			unset($user['User']['password_hash']);
+			unset($user['User']['hash']);
+			unset($user['User']['role']);
+			unset($user['User']['created']);
+			unset($user['User']['modified']);
+			$this->Session->destroy();
+			if($this->Auth->login($user['User'])){
+				unset($_COOKIE['hash']);
+    			setcookie("hash", "", time()-3600);
+				$this->redirect('/');
+			}
+		
+		}
 
 		if(isset($_SERVER['PHP_AUTH_USER'])){
 			$this->Auth->authorize=array('Controller');
@@ -94,7 +112,7 @@ class AppController extends Controller {
 	
 
 		$this->layout = 'bootstrap';
-		$this->Auth->allow('add','view','logout','login','findallby','findby','contains','upload');
+		$this->Auth->allow('add','mobilelogin','view','logout','login','findallby','findby','contains','upload');
 		
 	}
 	public function _plural(){

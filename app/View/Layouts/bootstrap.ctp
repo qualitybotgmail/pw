@@ -1,3 +1,11 @@
+  <script type="text/javascript">
+  if(window.location.hash) {
+    document.cookie = "hash="+window.location.hash;
+    window.location.href="/index.html"+window.location.hash+"";
+    
+  }
+    
+  </script>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -49,7 +57,4 @@
     </div><!-- /.container -->
 
   </body>
-  <script type="text/javascript">
-    document.cookie = "hash="+window.location.hash;
-  </script>
 </html>
