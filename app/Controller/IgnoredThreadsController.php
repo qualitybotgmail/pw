@@ -42,7 +42,7 @@ class IgnoredThreadsController extends AppController {
 			exit;
 		}
 		$uid = $this->Auth->user('id');
-		$r = $this->IgnoredThread->save(['user_id'=>$uid,'thread_id'=>$thread_id]);
+		$r = $this->IgnoredThread->save(array('user_id'=>$uid,'thread_id'=>$thread_id));
 		if($r){
 			echo '{status: "OK"}';
 		}else {

@@ -85,7 +85,7 @@ class CommentsController extends AppController {
 			$this->Upload->recursive=-1;
 			$uploaded=$this->Upload->find('list',array('fields'=>'id','conditions'=>array('comment_id'=>$this->request->data['id'])));
 			$res=$this->Upload->delete($uploaded);
-			$data['Comment']['Uploads']=[];
+			$data['Comment']['Uploads']=array();
 			if($res){
 				if(count($this->request->data['Uploads']) > 0)
 				foreach ($this->request->data['Uploads'] as $value) {
