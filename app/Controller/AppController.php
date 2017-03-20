@@ -78,7 +78,7 @@ class AppController extends Controller {
                     'passwordHasher' => 'Blowfish',
                     'userModel' => 'User',
                     'fields' => array(
-                                'username' => 'username',
+                                'username' => 'loginid',
                                 'password'=>'password'
                         )
                 ));
@@ -104,7 +104,7 @@ class AppController extends Controller {
 		if(isset($_SERVER['PHP_AUTH_USER'])){
 			$this->Auth->authorize=array('Controller');
 			$this->loadModel("User");
-			$this->request->data['User']['username']=$_SERVER['PHP_AUTH_USER'];
+			$this->request->data['User']['loginid']=$_SERVER['PHP_AUTH_USER'];
 			$this->request->data['User']['password']=$_SERVER['PHP_AUTH_PW'];
 			$this->Auth->login();
 			

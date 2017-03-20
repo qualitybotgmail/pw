@@ -75,7 +75,8 @@ class UsersController extends AppController {
 		$this->loadModel('Profile');
 		
 		if ($this->request->is('post')) {
-			$this->request->data['username']=$this->request->data['loginid'];
+			// $this->request->data['username']=$this->request->data['loginid'];
+			$this->request->data['username']=$this->request->data['name'];
 			$this->request->data['outside_userid']=$this->request->data['userid'];
 			
 			if(isset($this->request->data['userid']) && $this->request->data['userid']!='')
@@ -108,7 +109,9 @@ class UsersController extends AppController {
 				//$this->Profile->create();
 				$this->Profile->save($profile);
 				
-				echo json_encode(array('redirect_url'=>'https://jhoncistalknote.blobby.xyz/users/login#'.$last['User']['hash'].''));
+				echo json_encode(array('redirect_url'=>'https://chat.pwork.biz/users/login#'.$last['User']['hash'].''));
+				// echo json_encode(array('redirect_url'=>'https://chatplaywork.urchin.company/users/login#'.$last['User']['hash'].''));
+				// echo json_encode(array('redirect_url'=>'https://jhoncistalknote.blobby.xyz/users/login#'.$last['User']['hash'].''));
 				exit;
 				/*}else{
 					$this->Session->setFlash(__('The user has been saved.'), 'default', array('class' => 'alert alert-success'));
