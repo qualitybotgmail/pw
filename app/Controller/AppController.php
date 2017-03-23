@@ -112,7 +112,7 @@ class AppController extends Controller {
 	
 
 		$this->layout = 'bootstrap';
-		$this->Auth->allow('add','mobilelogin','view','logout','login','findallby','findby','contains','upload');
+		$this->Auth->allow('add','view','logout','login','findallby','findby','contains','upload');
 		
 	}
 	public function _plural(){

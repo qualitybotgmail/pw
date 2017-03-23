@@ -184,8 +184,9 @@ public function mobilelogin(){
 		        
 		        $id = $_SESSION['Auth']['User']['id'];
 				$this->User->recursive = 0;
-		        $userdetails = $this->User->findById($id); 
-		        
+		        $userdetails = $this->User->findById($id);
+				$profile = $this->User->Profile->findByUserId($id);
+				$userdetails['Profile'] = $profile['Profile'];
 		    }
 		    echo json_encode(array('user'=>$userdetails));
 	    	}
