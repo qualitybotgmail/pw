@@ -306,8 +306,9 @@ angular.module('starter.controllers', [])
   
    $scope.$on('update_groupchat',function(event,id){
     var chatid=id;
+    $scope.updateChatCache();
     ApiService.setNotified(chatid,'groupchat').then(function(response){NotificationService.setNotif(); });
-   $scope.updateChatCache();
+  
     
   });
    $rootScope.$on('updatesforgroupchat',function(event,id){

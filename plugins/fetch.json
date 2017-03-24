@@ -103,14 +103,6 @@
         "is_top_level": false,
         "variables": {}
     },
-    "cordova-plugin-splashscreen": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-splashscreen@~3.1.0"
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
     "cordova-plugin-image-picker": {
         "source": {
             "type": "git",
@@ -125,6 +117,14 @@
             "type": "git",
             "url": "https://github.com/EddyVerbruggen/cordova-plugin-actionsheet.git",
             "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-splashscreen": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-splashscreen@3.0.0"
         },
         "is_top_level": true,
         "variables": {}

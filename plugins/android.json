@@ -48,13 +48,13 @@
         "cordova-plugin-network-information": {
             "PACKAGE_NAME": "com.widsley.playwork.android"
         },
-        "cordova-plugin-splashscreen": {
-            "PACKAGE_NAME": "com.widsley.playwork.android"
-        },
         "cordova-plugin-image-picker": {
             "PACKAGE_NAME": "com.widsley.playwork.android"
         },
         "cordova-plugin-actionsheet": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.widsley.playwork.android"
         }
     },

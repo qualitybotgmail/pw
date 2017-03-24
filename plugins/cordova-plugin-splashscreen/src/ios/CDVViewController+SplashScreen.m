@@ -35,13 +35,6 @@
 - (BOOL)enabledAutorotation
 {
     NSNumber *number =  (NSNumber *)objc_getAssociatedObject(self, @selector(enabledAutorotation));
-
-    // Defaulting to YES to correspond parent CDVViewController behavior
-    if (number == nil)
-    {
-        return YES;
-    }
-
     return [number boolValue];
 }
 

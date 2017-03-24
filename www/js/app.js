@@ -76,12 +76,12 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
         
       }else{
         if("head_id" in data){
-          $rootScope.$emit('update_thread',data.id);
+          $rootScope.$broadcast('update_thread',data.id);
           $state.go('tab.group-detail',{id:data.id});
           
           
         }else{
-          $rootScope.$emit('update_groupchat',data.id);
+          $rootScope.$broadcast('update_groupchat',data.id);
           $state.go('tab.chats');
         }
       }

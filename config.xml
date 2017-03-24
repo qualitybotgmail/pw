@@ -19,6 +19,20 @@
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashScreen" value="screen" />
     <preference name="KeyboardDisplayRequiresUserAction" value="false" />
+    <platform name="android">
+        <splash src="res/drawable-land-ldpi/screen.png" density="land-ldpi"/>
+        <splash src="res/drawable-land-mdpi/screen.png" density="land-mdpi"/>
+        <splash src="res/drawable-land-hdpi/screen.png" density="land-hdpi"/>
+        <splash src="res/drawable-land-xhdpi/screen.png" density="land-xhdpi"/>
+        <splash src="res/drawable-land-xxhdpi/screen.png" density="land-xxhdpi"/>
+        <splash src="res/drawable-land-xxxhdpi/screen.png" density="land-xxxhdpi"/>
+        <splash src="res/drawable-port-ldpi/screen.png" density="port-ldpi"/>
+        <splash src="res/drawable-port-mdpi/screen.png" density="port-mdpi"/>
+        <splash src="res/drawable-port-hdpi/screen.png" density="port-hdpi"/>
+        <splash src="res/drawable-port-xhdpi/screen.png" density="port-xhdpi"/>
+        <splash src="res/drawable-port-xxhdpi/screen.png" density="port-xxhdpi"/>
+        <splash src="res/drawable-port-xxxhdpi/screen.png" density="port-xxxhdpi"/>
+      </platform>
     <feature name="Keyboard">
         <param name="ios-package" onload="true" value="IonicKeyboard" />
     </feature>
@@ -34,8 +48,6 @@
         <config-file parent="SomeOtherPlistKey" platform="ios" target="*-Info.plist">
             <string>someValue</string>
         </config-file>
-    </platform>
-    <platform name="android">
     </platform>
     <plugin name="cordova-plugin-android-permissions" spec="~0.10.0" />
     <engine name="android" spec="~6.0.0" />
