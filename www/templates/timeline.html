@@ -1,4 +1,10 @@
 <ion-view view-title="Timeline" cache-view="false">
+    </ion-nav-buttons>
+   <ion-nav-buttons side="left">
+    <button class="button back-button buttons button-clear header-item" ng-click="goBack()">
+      <i class="icon ion-ios-arrow-back"> Back</i> 
+    </button>
+  </ion-nav-buttons>
   <ion-content>
       <div class="list card" ng-click="gotoDetails(timeVal.id,timeVal.index)" ng-repeat="timeVal in timelineVal | orderBy : '-modified'">
            <div class="item item-avatar">

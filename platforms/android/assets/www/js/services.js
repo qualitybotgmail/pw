@@ -773,7 +773,7 @@ angular.module('starter.services', [])
   
 })
 
-.service('NotificationService',function($q,$http,API_URL,broadcastService){
+.service('NotificationService',function($q,$http,API_URL,broadcastService,Groups,Chats){
   
   var notifications=[];
   var total=0;

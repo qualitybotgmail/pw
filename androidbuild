@@ -1,5 +1,5 @@
 #!/bin/bash
 
 ANDROID_HOME=/root/androidsdk
-ionic build ios
+ionic build android
 

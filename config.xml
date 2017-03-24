@@ -33,6 +33,7 @@
         <splash src="res/drawable-port-xxhdpi/screen.png" density="port-xxhdpi"/>
         <splash src="res/drawable-port-xxxhdpi/screen.png" density="port-xxxhdpi"/>
       </platform>
+      
     <feature name="Keyboard">
         <param name="ios-package" onload="true" value="IonicKeyboard" />
     </feature>

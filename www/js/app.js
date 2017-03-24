@@ -34,7 +34,15 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
        $rootScope.threadNotif=NotificationService.getThreadNotif();
        $rootScope.groupchatNotif=NotificationService.getGroupchatNotif();
        $rootScope.totalNotif=NotificationService.gettotalcount();
-       window.FirebasePlugin.setBadgeNumber($rootScope.totalNotif);
+
+       if(parseInt($rootScope.chatNotifCount) > 0){
+          $rootScope.$broadcast('updatesforgroupchat',null);
+       }
+       if(parseInt($rootScope.threadNotifCount) > 0){
+         
+          $rootScope.$broadcast('updatesforthread',null);
+       }
+      // window.FirebasePlugin.setBadgeNumber($rootScope.totalNotif);
        
   });
   
@@ -69,9 +77,9 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
       if("tap" in data){
         
         if("head_id" in data){
-          $rootScope.$emit('updatesforthread',data.id);
+          $rootScope.$broadcast('updatesforthread',data.id);
         }else{
-          $rootScope.$emit('updatesforgroupchat',data.id);
+          $rootScope.$broadcast('updatesforgroupchat',data.id);
         }
         
       }else{
