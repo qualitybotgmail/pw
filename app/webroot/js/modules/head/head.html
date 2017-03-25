@@ -91,7 +91,7 @@
         <li class="list-item" ng-if="selectedHead.Comment.length">
             <ul class="list-group commentList">
                 <li class="list-group-item" ng-repeat="c in selectedHead.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
-                    <small>by : {{c.User.username}}</small>
+                    <small>by : {{c.User.username == loginUser.username ? "You" : c.User.username }}</small>
                     <p>{{c.body}}</p>
                     <p>
                          <span ng-repeat="upload in c.Upload">

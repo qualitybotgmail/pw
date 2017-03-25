@@ -112,7 +112,7 @@
                 </div>
     				    <div class="msg">
                             <h4 class="message-subject">
-                                {{m.User.username}}
+                                By: {{m.User.username == loginUser.username ? "You" : m.User.username}}
                                 <span class="message-time">
                                     {{m.created}}
                                 </span>

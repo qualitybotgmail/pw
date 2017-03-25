@@ -51,6 +51,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	$scope.isSending = false;
         	$scope.pageLimit = 10;
         	$scope.pageIndex = 1;
+        	$scope.loginUser  = $rootScope.loginUser ;
+        	
         	
         	// var for selected message
         	$scope.message = {};
