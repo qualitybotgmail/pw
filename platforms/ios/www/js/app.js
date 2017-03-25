@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic','ngIOS9UIWebViewPatch','angular-cache','ngCordova', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
+angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
 
 .run(function($ionicPlatform,$rootScope,NotificationService,$cordovaBadge,$state,$ionicConfig,AuthService,Groups,CacheFactory,InternetService,$cordovaNetwork) {
   $ionicPlatform.ready(function() {
@@ -20,7 +20,6 @@ angular.module('starter', ['ionic','ngIOS9UIWebViewPatch','angular-cache','ngCor
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
-      // StatusBar.overlaysWebView(false);
     }
 
   });
