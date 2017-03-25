@@ -4,14 +4,14 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-  <ion-view hide-nav-bar="true">
-  <div class="bar bar-header bar-light" style="background-color: #ddd;">
-     <button class="button back-button buttons button-clear"  ng-click="goBack()"> <i class="icon ion-ios-arrow-back"> Back</i> </button>
-    <h1 class="title" style="color: #a2a2a2;font-weight: 700;font-size: 18px;max-width: 65%;margin-left: 70px;">{{$root.chatMembers.join()}}</h1>
-   
-  </div>
-  <ion-content class="padding has-footer has-tabs has-header" on-scroll="checkForUpdates()">
-    <ion-refresher on-refresh="doRefresh()" pulling-icon="ios-arrow-down" spinner="bubbles">
+  <ion-view view-title="{{$root.chatMembers.join()}}">
+ <ion-nav-buttons side="left">
+    <button class="button back-button buttons button-clear header-item" ng-click="goBack()">
+      <i class="icon ion-ios-arrow-back"> Back</i> 
+    </button>
+  </ion-nav-buttons>
+  <ion-content class="padding has-footer has-tabs has-header" style="bottom: 100px !important;">
+    <ion-refresher on-refresh="doRefresh()" pulling-icon="ios-arrow-down" spinner="bubbles" on-pulling="disabledScroll()">
     </ion-refresher>
     
       <div class="list">
@@ -31,7 +31,7 @@
         <div ng-style="{'text-align':message.Message.user_id == $root.user_id?'right':'left'}" ng-show="message.Upload.length > 0">
             <img on-hold="showChatPopover($event,'image',{{$parent.$index}},{{$index}})" ng-repeat="upload in message.Upload track by $index" ng-src="{{upload.loading?upload.path:base_url+upload.path}}" ng-style="{'height':message.Upload.length > 1?'100px':'230px','width':message.Upload.length > 1?'100px':'200px'}" class="chatimages"/>
         </div>
-        <p ng-show="errorSending && (message.Message.id==-1)" style="font-size:13px;margin:0px;color: red;"><i class="icon ion-alert-circled"></i>unable to send message</p>
+        <p ng-show="errorSending && (message.Message.id==-1)" style="font-size:10px;margin:0px;color: red;text-align:right;width:100%"><i class="icon ion-alert-circled"></i> unable to send message</p>
         </div>
       </div>
   </ion-content>

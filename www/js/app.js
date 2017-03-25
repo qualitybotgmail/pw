@@ -21,33 +21,40 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-    
+
   });
    if(AuthService.isAuthenticated() && InternetService.hasInternet()){
           NotificationService.setNotif();
-          console.log('HHHHH');
+          // console.log('HHHHH');
    }
    $rootScope.$on('gotNotif', function(event, data){
-    
+
        $rootScope.threadNotifCount=NotificationService.getThreadCount();
        $rootScope.chatNotifCount=NotificationService.getGroupchatCount();
        $rootScope.threadNotif=NotificationService.getThreadNotif();
        $rootScope.groupchatNotif=NotificationService.getGroupchatNotif();
        $rootScope.totalNotif=NotificationService.gettotalcount();
-       if (window.cordova && window.cordova.plugins && window.cordova.plugins.notification) {
-       cordova.plugins.notification.badge.set($rootScope.totalNotif);
+
+       if(parseInt($rootScope.chatNotifCount) > 0){
+          $rootScope.$broadcast('updatesforgroupchat',null);
        }
-       
+       if(parseInt($rootScope.threadNotifCount) > 0){
+
+          $rootScope.$broadcast('updatesforthread',null);
+       }
+      // window.FirebasePlugin.setBadgeNumber($rootScope.totalNotif);
+
   });
-  
+
   document.addEventListener("deviceready", function () {
+
+    window.FirebasePlugin.grantPermission();
 
     var type = $cordovaNetwork.getNetwork()
 
     var isOnline = $cordovaNetwork.isOnline()
 
     var isOffline = $cordovaNetwork.isOffline()
-    cordova.plugins.notification.badge.set(0);
 
     // listen for Online event
     $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
@@ -59,73 +66,72 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
     $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
       InternetService.onOffline();
     });
-    
-    FCMPlugin.onTokenRefresh(function(token){
-      window.localStorage.setItem('newdevicetoken',token);
-       AuthService.setdeviceToken(true,token); 
-    });
-    
-    FCMPlugin.onNotification(function(data){
-      
-      if(data.wasTapped){
-        NotificationService.setNotif();
+
+      window.FirebasePlugin.onTokenRefresh(function(token){
+        window.localStorage.setItem('newdevicetoken',token);
+        AuthService.setdeviceToken(true);
+     });
+
+     window.FirebasePlugin.onNotificationOpen(function(data){
+       NotificationService.setNotif();
+      if("tap" in data){
+
         if("head_id" in data){
-          $rootScope.$emit('update_thread',data.id);
-          if(data.head_id==0){
-            $state.go('tab.group-detail',{id:data.id});
-          }else{
-            $state.go('tab.head',{id:data.head_id});
-          }
-          
+          $rootScope.$broadcast('updatesforthread',data.id);
         }else{
-          $rootScope.$emit('update_groupchat',data.id);
-          $state.go('tab.chat-detail',{chatId:data.id});
+          $rootScope.$broadcast('updatesforgroupchat',data.id);
         }
+
       }else{
-        NotificationService.setNotif();
         if("head_id" in data){
-          $rootScope.$emit('updatesforthread',data.id);
+          $rootScope.$broadcast('update_thread',data.id);
+          $state.go('tab.group-detail',{id:data.id});
+
+
         }else{
-          $rootScope.$emit('updatesforgroupchat',data.id);
+          $rootScope.$broadcast('update_groupchat',data.id);
+          $state.go('tab.chats');
         }
       }
   });
- 
+
 
   }, false);
-  
+
   $rootScope.$on('$stateChangeStart',function(event,toState,toParams,fromState,fromParams){
-        
+
+        $rootScope.$broadcast('stopinterval');
+
         if (toState.data.authenticate && !AuthService.isAuthenticated()){
-            
+
             $state.transitionTo("login");
             event.preventDefault();
         }
-        
+
         if(AuthService.isAuthenticated() && toState.name.indexOf("login") > -1){
           NotificationService.setNotif();
-           $state.go("tab.dash");
+           $state.go("tab.groups");
            event.preventDefault();
         }
-      
+
           if(!CacheFactory.get('groupchats')){
             CacheFactory('groupchats', {
               deleteOnExpire: 'passive',
               storageMode:'localStorage'
             });
             console.log('SET CACHE');
-            
+
          }
          if(!CacheFactory.get('threads')){
             CacheFactory('threads', {
               deleteOnExpire: 'passive',
               storageMode:'localStorage'
             });
-            
+
          }
-         
+
         if(toState.name=='tab.group-detail'){
-          
+
           if(CacheFactory.get('threads')){
             var thread=CacheFactory.get('threads');
             if(thread.get('threads/'+toParams.id))
@@ -133,23 +139,15 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
               $rootScope.groupTitle=thread.get('threads/'+toParams.id).Thread.title;
           }
         }
-        
+
         if(toState.name=='tab.head'){
-          if(CacheFactory.get('threads')){
-            var thread=CacheFactory.get('threads');
-            if(thread.get('heads/'+toParams.id)){
-            $rootScope.threadTitle=thread.get('heads/'+toParams.id).Thread.title;
-            $rootScope.headOwner =thread.get('heads/'+toParams.id).Owner.username;
-            $rootScope.threadId=thread.get('heads/'+toParams.id).Thread.id;
-            }
-          }else{
             Groups.getHeadDetails(toParams.id).then(function(data){
               $rootScope.threadTitle=data.Thread.title;
               $rootScope.headOwner =data.Owner.username;
               $rootScope.threadId=data.Thread.id;
             });
-          }
-       
+
+
         }
   });
 })
@@ -174,7 +172,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
       }
      }
   })
-  
+
   // setup an abstract state for the tabs directive
   .state('tab', {
     url: '/tab',
@@ -187,28 +185,13 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
 
   // Each tab has its own nav history stack:
 
-  .state('tab.dash', {
-    url: '/dash',
-    data: {
-      authenticate: true
-    },
+  .state('tab.performance', {
+    url: '/performance',
+    authenticate:true,
     views: {
-      'tab-dash': {
-        templateUrl: 'templates/tab-dash.html',
-        controller: 'DashCtrl'
-      }
-    }
-  })
-
-  .state('tab.incentive', {
-    url: '/incentive',
-    data: {
-      authenticate: true
-    },
-    views: {
-      'tab-incentive': {
-        templateUrl: 'templates/tab-incentive.html',
-        controller: 'IncentiveCtrl'
+      'tab-performance': {
+        templateUrl: 'templates/tab-performance.html',
+        controller: 'PerformanceCtrl'
       }
     }
   })
@@ -250,7 +233,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
       }
     }
   })
-  
+
   .state('tab.group-detail', {
     url: '/group-detail/:id',
     data: {
@@ -263,7 +246,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
       }
     }
   })
-  
+
   .state('tab.head', {
     url: '/head/:id',
     data: {
@@ -276,8 +259,8 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
       }
     }
   })
-  
-  
+
+
   .state('tab.user-chat', {
     url: '/user-chat/:id',
     data: {
@@ -290,7 +273,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
       }
     }
   })
-  
+
   .state('tab.timeline', {
     url: '/timeline',
     authenticate:true,
@@ -301,7 +284,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
       }
     }
   })
-  
+
 
   .state('tab.account', {
     url: '/account',
@@ -329,7 +312,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
 .directive('preventHref', ['$parse', '$rootScope',
   function($parse, $rootScope) {
     return {
-      
+
       priority: 100,
       restrict: 'A',
       compile: function($element, attr) {
@@ -342,7 +325,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
                 if (fn(scope, {$event: event})) {
                   // prevents ng-click to be executed
                   event.stopImmediatePropagation();
-                  // prevents href 
+                  // prevents href
                   event.preventDefault();
                   return false;
                 }
@@ -366,7 +349,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
     link: function(scope, element, attr){
         var update = function(){
             element.css("height", "auto");
-            var height = element[0].scrollHeight; 
+            var height = element[0].scrollHeight;
             element.css("height", element[0].scrollHeight + "px");
         };
         scope.$watch(attr.ngModel, function(){
@@ -381,7 +364,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
     link: function(scope, element, attr){
        element.parent().on('click', function(event) {
         if(!element.hasClass('ng-hide')){
-          
+
           scope.$emit('update_'+attr.badgeType,attr.badgeId);
         }
        });

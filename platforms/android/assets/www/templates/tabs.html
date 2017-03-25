@@ -3,30 +3,35 @@ Create tabs with an icon and label, using the tabs-positive style.
 Each tab's child <ion-nav-view> directive will have its own
 navigation history that also transitions its views in and out.
 -->
-<ion-tabs class="tabs-icon-top tabs-color-active-positive navs">
+<ion-tabs class="tabs-icon-top tabs-color-active-positive">
 
-  <!-- Dashboard Tab -->
-  <ion-tab title="Progress" icon-off="dash-nav" icon-on="dash-nav-active" href="#/tab/dash">
+  <!-- Progress Tab -->
+  <!-- <ion-tab title="Progress" icon-off="ion-shuffle" icon-on="ion-shuffle" href="#/tab/dash">
     <ion-nav-view name="tab-dash"></ion-nav-view>
-  </ion-tab>
+  </ion-tab> -->
 
-  <!-- Incentive Tab -->
-  <ion-tab title="Individual" icon-off="indi-nav" icon-on="indi-nav-active" href="#/tab/incentive">
+  <!-- Individual Tab -->
+  <!-- <ion-tab title="Individual" icon-off="ion-connection-bars" icon-on="ion-connection-bars" href="#/tab/incentive">
     <ion-nav-view name="tab-incentive"></ion-nav-view>
-  </ion-tab>
-
-  <!-- Chats Tab -->
-  <ion-tab title="Chats" icon-off="chat-nav" icon-on="chat-nav-active" href="#/tab/chats" badge="$root.chatNotifCount" badge-style="badge-assertive">
-    <ion-nav-view name="tab-chats"></ion-nav-view>
-  </ion-tab>
+  </ion-tab> -->
 
   <!-- Groups Tab -->
-  <ion-tab title="Groups" icon-off="group-nav" icon-on="group-nav-active" href="#/tab/groups" badge="$root.threadNotifCount" badge-style="badge-assertive">
+  <ion-tab title="Groups" icon-off="ion-person-stalker" icon-on="ion-person-stalker" href="#/tab/groups" badge="$root.threadNotifCount" badge-style="badge-assertive">
     <ion-nav-view name="tab-groups"></ion-nav-view>
   </ion-tab>
 
+  <!-- Chats Tab -->
+  <ion-tab title="Chats" icon-off="ion-chatboxes" icon-on="ion-chatboxes" href="#/tab/chats" badge="$root.chatNotifCount" badge-style="badge-assertive">
+    <ion-nav-view name="tab-chats"></ion-nav-view>
+  </ion-tab>
+
+  <!-- Performance Tab -->
+  <ion-tab title="Performance" icon-off="ion-connection-bars" icon-on="ion-connection-bars" href="#/tab/performance">
+    <ion-nav-view name="tab-performance"></ion-nav-view>
+  </ion-tab>
+
   <!-- Account Tab -->
-  <ion-tab title="Account" icon-off="acc-nav" icon-on="acc-nav-active" href="#/tab/account">
+  <ion-tab title="Account" icon-off="ion-gear-b" icon-on="ion-gear-b" href="#/tab/account">
     <ion-nav-view name="tab-account"></ion-nav-view>
   </ion-tab>
 

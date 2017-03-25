@@ -1,5 +1,4 @@
-cordova.define("cordova-plugin-filepath.FilePath", function(require, exports, module) {
-var exec = require('cordova/exec');
+cordova.define("cordova-plugin-filepath.FilePath", function(require, exports, module) { var exec = require('cordova/exec');
 
 
 module.exports = {

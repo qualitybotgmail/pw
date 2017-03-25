@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "425640170999",
-    "firebase_url": "https://talknote-push.firebaseio.com",
-    "project_id": "talknote-push",
-    "storage_bucket": "talknote-push.appspot.com"
+    "project_number": "763471596185",
+    "firebase_url": "https://playwork-51fb5.firebaseio.com",
+    "project_id": "playwork-51fb5",
+    "storage_bucket": "playwork-51fb5.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:425640170999:android:e1776a2e2461aac9",
+        "mobilesdk_app_id": "1:763471596185:android:ac721b2db6424474",
         "android_client_info": {
-          "package_name": "io.cordova.helloCordova"
+          "package_name": "com.widsley.playwork.android"
         }
       },
       "oauth_client": [
         {
-          "client_id": "425640170999-l9t85jk5eiutvgsr7hova8g37bft9a4g.apps.googleusercontent.com",
+          "client_id": "763471596185-ie1rgr7p6o55hgdd1nsq6bj57j62r23q.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAHR9AnivwUejN4fnzKoUfuS9E17RVo_NU"
+          "current_key": "AIzaSyC0QrwyGUxg0g3degsagG34ju2HZkuejLQ"
         }
       ],
       "services": {
