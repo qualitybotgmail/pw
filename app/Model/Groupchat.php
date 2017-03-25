@@ -81,7 +81,7 @@ class Groupchat extends AppModel {
 			
 				$ret[] = $t['id'];
 		}
-		
+		$ret[] = CakeSession::read("Auth.User.id");
 		return $ret;
 		
 	}	
