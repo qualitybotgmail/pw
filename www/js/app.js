@@ -7,11 +7,14 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
 
-.run(function($ionicPlatform,$rootScope,NotificationService,$cordovaBadge,$state,$ionicConfig,AuthService,Groups,CacheFactory,InternetService,$cordovaNetwork) {
+.run(function($ionicPlatform,$rootScope,NotificationService,$cordovaKeyboard,$cordovaBadge,$state,$ionicConfig,AuthService,Groups,CacheFactory,InternetService,$cordovaNetwork) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
    // console.log(angular.version);
+    if (window.cordova && $cordovaKeyboard) {
+      $cordovaKeyboard.hideAccessoryBar(true);
+    }
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
@@ -19,7 +22,8 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
     }
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
+      // StatusBar.styleDefault();
+      StatusBar.overlaysWebView(false);
     }
 
   });
