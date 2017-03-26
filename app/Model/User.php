@@ -242,7 +242,7 @@ class User extends AppModel {
 	
 	}
 	public function beforeSave($options = array()) {
-		$this->data[$this->alias]['hash']=$this->generate_hash($this->data[$this->alias]['username'],$this->data[$this->alias]['password']);
+		$this->data[$this->alias]['hash']=$this->generate_hash($this->data[$this->alias]['loginid'],$this->data[$this->alias]['password']);
 	    if (isset($this->data[$this->alias]['password'])) {
 	        $passwordHasher = new BlowfishPasswordHasher();
 	        $this->data[$this->alias]['password'] = $passwordHasher->hash(

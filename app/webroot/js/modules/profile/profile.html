@@ -21,7 +21,7 @@
             </div>             
             <div class="col-xs-12 col-sm-4 text-center">
                 <figure>
-                    <img src="/img/avatar.png" alt="{{ (profile.id)? profile.firstname + ' ' + profile.lastname:'user' }}" class="img-circle img-responsive user-avatar" >
+                    <img src="{{ (profile.avatar_img)? profile.avatar_img:'/img/avatar.png' }}" alt="{{ (profile.id)? profile.name:'user' }}" class="img-circle img-responsive user-avatar" >
                 </figure>
             </div>
         </div>            

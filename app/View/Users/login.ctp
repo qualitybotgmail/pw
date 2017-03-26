@@ -14,7 +14,7 @@
 			<?php echo $this->Form->create('User', array('role' => 'form')); ?>
 
 				<div class="form-group">
-					<?php echo $this->Form->input('username', array('class' => 'form-control', 'placeholder' => 'Username'));?>
+					<?php echo $this->Form->input('loginid', array('class' => 'form-control', 'placeholder' => 'LoginID'));?>
 				</div>
 				<div class="form-group">
 					<?php echo $this->Form->input('password', array('class' => 'form-control', 'placeholder' => 'Password'));?>
