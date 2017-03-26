@@ -19,10 +19,8 @@
   },
   "cordovaPlugins": [
     "cordova-plugin-whitelist",
-    "cordova-plugin-statusbar",
     "cordova-plugin-console",
     "cordova-plugin-device",
-    "cordova-plugin-splashscreen",
     "cordova-plugin-camera",
     "cordova-plugin-file",
     "cordova-plugin-file-transfer",
@@ -30,5 +28,12 @@
     "cordova-plugin-imagepicker",
     "ionic-plugin-keyboard"
   ],
-  "cordovaPlatforms": []
+  "cordovaPlatforms": [
+    {
+      "platform": "android",
+      "version": "6.0.0",
+      "locator": "android@6.0.0"
+    },
+    "ios"
+  ]
 }

@@ -31,9 +31,6 @@ buildscript {
     // and https://issues.apache.org/jira/browse/CB-8143
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.0'
-        classpath 'com.google.gms:google-services:3.0.0'
-        classpath 'com.github.arturogutierrez:badges:1.0'
-        
     }
 }
 
@@ -91,9 +88,9 @@ ext {
 }
 
 // PLUGIN GRADLE EXTENSIONS START
-apply from: "cordova-plugin-crosswalk-webview/helloCordova-xwalk.gradle"
-apply from: "cordova-plugin-badge/helloCordova-badge.gradle"
-apply from: "cordova-plugin-firebase/helloCordova-build.gradle"
+apply from: "cordova-plugin-badge/android-badge.gradle"
+apply from: "cordova-plugin-crosswalk-webview/android-xwalk.gradle"
+apply from: "cordova-plugin-firebase/android-build.gradle"
 // PLUGIN GRADLE EXTENSIONS END
 
 def hasBuildExtras = file('build-extras.gradle').exists()
@@ -170,7 +167,6 @@ android {
     }
 
     defaultConfig {
-        multiDexEnabled true
         versionCode cdvVersionCode ?: new BigInteger("" + privateHelpers.extractIntFromManifest("versionCode"))
         applicationId privateHelpers.extractStringFromManifest("package")
 
