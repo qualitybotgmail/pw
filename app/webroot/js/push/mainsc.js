@@ -3,7 +3,7 @@ window.settings = window.settings || {};
 window.settings.Config = window.settings.Config || {
   //gcmAPIKey: 'AAAAYxohlfc:APA91bFFRnFY820AfNFXmOFmUb1xKsb1obaZhpt4p1EpQRS3MRUnMe23Ho6nAci6760CU5ybyCafXjWexSXttbjFemaKikTK8q8eQcncgKInVejsq4AuPKw-C0OGMrfMbIcREIPdIMg1NI-yI1mBDHA29B-V2t2LjQ'
 
-  gcmAPIKey: 'AIzaSyDf03OOwBarOokhqjqCPDyBirNvI4Mh2o8'
+  gcmAPIKey: 'AIzaSyDlevTKpf3-ouSprb4a_fhTk43Iw0hvuyA'
 };
 
 
