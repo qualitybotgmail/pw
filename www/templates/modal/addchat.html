@@ -1,4 +1,4 @@
-<ion-modal-view>
+<ion-modal-view style="top:0px !important">
    <ion-header-bar class="bar bar-header ">
        <div class="buttons">
           <button class="button" ng-click="resetForm()">Cancel</button>
@@ -22,12 +22,12 @@
           </a>
         </div>
         <div class="list" ng-show="$root.showList">
-            <a class="item item-avatar item-icon-right" href="" ng-click="addUser(user)" ng-repeat="user in users | filter:{User:{username:$root.usersToadd}} | limitTo:numberOfUsersToDisplay track by $index">
+            <a class="item item-avatar item-icon-right" href="" ng-click="addUser(user)" ng-repeat="user in users | filter:{User:{username:$root.usersToadd}}">
               <img src="img/avatar.png">
               <h2>{{user.User.username}}</h2>
               <i ng-show="$root.addedUserIds.indexOf(user.User.id) > -1" class="icon ion-checkmark-round"></i>
             </a>
         </div>
-        <ion-infinite-scroll ng-if="numberOfUsersToDisplay < users.length" on-infinite="loadMoreUsers()" distance="1%"></ion-infinite-scroll>
+        <!--<ion-infinite-scroll ng-if="numberOfUsersToDisplay < users.length" on-infinite="loadMoreUsers()" distance="1%"></ion-infinite-scroll>-->
     </ion-content>
   </ion-modal-view>

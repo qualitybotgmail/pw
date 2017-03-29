@@ -132,19 +132,17 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
             });
             
          }
-         
+        
         if(toState.name=='tab.group-detail'){
-          
-          if(CacheFactory.get('threads')){
-            var thread=CacheFactory.get('threads');
-            if(thread.get('threads/'+toParams.id))
-            if($rootScope.groupTitle=thread.get('threads/'+toParams.id).Thread)
-              $rootScope.groupTitle=thread.get('threads/'+toParams.id).Thread.title;
-          }
+          Groups.get(toParams.id).then(function(response){
+            console.log(response);
+            $rootScope.groupTitle=response.Thread.title;
+          });
         }
         
         if(toState.name=='tab.head'){
             Groups.getHeadDetails(toParams.id).then(function(data){
+              console.log('Test');
               $rootScope.threadTitle=data.Thread.title;
               $rootScope.headOwner =data.Owner.username;
               $rootScope.threadId=data.Thread.id;

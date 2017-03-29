@@ -47,12 +47,48 @@
     right: 0px;
     color: gray;
 }
+.group-wrapper{
+    width: 45px;
+    height: 45px;
+    float: left;
+    text-align: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 8px;
+    border: 1px solid #ccc;
+    margin-right: 5px;
+    border-radius: 30px;
+}
+.group-icon{
+    background: url("../img/icon_2.png") no-repeat;
+    width: 50px;
+    height: 50px;
+    float: left;
+    margin-right: 5px;
+    background-size: 25px;
+    
+}
+.forall .item-content{
+    padding:10px !important;
+}
+.forall h2{
+    padding:10px !important;
+}
+.customgroup .item-content{
+    padding:auto !important;
+}
+.customgroup h2{
+    padding:auto !important;
+}
 .datecomment{
     position: absolute;
     right: 40px;
     margin-top: 5px;
     padding-right: 15px !important;
     font-size:13px !important;
+}
+.remove-first::first-line { 
+    line-height: 0px;
 }
 .headings{
     overflow: hidden !important;
@@ -273,6 +309,8 @@ textarea {
   border-radius: 10px !important;
   text-align: left !important;
   max-width: 240px !important;
+  white-space: pre-line !important;
+  word-break:break-word !important;
 }
  .message .item-avatar{
      padding-left: 0px !important;

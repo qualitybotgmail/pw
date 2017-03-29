@@ -7,19 +7,22 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
 
-.run(function($ionicPlatform,$rootScope,NotificationService,$cordovaBadge,$state,$ionicConfig,AuthService,Groups,CacheFactory,InternetService,$cordovaNetwork) {
+.run(function($ionicPlatform,$rootScope,NotificationService,$cordovaKeyboard,$cordovaBadge,$state,$ionicConfig,AuthService,Groups,CacheFactory,InternetService,$cordovaNetwork) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
    // console.log(angular.version);
+    if (window.cordova && $cordovaKeyboard) { 
+      $cordovaKeyboard.hideAccessoryBar(true);
+    }
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
 
     }
+    
     if (window.StatusBar) {
-      // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
+      StatusBar.overlaysWebView(false);
     }
     
   });
@@ -129,19 +132,17 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
             });
             
          }
-         
+        
         if(toState.name=='tab.group-detail'){
-          
-          if(CacheFactory.get('threads')){
-            var thread=CacheFactory.get('threads');
-            if(thread.get('threads/'+toParams.id))
-            if($rootScope.groupTitle=thread.get('threads/'+toParams.id).Thread)
-              $rootScope.groupTitle=thread.get('threads/'+toParams.id).Thread.title;
-          }
+          Groups.get(toParams.id).then(function(response){
+            console.log(response);
+            $rootScope.groupTitle=response.Thread.title;
+          });
         }
         
         if(toState.name=='tab.head'){
             Groups.getHeadDetails(toParams.id).then(function(data){
+              console.log('Test');
               $rootScope.threadTitle=data.Thread.title;
               $rootScope.headOwner =data.Owner.username;
               $rootScope.threadId=data.Thread.id;

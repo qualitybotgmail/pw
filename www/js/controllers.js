@@ -171,24 +171,28 @@ angular.module('starter.controllers', [])
   $scope.showAddChats = function() {
 		$scope.addModal.show();
 	};
-	
+	$scope.userLength=0;
+	$scope.ctr=0;
 	$scope.getUsers=function(){
 	  ApiService.Get('groupchats/userstogroupchat','').then(function(response){
 	    $scope.users=response.users;
+	    $scope.userLength=Math.floor($scope.users.length/10);
 	  });
 	}
 	$scope.getUsers();
 	
-	 $scope.loadMoreUsers = function(){
+/*	$scope.loadMoreUsers = function(){
     if ($scope.users.length == 0){
       $scope.$broadcast('scroll.infiniteScrollComplete');
       return;
     }
-
-    if ($scope.numberOfUsersToDisplay < $scope.users.length)
+    console.log($scope.userLength);
+    if (($scope.numberOfUsersToDisplay < $scope.users.length) && ){
+      $scope.ctr+=1;
       $scope.numberOfUsersToDisplay+=10;
+    }
     $scope.$broadcast('scroll.infiniteScrollComplete');
-  }
+  }*/
   
   $rootScope.usersToadd='';
   $rootScope.addedUserIds=[];
@@ -844,7 +848,9 @@ angular.module('starter.controllers', [])
         $rootScope.modalAction='';
         $scope.threadModal.hide();
         $scope.settingsPopover.hide();
-        $scope.updateCache();
+        //$scope.updateCache();
+        $rootScope.groupTitle=response.data.Thread.title;
+        $state.go('tab.group-detail',{id:response.data.Thread.id});
     });
   };
   

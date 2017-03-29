@@ -896,12 +896,12 @@ angular.module('starter.services', [])
               deferred.resolve(data);
           }
           else{
-              console.error(JSON.stringify(data));
+              //console.error(JSON.stringify(data));
               deferred.reject(data);
           }
       })
       .error(function(data){
-          console.error(JSON.stringify(data));
+          //console.error(JSON.stringify(data));
           deferred.reject(data);
       });
       return deferred.promise;

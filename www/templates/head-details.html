@@ -14,9 +14,9 @@
       </div>
     
       <div class="item item-body" style="padding: 0px;">
-        <p style="padding: 15px;">
+        <div style="padding: 15px;white-space:pre-line" class="remove-first">
          {{getHeads.body}}
-        </p>
+        </div>
           <div class="item" ng-show="headUploads.length > 0" prevent-href="true" style="padding-left: 0px;padding-right: 0px;border-bottom:0px;">
          <a class="item-list-detail" style="padding: 0px;border: 0px;">
         	<ion-scroll direction="x" >
@@ -40,12 +40,7 @@
           <h2 ng-show="comment.user_id !=$root.user_id">{{comment.User.username}}</h2>
            <h2 ng-show="comment.user_id ==$root.user_id">{{$root.user}}</h2>
           <p class="dateList"><span ng-show="comment.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showCommentPopover($event,$index)"></i></span></p>
-          <div class = "row" style="font-size: 14px;">
-    
-          {{comment.body}}
-       
-         
-      </div>
+          <div class="row remove-first" style="font-size: 14px;white-space:pre-line;word-break:break-word">{{comment.body}}</div>
       <div ng-show="comment.Uploads.length > 0" prevent-href="true">
      <a class="item item-list-detail" style="padding: 0px;border: 0px;">
     	<ion-scroll direction="x" >

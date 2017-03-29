@@ -13,7 +13,7 @@
             <span ng-if="!$last">,</span>
           </span>
         </h2>
-        <p>{{chat.message.Message.body}}</p>
+        <p>{{chat.message.Message.body.split('\n')[0]}}</p>
         <i class="icon ion-chevron-right icon-accessory"></i>
       
        <span ng-show="$root.groupchatNotif[chat.id]" show-badge badge-id="{{chat.id}}" badge-type="groupchat" class="badge badge-assertive">{{$root.groupchatNotif[chat.id]}}</span>
