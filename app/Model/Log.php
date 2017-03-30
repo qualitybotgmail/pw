@@ -229,7 +229,6 @@ public $actsAs = array('Containable');
 			            			'title' => $title,
 			            			'body' => $body,
 			            			 'sound'=>'default',
-						             'badge'=>1,
 						             'icon'=>'fcm_push_icon'
 			            		),
 			            	  'data'=>$data,
@@ -383,18 +382,24 @@ public $actsAs = array('Containable');
 					if(trim($f) == '' ) continue;
 					if($u['Profile'][0]['user_id'] == $log['user_id']) continue;
 					//$fcmids[] = json_decode($f);
-					$fcmids=array_merge($fcmids,json_decode($f));
-
-				}
+					if(is_array(json_decode($f))){
+						$fcmids=array_merge($fcmids,json_decode($f));
+					}else{
+						array_push($fcmids,$f);
+					}
+						
+					}
 				
 				$f = @$g['Owner']['Profile'][0]['fcm_id'];
 				$uids[] = $g['Owner']['id'];
 				
-				if($f){
+				if(is_array(json_decode($f))){
 					//$fcmids[] = json_decode($f);
 					$fcmids=array_merge($fcmids,json_decode($f));
 					
-				}	
+				}else{
+						array_push($fcmids,$f);
+					}	
 			}	
 			file_put_contents("/tmp/dadacurl",date("g:i:s")."\n".print_r($notifdata,true));
 			$this->push($fcmids,$notifdata);

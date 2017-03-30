@@ -73,7 +73,7 @@ class UsersController extends AppController {
 	public function add() {
 		$exist=null;
 		$this->loadModel('Profile');
-		
+
 		if ($this->request->is('post')) {
 			$this->request->data['username']=$this->request->data['loginid'];
 			$this->request->data['outside_userid']=$this->request->data['userid'];
@@ -90,9 +90,10 @@ class UsersController extends AppController {
 				$this->Profile->id=$prof['Profile']['id'];
 			
 			}
+			
 			//$this->User->create();
 			if ($this->User->save($this->request->data)) {
-			
+		
 			if($exist==null || count($exist) == 0)	 
 				$userid=$this->User->getInsertID();
 			
