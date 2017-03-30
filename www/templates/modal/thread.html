@@ -1,27 +1,24 @@
 <ion-modal-view>
-   <ion-header-bar class="bar-basic">
-      <h1 class="title"><span ng-show="$root.modalAction=='edit'">Edit</span><span ng-show="$root.modalAction=='add'">Add</span> Group</h1>
-    </ion-header-bar>
-    <ion-content>
-<div class="list">
-    <label class="item">
-  </label>
-  <label class="item item-input item-stacked-label">
-    <span class="input-label">Group name:</span>
-    <input type="text" placeholder="Title" ng-model="$root.modalContent.title">
-  </label>
-
-</div>
-<div style="text-align:center">
-<button ng-show="$root.modalAction=='edit'" class="button button-center button-positive" ng-click="processEditingThread()">
-  Save
-</button>
-<button ng-show="$root.modalAction=='add'" class="button button-center button-positive" ng-click="processAddingThread()">
-  Add
-</button>
-<button class="button button-center button-assertive" ng-click="$root.modalContent=[];threadModal.hide();settingsPopover.hide();">
-  Cancel
-</button>
-</div>
- </ion-content>
-  </ion-modal-view>
+  <ion-header-bar class="bar-basic">
+    <h1 class="title">グループ<span ng-show="$root.modalAction=='edit'">編集</span><span ng-show="$root.modalAction=='add'">作成</span></h1>
+  </ion-header-bar>
+  <ion-content>
+    <div class="list">
+      <label class="item item-input item-stacked-label">
+        <!-- <input type="text" placeholder="グループ名" ng-model="$root.modalContent.title"> -->
+        <textarea row="1" placeholder="グループ名" ng-model="$root.modalContent.title"></textarea>
+      </label>
+    </div>
+    <div style="text-align:center">
+      <button class="button button-center" ng-click="$root.modalContent=[];threadModal.hide();settingsPopover.hide();">
+        キャンセル
+      </button>
+      <button ng-show="$root.modalAction=='edit'" class="button button-center button-positive" ng-class="{'disabled':!$root.modalContent.title}" ng-click="processEditingThread()">
+        更新
+      </button>
+      <button ng-show="$root.modalAction=='add'" class="button button-center button-positive" ng-class="{'disabled':!$root.modalContent.title}" ng-click="processAddingThread()">
+        保存
+      </button>
+    </div>
+  </ion-content>
+</ion-modal-view>

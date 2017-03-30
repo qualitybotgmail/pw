@@ -1,62 +1,61 @@
-<ion-view view-title="<i class='icon ion-person-stalker'></i> : {{$root.groupTitle}}">
-     <ion-nav-buttons side="right" ng-show="false">
-    <button class="button button-icon button-clear ion-compose" ng-click="triggerAdd()">
+<ion-view can-swipe-back="false" view-title="<i class='icon ion-person-stalker'></i> : {{$root.groupTitle}}">
+     <!-- <ion-nav-buttons side="right" ng-show="false">
+    <button class="button button-icon button-clear ion-ios-compose-outline" ng-click="triggerAdd()">
     </button>
-  </ion-nav-buttons>
-   <ion-nav-buttons side="left">
-    <button class="button back-button buttons button-clear header-item" ng-click="goBack()">
-      <i class="icon ion-ios-arrow-back"> Back</i> 
-    </button>
-  </ion-nav-buttons>
+  </ion-nav-buttons> -->
   <ion-content class="padding">
-      
+
     <div class="button-bar" ng-show="$root.thread.Thread.user_id==$root.user_id">
-      <a class="button button-small button-positive" ng-click="showAddMember()">Add Members</a>
-      <a class="button button-small button-positive" ng-click="showMemberList.show()">Members</a>
+      <a class="button button-small button-positive" ng-click="showAddMember()">メンバーの追加</a>
+      <a class="button button-small button-positive" ng-click="showMemberList.show()">現在のメンバー</a>
     </div>
-    <a ng-show="$root.thread.Thread.user_id!=$root.user_id" class="button button-small button-full button-positive" ng-click="showMemberList.show()">Members</a>
-     
+    <a ng-show="$root.thread.Thread.user_id!=$root.user_id" class="button button-small button-full button-positive" ng-click="showMemberList.show()">現在のメンバー</a>
+
 <!--     <ion-slide-box ng-show="sliderImages.length > 0">
-         
+
        <ion-slide ng-repeat="im in sliderImages track by $index" style="padding-top:20%">
            <i ng-click="hideImages()" class="icon ion-close-round" style="font-size: 35px;position: absolute;right: 10px;color: darkgrey;"></i>
          <img ng-src="{{base_url}}{{im.Upload.path}}" style="width:400px;height:400px;margin:auto;display:block" >
        </ion-slide>
     </ion-slide-box>-->
     <div class="card" ng-repeat="head in thread.Head track by $index">
-      <div class="item item-avatar " ui-sref="tab.head({id:head.id,index:$index,likes:head.likes})">
+      <div class="item item-avatar " ui-sref="tab.head({id:head.id,index:$index,likes:head.likes})" style="padding-top: 0px;">
          <img ng-src="img/avatar.png">
-         <h2 ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</h2>
-         <h2 ng-show="head.user_id ==$root.user_id">{{$root.user}}</h2>
+         <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</div>
+         <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="head.user_id ==$root.user_id">{{$root.user}}</div>
+         <!-- <p style="font-size:small;" ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</p>
+         <p style="font-size:small;" ng-show="head.user_id ==$root.user_id">{{$root.user}}</p> -->
          <p class="dateList"><span ng-show="head.user_id==$root.user_id" prevent-href="true"><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showHeadPopover($event,$index)"></i></span></p>
-        <p class="headings remove-first" style="white-space:pre-line !important;word-break:break-word"> {{head.body}} </p>
-        <div style="width:100%;height:30px;padding-top: 5px;"><a class="subdued datecomment">{{head.created}}</a><a class="subdued" prevent-href="true" style="float:right" ng-click="changeHeadLike(head.id,$index)"> <span style="font-size:15px"><i class="icon ion-thumbsup likes" ng-class="{'active':head.isUserLiked}"></i> {{head.likes}}</span></a></div>      
+        <!-- <h2 class="headings"> {{head.body}} </h2> -->
+        <div style="white-space: normal;padding-right:10px;color:#000;">
+          {{head.body}}
+        </div>
+        <div style="width:100%;height:30px;padding-top: 5px;"><a class="subdued datecomment">{{head.created}}</a><a class="subdued" prevent-href="true" style="float:right" ng-click="changeHeadLike(head.id,$index)"> <span style="font-size:15px"><i class="icon ion-thumbsup likes" ng-class="{'active':head.isUserLiked}"></i> {{head.likes}}</span></a></div>
       </div>
     </div>
     <!--<div ng-repeat="head in thread.Head track by $index">
      <div class="comment-list" ui-sref="tab.head({id:head.id})">
-          
+
          <img class="avatar" ng-src="img/avatar.png">
          <h2 ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</h2>
        <h2 ng-show="head.user_id ==$root.user_id">{{$root.user}}</h2>
-        
+
         <div class = "row">
-  
-        {{head.body}} 
+
+        {{head.body}}
     </div>-->
 <!--   <div ng-show="head.Uploads.length > 0" prevent-href="true">
        <!--<img ng-show="head.Uploads.length == 1" ng-click="showImages({{$parent.$index}},{{$index}})" ng-src="{{base_url}}{{upload.Upload.path}}" style="max-height: 200px;max-width: 200px;" ></img>
          <a class="item item-list-detail" style="padding: 0px;border: 0px;">
 			<ion-scroll direction="x" >
 				<img ng-repeat="upload in head.Uploads track by $index" ng-src="{{base_url}}{{upload.Upload.path}}" ng-click="showImages({{$parent.$index}},{{$index}})" class="image-list-thumb"/>
-			    
+
 			</ion-scroll>
 		</a>
        </div>-->
    <!-- <div style="width:100%;height:30px"><a class="subdued" style="float:right" prevent-href="true" > <span ng-click="changeLike(head.id,$index)"><i class="icon ion-thumbsup likes" ng-class="{'active':head.isUserLiked}"></i> {{head.likes}}</span></a></div>
     </div>
-          
+
   </div>-->
   </ion-content>
 </ion-view>
-

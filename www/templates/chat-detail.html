@@ -5,49 +5,50 @@
   The Friends service returns an array of friend data
 -->
   <ion-view view-title="{{$root.chatMembers.join()}}">
- <ion-nav-buttons side="left">
+ <!-- <ion-nav-buttons side="left">
     <button class="button back-button buttons button-clear header-item" ng-click="goBack()">
-      <i class="icon ion-ios-arrow-back"> Back</i> 
+      <i class="icon ion-ios-arrow-back"> Back</i>
     </button>
-  </ion-nav-buttons>
+  </ion-nav-buttons> -->
   <ion-content class="padding has-footer has-tabs has-header" style="bottom: 100px !important;">
     <ion-refresher on-refresh="doRefresh()" pulling-icon="ios-arrow-down" spinner="bubbles" on-pulling="disabledScroll()">
     </ion-refresher>
-    
+
       <div class="list">
         <div ng-repeat="message in chats | reverse track by $index" ng-init="showcreated=false">
           <div style="text-align:center;padding-top: 10px;" ng-show="message.Message.date!=chats[(chats.length - $index - 1)+1].Message.date">{{message.Message.date}}</div>
         <div ng-class="{other: message.Message.user_id == $root.user_id}" class="messages" style="margin-bottom: 0px !important;">
           <div class="message" ng-show="message.Message.body!=''" ng-class="{'slide-right': hideTime, '': !hideTime}" style="padding: 5px !important;">
-            <p ng-show="message.Message.user_id != $root.user_id" style="font-size:13px;margin:0px;color: rgba(68, 68, 68, 0.74);">{{message.User.username}}</p>
-            <span ng-click="showcreated=!showcreated" on-hold="message.Message.user_id == $root.user_id?showChatPopover($event,'chat',{{$index}}):''" ng-style="{opacity:errorSending && (message.Message.id==-1)?'0.4':'1'}">{{ message.Message.body }}</span>
-             
-             <p ng-show="showcreated" style="font-size:13px;margin:0px;color: rgba(68, 68, 68, 0.74);">{{message.Message.created}}</p>
-            
+            <p ng-show="message.Message.user_id != $root.user_id" style="font-size:12px;margin:0px;color: rgba(68, 68, 68, 0.74);">{{message.User.username}}</p>
+            <span on-hold="message.Message.user_id == $root.user_id?showChatPopover($event,'chat',{{$index}}):''" ng-style="{opacity:errorSending && (message.Message.id==-1)?'0.4':'1'}">{{ message.Message.body }}</span>
+
+             <p style="font-size:12px;margin:0px;color: rgba(68, 68, 68, 0.74);">{{message.Message.time}}</p>
+
           </div>
-  
+
           <div class="time" ng-class="{'slide-right': hideTime, '': !hideTime}"></div>
         </div>
         <div ng-style="{'text-align':message.Message.user_id == $root.user_id?'right':'left'}" ng-show="message.Upload.length > 0">
             <img on-hold="showChatPopover($event,'image',{{$parent.$index}},{{$index}})" ng-repeat="upload in message.Upload track by $index" ng-src="{{upload.loading?upload.path:base_url+upload.path}}" ng-style="{'max-height':message.Upload.length > 1?'100px':'230px','width':message.Upload.length > 1?'100px':'200px'}" class="chatimages"/>
         </div>
-        <p ng-show="errorSending && (message.Message.id==-1)" style="font-size:10px;margin:0px;color: red;text-align:right;width:100%"><i class="icon ion-alert-circled"></i> unable to send message</p>
+        <p ng-show="errorSending && (message.Message.id==-1)" style="font-size:10px;margin:0px;color: red;text-align:right;width:100%"><i class="icon ion-alert-circled"></i> メッセージを送信できませんでした。</p>
         </div>
       </div>
   </ion-content>
-  <ion-footer-bar align-title="left" style="padding: 0px;height:auto" keyboard-attach>
-     
-    <div class="list" style="width:100%">
+  <ion-footer-bar align-title="left" style="padding: 0px;height:auto;border-bottom:1px solid #ddd;" keyboard-attach>
+
+    <div style="width:100%">
       <div class="item offline" ng-show="$root.isOffline"><i class="icon ion-android-alert"></i> No internet connection</div>
     <div class="item item-input-inset" style="padding:0px">
         <i ng-show="!isEdit" class="icon ion-ios-camera" style="font-size: 35px;padding-left: 5px;color: rgba(68, 68, 68, 0.76);" ng-click="loadImage()"></i>
       <label class="item-input-wrapper item-icon-left" style="padding-left:5px;padding-right:0px;background-color: white;">
-        
-        <textarea rows="1" auto-grow ng-model="newChat" ng-Required="true" placeholder="Type here.." name="content" style="width:100%;padding: 10px;border-radius: 5px;background-color: #e5e5e5;height:auto !important;"></textarea>
+
+        <textarea rows="1" auto-grow ng-model="newChat" ng-Required="true" placeholder="メッセージを書く" name="content" style="width:100%;padding: 10px;border-radius:0px;border-left:1px solid #ddd;height:auto !important;"></textarea>
       </label>
-       
-      <i class="icon ion-paper-airplane" ng-click="sendChat()" style="font-size: 30px;padding: 10px;color: dodgerblue;"></i>
-      
+
+      <a style="padding:0 8px;" ng-click="sendChat()">送信</a>
+      <!-- <i class="icon ion-paper-airplane" ng-click="sendChat()" style="font-size: 30px;padding: 10px;color: dodgerblue;"></i> -->
+
       </div>
        <div class="item" ng-show="uploadedChatImgs.length > 0" style="padding: 0px;border-top: 0px;">
         <a class="item-thumbnail" ng-repeat="im in uploadedChatImgs track by $index">
@@ -58,4 +59,3 @@
       </div>
     </ion-footer-bar>
 </ion-view>
- 

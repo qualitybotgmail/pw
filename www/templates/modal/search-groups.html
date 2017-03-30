@@ -1,26 +1,26 @@
-<ion-modal-view>
+<ion-modal-view style="top:44px;">
     <ion-content>
       <ion-list>
           <ion-item class="item item-divider item-positive">
-            <i  class="icon ion-person"></i> User
+            <i  class="icon ion-person"></i> メンバー
           </ion-item>
           <ion-item  ng-repeat="users in searchUsers" ng-click="createChat(users.User)">
             <i class="icon ion-person"> </i>{{users.User.username}}
           </ion-item>
     </ion-list>
-    
+
     <ion-list>
           <ion-item class="item item-divider item-positive">
-            <i  class="icon ion-ios-people"></i> Groups
+            <i  class="icon ion-ios-people"></i> グループ
           </ion-item>
           <ion-item  ng-repeat="threads in searchThreads" href="#/tab/group-detail/{{threads.Thread.id}}">
             <i class="icon ion-ios-paper"></i> {{threads.Thread.title}}
           </ion-item>
     </ion-list>
-    
+
     <ion-list>
            <ion-item class="item item-divider item-positive">
-            <i  class="icon ion-pin"></i> Posts
+            <i  class="icon ion-pin"></i> 投稿
            </ion-item>
           <ion-item  ng-repeat="heads in searchHeads track by $index" href="#/tab/head/{{heads.Head.id}}/{{$index}}">
             <i class="icon ion-pin"></i> {{heads.Head.body}}
