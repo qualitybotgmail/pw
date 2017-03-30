@@ -24,7 +24,7 @@
   </div>
   
    <ion-list ng-show="showGroupList">
-      <ion-item ng-class="{'forall':group.Thread.user_id == 0,'customgroup':group.Thread.user_id != 0}" class="item-remove-animate item-icon-left item-icon-right" ng-show="groups.length > 0" ng-repeat="group in groups track by $index" type="item-text-wrap" href="#/tab/group-detail/{{group.Thread.id}}" >
+      <ion-item ng-click="$root.groupTitle=group.Thread.title" ng-class="{'forall':group.Thread.user_id == 0,'customgroup':group.Thread.user_id != 0}" class="item-remove-animate item-icon-left item-icon-right" ng-show="groups.length > 0" ng-repeat="group in groups track by $index" type="item-text-wrap" href="#/tab/group-detail/{{group.Thread.id}}" >
         <i ng-if="group.Thread.user_id != 0" class="icon ion-ios-people"></i>
         <div ng-if="group.Thread.user_id == 0" class="group-wrapper"><div class="group-icon"></div></div>
         <h2>{{group.Thread.title}}</h2>

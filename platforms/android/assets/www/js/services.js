@@ -300,6 +300,20 @@ angular.module('starter.services', [])
       
       return deferred.promise;
     },
+    getTitle:function(id){
+      var deferred=$q.defer();
+      $http.get(API_URL+"threads/threadTitle/"+id,{
+          headers:{
+            'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+          }
+        }).success(function(data){
+           deferred.resolve(data);
+        }).error(function(data){
+          deferred.reject(data);
+        });
+        
+        return deferred.promise;
+    },
     edit:function(threadId,title){
       return $http.post(API_URL+"threads/"+threadId+".json",{'title':title,'id':threadId},{
       headers:{

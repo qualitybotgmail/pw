@@ -36,8 +36,9 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
        $rootScope.chatNotifCount=NotificationService.getGroupchatCount();
        $rootScope.threadNotif=NotificationService.getThreadNotif();
        $rootScope.groupchatNotif=NotificationService.getGroupchatNotif();
-       $rootScope.totalNotif=NotificationService.gettotalcount();
-       window.FirebasePlugin.setBadgeNumber($rootScope.totalNotif);
+       $rootScope.totalNotif=parseInt($rootScope.threadNotifCount) + parseInt($rootScope.chatNotifCount);
+       console.log($rootScope.totalNotif);
+       window.FirebasePlugin.setBadgeNumber(parseInt($rootScope.totalNotif));
        
        if(parseInt($rootScope.chatNotifCount) > 0){
           $rootScope.$broadcast('updatesforgroupchat',null);
@@ -76,21 +77,29 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
      });
     
      window.FirebasePlugin.onNotificationOpen(function(data){
+       console.log(JSON.stringify(data));
        NotificationService.setNotif();
       if("tap" in data){
         
         if("head_id" in data){
-          $rootScope.$broadcast('updatesforthread',data.id);
+          Groups.getTitle(data.id).then(function(response){
+            $rootScope.groupTitle=response.title;
+            $rootScope.$broadcast('updatesforthread',data.id);
+          });
+          
         }else{
           $rootScope.$broadcast('updatesforgroupchat',data.id);
         }
         
       }else{
         if("head_id" in data){
-          $rootScope.$broadcast('update_thread',data.id);
-          $state.go('tab.group-detail',{id:data.id});
-          
-          
+         
+          Groups.getTitle(data.id).then(function(response){
+            $rootScope.groupTitle=response.title;
+             $rootScope.$broadcast('update_thread',data.id);
+             $state.go('tab.group-detail',{id:data.id});
+          });
+         
         }else{
           $rootScope.$broadcast('update_groupchat',data.id);
           $state.go('tab.chats');
@@ -133,12 +142,9 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
             
          }
         
-        if(toState.name=='tab.group-detail'){
-          Groups.get(toParams.id).then(function(response){
-            console.log(response);
-            $rootScope.groupTitle=response.Thread.title;
-          });
-        }
+       /* if(toState.name=='tab.group-detail'){
+          
+        }*/
         
         if(toState.name=='tab.head'){
             Groups.getHeadDetails(toParams.id).then(function(data){

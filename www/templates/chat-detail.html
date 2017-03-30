@@ -29,7 +29,7 @@
           <div class="time" ng-class="{'slide-right': hideTime, '': !hideTime}"></div>
         </div>
         <div ng-style="{'text-align':message.Message.user_id == $root.user_id?'right':'left'}" ng-show="message.Upload.length > 0">
-            <img on-hold="showChatPopover($event,'image',{{$parent.$index}},{{$index}})" ng-repeat="upload in message.Upload track by $index" ng-src="{{upload.loading?upload.path:base_url+upload.path}}" ng-style="{'height':message.Upload.length > 1?'100px':'230px','width':message.Upload.length > 1?'100px':'200px'}" class="chatimages"/>
+            <img on-hold="showChatPopover($event,'image',{{$parent.$index}},{{$index}})" ng-repeat="upload in message.Upload track by $index" ng-src="{{upload.loading?upload.path:base_url+upload.path}}" ng-style="{'max-height':message.Upload.length > 1?'100px':'230px','width':message.Upload.length > 1?'100px':'200px'}" class="chatimages"/>
         </div>
         <p ng-show="errorSending && (message.Message.id==-1)" style="font-size:10px;margin:0px;color: red;text-align:right;width:100%"><i class="icon ion-alert-circled"></i> unable to send message</p>
         </div>
