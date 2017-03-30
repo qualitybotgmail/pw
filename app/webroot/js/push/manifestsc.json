@@ -1,11 +1,11 @@
 {
-  "name": "Playwork",
-  "short_name": "Playwork",
+  "name": "PlayWork",
+  "short_name": "PlayWork",
   "icons": [{
         "src": "/js/push/images/icon-192x192.png",
         "sizes": "192x192"
       }],
   "start_url": "/index.html",
   "display": "standalone",
-  "gcm_sender_id": "425640170999"
+  "gcm_sender_id": "763471596185"
 }

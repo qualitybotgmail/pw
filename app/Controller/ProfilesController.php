@@ -249,7 +249,7 @@ class ProfilesController extends AppController {
 			if($n['type'] == 'Comment.like'){
 				$uname = $n['User']['username'];
 				$head = $n['Head']['body'];
-				$title = "Back office 通知";
+				$title = "PlayWork";
 				$thread = $n['Thread']['title'];
 				if($uid == $n['Comment']['user_id'])
 					$body = "$uname さんがあなたのコメントに「いいね」と言っています。";
@@ -261,7 +261,7 @@ class ProfilesController extends AppController {
 			}elseif($n['type'] == 'Comment.add'){
 				$uname = $n['User']['username'];
 				$head = $n['Head']['body'];
-				$title = "Back office 通知";
+				$title = "PlayWork";
 				$thread = $n['Thread']['title'];
 				$body = "$uname さんが「 $thread 」のグループ投稿にコメントを投稿しました。";
 				$link = '/index.html#/heads/'.$n['Head']['id'];
@@ -269,7 +269,7 @@ class ProfilesController extends AppController {
 			}elseif($n['type'] == 'Head.like'){
 				$uname = $n['User']['username'];
 				$head = $n['Head']['body'];
-				$title = "Back office 通知";
+				$title = "PlayWork";
 				$thread = $n['Thread']['title'];
 				$body = "$uname さんが「 $thread 」のグループ投稿に「いいね」と言っています。";
 				$link = '/index.html#/heads/'.$n['Head']['id'];		
@@ -277,7 +277,7 @@ class ProfilesController extends AppController {
 			}elseif($n['type'] == 'Head.add'){
 				$uname = $n['User']['username'];
 				$head = $n['Head']['body'];
-				$title = "Back office 通知";
+				$title = "PlayWork";
 				$thread = $n['Thread']['title'];
 				$body = "$uname さんが「 $thread 」のグループにグループ投稿を投稿しました。";
 				$link = '/index.html#/heads/'.$n['Head']['id'];		
@@ -285,13 +285,13 @@ class ProfilesController extends AppController {
 			}elseif($n['type'] == 'Head.edit'){
 				$uname = $n['User']['username'];
 				$head = $n['Head']['body'];
-				$title = "Back office 通知";
+				$title = "PlayWork";
 				$thread = $n['Thread']['title'];
 				$body = "$uname さんがグループ投稿を変更しました。";
 				$link = '/index.html#/heads/'.$n['Head']['id'];		
 			}elseif($n['type'] == 'Thread.edit'){
 				$uname = $n['User']['username'];
-				$title = "Back office 通知";
+				$title = "PlayWork";
 				$thread = $n['Thread']['title'];
 				$body = "$uname さんがグループを変更しました。";
 				$link = '/index.html#/threads/'.$n['Thread']['id'];		
@@ -311,7 +311,7 @@ class ProfilesController extends AppController {
 				$body = "$uname さんがグループのメンバーに\n"."$members \nを追加しました。";
 				//who was added here?
 				
-				$title = "Back office 通知";
+				$title = "PlayWork";
 				$link = '/index.html#/threads/'.$n['Thread']['id'];			
 			}	
 		
