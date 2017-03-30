@@ -126,7 +126,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                         $scope.comment.body = ''; 
                         $scope.comment.message_id = null;
                         $scope.isSending = false;
-                        $scope.startInterval();
+                        // $scope.startInterval();
                         $scope.$apply();
                    },
                    error: function(jqXHR, textStatus, errorMessage) {
@@ -178,14 +178,14 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 if (!$("#attachments")[0].files.length && $scope.comment.body === '') return;
                 if ($scope.isSending) return;
                 
-                $scope.stopInterval();
+                // $scope.stopInterval();
                 $scope.isSending = true;
                 
                 var postData = {'body': $scope.comment.body};
                 var id = $scope.message.Groupchat.id;
                 var currentComment = null;
                 // if ($("#attachments")[0].files.length){ 
-                    console.log(postData, "postData")
+                    // console.log(postData, "postData")
                     //$rootScope.sendPushNotif(postData);
                     Restangular.one('messages').one('add').one(id).customPOST(postData).then(function(res){
                         // console.log($scope.comment, 'the comment');
@@ -197,7 +197,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                         } else {
                            $scope.message.Message.push(currentComment);
                            $scope.isSending = false;
-                           $scope.startInterval();
+                        //   $scope.startInterval();
                         }
                         $("#attachments").val('');
                         // $scope.comment = { body: '', message_id: null};
@@ -287,24 +287,26 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             // get thread for every 7 secs
             $scope.startInterval = function() {
-                //pendingQry = $interval($scope.getLatestMessage, 7000);    
+                // pendingQry = $interval($scope.getLatestMessage, 7000);    
                 window.get_latest_message_function = $scope.getLatestMessage;
             };
             
             $scope.stopInterval = function() {
-                $interval.cancel(pendingQry);
+                // $interval.cancel(pendingQry);
                 window.get_latest_message_function = null;
             };
         	
         	var init = function(){
         	    $scope.selectedMessageId = $stateParams.id;
                 $scope.getMessage();
+                // $scope.startInterval();
         	};
         	init();
         	
         	/* Destroy non-angular objectst */
 			$scope.$on('$destroy', function (event) {
-			    $interval.cancel(pendingQry);
+			 //   $interval.cancel(pendingQry);
+			 window.get_latest_message_function = null;
 			});
         }
 	]);

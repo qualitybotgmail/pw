@@ -103,7 +103,7 @@
 			  <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-if="isLoadingMessage"></span>
 			  MORE MESSAGES
 			</a>
-			<div class="messages-list" >
+			<div class="messages-list commentList" >
 			    <div ng-repeat="(created_date, filteredMessages) in message.Message | groupBy: 'created_date'" ng-init="$last && fireMessageEvent()">
 			        <div class="message text-center">
 			             <hr>
@@ -120,7 +120,7 @@
                                     {{m.created}}
                                 </span>
                             </h4>
-                            <p class="message-description" ng-init='c.formattedComment=formatComment(c.body)' >
+                            <p class="message-description" ng-init='m.formattedComment=formatComment(m.body)' >
                                 {{m.formattedComment}}
                                 <p>
                                     <span ng-repeat="upload in m.Upload">
