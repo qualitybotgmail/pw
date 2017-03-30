@@ -21,7 +21,8 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
 
     }
     if (window.StatusBar) {
-      StatusBar.overlaysWebView(false);
+      StatusBar.styleDefault();
+      // StatusBar.overlaysWebView(false);
     }
 
   });
