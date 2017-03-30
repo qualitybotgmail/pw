@@ -48,6 +48,9 @@
     padding-right: 15px !important;
     font-size:13px !important;
 }
+.remove-first::first-line {
+    line-height: 0px;
+}
 .headings{
     overflow: hidden !important;
     text-overflow: ellipsis !important;
