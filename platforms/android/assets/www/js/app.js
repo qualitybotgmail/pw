@@ -37,7 +37,8 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
        $rootScope.threadNotif=NotificationService.getThreadNotif();
        $rootScope.groupchatNotif=NotificationService.getGroupchatNotif();
        $rootScope.totalNotif=NotificationService.gettotalcount();
-
+       window.FirebasePlugin.setBadgeNumber($rootScope.totalNotif);
+       
        if(parseInt($rootScope.chatNotifCount) > 0){
           $rootScope.$broadcast('updatesforgroupchat',null);
        }
@@ -45,8 +46,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
          
           $rootScope.$broadcast('updatesforthread',null);
        }
-      // window.FirebasePlugin.setBadgeNumber($rootScope.totalNotif);
-       
+ 
   });
   
   document.addEventListener("deviceready", function () {
