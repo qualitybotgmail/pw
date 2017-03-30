@@ -59,6 +59,11 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	$scope.comment = { body: '', message_id: null};
         	$scope.loadFirstTime = true;
         	
+        	// format text 
+            $scope.formatComment = function(message){
+                return message.replace(/↵/, '\n');
+            };
+        	
         	var $updateUserGroupChat = function(selectMembers, groupChatId){
         	    angular.forEach($rootScope.createdGroupChats, function(groupChat, index){
         	       // console.log(groupChat, 'the groupChats');

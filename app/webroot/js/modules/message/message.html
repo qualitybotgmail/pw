@@ -1,4 +1,7 @@
 <style type="text/css">
+  p.message-description{
+    white-space: pre-line;
+  }
   .glyphicon-refresh-animate {
     -animation: spin .7s infinite linear;
     -webkit-animation: spin2 .7s infinite linear;
@@ -117,8 +120,8 @@
                                     {{m.created}}
                                 </span>
                             </h4>
-                            <p class="message-description">
-                                {{m.body}}
+                            <p class="message-description" ng-init='c.formattedComment=formatComment(c.body)' >
+                                {{m.formattedComment}}
                                 <p>
                                     <span ng-repeat="upload in m.Upload">
                                         <a fancybox ng-href="{{upload.path}}">

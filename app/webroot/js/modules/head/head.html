@@ -1,4 +1,7 @@
 <style type="text/css">
+    p.head-comment {
+        white-space: pre-line;
+    }
     .blue	 {
 		color: #5bc0de;
 	}
@@ -92,7 +95,7 @@
             <ul class="list-group commentList">
                 <li class="list-group-item" ng-repeat="c in selectedHead.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
                     <small>by : {{c.User.username == loginUser.username ? "You" : c.User.username }}</small>
-                    <p>{{c.body}}</p>
+                    <p class="head-comment" ng-init='c.formattedComment=formatComment(c.body)' >{{c.formattedComment}}</p>
                     <p>
                          <span ng-repeat="upload in c.Upload">
                             <a fancybox ng-href="{{upload.path}}">
