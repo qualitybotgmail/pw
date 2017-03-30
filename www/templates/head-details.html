@@ -14,7 +14,7 @@
       </div>
 
       <div class="item item-body" style="padding: 0px;border-top:none;">
-        <divclass="remove-first"  style="padding:0px 15px 10px 15px;margin:0;color:#000;white-space:pre-line;word-break:break-word;">
+        <div class="remove-first" style="padding:0px 15px 10px 15px;margin:0;color:#000;white-space:pre-line;word-break:break-word;">
           {{getHeads.body}}
         </div>
           <!-- <div class="item" ng-show="headUploads.length > 0" prevent-href="true" style="padding-left: 0px;padding-right: 0px;border-bottom:0px;">
@@ -67,8 +67,8 @@
         <textarea rows="1" auto-grow ng-model="newComment.body" ng-Required="true" placeholder="コメントを書く" name="content" style="width:100%;padding: 10px;border-radius:0px;border-left:1px solid #ddd;height:auto !important;"></textarea>
       </label>
 
-      <a ng-if="action=='add' || action==''" style="padding:0 8px;" ng-click="sendComment(comments.Head.id)">送信</a>
-      <a ng-if="action=='edit'" style="padding:0 8px;" ng-click="editComment(comments.Head.id)">送信</a>
+      <a ng-if="action=='add' || action==''" style="padding:11px" ng-click="sendComment(comments.Head.id)">送信</a>
+      <a ng-if="action=='edit'" style="padding:11px;" ng-click="editComment(comments.Head.id)">送信</a>
       <!-- <button ng-show="aaction=='add' || action==''" class="button button-basic" ng-click="sendComment(comments.Head.id)">
         Send
       </button>

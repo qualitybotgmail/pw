@@ -20,7 +20,7 @@
         <div ng-class="{other: message.Message.user_id == $root.user_id}" class="messages" style="margin-bottom: 0px !important;">
           <div class="message" ng-show="message.Message.body!=''" ng-class="{'slide-right': hideTime, '': !hideTime}" style="padding: 5px !important;">
             <p ng-show="message.Message.user_id != $root.user_id" style="font-size:12px;margin:0px;color: rgba(68, 68, 68, 0.74);">{{message.User.username}}</p>
-            <span on-hold="message.Message.user_id == $root.user_id?showChatPopover($event,'chat',{{$index}}):''" ng-style="{opacity:errorSending && (message.Message.id==-1)?'0.4':'1'}">{{ message.Message.body }}</span>
+            <span style="white-space:pre-line;word-break:break-word;" on-hold="message.Message.user_id == $root.user_id?showChatPopover($event,'chat',{{$index}}):''" ng-style="{opacity:errorSending && (message.Message.id==-1)?'0.4':'1'}">{{ message.Message.body }}</span>
 
              <p style="font-size:12px;margin:0px;color: rgba(68, 68, 68, 0.74);">{{message.Message.time}}</p>
 
@@ -46,7 +46,7 @@
         <textarea rows="1" auto-grow ng-model="newChat" ng-Required="true" placeholder="メッセージを書く" name="content" style="width:100%;padding: 10px;border-radius:0px;border-left:1px solid #ddd;height:auto !important;"></textarea>
       </label>
 
-      <a style="padding:0 8px;" ng-click="sendChat()">送信</a>
+      <a style="padding:11px" ng-click="sendChat()">送信</a>
       <!-- <i class="icon ion-paper-airplane" ng-click="sendChat()" style="font-size: 30px;padding: 10px;color: dodgerblue;"></i> -->
 
       </div>
