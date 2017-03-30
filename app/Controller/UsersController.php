@@ -182,7 +182,8 @@ public function mobilelogin(){
 		        
 		        $id = $_SESSION['Auth']['User']['id'];
 				$this->User->recursive = 0;
-		        $userdetails = $this->User->findById($id); 
+		        $userdetails = $this->User->findById($id);
+		        $this->User->addmember_all($id);
 		        
 		    }
 		    echo json_encode(array('user'=>$userdetails));
@@ -218,6 +219,7 @@ public function mobilelogin(){
 				//$this->User->saveField('fcm_id','');
 				
 				//Mark all notfications 'notified' to prevent pushing of notifications even not logged in
+				$this->User->addmember_all($id);
 				$notifs = $this->User->Log->notifications($id);
 				foreach($notifs as $n){
 					if($this->Session->read('Backoffice.notified')==null){

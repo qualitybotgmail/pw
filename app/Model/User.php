@@ -253,14 +253,14 @@ class User extends AppModel {
 	    return true;
 	}
 	
-	public function afterSave($created, $options = array()){
+/*	public function afterSave($created, $options = array()){
 
 		if($created){
 
 			$this->addmember_all($this->data['User']['id']);
 		}
 
-	}
+	}*/
 	
 	function generate_hash($username,$pass){
 		return hash("sha1",$username.':'.$pass);
@@ -271,11 +271,27 @@ class User extends AppModel {
 			$users = array();
 			
 			if(count($all) > 0){
-				//$user_list=$this->Thread->User->find('list',array('fields'=>'User.id','conditions'=>array('thread_id'=>$all['Thread']['id'])));
+				$check_user=$this->find('first',array(
+					'joins'=>array(
+						array(
+							'table'=>'users_threads',
+							'alias'=>'UserThread',
+							'type'=>'inner',
+							'conditions'=> array(
+								'UserThread.user_id = User.id'
+								)
+							)),
+					'conditions'=>array(
+						'UserThread.thread_id'=>$all['Thread']['id'],
+						'User.id'=>$member_id
+					)
+				));
 				
+				if(count($check_user) == 0){
 					$query="Insert INTO users_threads(user_id,thread_id) VALUES('".$member_id."','".$all['Thread']['id']."')";			
 					//$result = $this->Thread->User->save(array('thread_id' =>$all['Thread']['id'],'user_id' => $member_id));
 					$this->Thread->query($query);
+				}
 				
 			}else{
 				$data=array('user_id'=>0,'title'=>'All');
