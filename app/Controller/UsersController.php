@@ -73,7 +73,7 @@ class UsersController extends AppController {
 	public function add() {
 		$exist=null;
 		$this->loadModel('Profile');
-		
+
 		if ($this->request->is('post')) {
 			$this->request->data['username']=$this->request->data['loginid'];
 			$this->request->data['outside_userid']=$this->request->data['userid'];
@@ -90,9 +90,10 @@ class UsersController extends AppController {
 				$this->Profile->id=$prof['Profile']['id'];
 			
 			}
+			
 			//$this->User->create();
 			if ($this->User->save($this->request->data)) {
-			
+		
 			if($exist==null || count($exist) == 0)	 
 				$userid=$this->User->getInsertID();
 			
@@ -181,7 +182,8 @@ public function mobilelogin(){
 		        
 		        $id = $_SESSION['Auth']['User']['id'];
 				$this->User->recursive = 0;
-		        $userdetails = $this->User->findById($id); 
+		        $userdetails = $this->User->findById($id);
+		        $this->User->addmember_all($id);
 		        
 		    }
 		    echo json_encode(array('user'=>$userdetails));
@@ -217,6 +219,7 @@ public function mobilelogin(){
 				//$this->User->saveField('fcm_id','');
 				
 				//Mark all notfications 'notified' to prevent pushing of notifications even not logged in
+				$this->User->addmember_all($id);
 				$notifs = $this->User->Log->notifications($id);
 				foreach($notifs as $n){
 					if($this->Session->read('Backoffice.notified')==null){

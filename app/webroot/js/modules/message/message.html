@@ -1,4 +1,7 @@
 <style type="text/css">
+  p.message-description{
+    white-space: pre-line;
+  }
   .glyphicon-refresh-animate {
     -animation: spin .7s infinite linear;
     -webkit-animation: spin2 .7s infinite linear;
@@ -100,7 +103,7 @@
 			  <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-if="isLoadingMessage"></span>
 			  MORE MESSAGES
 			</a>
-			<div class="messages-list" >
+			<div class="messages-list commentList" >
 			    <div ng-repeat="(created_date, filteredMessages) in message.Message | groupBy: 'created_date'" ng-init="$last && fireMessageEvent()">
 			        <div class="message text-center">
 			             <hr>
@@ -112,13 +115,13 @@
                 </div>
     				    <div class="msg">
                             <h4 class="message-subject">
-                                {{m.User.username}}
+                                By: {{m.User.username == loginUser.username ? "You" : m.User.username}}
                                 <span class="message-time">
                                     {{m.created}}
                                 </span>
                             </h4>
-                            <p class="message-description">
-                                {{m.body}}
+                            <p class="message-description" ng-init='m.formattedComment=formatComment(m.body)' >
+                                {{m.formattedComment}}
                                 <p>
                                     <span ng-repeat="upload in m.Upload">
                                         <a fancybox ng-href="{{upload.path}}">

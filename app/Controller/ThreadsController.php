@@ -67,12 +67,15 @@ class ThreadsController extends AppController {
 
 		
 		$result = array();
-		foreach($users_threads['Thread'] as $thread){
+		$allidkey=-1;
+		foreach($users_threads['Thread'] as $key=> $thread){
 
 			$owner = $thread['Owner'];
 			$user = $thread['User'];
 			unset($thread['Owner']);
 			unset($thread['User']);
+			
+			
 			
 			$this->loadModel('IgnoredThread');
 			$this->IgnoredThread->recursive=-1;
@@ -82,10 +85,21 @@ class ThreadsController extends AppController {
 			else
 			 $thread['notIgnored'] = true;
 			
-			$result[] = array('Thread' => $thread,'Owner' => $owner,'User' => $user);
-							
+			if($thread['user_id']==0){
+				array_unshift($result,array('Thread' => $thread,'Owner' => $owner,'User' => $user));
+			}else{
+				array_push($result,array('Thread' => $thread,'Owner' => $owner,'User' => $user));
+			}				
 		}
+		
 		$this->set('threads', $result);
+	}
+	
+	public function threadTitle($id){
+		
+		$threadTitle=$this->Thread->find('first',array('fields'=>'Thread.title','conditions'=>array('Thread.id'=>$id)));
+		echo json_encode(array('title'=>$threadTitle['Thread']['title']));
+		exit;
 	}
 	
 	public function updates($lastid=0) { 
@@ -153,7 +167,7 @@ class ThreadsController extends AppController {
 		parent::beforeFilter();
 		$this->loadModel('User'); 
 
-			$this->Auth->allow('index','updateThread','view','updates','edit','delete','notifications','addmember','userstoadd','deletemember');
+			$this->Auth->allow('index','threadTitle','updateThread','testThread','view','updates','edit','delete','notifications','addmember','userstoadd','deletemember');
 	}
 
 /**
@@ -206,6 +220,15 @@ class ThreadsController extends AppController {
 		
 		echo json_encode($newthreads);
 		exit;
+	}
+	
+	public function testThread(){
+		$users=$this->User->find('list',array('fields'=>'id'));
+		
+		$x=implode(",",$users);
+		
+		$this->addmember(22371,$x);
+		
 	}
 
 /**

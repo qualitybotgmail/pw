@@ -229,7 +229,6 @@ public $actsAs = array('Containable');
 			            			'title' => $title,
 			            			'body' => $body,
 			            			 'sound'=>'default',
-						             'badge'=>1,
 						             'icon'=>'fcm_push_icon'
 			            		),
 			            	  'data'=>$data,
@@ -242,7 +241,7 @@ public $actsAs = array('Containable');
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			//file_put_contents("/tmp/lastcurl",date("g:i")." [Exec]\n".print_r($fcmids,true),FILE_APPEND);
 			$server_output = curl_exec ($ch);
-			file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r(array('Output'=>$server_output),true),FILE_APPEND);
+			file_put_contents("/tmp/dadacurl",date("g:i:s")."\n".print_r(array('Output'=>$fcmids),true));
 			curl_close ($ch);
 			
 		}
@@ -304,7 +303,7 @@ public $actsAs = array('Containable');
 					if($log['type']=='Head.like')
 						$notifdata['body']=$profile['User']['username'].' liked your post: '.$head['Head']['body'];
 					else
-						$notifdata['body']=$profile['User']['username'].' liked your comment in '.$head['Head']['body'];
+		 				$notifdata['body']=$profile['User']['username'].' liked your comment in '.$head['Head']['body'];
 					
 				}else{
 					if($log['type']=='Head.add')
@@ -332,8 +331,10 @@ public $actsAs = array('Containable');
 					$uids[] = $u['id'];
 					if(trim($f) == '' ) continue;
 					if($u['Profile'][0]['user_id'] == $log['user_id']) continue;
-					// $fcmids=array_merge($fcmids,json_decode($f));
-					$fcmids[] = json_decode($f);
+					
+					$decoded = json_decode($f,true);
+					$fcmids=array_merge($fcmids,$decoded);
+					//$fcmids[] = json_decode($f);
 				}
 			
 				$oid = @$thread['Owner']['id'];
@@ -345,8 +346,10 @@ public $actsAs = array('Containable');
 					if($f){
 						if(@$thread['Owner']['Profile'][0]['user_id'] != $log['user_id']){
 							//$fcmids[] = json_decode($f);
-							$fcmids=array_merge($fcmids,json_decode($f));
-							file_put_contents("/tmp/dadacurl",date("g:i:s")."\n".print_r($fcmids,true));
+							$decoded = json_decode($f,true);
+							$fcmids=array_merge($fcmids,$decoded);							
+
+							
 						}
 					}
 				}
@@ -383,20 +386,26 @@ public $actsAs = array('Containable');
 					if(trim($f) == '' ) continue;
 					if($u['Profile'][0]['user_id'] == $log['user_id']) continue;
 					//$fcmids[] = json_decode($f);
-					$fcmids=array_merge($fcmids,json_decode($f));
-
-				}
+					if(is_array(json_decode($f))){
+						$fcmids=array_merge($fcmids,json_decode($f));
+					}else{
+						array_push($fcmids,$f);
+					}
+						
+					}
 				
 				$f = @$g['Owner']['Profile'][0]['fcm_id'];
 				$uids[] = $g['Owner']['id'];
 				
-				if($f){
+				if(is_array(json_decode($f))){
 					//$fcmids[] = json_decode($f);
 					$fcmids=array_merge($fcmids,json_decode($f));
 					
-				}	
+				}else{
+						array_push($fcmids,$f);
+					}	
 			}	
-			
+			file_put_contents("/tmp/dadacurl",date("g:i:s")."\n".print_r($notifdata,true));
 			$this->push($fcmids,$notifdata);
 			
 		

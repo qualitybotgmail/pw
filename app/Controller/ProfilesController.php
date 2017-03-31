@@ -833,14 +833,16 @@ class ProfilesController extends AppController {
 		$not = $noty->getNotif();
 		
 		$ret = array('Threads' => array(),'Groupchats' => array());
-		
-		foreach($not['Threads'] as $k=>$n){
-			$ret["Threads"][] = array("thread_id" => (string)$k,"count"=>(string) $n);
+		if (array_key_exists("Threads",$not)){
+			foreach($not['Threads'] as $k=>$n){
+				$ret["Threads"][] = array("thread_id" => (string)$k,"count"=>(string) $n);
+			}
 		}
-		foreach($not['Groupchats'] as $k=>$n){
-			$ret["Groupchats"][] = array("groupchat_id" => (string)$k,"count" => (string)$n);
-		}
-				
+		if (array_key_exists("Groupchats",$not)){
+			foreach($not['Groupchats'] as $k=>$n){
+				$ret["Groupchats"][] = array("groupchat_id" => (string)$k,"count" => (string)$n);
+			}
+		}		
 	
 		
 		echo json_encode($ret);

@@ -526,9 +526,21 @@ class GroupchatsController extends AppController {
 				'group'=>'User.id',
 				'conditions'=>array('members.user_id=User.id')
 			)),
-			'conditions'=>array('OR'=>array('members.groupchat_id'=>$k,'User.id'=>$v ))
+			'conditions'=>array('OR'=>array('members.groupchat_id'=>$k))
 			));
-		
+			
+			if($v!==$id){
+				$owner=$this->User->find('first',array('fields'=>array('User.id','User.username'),
+				'conditions'=>array('User.id'=>$v)));
+			/*foreach($users as $struct) {
+			    if ($v == $struct->id) {
+			        continue;
+			    }*/
+			    array_push($users,$owner);
+			//}	
+			
+			}
+			
 			array_push($data,array('id'=>$k,'owner'=>$v,'message'=>$mess,'users'=>$users));
 		}
 		$data=Set::sort($data, '{n}.message.Message.id', 'desc');

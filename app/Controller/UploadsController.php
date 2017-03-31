@@ -78,7 +78,7 @@ class UploadsController extends AppController {
             }
 						
 			foreach($this->request->data['Upload']['file'] as $file){
-				$path = WWW_ROOT . 'files/' . $this->Auth->user('username');
+				$path = WWW_ROOT . 'files/' . $this->Auth->user('id');
 				
 				@mkdir($path);
 			//	chmod($path,0777);
@@ -86,7 +86,7 @@ class UploadsController extends AppController {
 				$filepath = $path . '/' .time(). $file['name'];
 				$this->Upload->create();
 			    move_uploaded_file($file['tmp_name'],$filepath);
-				$urlpath = '/files/' . $this->Auth->user('username') . '/' . time().$file['name'];
+				$urlpath = '/files/' . $this->Auth->user('id') . '/' . time().$file['name'];
 				$data = array('path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'head_id'=>$head_id ,'name' => $file['name']);
 				$return = $this->Upload->save($data);
 				
@@ -182,14 +182,14 @@ class UploadsController extends AppController {
             }
 						
 		foreach($_FILES as $file){
-				$path = WWW_ROOT . 'files/' . $this->Auth->user('username');
+				$path = WWW_ROOT . 'files/' . $this->Auth->user('id');
 				
 				@mkdir($path);
 				
 				$filepath = $path . '/' .time(). $file['name'];
 				$this->Upload->create();
 			    move_uploaded_file($file['tmp_name'],$filepath);
-				$urlpath = '/files/' . $this->Auth->user('username') . '/' . time().$file['name'];
+				$urlpath = '/files/' . $this->Auth->user('id') . '/' . time().$file['name'];
 				$data = array('path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'head_id'=>$head_id ,'name' =>$file['name']);
 				$return = $this->Upload->save($data);
 				

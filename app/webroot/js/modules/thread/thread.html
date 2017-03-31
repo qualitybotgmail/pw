@@ -132,7 +132,7 @@
         </a>
         
         <span style="font-size:11px;">{{head.created}}</span>
-        <span style="font-size:11px;">by: {{head.Owner.username}}</span>
+        <span style="font-size:11px;">by: {{head.Owner.username == loginUser.username ? "You": head.Owner.username}}</span>
         <div class="panel-heading-controls">
             <button class="btn btn-sm {{(head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="head.processing" ng-click="like($index, head)">
                 {{head.likes}}

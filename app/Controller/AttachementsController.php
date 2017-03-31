@@ -62,14 +62,14 @@ class AttachementsController extends AppController {
             	$message_id = $this->request->data['Attachement']['message_id'];
 			
 			foreach($this->request->data['Attachement']['files'] as $file){
-				$path = WWW_ROOT . 'uploads/' . $this->Auth->user('username');
+				$path = WWW_ROOT . 'uploads/' . $this->Auth->user('id');
 				
 				@mkdir($path,777);
 				
 				$filepath = $path . '/' . $file['name'];
 				
 			    move_uploaded_file($file['tmp_name'],$filepath);
-				$urlpath = '/uploads/' . $this->Auth->user('username') . '/' . $file['name'];
+				$urlpath = '/uploads/' . $this->Auth->user('id') . '/' . $file['name'];
 				$data = array('path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'name' => $file['name']);
 				$return = $this->Attachement->save($data);
 				
