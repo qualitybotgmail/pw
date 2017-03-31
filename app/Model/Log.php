@@ -323,6 +323,7 @@ public $actsAs = array('Containable');
 				
 				
 				foreach($thread['User'] as $u){
+					
 					if(in_array($u['id'],$ignored_users)){
 						continue;
 					}
@@ -331,8 +332,14 @@ public $actsAs = array('Containable');
 					$uids[] = $u['id'];
 					if(trim($f) == '' ) continue;
 					if($u['Profile'][0]['user_id'] == $log['user_id']) continue;
+					if($f==null){
+						continue;
+					}
 					
 					$decoded = json_decode($f,true);
+					if(!is_array($decoded)){
+						$decoded = array($decoded);
+					}
 					$fcmids=array_merge($fcmids,$decoded);
 					//$fcmids[] = json_decode($f);
 				}
