@@ -95,6 +95,13 @@ class ThreadsController extends AppController {
 		$this->set('threads', $result);
 	}
 	
+	public function threadTitle($id){
+		
+		$threadTitle=$this->Thread->find('first',array('fields'=>'Thread.title','conditions'=>array('Thread.id'=>$id)));
+		echo json_encode(array('title'=>$threadTitle['Thread']['title']));
+		exit;
+	}
+	
 	public function updates($lastid=0) { 
 	
 		$user_id = $this->Auth->user('id');
@@ -160,7 +167,7 @@ class ThreadsController extends AppController {
 		parent::beforeFilter();
 		$this->loadModel('User'); 
 
-			$this->Auth->allow('index','updateThread','testThread','view','updates','edit','delete','notifications','addmember','userstoadd','deletemember');
+			$this->Auth->allow('index','threadTitle','updateThread','testThread','view','updates','edit','delete','notifications','addmember','userstoadd','deletemember');
 	}
 
 /**
