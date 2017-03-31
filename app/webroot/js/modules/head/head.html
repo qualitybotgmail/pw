@@ -1,5 +1,6 @@
 <style type="text/css">
-    p.head-comment {
+    p.head-comment,
+    p.head-body{
         white-space: pre-line;
     }
     .blue	 {
@@ -52,9 +53,9 @@
                 <small>
                     {{selectedHead.Thread.title}}
                 </small>
-                <label class="lead">
-                    {{selectedHead.Head.body}}
-                </label>
+                <p class="lead head-body" ng-init="fromattedBody=formatComment(selectedHead.Head.body)">
+                    {{fromattedBody}}
+                </p>
             </div>
             
             <br>
