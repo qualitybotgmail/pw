@@ -331,7 +331,9 @@ public $actsAs = array('Containable');
 					$uids[] = $u['id'];
 					if(trim($f) == '' ) continue;
 					if($u['Profile'][0]['user_id'] == $log['user_id']) continue;
-					 $fcmids=array_merge($fcmids,json_decode($f));
+					
+					$decoded = json_decode($f,true);
+					$fcmids=array_merge($fcmids,$decoded);
 					//$fcmids[] = json_decode($f);
 				}
 			
@@ -344,7 +346,9 @@ public $actsAs = array('Containable');
 					if($f){
 						if(@$thread['Owner']['Profile'][0]['user_id'] != $log['user_id']){
 							//$fcmids[] = json_decode($f);
-							$fcmids=array_merge($fcmids,json_decode($f));
+							$decoded = json_decode($f,true);
+							$fcmids=array_merge($fcmids,$decoded);							
+
 							
 						}
 					}

@@ -59,6 +59,11 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	$scope.comment = { body: '', message_id: null};
         	$scope.loadFirstTime = true;
         	
+        	// format text 
+            $scope.formatComment = function(message){
+                return message.replace(/↵/, '\n');
+            };
+        	
         	var $updateUserGroupChat = function(selectMembers, groupChatId){
         	    angular.forEach($rootScope.createdGroupChats, function(groupChat, index){
         	       // console.log(groupChat, 'the groupChats');
@@ -180,7 +185,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 var id = $scope.message.Groupchat.id;
                 var currentComment = null;
                 // if ($("#attachments")[0].files.length){ 
-                    console.log(postData, "postData")
+                    // console.log(postData, "postData")
                     //$rootScope.sendPushNotif(postData);
                     Restangular.one('messages').one('add').one(id).customPOST(postData).then(function(res){
                         // console.log($scope.comment, 'the comment');
@@ -192,7 +197,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                         } else {
                            $scope.message.Message.push(currentComment);
                            $scope.isSending = false;
-                           $scope.startInterval();
+                          $scope.startInterval();
                         }
                         $("#attachments").val('');
                         // $scope.comment = { body: '', message_id: null};
@@ -282,24 +287,26 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             // get thread for every 7 secs
             $scope.startInterval = function() {
-                //pendingQry = $interval($scope.getLatestMessage, 7000);    
-                window.get_latest_message_function = $scope.getLatestMessage;
+                pendingQry = $interval($scope.getLatestMessage, 7000);    
+                // window.get_latest_message_function = $scope.getLatestMessage;
             };
             
             $scope.stopInterval = function() {
                 $interval.cancel(pendingQry);
-                window.get_latest_message_function = null;
+                // window.get_latest_message_function = null;
             };
         	
         	var init = function(){
         	    $scope.selectedMessageId = $stateParams.id;
                 $scope.getMessage();
+                // $scope.startInterval();
         	};
         	init();
         	
         	/* Destroy non-angular objectst */
 			$scope.$on('$destroy', function (event) {
 			    $interval.cancel(pendingQry);
+			 //window.get_latest_message_function = null;
 			});
         }
 	]);
