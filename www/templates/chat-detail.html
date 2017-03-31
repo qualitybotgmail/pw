@@ -29,7 +29,9 @@
           <div class="time" ng-class="{'slide-right': hideTime, '': !hideTime}"></div>
         </div>
         <div ng-style="{'text-align':message.Message.user_id == $root.user_id?'right':'left'}" ng-show="message.Upload.length > 0">
+            <p ng-show="message.Message.user_id != $root.user_id" style="font-size:12px;margin:0px 0px 0px 5px;color: rgba(68, 68, 68, 0.74);">{{message.User.username}}</p>
             <img on-hold="showChatPopover($event,'image',{{$parent.$index}},{{$index}})" ng-repeat="upload in message.Upload track by $index" ng-src="{{upload.loading?upload.path:base_url+upload.path}}" ng-style="{'max-height':message.Upload.length > 1?'100px':'230px','width':message.Upload.length > 1?'100px':'200px'}" class="chatimages"/>
+            <p style="font-size:12px;margin:0px 0px 0px 5px;color: rgba(68, 68, 68, 0.74);">{{message.Message.time}}</p>
         </div>
         <p ng-show="errorSending && (message.Message.id==-1)" style="font-size:10px;margin:0px;color: red;text-align:right;width:100%"><i class="icon ion-alert-circled"></i> メッセージを送信できませんでした。</p>
         </div>
