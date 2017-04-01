@@ -103,15 +103,6 @@
         "is_top_level": false,
         "variables": {}
     },
-    "cordova-plugin-image-picker": {
-        "source": {
-            "type": "git",
-            "url": "https://github.com/wymsee/cordova-imagePicker.git",
-            "subdir": "."
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
     "cordova-plugin-actionsheet": {
         "source": {
             "type": "git",
@@ -125,6 +116,15 @@
         "source": {
             "type": "registry",
             "id": "cordova-plugin-splashscreen@3.0.0"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-image-picker": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Findiglay/cordova-imagepicker.git",
+            "subdir": "."
         },
         "is_top_level": true,
         "variables": {}

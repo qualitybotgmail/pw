@@ -1,9 +1,54 @@
 angular.module('starter.controllers', [])
 
 .controller('PerformanceCtrl', function($scope,$rootScope,$timeout,$cordovaNetwork,AuthService,Progress,Incentive,$http,$location) {
-  var MAX_RATE = 100;
+
+  var MAX_RATE = 100;
   $scope.labels = ["達成率", "残り"];
-  $scope.colors = ["#328EE4", "#ffffff"];  $scope.graph = [0, MAX_RATE];  $scope.data = {};  $scope.data.progress = 0;  $scope.data.goalBp = 0;  $scope.data.bp = 0;  $scope.data.salary = 0;  $scope.data.pay = 0;  $scope.data.incentive = 0;  $scope.data.hourlyIncentive = 0;  $scope.data.monthlyIncentive = 0;  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {    viewData.enableBack = false;  });  $timeout(function(){    $rootScope.user=AuthService.username();    var now = new Date();    var yyyymm = now.getFullYear()+('0'+(now.getMonth())).slice(-2);    getProgress_(yyyymm);    getIncentive_(yyyymm);  });  var getProgress_ = function(yyyymm){    Progress.get(yyyymm).then(function(response){      $scope.graph = [response.data.progress, MAX_RATE - response.data.progress];      $scope.data.progress = response.data.progress;      $scope.data.goalBp = response.data.goalBp;      $scope.data.bp = response.data.bp;    }),function(error){};  };  var getIncentive_ = function(yyyymm){    Incentive.get(yyyymm).then(function(response){      $scope.data.salary = response.data.salary;      $scope.data.pay = response.data.pay;      $scope.data.incentive = response.data.incentive;      $scope.data.hourlyIncentive = response.data.hourlyIncentive;      $scope.data.monthlyIncentive = response.data.monthlyIncentive;    }),function(error){};  };
+  $scope.colors = ["#328EE4", "#ffffff"];
+  $scope.graph = [0, MAX_RATE];
+  $scope.data = {};
+  $scope.data.progress = 0;
+  $scope.data.goalBp = 0;
+  $scope.data.bp = 0;
+
+  $scope.data.salary = 0;
+  $scope.data.pay = 0;
+  $scope.data.incentive = 0;
+  $scope.data.hourlyIncentive = 0;
+  $scope.data.monthlyIncentive = 0;
+
+
+  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+    viewData.enableBack = false;
+  });
+
+  $timeout(function(){
+    $rootScope.user=AuthService.username();
+
+    var now = new Date();
+    var yyyymm = now.getFullYear()+('0'+(now.getMonth())).slice(-2);
+    getProgress_(yyyymm);
+    getIncentive_(yyyymm);
+  });
+
+  var getProgress_ = function(yyyymm){
+    Progress.get(yyyymm).then(function(response){
+      $scope.graph = [response.data.progress, MAX_RATE - response.data.progress];
+      $scope.data.progress = response.data.progress;
+      $scope.data.goalBp = response.data.goalBp;
+      $scope.data.bp = response.data.bp;
+    }),function(error){};
+  };
+
+  var getIncentive_ = function(yyyymm){
+    Incentive.get(yyyymm).then(function(response){
+      $scope.data.salary = response.data.salary;
+      $scope.data.pay = response.data.pay;
+      $scope.data.incentive = response.data.incentive;
+      $scope.data.hourlyIncentive = response.data.hourlyIncentive;
+      $scope.data.monthlyIncentive = response.data.monthlyIncentive;
+    }),function(error){};
+  };
 })
 
 .controller('ChatsCtrl', function($scope,$ionicPopup,$cordovaNetwork,$rootScope,NotificationService,$ionicLoading,$ionicPopover,Chats,$ionicModal,ApiService,$state) {
@@ -337,7 +382,7 @@ angular.module('starter.controllers', [])
             $scope.errorSending=false;
             $scope.chats[$scope.sendingCount-$scope.countSent].Message=response.data.Message;
             //$scope.updateChatCache();
-
+          //  console.log($scope.chats[$scope.sendingCount-$scope.countSent].Upload);
             if(mess.Upload.length > 0){
 
               $scope.uploadChatPhotos($scope.chats[$scope.sendingCount-$scope.countSent]);
@@ -419,15 +464,19 @@ angular.module('starter.controllers', [])
             'Authorization':'Basic '+window.localStorage.getItem("talknote_token")+''
         };
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i.path,o,true).then(function(result) {
-          console.log(result);
+          //if(result.responseCode!=200 || (JSON.parse(result.response).length==0)){
 
-          $scope.chats.forEach(function(v,k){
-            if(parseInt(v.Message.id)==parseInt(chat.Message.id)){
-              var up=JSON.parse(result.response)[0]['Upload'];
-              up['loading']=false;
-              v.Upload[x]=up;
-            }
-          });
+            $scope.chats.forEach(function(v,k){
+              if(parseInt(v.Message.id)==parseInt(chat.Message.id)){
+                var up=JSON.parse(result.response)[0]['Upload'];
+                v.Upload[x]=up;
+                //v.Upload[x]['loading']=false;
+                //v.Upload[x]['path']=JSON.parse(result.response)[0]['Upload']['path'];
+                //v.Upload[x]['name']=JSON.parse(result.response)[0]['Upload']['name'];
+                //$scope.errorSending=true;
+              }
+            });
+         //}
           /*i.loading=false;
           i.path=JSON.parse(result.response)[0]['Upload']['path'];
           i.name=JSON.parse(result.response)[0]['Upload']['name'];*/
@@ -442,7 +491,7 @@ angular.module('starter.controllers', [])
 
   $scope.$watch('image_chat_ctr',function(newVal,oldVal){
     if(newVal==$scope.uploadedChatImgs.length){
-         $scope.updateChatCache();
+        // $scope.updateChatCache();
          $scope.uploadedChatImgs=[];
          $ionicScrollDelegate.scrollBottom();
          if($scope.sendingCount-$scope.countSent==0){
@@ -529,6 +578,7 @@ angular.module('starter.controllers', [])
               sourceType: Camera.PictureSourceType.CAMERA,
               quality: 30,
               encodingType: Camera.EncodingType.JPEG,
+              correctOrientation: true,
               targetWidth: 800,
               targetHeight: 800,
               saveToPhotoAlbum: false
@@ -548,6 +598,7 @@ angular.module('starter.controllers', [])
               quality: 30,
               targetWidth: 800,
               targetHeight: 800,
+              correctOrientation: true,
               saveToPhotoAlbum: false
             };
 
@@ -1066,7 +1117,7 @@ angular.module('starter.controllers', [])
 
 
          if($scope.uploadedImgs.length > 0)
-            $scope.submitPhoto(response.Head.id);
+            $scope.submitPhoto(response.Head.id,true);
          else
             $scope.updateCache();
 
@@ -1088,7 +1139,7 @@ angular.module('starter.controllers', [])
       $scope.resetHeadForm();
       $rootScope.showAddHead.hide();
       $rootScope.headPopover.hide();
-      $ionicLoading.hide();
+     
        $state.go('tab.head',{id:$rootScope.thread.Head[$rootScope.processedHead].id,index:$rootScope.processedHead});
     });
 
@@ -1217,6 +1268,7 @@ $scope.selectPicture = function($act) {
             sourceType: Camera.PictureSourceType.CAMERA,
             quality: 80,
             encodingType: Camera.EncodingType.JPEG,
+            correctOrientation: true,
             targetWidth: 800,
             targetHeight: 800,
             popoverOptions: CameraPopoverOptions,
@@ -1243,6 +1295,7 @@ $scope.selectPicture = function($act) {
             encodingType: Camera.EncodingType.JPEG,
             targetWidth: 800,
             targetHeight: 800,
+            correctOrientation: true,
             popoverOptions: CameraPopoverOptions,
             saveToPhotoAlbum: false
           };
@@ -1291,7 +1344,7 @@ $scope.selectPicture = function($act) {
 
   $scope.result=[];
   $scope.img_ctr=0;
-  $scope.submitPhoto=function(id){
+  $scope.submitPhoto=function(id,isNew){
 
     $scope.img_ctr=0;
     //var obj={'head_id':id,'headers':'Authorization: Basic '+localStorage.getItem("talknote_token")+''};
@@ -1313,8 +1366,10 @@ $scope.selectPicture = function($act) {
         $scope.Upload={};
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i,o).then(function(result) {
           $rootScope.thread.Head.forEach(function(v,k){
+            if(typeof(isNew)!=='undefined')
+              $scope.headUploads=JSON.parse(result.response)[0];
             if(parseInt(v.id)==parseInt(id)){
-              v.Uploads.push(JSON.parse(result.response)[0]);
+               v.Uploads.push(JSON.parse(result.response)[0]);
                threads.put('threads/'+$scope.groupID, $rootScope.thread);
                if(threads.get('heads/'+id))
                   threads.put('heads/'+id,v);
@@ -1402,10 +1457,15 @@ $scope.selectPicture = function($act) {
   $scope.updateCache=function(lastid=0){
 
     Groups.updateHeadCache($scope.headID,'heads/'+$scope.headID,'comment',lastid).then(function(response){
-        if(response.length > 0){
+       console.log("Head" in response);
+        if("Head" in response){
           $scope.thread=response.Thread;
-          $scope.getHeads=response.Head
+          $scope.getHeads=response.Head;
           $scope.headUploads = response.Upload;
+          $rootScope.viewedHeadContents=response.Head;
+          $ionicLoading.hide();
+        }else{
+          $scope.gethead();
         }
       if("Comment" in response && (response.Comment.length > 0)){
         if(lastid > 0)
@@ -1420,9 +1480,9 @@ $scope.selectPicture = function($act) {
   $scope.gethead=function(){
 
       Groups.getComments($scope.headID).then(function(response){
-
-        $rootScope.threadTitle = response.Thread.title;
-        $rootScope.headOwner = response.Owner.username;
+        console.log(response+'getHead');
+        /*$rootScope.threadTitle = response.Thread.title;
+        $rootScope.headOwner = response.Owner.username;*/
         $scope.getHeads = response.Head;
         $scope.thread=response.Thread;
         $scope.headUploads = response.Upload;
@@ -1433,7 +1493,7 @@ $scope.selectPicture = function($act) {
       });
   }
   $scope.updateCache();
-  $scope.gethead();
+  //$scope.gethead();
 
 
   	$scope.showModal = function() {
@@ -1509,6 +1569,7 @@ $scope.selectPictureInComment = function($act) {
             sourceType: Camera.PictureSourceType.CAMERA,
             quality: 100,
             encodingType: Camera.EncodingType.JPEG,
+            correctOrientation: true,
             targetWidth: 800,
             targetHeight: 800,
             saveToPhotoAlbum: false
@@ -1532,6 +1593,7 @@ $scope.selectPictureInComment = function($act) {
             quality: 100,
             targetWidth: 800,
             targetHeight: 800,
+            correctOrientation: true,
             saveToPhotoAlbum: false
           };
 

@@ -6,7 +6,7 @@ angular.module('starter.services', [])
     all: function() {
       var deferred=$q.defer();
       var groupchats = CacheFactory.get('groupchats');
-      
+
       if (groupchats.get('groupchat')){
         deferred.resolve(groupchats.get('groupchat'));
       }else{
@@ -21,22 +21,22 @@ angular.module('starter.services', [])
         .error(function(data){
           deferred.reject(data);
         });
-        
+
       }
-      
+
       return deferred.promise;
-    
+
     },
     updateCache:function(cacheKey){
       var groupchats = CacheFactory.get('groupchats');
       var deferred=$q.defer();
       if(typeof(groupchats) !=='undefined' && groupchats.get(cacheKey)){
-        
-        
+
+
         var cacheData=groupchats.get(cacheKey);
         var maxgc=0;
         if(InternetService.hasInternet()){
-          
+
             if(cacheKey=='groupchat'){
               if(groupchats.get('groupchat').length > 0)
                 //maxgc=Math.max.apply(Math,groupchats.get('groupchat').map(function(o){return o.id;}));
@@ -52,16 +52,16 @@ angular.module('starter.services', [])
                   }else{
                     deferred.resolve([]);
                   }
-                    
+
                 })
                  .error(function(data){deferred.reject(data);
                  });
-                 
+
             }else{
               deferred.resolve([]);
             }
-              
-            
+
+
         }else{
           deferred.resolve([]);
         }
@@ -75,10 +75,10 @@ angular.module('starter.services', [])
       var maxMess=0;
       if(groupchats.get(cacheKey)){
       var cacheData=groupchats.get(cacheKey);
-    
-    //if(groupchats.get(cacheKey).messages.length > 0)  
+
+    //if(groupchats.get(cacheKey).messages.length > 0)
      //maxMess=Math.max.apply(Math,groupchats.get(cacheKey).messages.map(function(o){return o.Message.id;}));
-   
+
         if(InternetService.hasInternet()){
           $http.get(API_URL+"groupchats/pagedchatforapp/"+chatId+'/'+page+'/'+lastid,{
             headers:{
@@ -95,7 +95,7 @@ angular.module('starter.services', [])
             }else{
               deferred.resolve([]);
             }
-            
+
           })
           .error(function(data){
             deferred.reject(data);
@@ -106,7 +106,7 @@ angular.module('starter.services', [])
         }
       }else{
         deferred.resolve([]);
-      } 
+      }
       return deferred.promise;
     },
     remove: function(chatId) {
@@ -117,10 +117,10 @@ angular.module('starter.services', [])
       });
     },
     get: function(chatId,page) {
-      
+
       var deferred=$q.defer();
       var groupchats = CacheFactory.get('groupchats');
-      
+
       if(groupchats.get('groupchats/pagedchatforapp/'+chatId+'/'+page)){
         deferred.resolve(groupchats.get('groupchats/pagedchatforapp/'+chatId+'/'+page));
       }else{
@@ -136,7 +136,7 @@ angular.module('starter.services', [])
         deferred.reject(data);
       });
       }
-      
+
       return deferred.promise;
     },
     add:function(groupchatId,body){
@@ -162,11 +162,11 @@ angular.module('starter.services', [])
     all: function() {
       var threads = CacheFactory.get('threads');
       var deferred=$q.defer();
-      
+
       $ionicLoading.show({
         template:'<ion-spinner name="bubbles"></ion-spinner>'
       });
-      
+
       if(threads.get('thread')){
         deferred.resolve(threads.get('thread'));
       }else{
@@ -182,15 +182,15 @@ angular.module('starter.services', [])
           deferred.reject(data);
         });
       }
-      
-     return deferred.promise; 
+
+     return deferred.promise;
     },
     updateThreadCache: function(cacheKey){
       var threads = CacheFactory.get('threads');
       var deferred=$q.defer();
       var maxThread=0;
       if(threads.get(cacheKey)){
-      
+
       if(threads.get(cacheKey).length > 0)
         //maxThread=Math.max.apply(Math,threads.get(cacheKey).map(function(o){return o.Thread.id;}));
         var cacheData=threads.get(cacheKey);
@@ -209,13 +209,13 @@ angular.module('starter.services', [])
             }
           })
           .error(function(){
-            
+
           });
         }else{
           deferred.resolve([]);
         }
       }else{deferred.resolve([]);};
-      
+
       return deferred.promise;
     },
     updateHeadCache:function(id,cacheKey,type,lastid=0){
@@ -225,29 +225,29 @@ angular.module('starter.services', [])
       var cacheData=null;
       var uri='';
       if(threads.get(cacheKey)){
-        
+
         cacheData=threads.get(cacheKey);
-        
+
         if(type=='head'){
           //if(threads.get(cacheKey).Head.length > 0)
            // max=Math.max.apply(Math,threads.get(cacheKey).Head.map(function(o){return o.id;}));
-            
+
           uri="threads/updateThread/";
         }
-        
+
         if(type=='comment'){
           //if(threads.get(cacheKey).Comment.length > 0)
           //  max=Math.max.apply(Math,threads.get(cacheKey).Comment.map(function(o){return o.id;}));
           uri="heads/updateHead/";
         }
-        
+
         if(InternetService.hasInternet()){
           $http.get(API_URL+uri+id+'/'+lastid,{
             headers:{
               'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
             }
           }).success(function(data){
-            
+
             if(type=='head'){
               if(data && data.Head.length > 0){
                 //cacheData.Head=cacheData.Head.concat(data.Head);
@@ -273,7 +273,7 @@ angular.module('starter.services', [])
       }else{
         deferred.resolve([]);
       }
-      
+
       return deferred.promise;
     },
     leave: function(group) {
@@ -282,7 +282,7 @@ angular.module('starter.services', [])
     get: function(groupId) {
       var threads = CacheFactory.get('threads');
       var deferred=$q.defer();
-      
+
       if(threads.get('threads/'+groupId)){
         deferred.resolve(threads.get('threads/'+groupId));
       }else{
@@ -297,7 +297,7 @@ angular.module('starter.services', [])
           deferred.reject(data);
         });
       }
-      
+
       return deferred.promise;
     },
     getTitle:function(id){
@@ -311,7 +311,7 @@ angular.module('starter.services', [])
         }).error(function(data){
           deferred.reject(data);
         });
-        
+
         return deferred.promise;
     },
     edit:function(threadId,title){
@@ -330,7 +330,7 @@ angular.module('starter.services', [])
     },
     getThreadDetails: function(groupId) {
       var deferred=$q.defer();
-      
+
         $http.get(API_URL+"threads/"+groupId+".json",{
           headers:{
             'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
@@ -351,7 +351,7 @@ angular.module('starter.services', [])
           }
         }).success(function(data){
            deferred.resolve(data);
-         
+
         }).error(function(data){
           deferred.reject(data);
         });
@@ -367,7 +367,7 @@ angular.module('starter.services', [])
     getComments:function(headId) {
       var threads = CacheFactory.get('threads');
       var deferred=$q.defer();
-      
+
       if(threads.get('heads/'+headId)){
         deferred.resolve(threads.get('heads/'+headId));
       }else{
@@ -382,7 +382,7 @@ angular.module('starter.services', [])
           deferred.reject(data);
         });
       }
-      
+
       return deferred.promise;
     },
     sendComment:function(id,comment){
@@ -434,7 +434,7 @@ angular.module('starter.services', [])
 .service('ApiService',function($http,API_URL,$q){
   this.Get=function(url,param){
     var deferred=$q.defer();
-    
+
     $http.get(API_URL+url+param,{
       headers:{
         'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
@@ -446,12 +446,12 @@ angular.module('starter.services', [])
     .error(function(data){
       deferred.reject(data);
     });
-    
+
     return deferred.promise;
   };
     this.setNotified=function(chatId,type){
     var deferred=$q.defer();
-    
+
     $http.get(API_URL+'profiles/clearNotif/'+type+'/'+chatId,{
       headers:{
         'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
@@ -461,43 +461,43 @@ angular.module('starter.services', [])
     }).error(function(data){
       deferred.reject(data);
     });
-    
+
     return deferred.promise;
   };
   this.Post=function(url,param){
     var deferred=$q.defer();
-    
+
     $http.post(API_URL+url,param,{
       headers:{
         'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
       }
       })
     .success(function(data,status){
-     
+
       deferred.resolve(data);
     })
     .error(function(data){
       deferred.reject(data);
     });
-    
+
     return deferred.promise;
   };
   this.Delete=function(url,param){
     var deferred=$q.defer();
-    
+
     $http.delete(API_URL+url+param,{
       headers:{
         'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
       }
       })
     .success(function(data,status){
-     
+
       deferred.resolve(data);
     })
     .error(function(data){
       deferred.reject(data);
     });
-    
+
     return deferred.promise;
   };
 })
@@ -513,7 +513,7 @@ angular.module('starter.services', [])
      $ionicLoading.show({
       template:'<ion-spinner name="bubbles"></ion-spinner>'
      });
-     
+
     return $http.post(API_URL+'heads/'+$rootScope.headContent.id+'.json',$rootScope.headContent,{
       headers:{
         'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
@@ -524,32 +524,32 @@ angular.module('starter.services', [])
 
 .factory('Base64', function () {
     /* jshint ignore:start */
-  
+
     var keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-  
+
     return {
         encode: function (input) {
             var output = "";
             var chr1, chr2, chr3 = "";
             var enc1, enc2, enc3, enc4 = "";
             var i = 0;
-  
+
             do {
                 chr1 = input.charCodeAt(i++);
                 chr2 = input.charCodeAt(i++);
                 chr3 = input.charCodeAt(i++);
-  
+
                 enc1 = chr1 >> 2;
                 enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
                 enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
                 enc4 = chr3 & 63;
-  
+
                 if (isNaN(chr2)) {
                     enc3 = enc4 = 64;
                 } else if (isNaN(chr3)) {
                     enc4 = 64;
                 }
-  
+
                 output = output +
                     keyStr.charAt(enc1) +
                     keyStr.charAt(enc2) +
@@ -558,16 +558,16 @@ angular.module('starter.services', [])
                 chr1 = chr2 = chr3 = "";
                 enc1 = enc2 = enc3 = enc4 = "";
             } while (i < input.length);
-  
+
             return output;
         },
-  
+
         decode: function (input) {
             var output = "";
             var chr1, chr2, chr3 = "";
             var enc1, enc2, enc3, enc4 = "";
             var i = 0;
-  
+
             // remove all characters that are not A-Z, a-z, 0-9, +, /, or =
             var base64test = /[^A-Za-z0-9\+\/\=]/g;
             if (base64test.exec(input)) {
@@ -576,56 +576,60 @@ angular.module('starter.services', [])
                     "Expect errors in decoding.");
             }
             input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-  
+
             do {
                 enc1 = keyStr.indexOf(input.charAt(i++));
                 enc2 = keyStr.indexOf(input.charAt(i++));
                 enc3 = keyStr.indexOf(input.charAt(i++));
                 enc4 = keyStr.indexOf(input.charAt(i++));
-  
+
                 chr1 = (enc1 << 2) | (enc2 >> 4);
                 chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
                 chr3 = ((enc3 & 3) << 6) | enc4;
-  
+
                 output = output + String.fromCharCode(chr1);
-  
+
                 if (enc3 != 64) {
                     output = output + String.fromCharCode(chr2);
                 }
                 if (enc4 != 64) {
                     output = output + String.fromCharCode(chr3);
                 }
-  
+
                 chr1 = chr2 = chr3 = "";
                 enc1 = enc2 = enc3 = enc4 = "";
-  
+
             } while (i < input.length);
-  
+
             return output;
         }
     };
-  
+
     /* jshint ignore:end */
 })
 
 .service('AuthService', function($q, $http,$ionicHistory,CacheFactory,API_URL) {
   var LOCAL_TOKEN_KEY = 'talknote_token';
   var username = '';
+  var affiliation = '';
+  var avatar_img = '';
   var userid='';
   var isAuthenticated = false;
   var authToken;
   var devicetoken;
- 
+
   function loadUserCredentials() {
     var token = window.localStorage.getItem(LOCAL_TOKEN_KEY);
      username=window.localStorage.getItem('user');
+     affiliation=window.localStorage.getItem('affiliation');
+     avatar_img=window.localStorage.getItem('avatar_img');
      userid=window.localStorage.getItem('user_id');
     if (token) {
       useCredentials(token);
     }
   }
  var setdeviceToken=function(removeToken){
-      
+
       var y=null;
       if(window.localStorage.getItem('newdevicetoken') !==null)
         y=window.localStorage.getItem('newdevicetoken');
@@ -633,7 +637,7 @@ angular.module('starter.services', [])
         y=window.localStorage.getItem('devicetoken');
       if(removeToken){
          var olddevicetoken=window.localStorage.getItem('devicetoken');
-         
+
              if (olddevicetoken !== null){
                 $http.post(API_URL+'profiles/removeregid',{'fcmid':olddevicetoken},{
                     headers:{
@@ -642,83 +646,90 @@ angular.module('starter.services', [])
                   }).success(function(data){
                      window.localStorage.setItem('devicetoken',window.localStorage.getItem('newdevicetoken'));
                      setFCMID();
-                    
+
                   }).error(function(data){});
-                  
+
               }else{
                 window.localStorage.setItem('devicetoken',window.localStorage.getItem('newdevicetoken'));
                 setFCMID();
               }
-    
+
       }else{
         window.localStorage.setItem('devicetoken',window.localStorage.getItem('newdevicetoken'));
         setFCMID();
       }
-    
+
   }
-  
+
   function setFCMID(){
      if(isAuthenticated){
-        
+
         $http.post(API_URL+'profiles/setregid',{'fcmid':window.localStorage.getItem('devicetoken')},{
           headers:{
           'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
         }
         }).success(function(data){
            devicetoken=window.localStorage.getItem('devicetoken');
-           
+
         }).error(function(data){});
       }
   };
-  
-  var storeUserCredentials=function(token,uname,userid) {
+
+  var storeUserCredentials=function(token,uname,affiliation,avatar_img,userid,pworkid) {
     window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
     window.localStorage.setItem('user',uname);
+    window.localStorage.setItem('affiliation',affiliation);
+    window.localStorage.setItem('avatar_img',avatar_img);
     window.localStorage.setItem('user_id',userid);
+    window.localStorage.setItem('pwork_user_id',pworkid);
     useCredentials(token);
+    loadUserCredentials();
   }
- 
+
   function useCredentials(token) {
     isAuthenticated = true;
     authToken = token;
     var fcmid=window.localStorage.getItem('devicetoken');
-    
+
   }
- 
+
   function destroyUserCredentials() {
     authToken = undefined;
     username = '';
     userid='';
     isAuthenticated = false;
     var olddevicetoken=window.localStorage.getItem('devicetoken');
-         
+
     if (olddevicetoken !== null || olddevicetoken.length !== 0){
       $http.post(API_URL+'profiles/removeregid/',{'fcmid':olddevicetoken},{
           headers:{
           'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
         }
         }).success(function(data){}).error(function(data){});
-        
+
     }
     window.localStorage.removeItem(LOCAL_TOKEN_KEY);
     window.localStorage.removeItem('user');
     window.localStorage.removeItem('user_id');
+    window.localStorage.removeItem('pwork_user_id');
     CacheFactory.destroyAll();
   }
- 
+
   var logout = function() {
     destroyUserCredentials();
-    $ionicHistory.clearCache(); 
+    $ionicHistory.clearCache();
    $ionicHistory.clearHistory();
   };
- 
+
   loadUserCredentials();
- 
+
   return {
     logout: logout,
     storeUserCredentials:storeUserCredentials,
     isAuthenticated: function() {return isAuthenticated;},
     username: function() {return username;},
+    affiliation: function() {return affiliation;},
+    avatarImg: function() {return avatar_img && avatar_img!=null && avatar_img!='null' ? avatar_img : 'img/avatar.png';},
     userid:function(){return userid; },
     authToken:function(){return authToken; },
     setdeviceToken:setdeviceToken,
@@ -736,12 +747,12 @@ angular.module('starter.services', [])
             "id":userid,
             "param2":"value2"
           },
-            "to": "d2EK_EVvhEE:APA91bFDf1w9vBZ_8G8ZsaxBHjVHWSW3T7Xq41CLWWPau9nsKBzkNOTgmKR9Fy138T4gqG381O3vdMp_ZD4BPznnJadLap_at0eCO5OYB0xjYjky0tXCScgqGZHzm4gXmZqgaBtX9o2t",
+            "to": "AAAAscJ0Cpk:APA91bFP5-YTYwXQ1SSYJX5gafhnYLHYDSqN5E1_JyZupI9p5_ivu-u-8n-YvdtS5v-g_Nzdkld-svea0GJVfF-d5oS5IYQ_Uape9jmg5NWPP8kOdUTaL7f6tjLppc7q7w0HW1k1aZJz",
             "priority":"high",
             "restricted_package_name":""
         },{
         headers:{
-          'Authorization':'key=AIzaSyDf03OOwBarOokhqjqCPDyBirNvI4Mh2o8',
+          'Authorization':'key=AIzaSyA58P89Ups1h5pOlFw_BxFJc8hfIocgavo',
           'Content-type': 'application/json'
         }
       });
@@ -757,7 +768,7 @@ angular.module('starter.services', [])
 })
 
 .service('InternetService', function() {
-    
+
     var hasInternet=true;
     function checkInternet(){
         var haveInternet= true;
@@ -770,31 +781,31 @@ angular.module('starter.services', [])
         }
         return haveInternet;
     }
-    
+
     function onOnline(){
       hasInternet=true;
     }
-    
+
     function onOffline(){
       hasInternet=false;
     }
-    
+
     return{
       onOffline:onOffline,
       onOnline:onOnline,
       hasInternet:function(){return hasInternet; }
     }
-  
+
 })
 
 .service('NotificationService',function($q,$http,API_URL,broadcastService,Groups,Chats){
-  
+
   var notifications=[];
   var total=0;
   var totalThread=0;
   var totalChat=0;
   var setNotif=function(){
-    
+
     $http.get(API_URL+'profiles/notifications_count',{
       headers:{
         'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
@@ -808,7 +819,7 @@ angular.module('starter.services', [])
 
   };
   function countTotal(){
-    
+
     total=totalThread+totalChat;
   }
   return{
@@ -819,7 +830,7 @@ angular.module('starter.services', [])
       totalThread=t.reduce(function(a, b) { return a + b; }, 0);
       return totalThread;
     },
-    getGroupchatCount:function(){ 
+    getGroupchatCount:function(){
       var t = notifications.Groupchats.map(function(k){ return parseInt(k.count); });
       totalChat=t.reduce(function(a, b) { return a + b; }, 0);
       return totalChat;
@@ -832,7 +843,7 @@ angular.module('starter.services', [])
         })
       }
       return ids;
-      
+
     },
     getGroupchatNotif:function(){
       var ids=[];
@@ -878,8 +889,8 @@ angular.module('starter.services', [])
 })
 .service('NewModalService', function($ionicModal) {
   var svc = {};
-  
-  
+
+
   svc.showModal = function(_scope) {
     $ionicModal.fromTemplateUrl('templates/modal/search-groups.html', {
       scope: _scope, // passing in scope from controller
@@ -889,12 +900,12 @@ angular.module('starter.services', [])
       modal.show();
     });
   }
-  
+
   svc.hideModal = function(_scope) {
-    svc.modal.hide();
+    if(svc.modal) svc.modal.hide();
 }
   return svc;
-  
+
 })
 .factory('Progress', function($http,$q,PWORK_API_URL) {
   return{

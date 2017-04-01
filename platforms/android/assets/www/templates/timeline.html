@@ -1,10 +1,9 @@
-<ion-view view-title="Timeline" cache-view="false">
-    </ion-nav-buttons>
-   <ion-nav-buttons side="left">
+<ion-view can-swipe-back="false" view-title="タイムライン" cache-view="false">
+   <!-- <ion-nav-buttons side="left">
     <button class="button back-button buttons button-clear header-item" ng-click="goBack()">
-      <i class="icon ion-ios-arrow-back"> Back</i> 
+      <i class="icon ion-ios-arrow-back"></i>
     </button>
-  </ion-nav-buttons>
+  </ion-nav-buttons> -->
   <ion-content>
       <div class="list card" ng-click="gotoDetails(timeVal.id,timeVal.index)" ng-repeat="timeVal in timelineVal | orderBy : '-modified'">
            <div class="item item-avatar">
@@ -15,13 +14,12 @@
          <div class="item item-body">
             <img class="full-image"  ng-repeat="uploads in timeVal.Upload" src=" {{base_url}}{{uploads.Upload.path}}">
              <p>{{timeVal.title}} {{timeVal.body}}</p>
-             <h6 align="right" ng-hide="timeVal.index===undefined"> 
-             <a href="#" class="subdued">{{timeVal.likes}} Like</a> 
+             <h6 align="right" ng-hide="timeVal.index===undefined">
+             <a href="#" class="subdued">{{timeVal.likes}} Like</a>
              <a href="#" class="subdued">{{timeVal.Comment.length}} Comment</a>
              </h6>
          </div>
       </div>
-      
+
   </ion-content>
 </ion-view>
-  

@@ -115,7 +115,8 @@ textarea {
 
  .image-list-thumb {
     padding: 2px 2px 2px 2px;
-    height: 300px;
+    max-height: 250px;
+    max-width: 250px;
 }
 
 .image-modal {

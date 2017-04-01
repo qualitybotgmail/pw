@@ -1,9 +1,11 @@
-<ion-view view-title="Chats">
+<ion-view view-title="メッセージ">
     <ion-nav-buttons side="right" ng-show="false" >
-        <i ng-click="showAddChats()" class="icon ion-plus-circled chat-add"></i>
+    <button class="button button-icon button-clear ion-ios-compose-outline" ng-click="showAddChats()">
+    </button>
+        <!-- <i ng-click="showAddChats()" class="icon ion-plus-circled chat-add"></i> -->
   </ion-nav-buttons>
   <ion-content>
-     
+
     <ion-list>
       <ion-item class="item-remove-animate item-avatar item-icon-right" on-hold="chat.owner==$root.user_id?showgcpopover($event,$index):''" ng-repeat="chat in chatsPreview | orderBy:'chat.message.Message.created' | limitTo:numberOfGCToDisplay track by $index" type="item-text-wrap" ng-click="viewChat(chat.id,$index)">
         <img ng-src="img/avatar.png">
@@ -13,9 +15,10 @@
             <span ng-if="!$last">,</span>
           </span>
         </h2>
-        <p>{{chat.message.Message.body.split('\n')[0]}}</p>
+        <p>{{chat.message.Message.body}}</p>
+        <!-- <p>{{chat.message.Message.body.split('\n')[0]}}</p> -->
         <i class="icon ion-chevron-right icon-accessory"></i>
-      
+
        <span ng-show="$root.groupchatNotif[chat.id]" show-badge badge-id="{{chat.id}}" badge-type="groupchat" class="badge badge-assertive">{{$root.groupchatNotif[chat.id]}}</span>
       </ion-item>
     </ion-list>

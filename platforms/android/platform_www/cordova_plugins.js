@@ -280,14 +280,6 @@ module.exports = [
         ]
     },
     {
-        "id": "cordova-plugin-image-picker.ImagePicker",
-        "file": "plugins/cordova-plugin-image-picker/www/imagepicker.js",
-        "pluginId": "cordova-plugin-image-picker",
-        "clobbers": [
-            "plugins.imagePicker"
-        ]
-    },
-    {
         "id": "cordova-plugin-actionsheet.ActionSheet",
         "file": "plugins/cordova-plugin-actionsheet/www/ActionSheet.js",
         "pluginId": "cordova-plugin-actionsheet",
@@ -301,6 +293,14 @@ module.exports = [
         "pluginId": "cordova-plugin-splashscreen",
         "clobbers": [
             "navigator.splashscreen"
+        ]
+    },
+    {
+        "id": "cordova-plugin-image-picker.ImagePicker",
+        "file": "plugins/cordova-plugin-image-picker/www/imagepicker.js",
+        "pluginId": "cordova-plugin-image-picker",
+        "clobbers": [
+            "plugins.imagePicker"
         ]
     }
 ];
@@ -319,9 +319,9 @@ module.exports.metadata =
     "cordova-plugin-firebase": "0.1.19",
     "cordova-plugin-whitelist": "1.2.2",
     "cordova-plugin-network-information": "1.2.1",
-    "cordova-plugin-image-picker": "1.1.1",
     "cordova-plugin-actionsheet": "2.3.3",
-    "cordova-plugin-splashscreen": "3.0.0"
+    "cordova-plugin-splashscreen": "3.0.0",
+    "cordova-plugin-image-picker": "1.0.8"
 };
 // BOTTOM OF METADATA
 });
