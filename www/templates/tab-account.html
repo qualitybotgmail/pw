@@ -2,9 +2,21 @@
   <ion-content>
     <div class="list">
       <div class="item item-body text-center">
-        <img class="img-circle" style="width:50%;border-radius:50%;border:1px solid #ddd;" ng-src="{{avatar_img}}">
+        <img ng-if="!showUploadingButtons" ng-click="triggerProfileImgChange()" class="img-circle" style="height:164px;width:50%;border-radius:50%;border:1px solid #ddd;" ng-src="{{avatar_img}}">
+        <img ng-if="showUploadingButtons" class="img-circle" style="height:164px;width:50%;border-radius:50%;border:1px solid #ddd;" ng-src="{{uploadedProfileImg}}">
+        <center ng-show="showUploadingButtons">
+          <div style="text-align:center">
+            <button class="button button-center" ng-click=" showUploadingButtons=false;">
+              キャンセル
+            </button>
+            <button class="button button-center button-positive" ng-click="changeProfileImage(uploadedProfileImg)">
+              Save
+            </button>
+          </div>
+        </center>
         <h2 style="font-size:120%;">{{user}}</h2>
         <h3>{{affiliation}}</h3>
+        <!--<center><div ng-click="triggerEditDesc()" class="profile-desc"><i class="icon ion-edit"></i> Add Description</div></center>-->
       </div>
       <div class="item" ng-click="logout()">
         ログアウト

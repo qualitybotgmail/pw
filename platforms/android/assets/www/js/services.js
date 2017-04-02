@@ -675,13 +675,14 @@ angular.module('starter.services', [])
       }
   };
 
-  var storeUserCredentials=function(token,uname,affiliation,avatar_img,userid,pworkid) {
+  var storeUserCredentials=function(token,uname,affiliation,avatar_img,userid,pworkid,prof_id) {
     window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
     window.localStorage.setItem('user',uname);
     window.localStorage.setItem('affiliation',affiliation);
     window.localStorage.setItem('avatar_img',avatar_img);
     window.localStorage.setItem('user_id',userid);
     window.localStorage.setItem('pwork_user_id',pworkid);
+      window.localStorage.setItem('profile_id',prof_id);
     useCredentials(token);
     loadUserCredentials();
   }

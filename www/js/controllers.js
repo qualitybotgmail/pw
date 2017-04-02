@@ -255,7 +255,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('ChatDetailCtrl', function($scope,$state,BASE_URL,backButtonOverride,$timeout,$ionicPopover,NotificationService,$state,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
+.controller('ChatDetailCtrl', function($scope,$state,BASE_URL,backButtonOverride,$timeout,$ionicPopover,$ionicSlideBoxDelegate,NotificationService,$state,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
 
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
       viewData.enableBack = true;
@@ -321,6 +321,49 @@ angular.module('starter.controllers', [])
     if(interval!==null)
       clearInterval(interval);
   });
+  
+  $scope.showModal = function() {
+		$ionicModal.fromTemplateUrl('templates/modal/images.html', {
+			scope: $scope,
+			animation: 'slide-in-up'
+		}).then(function(modal) {
+			$scope.imagesModal = modal;
+			$scope.imagesModal.show();
+		});
+	}
+
+  $scope.zoomMin = 1;
+  $scope.sliderImages=[];
+  $scope.activeSlide =1;
+  $scope.imageType='';
+  $scope.showImages = function(parentIndex,index) {
+    $scope.activeSlide = index;
+    console.log($scope.chats[parentIndex]);
+          $scope.sliderImages =  $scope.chats[$scope.chats.length - parseInt(parentIndex) - 1]['Upload'];
+      setTimeout(function() {
+              $ionicSlideBoxDelegate.slide(index);
+              $ionicSlideBoxDelegate.update();
+              $scope.$apply();
+      });
+      $scope.showModal();
+  };
+
+  $scope.updateSlideStatus = function(slide) {
+  var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle'+slide).getScrollPosition().zoom;
+ 
+  if (zoomFactor == $scope.zoomMin) {
+    $ionicSlideBoxDelegate.enableSlide(true);
+  } else {
+    $ionicSlideBoxDelegate.enableSlide(false);
+  }
+};
+
+
+	// Close the modal
+	$scope.closeModal = function() {
+		$scope.imagesModal.hide();
+		$scope.imagesModal.remove()
+	};
 
   $scope.getchats=function(x){
     Chats.get($stateParams.chatId,$scope.page).then(function(response){
@@ -576,7 +619,7 @@ angular.module('starter.controllers', [])
           permissions.requestPermission(permissions.CAMERA, function(result) {
             options = {
               sourceType: Camera.PictureSourceType.CAMERA,
-              quality: 30,
+              quality: 100,
               encodingType: Camera.EncodingType.JPEG,
               correctOrientation: true,
               targetWidth: 800,
@@ -595,7 +638,7 @@ angular.module('starter.controllers', [])
      }else{
        options = {
               sourceType: Camera.PictureSourceType.CAMERA,
-              quality: 30,
+              quality: 100,
               targetWidth: 800,
               targetHeight: 800,
               correctOrientation: true,
@@ -613,7 +656,7 @@ angular.module('starter.controllers', [])
     }
     if(type=="upload"){
         options = {
-          quality: 30,
+          quality: 100,
           maximumImagesCount:4,
           targetWidth: 800,
           targetHeight: 800
@@ -1506,10 +1549,13 @@ $scope.selectPicture = function($act) {
 		});
 	}
 
+  $scope.zoomMin = 1;
   $scope.sliderImages=[];
   $scope.imageType='';
+  $scope.activeSlide =1;
   $scope.showImages = function(parentIndex,index,type) {
     $scope.imageType=type;
+    $scope.activeSlide = index;
        if(type=='head')
           $scope.sliderImages = $scope.headUploads;
        if(type=='comment')
@@ -1524,7 +1570,15 @@ $scope.selectPicture = function($act) {
       $scope.showModal();
   };
 
-
+  $scope.updateSlideStatus = function(slide) {
+  var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle'+slide).getScrollPosition().zoom;
+ 
+  if (zoomFactor == $scope.zoomMin) {
+    $ionicSlideBoxDelegate.enableSlide(true);
+  } else {
+    $ionicSlideBoxDelegate.enableSlide(false);
+  }
+};
 
 
 	// Close the modal
@@ -1891,11 +1945,18 @@ $rootScope.changeHeadLike=function(id,index){
   };
 })
 
-.controller('AccountCtrl', function($scope,$rootScope,$timeout,$cordovaNetwork,$state,AuthService,$ionicHistory,$interval) {
+.controller('AccountCtrl', function($scope,$http,API_URL,$cordovaFileTransfer,$rootScope,$timeout,$cordovaImagePicker,$ionicPopup,$cordovaNetwork,$cordovaCamera,$cordovaDevice,$cordovaActionSheet,$state,AuthService,$ionicHistory,$interval,$ionicModal) {
 
   $scope.settings = {
     enableFriends: true
   };
+  
+  $ionicModal.fromTemplateUrl('templates/modal/profile-description.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.descModal = modal;
+  });
 
   $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
     viewData.enableBack = false;
@@ -1906,6 +1967,128 @@ $rootScope.changeHeadLike=function(id,index){
     $rootScope.affiliation=AuthService.affiliation();
     $rootScope.avatar_img=AuthService.avatarImg();
   });
+  
+  $scope.uploadType=null;
+  $scope.triggerProfileImgChange=function(){
+    
+    
+    var options = {
+      buttonLabels: ['写真を選択', '写真を撮影'],
+      addCancelButtonWithLabel: 'キャンセル',
+      androidEnableCancelButton : true,
+    };
+    
+       $cordovaActionSheet.show(options).then(function(btnIndex) {
+        var type = '';
+        if (btnIndex === 1) {
+          type ='upload';
+        }
+        if (btnIndex === 2) {
+          type = 'takePhoto';
+        }
+          $scope.uploadType=type;
+          $scope.selectPictureImage(type);
+  
+      });
+  }
+  $scope.showUploadingButtons=false;
+  $scope.selectPictureImage=function(type){
+     $scope.showUploadingButtons=false;
+     $scope.uploadedProfileImg='';
+     var options=null;
+      if(type=='takePhoto'){
+  
+           if ($cordovaDevice.getPlatform() == 'Android'){
+            var permissions = cordova.plugins.permissions;
+            permissions.requestPermission(permissions.CAMERA, function(result) {
+              options = {
+                sourceType: Camera.PictureSourceType.CAMERA,
+                quality: 100,
+                encodingType: Camera.EncodingType.JPEG,
+                correctOrientation: true,
+                targetWidth: 530,
+                targetHeight: 530,
+                saveToPhotoAlbum: false
+              };
+  
+              $cordovaCamera.getPicture(options).then(function(img){
+                $scope.uploadedProfileImg=img;
+                $scope.showUploadingButtons=true;
+              },function(error){
+                
+              });
+            }, function(err) {
+              alert('Your dont have permission');
+            });
+       }else{
+         options = {
+                sourceType: Camera.PictureSourceType.CAMERA,
+                quality: 100,
+                targetWidth: 530,
+                targetHeight: 530,
+                correctOrientation: true,
+                saveToPhotoAlbum: false
+              };
+  
+              $cordovaCamera.getPicture(options).then(function(img){
+                $scope.uploadedProfileImg=img;
+                $scope.showUploadingButtons=true;
+              },function(error){
+                // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
+              });
+       }
+  
+  
+      }
+      if(type=="upload"){
+          options = {
+            quality: 100,
+            maximumImagesCount:1,
+            targetWidth: 530,
+            targetHeight: 530
+          };
+  
+          $cordovaImagePicker.getPictures(options).then(function(results){
+             var Upload=null;
+              for(var i=0;i < results.length;i++){
+                $scope.uploadedProfileImg=results[i];
+  
+              }
+              $scope.showUploadingButtons=true;
+          },function(error){
+            $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
+          });
+      }
+  };
+  
+  $scope.changeProfileImage=function(img){
+         $scope.showUploadingButtons=false;
+          $scope.uploadedProfileImg=null;
+          
+        img=encodeURI(img);
+        var obj={};
+        var o=new FileUploadOptions();
+        o.params=obj;
+        o.fileKey="file";
+        o.mimeType="image/jpeg";
+        o.fileName = img.substr(img.lastIndexOf('/') + 1);
+        o.chunkedMode = false;
+        o.headers = {
+            'Connection': "close",
+            'Authorization':'Basic '+window.localStorage.getItem("talknote_token")+''
+        };
+        $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',img,o,true).then(function(result) {
+          
+          $rootScope.avatar_img=JSON.parse(result.response)[0]['Upload']['path'];
+          $http.post(API_URL+'profiles/'+window.localStorage.getItem('profile_id')+'.json',{'Profile':{'avatar_img':$rootScope.avatar_img}},{
+            headers:{
+              'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
+            }
+          }).success(function(data){}).error(function(data){});
+        },function(error){
+          alert('Error uploading');
+        });
+  };
 
   $scope.logout=function(){
     clearInterval($rootScope.allInterval);
@@ -1940,7 +2123,7 @@ $rootScope.changeHeadLike=function(id,index){
       if(response['user']["User"]){
         $rootScope.user_id=response['user']["User"]['id'];
         var token=Base64.encode(data.loginid + ':' + data.password);
-        AuthService.storeUserCredentials(token,response['user']["Profile"]['name'],response['user']["Profile"]['affiliation'],response['user']["Profile"]['avatar_img'],response['user']["User"]['id'],response['user']["User"]['outside_userid']);
+        AuthService.storeUserCredentials(token,response['user']["Profile"]['name'],response['user']["Profile"]['affiliation'],response['user']["Profile"]['avatar_img'],response['user']["User"]['id'],response['user']["User"]['outside_userid'],response['user']["Profile"]['id']);
         AuthService.setdeviceToken(false);
            $rootScope.allInterval=setInterval(function(){
              NotificationService.setNotif();
