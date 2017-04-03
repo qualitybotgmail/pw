@@ -1,4 +1,8 @@
 <style type="text/css">
+    p.head-comment,
+    p.head-body{
+        white-space: pre-line;
+    }
     .blue	 {
 		color: #5bc0de;
 	}
@@ -49,9 +53,9 @@
                 <small>
                     {{selectedHead.Thread.title}}
                 </small>
-                <label class="lead">
-                    {{selectedHead.Head.body}}
-                </label>
+                <p class="lead head-body" ng-init="fromattedBody=formatComment(selectedHead.Head.body)">
+                    {{fromattedBody}}
+                </p>
             </div>
             
             <br>
@@ -92,7 +96,7 @@
             <ul class="list-group commentList">
                 <li class="list-group-item" ng-repeat="c in selectedHead.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
                     <small>by : {{c.User.username == loginUser.username ? "You" : c.User.username }}</small>
-                    <p>{{c.body}}</p>
+                    <p class="head-comment" ng-init='c.formattedComment=formatComment(c.body)' >{{c.formattedComment}}</p>
                     <p>
                          <span ng-repeat="upload in c.Upload">
                             <a fancybox ng-href="{{upload.path}}">

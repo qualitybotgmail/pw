@@ -61,6 +61,11 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             $scope.currentPageNumber = 1;
             
+            // format text 
+            $scope.formatComment = function(comment){
+                return comment.replace(/↵/, '\n');
+            };
+            
             // delete head thread
         	$scope.deleteHead = function(threadId, headId) {
         	    HeadsModel.one(headId).remove().then(function(result){
