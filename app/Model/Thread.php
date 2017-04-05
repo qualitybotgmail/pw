@@ -1,5 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
+App::import('Vendor','NotifCounts');
 /**
  * Thread Model
  *
@@ -118,22 +119,28 @@ class Thread extends AppModel {
 	
 	public function notified($tid,$uid){
 	
-		$this->User->Profile->clearThreadsCount($tid,$uid);
 		$sql = "SELECT logs.id FROM logs where logs.thread_id = $tid and (logs.type = 'Thread.edit' or logs.type = 'Thread.joined') and logs.id not in (select users_logs.log_id from users_logs where users_logs.user_id = $uid)";
 		
 		$r = $this->query($sql);
-		
+
 		$lids = array();
+		$threadNotifications = array();
 		
 		if($r){
 			foreach($r as $log){
 				$lids[] = array('log_id' => $log['logs']['id'],'user_id' =>$uid);
+
 			}
 			$r = $this->Log->UsersLog->saveAll($lids);
 			
 		}
-		$this->User->Profile->minusNotificationCount($tid,null,$uid,'Threads',count($lids));
-	//	print_r($r);
+		//We clear the number of threads notifications
+		//but we still need the total notifications in the heads
+		$notificationsCount = new NotifCounts($this->User->Profile,$uid);
+		if(count($lids)>0)
+			$notificationsCount->minus('thread',$tid,count($lids));
+		//notificationsCount->clear('thread',$tid);
+
 	}
 	
 }

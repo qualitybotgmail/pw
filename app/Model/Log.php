@@ -301,7 +301,7 @@ public $actsAs = array('Containable');
 				));
 				$notifdata['title']=$thread['Thread']['title'];
 				
-				if($log['head_id'] && $log['head_id']!=0){
+				if(isset($log['head_id']) && $log['head_id']!=0){
 					App::uses('Head', 'Model');
 					$this->Head->recursive=-1;
 					$head=$this->Head->find('first',array('conditions'=>array('id'=>$log['head_id'])));
@@ -327,7 +327,8 @@ public $actsAs = array('Containable');
 						$notifdata['body']=$profile['User']['username'].' edited his comment in "'.$head['Head']['body'];
 					
 				}
-				$notifdata['data']=array('id'=>$tid,'head_id'=>$log['head_id']);
+				
+				$notifdata['data']=array('id'=>$tid,'head_id'=>isset($log['head_id'])?$log['head_id']:null);
 				
 				
 				foreach($thread['User'] as $u){
@@ -436,10 +437,15 @@ public $actsAs = array('Containable');
 					$not->inc('groupchat',$groupchat_id);
 				}else{
 					//A thread
-					$not->inc('thread',$thread_id);
+					
+					//IF the type of this notification is 'joined' we have to ignore
+					//since Thread.edit will also be triggerd. if we do  not ignore this,
+					//the notification will be doubled.					
+					if($log['type'] != 'Thread.joined')
+						$not->inc('thread',$thread_id);
+					
 					//If this is a head update, increment head also
 					if($head_id != null){
-				
 						$not->inc('head',$head_id);
 					}
 				}

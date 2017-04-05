@@ -135,7 +135,6 @@ class Profile extends AppModel {
 		$this->clearNotificationCount($hid,$uid,'Heads');
 	}
 	
-	
 	public function incNotificationCount($gid,$hid,$uid,$type){
 		$p = $this->findByUserId($uid);
 		$nots = null;
