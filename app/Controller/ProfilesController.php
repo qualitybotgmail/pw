@@ -196,7 +196,9 @@ class ProfilesController extends AppController {
 			$this->Profile->clearGroupchatsCount($id,$user_id);
 		
 		if($type=='thread')
-			$this->clearThreadsCount($id,$user_id);
+			$this->Profile->clearThreadsCount($id,$user_id);
+		if($type=='head')
+			$this->Profile->clearHeadsCount($id,$user_id);			
 		
 		echo json_encode("OK");
 		exit;
@@ -319,9 +321,6 @@ class ProfilesController extends AppController {
 		
 		}
 	
-		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r(array(
-			'Gotnotif'=>$return,'User'=>$this->Auth->user('username'),'N'=>$notif,'S'=>$skipped
-			),true),FILE_APPEND);
 		echo json_encode($return);
 		exit;
 	}
@@ -832,7 +831,7 @@ class ProfilesController extends AppController {
 	
 		$not = $noty->getNotif();
 		
-		$ret = array('Threads' => array(),'Groupchats' => array());
+		$ret = array('Threads' => array(),'Groupchats' => array(),'Heads' => array());
 		if (array_key_exists("Threads",$not)){
 			foreach($not['Threads'] as $k=>$n){
 				$ret["Threads"][] = array("thread_id" => (string)$k,"count"=>(string) $n);
@@ -843,6 +842,11 @@ class ProfilesController extends AppController {
 				$ret["Groupchats"][] = array("groupchat_id" => (string)$k,"count" => (string)$n);
 			}
 		}		
+		if (array_key_exists("Heads",$not)){
+			foreach($not['Heads'] as $k=>$n){
+				$ret["Heads"][] = array("head_id" => (string)$k,"count" => (string)$n);
+			}
+		}
 	
 		
 		echo json_encode($ret);

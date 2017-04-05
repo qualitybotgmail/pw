@@ -269,13 +269,21 @@ public $actsAs = array('Containable');
 			
 			$thread_id = null;
 			$groupchat_id = null;
+			$head_id = null;
+			
 			if($log['type'] == 'User.logged' && $myfcmid != ''){
 				//$this->push(array($myfcmid)); ---dada
 				$this->push($myfcmid);
 				return;
 			}elseif(isset($log['thread_id']) && $log['thread_id'] != 0){
+				
 				$tid = $log['thread_id'];
 				$thread_id = $tid;
+				if(isset($log['head_id']) && $log['head_id']!=0){
+					$head_id = $log['head_id'];
+		
+				}
+				
 				$ignored_users = $this->IgnoredThread->find('list',array(
 					'conditions' => array('thread_id' => $tid),
 					'fields' => 'user_id'
@@ -411,7 +419,8 @@ public $actsAs = array('Containable');
 				}else{
 						array_push($fcmids,$f);
 					}	
-			}	
+			}
+						
 			file_put_contents("/tmp/dadacurl",date("g:i:s")."\n".print_r($notifdata,true));
 			$this->push($fcmids,$notifdata);
 			
@@ -428,6 +437,11 @@ public $actsAs = array('Containable');
 				}else{
 					//A thread
 					$not->inc('thread',$thread_id);
+					//If this is a head update, increment head also
+					if($head_id != null){
+				
+						$not->inc('head',$head_id);
+					}
 				}
 				
 			}

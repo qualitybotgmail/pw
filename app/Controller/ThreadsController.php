@@ -178,7 +178,7 @@ class ThreadsController extends AppController {
  * @return void
  */
 	public function view($id,$lastid=0,$ajax=false) {
-	error_reporting(2);
+		error_reporting(2);
 		if (!$this->Thread->exists($id)) {
 			throw new NotFoundException(__('Invalid thread'));
 		}

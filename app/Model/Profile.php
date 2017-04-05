@@ -131,6 +131,10 @@ class Profile extends AppModel {
 	public function clearThreadsCount($gid,$uid){
 		$this->clearNotificationCount($gid,$uid,'Threads');
 	}
+	public function clearHeadsCount($hid,$uid){
+		$this->clearNotificationCount($hid,$uid,'Heads');
+	}
+	
 	
 	public function incNotificationCount($gid,$hid,$uid,$type){
 		$p = $this->findByUserId($uid);

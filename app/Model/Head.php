@@ -141,7 +141,10 @@ class Head extends AppModel {
 		//$minus = count($to_be_marked_viewed);
 		//$this->Log->User->Profile->minusNotificationCount($thread_id,$uid,'Threads',$minus);
 		$r = $this->Log->UsersLog->saveAll($to_be_marked_viewed);
-
+		
+		$this->Log->User->Profile->clearHeadsCount($hid,$uid);
+		//$this->Log->User->Profile->clearHeadsCount($hid,$uid);
+		
 
 	}		
 }

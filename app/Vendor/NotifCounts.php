@@ -41,6 +41,7 @@ class NotifCounts{
 		}else{
 			$notif[$typeName][$id]=1;
 		}
+
 		$this->saveNotif($notif);
 	}
 	function dec($type,$id){

@@ -170,7 +170,7 @@ class UsersController extends AppController {
 		}
 		return $this->redirect(array('action' => 'index'));
 	}
-public function mobilelogin(){
+	public function mobilelogin(){
 		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_SERVER,true),FILE_APPEND);
 		$userdetails=array();
 		$session_id=null;
@@ -264,7 +264,7 @@ public function mobilelogin(){
 		}
 		
 	}
-public function logout() {
+	public function logout() {
 		$uid = $this->Auth->user('id');
 		$profile = $this->User->Profile->findByUserId($uid);
 		$this->User->Profile->id = $profile['Profile']['id'];

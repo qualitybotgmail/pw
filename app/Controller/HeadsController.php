@@ -30,14 +30,14 @@ class HeadsController extends AppController {
 	public function index() {
 		
 		$this->Head->recursive = 2;
-		
+
 		// $id = $this->Auth->user('id');
 		// $options = array('conditions' => array('user_id'=>$id));
 		//$this->Paginator->settings = ['limit' =>3000];//high limit for now
 		
 		$heads = $this->Head->find('all',array('order' => array('Head.created DESC')));//$this->Paginator->paginate();
 	//	echo ($heads['Owner']['password']);exit;
-		
+	
 		foreach($heads as $k => $head){
 			
 			$tid = $head['Head']['id'];
@@ -52,7 +52,6 @@ class HeadsController extends AppController {
 				$heads[$k]['Comment'][$kk]['isUserLiked'] = $this->Head->Comment->isLiked($comment['id'],$uid);
 				unset($heads[$k]['Comment'][$kk]['Like']);
 				unset($heads[$k]['Comment'][$kk]['Head']);
-				
 			}
 			//total likes of comments
 		}
