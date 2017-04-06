@@ -50,11 +50,9 @@ define([
           $(element).fancybox({  
             type        :'iframe',
             scrolling   : 'no',
-            maxWidth    : 800,
-            maxHeight   : 400,
             fitToView   : true,
-            width       : '70%',
-            height      : '70%',
+            width       : '100%',
+            height      : '100%',
             autoSize    : false,
             closeClick  : true,
             openEffect  : 'none',
