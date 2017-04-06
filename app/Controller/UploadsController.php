@@ -83,7 +83,7 @@ class UploadsController extends AppController {
 				@mkdir($path);
 			//	chmod($path,0777);
 				
-				$filepath = $path . '/' .time(). $file['name'];
+				$filepath = $path . '/' .time(). preg_replace('/\s+/', '_', $file['name']);
 				$this->Upload->create();
 			    move_uploaded_file($file['tmp_name'],$filepath);
 				$urlpath = '/files/' . $this->Auth->user('id') . '/' . time().$file['name'];
@@ -186,7 +186,7 @@ class UploadsController extends AppController {
 				
 				@mkdir($path);
 				
-				$filepath = $path . '/' .time(). $file['name'];
+				$filepath = $path . '/' .time(). preg_replace('/\s+/', '_', $file['name']);
 				$this->Upload->create();
 			    move_uploaded_file($file['tmp_name'],$filepath);
 				$urlpath = '/files/' . $this->Auth->user('id') . '/' . time().$file['name'];
@@ -214,7 +214,7 @@ class UploadsController extends AppController {
 				
 				@mkdir($path);
 				
-				$filepath = $path . '/' .time(). $file['name'];
+				$filepath = $path . '/' .time(). preg_replace('/\s+/', '_', $file['name']);
 				$this->Upload->create();
 			    move_uploaded_file($file['tmp_name'],$filepath);
 				$urlpath = '/files/' . $this->Auth->user('id') . '/' . time().$file['name'];
