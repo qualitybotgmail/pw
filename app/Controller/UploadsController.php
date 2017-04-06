@@ -82,11 +82,11 @@ class UploadsController extends AppController {
 				
 				@mkdir($path);
 			//	chmod($path,0777);
-				
-				$filepath = $path . '/' .time(). preg_replace('/\s+/', '_', $file['name']);
+				$fname = preg_replace('/\s+/', '_', $file['name']);
+				$filepath = $path . '/' .time(). $fname;
 				$this->Upload->create();
 			    move_uploaded_file($file['tmp_name'],$filepath);
-				$urlpath = '/files/' . $this->Auth->user('id') . '/' . time().$file['name'];
+				$urlpath = '/files/' . $this->Auth->user('id') . '/' . time().$fname;
 				$data = array('path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'head_id'=>$head_id ,'name' => $file['name']);
 				$return = $this->Upload->save($data);
 				
@@ -185,11 +185,11 @@ class UploadsController extends AppController {
 				$path = WWW_ROOT . 'files/' . $this->Auth->user('id');
 				
 				@mkdir($path);
-				
-				$filepath = $path . '/' .time(). preg_replace('/\s+/', '_', $file['name']);
+				$fname = preg_replace('/\s+/', '_', $file['name']);
+				$filepath = $path . '/' .time(). $fname;
 				$this->Upload->create();
 			    move_uploaded_file($file['tmp_name'],$filepath);
-				$urlpath = '/files/' . $this->Auth->user('id') . '/' . time().$file['name'];
+				$urlpath = '/files/' . $this->Auth->user('id') . '/' . time().$fname;
 				$data = array('path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'head_id'=>$head_id ,'name' =>$file['name']);
 				$return = $this->Upload->save($data);
 				
@@ -213,11 +213,11 @@ class UploadsController extends AppController {
 				$path = WWW_ROOT . 'files/' . $this->Auth->user('id');
 				
 				@mkdir($path);
-				
-				$filepath = $path . '/' .time(). preg_replace('/\s+/', '_', $file['name']);
+				$fname = preg_replace('/\s+/', '_', $file['name']);
+				$filepath = $path . '/' .time(). $fname;
 				$this->Upload->create();
 			    move_uploaded_file($file['tmp_name'],$filepath);
-				$urlpath = '/files/' . $this->Auth->user('id') . '/' . time().$file['name'];
+				$urlpath = '/files/' . $this->Auth->user('id') . '/' . time() . $fname;
 				$data = array('path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'head_id'=>$head_id ,'name' =>$file['name']);
 				$return = $this->Upload->save($data);
 				
