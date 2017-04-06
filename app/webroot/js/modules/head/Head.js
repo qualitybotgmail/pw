@@ -61,6 +61,18 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             $scope.currentPageNumber = 1;
             
+            // check file if image
+        	$scope.checkFile = function(path) {
+        	  var isImage = true;
+        	  var file = path.split('.');
+        	  var ValidImageTypes = ["gif", "jpeg", "png", "jpg"];
+        	  if ($.inArray(file[(file.length - 1)], ValidImageTypes) < 0) {
+        	      isImage = false;
+        	  }
+        	  
+        	  return isImage;
+        	};
+            
             // format text 
             $scope.formatComment = function(comment){
                 return comment.replace(/↵/, '\n');
