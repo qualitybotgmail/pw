@@ -4,6 +4,7 @@
 define([
 	// import models
 	'../../models/profiles',
+	'../../models/users',
 	
 	'./Profile',
 
