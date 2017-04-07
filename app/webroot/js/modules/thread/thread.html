@@ -127,8 +127,12 @@
     </div> <!-- / .panel-heading -->
     <ul class="list-group">
       <li class="list-group-item" ng-repeat="head in thread.Head">
-         <a ui-sref="app.head({ id: head.id })">
-            <h5>{{head.body}}</h5>
+         <!--<a ui-sref="app.head({ id: head.id })">-->
+         <a class="clickable" id="head-{{head.id}}" ng-click="gotoHead(head)">
+            <h5>
+                {{head.body}}
+                <span class="badge badge-info" ng-init="head.notification_count=getNotificationCount(head.id)">{{head.notification_count}}</span>
+            </h5>
         </a>
         
         <span style="font-size:11px;">{{head.created}}</span>
