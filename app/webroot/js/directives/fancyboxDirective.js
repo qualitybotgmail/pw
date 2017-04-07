@@ -46,17 +46,13 @@ define([
       return {
         restrict: 'A',
     
-        link: function(scope, element, attrs){
+        link: function(scope, element, attrs) {
           $(element).fancybox({  
-            type        :'iframe',
-            scrolling   : 'no',
-            fitToView   : true,
-            width       : '100%',
-            height      : '100%',
+            fitToView: false,
             autoSize    : false,
             closeClick  : true,
             openEffect  : 'none',
-            closeEffect : 'none'
+            closeEffect : 'none',
           });
         }
       }

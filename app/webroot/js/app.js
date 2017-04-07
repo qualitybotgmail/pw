@@ -167,9 +167,15 @@ define([
     	    	Restangular.one("profiles").one("notifications_count").get().then(function(notifications){
     	    		console.log("Got notifictions count");
     	    		$rootScope.notificationCount = 0;
+    	    		$rootScope.notifications = notifications;
+    	    		
     	    		var threadsNotifications = notifications.Threads;
+    	    		var headsNotifications = notifications.Heads;
     	    		var groupchatsNotifications = notifications.Groupchats;
     	    		
+    	    		angular.forEach(headsNotifications, function(headNotification){
+    	    			$rootScope.notificationCount += parseInt(headNotification.count);	
+    	    		});
     	    		
     	    		angular.forEach(threadsNotifications, function(threadNotification, index){
     	    			var isThreadIdExist = false;
