@@ -51,7 +51,7 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('ChatsCtrl', function($scope,$ionicPopup,$cordovaNetwork,$rootScope,NotificationService,$ionicLoading,$ionicPopover,Chats,$ionicModal,ApiService,$state) {
+.controller('ChatsCtrl', function($scope,$ionicPopup,$cordovaNetwork,$rootScope,NotificationService,$ionicLoading,$ionicPopover,Chats,$ionicModal,ApiService,$state,BASE_URL) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -59,6 +59,9 @@ angular.module('starter.controllers', [])
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
+
+  $scope.baseUrl = BASE_URL;
+
   $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = false;
     });
@@ -321,7 +324,7 @@ angular.module('starter.controllers', [])
     if(interval!==null)
       clearInterval(interval);
   });
-  
+
   $scope.showModal = function() {
 		$ionicModal.fromTemplateUrl('templates/modal/images.html', {
 			scope: $scope,
@@ -350,7 +353,7 @@ angular.module('starter.controllers', [])
 
   $scope.updateSlideStatus = function(slide) {
   var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle'+slide).getScrollPosition().zoom;
- 
+
   if (zoomFactor == $scope.zoomMin) {
     $ionicSlideBoxDelegate.enableSlide(true);
   } else {
@@ -619,11 +622,11 @@ angular.module('starter.controllers', [])
           permissions.requestPermission(permissions.CAMERA, function(result) {
             options = {
               sourceType: Camera.PictureSourceType.CAMERA,
-              quality: 100,
+              quality: 50,
               encodingType: Camera.EncodingType.JPEG,
               correctOrientation: true,
-              targetWidth: 800,
-              targetHeight: 800,
+              targetWidth: 600,
+              targetHeight: 600,
               saveToPhotoAlbum: false
             };
 
@@ -638,9 +641,9 @@ angular.module('starter.controllers', [])
      }else{
        options = {
               sourceType: Camera.PictureSourceType.CAMERA,
-              quality: 100,
-              targetWidth: 800,
-              targetHeight: 800,
+              quality: 50,
+              targetWidth: 600,
+              targetHeight: 600,
               correctOrientation: true,
               saveToPhotoAlbum: false
             };
@@ -656,10 +659,10 @@ angular.module('starter.controllers', [])
     }
     if(type=="upload"){
         options = {
-          quality: 100,
+          quality: 50,
           maximumImagesCount:4,
-          targetWidth: 800,
-          targetHeight: 800
+          targetWidth: 600,
+          targetHeight: 600
         };
 
         $cordovaImagePicker.getPictures(options).then(function(results){
@@ -1182,7 +1185,7 @@ angular.module('starter.controllers', [])
       $scope.resetHeadForm();
       $rootScope.showAddHead.hide();
       $rootScope.headPopover.hide();
-     
+
        $state.go('tab.head',{id:$rootScope.thread.Head[$rootScope.processedHead].id,index:$rootScope.processedHead});
     });
 
@@ -1309,11 +1312,11 @@ $scope.selectPicture = function($act) {
     permissions.requestPermission(permissions.CAMERA, function(result) {
           options = {
             sourceType: Camera.PictureSourceType.CAMERA,
-            quality: 80,
+            quality: 50,
             encodingType: Camera.EncodingType.JPEG,
             correctOrientation: true,
-            targetWidth: 800,
-            targetHeight: 800,
+            targetWidth: 600,
+            targetHeight: 600,
             popoverOptions: CameraPopoverOptions,
             saveToPhotoAlbum: false
           };
@@ -1334,10 +1337,10 @@ $scope.selectPicture = function($act) {
    }else{
      options = {
             sourceType: Camera.PictureSourceType.CAMERA,
-            quality: 80,
+            quality: 50,
             encodingType: Camera.EncodingType.JPEG,
-            targetWidth: 800,
-            targetHeight: 800,
+            targetWidth: 600,
+            targetHeight: 600,
             correctOrientation: true,
             popoverOptions: CameraPopoverOptions,
             saveToPhotoAlbum: false
@@ -1358,7 +1361,7 @@ $scope.selectPicture = function($act) {
   }
   if($act=="upload"){
       options = {
-        quality: 80,
+        quality: 50,
         maximumImagesCount:4,
         targetWidth: 600,
         targetHeight: 600
@@ -1572,7 +1575,7 @@ $scope.selectPicture = function($act) {
 
   $scope.updateSlideStatus = function(slide) {
   var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle'+slide).getScrollPosition().zoom;
- 
+
   if (zoomFactor == $scope.zoomMin) {
     $ionicSlideBoxDelegate.enableSlide(true);
   } else {
@@ -1621,11 +1624,11 @@ $scope.selectPictureInComment = function($act) {
         permissions.requestPermission(permissions.CAMERA, function(result) {
           options = {
             sourceType: Camera.PictureSourceType.CAMERA,
-            quality: 100,
+            quality: 50,
             encodingType: Camera.EncodingType.JPEG,
             correctOrientation: true,
-            targetWidth: 800,
-            targetHeight: 800,
+            targetWidth: 600,
+            targetHeight: 600,
             saveToPhotoAlbum: false
           };
 
@@ -1639,14 +1642,14 @@ $scope.selectPictureInComment = function($act) {
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
         }, function(err) {
-          alert('Your dont have permission');
+          // alert('Your dont have permission');
         });
    }else{
      options = {
             sourceType: Camera.PictureSourceType.CAMERA,
-            quality: 100,
-            targetWidth: 800,
-            targetHeight: 800,
+            quality: 50,
+            targetWidth: 600,
+            targetHeight: 600,
             correctOrientation: true,
             saveToPhotoAlbum: false
           };
@@ -1666,10 +1669,10 @@ $scope.selectPictureInComment = function($act) {
   }
   if($act=="upload"){
       options = {
-        quality: 100,
+        quality: 50,
         maximumImagesCount:4,
-        targetWidth: 800,
-        targetHeight: 800
+        targetWidth: 600,
+        targetHeight: 600
       };
 
       $cordovaImagePicker.getPictures(options).then(function(results){
@@ -1945,12 +1948,12 @@ $rootScope.changeHeadLike=function(id,index){
   };
 })
 
-.controller('AccountCtrl', function($scope,$http,API_URL,$cordovaFileTransfer,$rootScope,$timeout,$cordovaImagePicker,$ionicPopup,$cordovaNetwork,$cordovaCamera,$cordovaDevice,$cordovaActionSheet,$state,AuthService,$ionicHistory,$interval,$ionicModal) {
+.controller('AccountCtrl', function($scope,$http,API_URL,$cordovaFileTransfer,$rootScope,$timeout,$cordovaImagePicker,$ionicPopup,$cordovaNetwork,$cordovaCamera,$cordovaDevice,$cordovaActionSheet,$state,AuthService,$ionicHistory,$interval,$ionicModal,BASE_URL,$ionicLoading) {
 
   $scope.settings = {
     enableFriends: true
   };
-  
+
   $ionicModal.fromTemplateUrl('templates/modal/profile-description.html', {
     scope: $scope,
     animation: 'slide-in-up'
@@ -1967,17 +1970,17 @@ $rootScope.changeHeadLike=function(id,index){
     $rootScope.affiliation=AuthService.affiliation();
     $rootScope.avatar_img=AuthService.avatarImg();
   });
-  
+
   $scope.uploadType=null;
   $scope.triggerProfileImgChange=function(){
-    
-    
+
+
     var options = {
       buttonLabels: ['写真を選択', '写真を撮影'],
       addCancelButtonWithLabel: 'キャンセル',
       androidEnableCancelButton : true,
     };
-    
+
        $cordovaActionSheet.show(options).then(function(btnIndex) {
         var type = '';
         if (btnIndex === 1) {
@@ -1988,34 +1991,36 @@ $rootScope.changeHeadLike=function(id,index){
         }
           $scope.uploadType=type;
           $scope.selectPictureImage(type);
-  
+
       });
   }
   $scope.showUploadingButtons=false;
   $scope.selectPictureImage=function(type){
-     $scope.showUploadingButtons=false;
-     $scope.uploadedProfileImg='';
+    //  $scope.showUploadingButtons=false;
+    //  $scope.uploadedProfileImg='';
      var options=null;
       if(type=='takePhoto'){
-  
+
            if ($cordovaDevice.getPlatform() == 'Android'){
             var permissions = cordova.plugins.permissions;
             permissions.requestPermission(permissions.CAMERA, function(result) {
               options = {
                 sourceType: Camera.PictureSourceType.CAMERA,
-                quality: 100,
+                quality: 50,
                 encodingType: Camera.EncodingType.JPEG,
                 correctOrientation: true,
-                targetWidth: 530,
-                targetHeight: 530,
+                targetWidth: 600,
+                targetHeight: 600,
+                allowEdit:true,
                 saveToPhotoAlbum: false
               };
-  
+
               $cordovaCamera.getPicture(options).then(function(img){
-                $scope.uploadedProfileImg=img;
-                $scope.showUploadingButtons=true;
+                // $scope.uploadedProfileImg=img;
+                // $scope.showUploadingButtons=true;
+                changeProfileImage(img);
               },function(error){
-                
+
               });
             }, function(err) {
               alert('Your dont have permission');
@@ -2023,48 +2028,55 @@ $rootScope.changeHeadLike=function(id,index){
        }else{
          options = {
                 sourceType: Camera.PictureSourceType.CAMERA,
-                quality: 100,
-                targetWidth: 530,
-                targetHeight: 530,
+                quality: 50,
+                targetWidth: 600,
+                targetHeight: 600,
                 correctOrientation: true,
+                allowEdit:true,
                 saveToPhotoAlbum: false
               };
-  
+
               $cordovaCamera.getPicture(options).then(function(img){
-                $scope.uploadedProfileImg=img;
-                $scope.showUploadingButtons=true;
+                // $scope.uploadedProfileImg=img;
+                // $scope.showUploadingButtons=true;
+                changeProfileImage(img);
               },function(error){
                 // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
               });
        }
-  
-  
+
+
       }
       if(type=="upload"){
           options = {
-            quality: 100,
+            quality: 50,
             maximumImagesCount:1,
-            targetWidth: 530,
-            targetHeight: 530
+            targetWidth: 600,
+            targetHeight: 600
           };
-  
+
           $cordovaImagePicker.getPictures(options).then(function(results){
              var Upload=null;
               for(var i=0;i < results.length;i++){
-                $scope.uploadedProfileImg=results[i];
-  
+                // $scope.uploadedProfileImg=results[i];
+                changeProfileImage(results[i]);
+
               }
-              $scope.showUploadingButtons=true;
+              // $scope.showUploadingButtons=true;
           },function(error){
             $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
           });
       }
   };
-  
-  $scope.changeProfileImage=function(img){
-         $scope.showUploadingButtons=false;
-          $scope.uploadedProfileImg=null;
-          
+
+  var changeProfileImage=function(img){
+        //  $scope.showUploadingButtons=false;
+        //   $scope.uploadedProfileImg=null;
+
+        $ionicLoading.show({
+          template:'<ion-spinner name="bubbles"></ion-spinner>'
+        });
+
         img=encodeURI(img);
         var obj={};
         var o=new FileUploadOptions();
@@ -2078,15 +2090,22 @@ $rootScope.changeHeadLike=function(id,index){
             'Authorization':'Basic '+window.localStorage.getItem("talknote_token")+''
         };
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',img,o,true).then(function(result) {
-          
-          $rootScope.avatar_img=JSON.parse(result.response)[0]['Upload']['path'];
-          $http.post(API_URL+'profiles/'+window.localStorage.getItem('profile_id')+'.json',{'Profile':{'avatar_img':$rootScope.avatar_img}},{
+
+          var avatar_img = JSON.parse(result.response)[0]['Upload']['path'];
+          var prof_id = window.localStorage.getItem('profile_id');
+          $http.post(API_URL+'profiles/'+prof_id+'.json',{'Profile':{'id':prof_id, 'avatar_img':avatar_img}},{
             headers:{
               'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
             }
-          }).success(function(data){}).error(function(data){});
+          }).success(function(data){
+            $rootScope.avatar_img=BASE_URL + avatar_img;
+            $ionicLoading.hide();
+          }).error(function(data){
+            $ionicLoading.hide();
+          });
         },function(error){
-          alert('Error uploading');
+          $ionicLoading.hide();
+          alert('写真のアップロードに失敗しました。');
         });
   };
 

@@ -8,7 +8,14 @@
 
     <ion-list>
       <ion-item class="item-remove-animate item-avatar item-icon-right" on-hold="chat.owner==$root.user_id?showgcpopover($event,$index):''" ng-repeat="chat in chatsPreview | orderBy:'chat.message.Message.created' | limitTo:numberOfGCToDisplay track by $index" type="item-text-wrap" ng-click="viewChat(chat.id,$index)">
-        <img ng-src="img/avatar.png">
+        <!-- <img ng-src="img/avatar.png"> -->
+        <span ng-if="chat.users.length <= 2">
+          <span ng-repeat="user in chat.users" ng-if="user.User.id!=$root.user_id">
+            <img class="avatar-img" ng-if="user.Profile.avatar_img && user.Profile.avatar_img!=null && user.Profile.avatar_img!='null'" ng-src="{{baseUrl+user.Profile.avatar_img}}">
+            <img class="avatar-img" ng-if="!user.Profile.avatar_img || user.Profile.avatar_img==null || user.Profile.avatar_img=='null'" ng-src="img/avatar.png">
+          </span>
+        </span>
+        <i ng-if="chat.users.length > 2" class="icon ion-ios-people" style="position:absolute;left:17px;font-size:44px;"></i>
         <h2>
           <span ng-repeat="user in chat.users" ng-if="user.User.id!=$root.user_id">
             {{user.User.username}}

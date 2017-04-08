@@ -608,7 +608,7 @@ angular.module('starter.services', [])
     /* jshint ignore:end */
 })
 
-.service('AuthService', function($q, $http,$ionicHistory,CacheFactory,API_URL) {
+.service('AuthService', function($q, $http,$ionicHistory,CacheFactory,API_URL,BASE_URL) {
   var LOCAL_TOKEN_KEY = 'talknote_token';
   var username = '';
   var affiliation = '';
@@ -730,7 +730,7 @@ angular.module('starter.services', [])
     isAuthenticated: function() {return isAuthenticated;},
     username: function() {return username;},
     affiliation: function() {return affiliation;},
-    avatarImg: function() {return avatar_img && avatar_img!=null && avatar_img!='null' ? avatar_img : 'img/avatar.png';},
+    avatarImg: function() {return avatar_img && avatar_img!=null && avatar_img!='null' ? BASE_URL+avatar_img : 'img/avatar.png';},
     userid:function(){return userid; },
     authToken:function(){return authToken; },
     setdeviceToken:setdeviceToken,

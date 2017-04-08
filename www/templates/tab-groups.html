@@ -61,7 +61,7 @@
 
     <ion-item ng-click="$root.groupTitle=group.Thread.title" class="item-remove-animate item-icon-left item-icon-right" ng-show="groups.length > 0" ng-repeat="group in groups track by $index" type="item-text-wrap" href="#/tab/group-detail/{{group.Thread.id}}" >
       <i ng-if="group.Thread.user_id != 0" class="icon ion-ios-people"></i>
-      <img ng-if="group.Thread.user_id == 0" src="img/icon_2.png" style="width:30px;position:absolute;left:12px;top:11px;">
+      <div ng-if="group.Thread.user_id == 0" class="group-icon"></div>
       <span style="white-space: normal;">{{group.Thread.title}}</span>
       <span ng-show="$root.threadNotif[group.Thread.id]" class="badge badge-assertive" show-badge badge-id="{{group.Thread.id}}" badge-type="thread">{{$root.threadNotif[group.Thread.id]}}</span>
       <!-- <a href prevent-href="true" ng-show="group.Thread.user_id==$root.user_id" style="position: absolute;top: 25px;right: 30px;">
