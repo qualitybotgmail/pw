@@ -132,7 +132,7 @@ class Profile extends AppModel {
 		$this->clearNotificationCount($gid,$uid,'Threads');
 	}
 	
-	public function incNotificationCount($gid,$uid,$type){
+	public function incNotificationCount($gid,$hid,$uid,$type){
 		$p = $this->findByUserId($uid);
 		$nots = null;
 	
@@ -148,6 +148,14 @@ class Profile extends AppModel {
 			$nots[$type][$gid]=1;
 		}
 		
+		if(isset($hid) && $hid != null){
+			if(isset($nots[$type][$hid])){
+				$nots[$type][$hid]++;
+			}else{
+				$nots[$type][$hid]=1;
+			}			
+		}
+		
 		$this->save(array(
 			'id'=>$p['Profile']['id'],
 			'notifications_count'=>json_encode($nots)
@@ -155,12 +163,12 @@ class Profile extends AppModel {
 		return;
 		
 	}
-	public function minusNotificationCount($gid,$uid,$type,$count){
+	public function minusNotificationCount($gid,$hid,$uid,$type,$count){
 		$p = $this->findByUserId($uid);
 		$nots = null;
 	
 		if($p['Profile']['notifications_count'] == null){
-			$nots = array('Threads'=>array(),'Groupchats'=>array());
+			$nots = array('Threads'=>array(),'Groupchats'=>array(),'Heads' => array());
 		}else{
 			$nots = json_decode($p['Profile']['notifications_count'],true);
 		}
@@ -171,6 +179,15 @@ class Profile extends AppModel {
 			else
 				$nots[$type][$gid] = $nots[$type][$gid] - $count;
 		}
+		
+		if(isset($hid) && $hid != null){
+			if(isset($nots[$type][$hid])){
+				$nots[$type][$hid]++;
+			}else{
+				$nots[$type][$hid]=1;
+			}			
+		}
+				
 		$this->save(array(
 			'id'=>$p['Profile']['id'],
 			'notifications_count'=>json_encode($nots)
@@ -183,7 +200,7 @@ class Profile extends AppModel {
 		$nots = null;
 	
 		if($p['Profile']['notifications_count'] == null){
-			$nots = array('Threads'=>array(),'Groupchats'=>array());
+			$nots = array('Threads'=>array(),'Groupchats'=>array(),'Heads' => array());
 		}else{
 			$nots = json_decode($p['Profile']['notifications_count'],true);
 		}
@@ -192,7 +209,11 @@ class Profile extends AppModel {
 			$lids = count($nots[$type][$gid]);
 			unset($nots[$type][$gid]);
 		}
-		
+		if(isset($hid) && $hid != null){
+			if(isset($nots[$type][$hid])){
+				unset($nots[$type][$hid]);
+			}		
+		}		
 		$this->save(array(
 			'id'=>$p['Profile']['id'],
 			'notifications_count'=>json_encode($nots)

@@ -17,11 +17,11 @@ class ProfilesController extends AppController {
  *
  * @var array
  */
-	public $components = array('Paginator');
+	public $components = array('Paginator','RequestHandler');
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('User'); 
-		$this->Auth->allow('me','getnotif','froks','search','timeline','removeregid','setregid','notifications_count','clearNotif');
+		$this->Auth->allow('me','edit','getnotif','froks','search','timeline','removeregid','setregid','notifications_count','clearNotif');
 	}
 	public function logged(){
 		$prof = $this->Profile->findByUserId($this->Auth->user('id'));

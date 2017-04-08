@@ -132,7 +132,7 @@ class Thread extends AppModel {
 			$r = $this->Log->UsersLog->saveAll($lids);
 			
 		}
-		$this->User->Profile->minusNotificationCount($tid,$uid,'Threads',count($lids));
+		$this->User->Profile->minusNotificationCount($tid,null,$uid,'Threads',count($lids));
 	//	print_r($r);
 	}
 	
