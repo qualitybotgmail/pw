@@ -302,6 +302,41 @@ module.exports = [
         "clobbers": [
             "plugins.imagePicker"
         ]
+    },
+    {
+        "id": "cordova-plugin-photo-library.PhotoLibrary",
+        "file": "plugins/cordova-plugin-photo-library/www/PhotoLibrary.js",
+        "pluginId": "cordova-plugin-photo-library",
+        "clobbers": [
+            "cordova.plugins.photoLibrary"
+        ]
+    },
+    {
+        "id": "cordova-plugin-photo-library.async",
+        "file": "plugins/cordova-plugin-photo-library/www/async/dist/async.min.js",
+        "pluginId": "cordova-plugin-photo-library"
+    },
+    {
+        "id": "cordova-plugin-photo-library.async_map",
+        "file": "plugins/cordova-plugin-photo-library/www/async/dist/async.min.map",
+        "pluginId": "cordova-plugin-photo-library"
+    },
+    {
+        "id": "cordova-plugin-photos.Photos",
+        "file": "plugins/cordova-plugin-photos/www/Photos.js",
+        "pluginId": "cordova-plugin-photos",
+        "clobbers": [
+            "Photos"
+        ]
+    },
+    {
+        "id": "cordova-plugin-inappbrowser.inappbrowser",
+        "file": "plugins/cordova-plugin-inappbrowser/www/inappbrowser.js",
+        "pluginId": "cordova-plugin-inappbrowser",
+        "clobbers": [
+            "cordova.InAppBrowser.open",
+            "window.open"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -321,7 +356,11 @@ module.exports.metadata =
     "cordova-plugin-network-information": "1.2.1",
     "cordova-plugin-actionsheet": "2.3.3",
     "cordova-plugin-splashscreen": "3.0.0",
-    "cordova-plugin-image-picker": "1.0.8"
+    "cordova-plugin-image-picker": "1.0.8",
+    "cordova-plugin-photo-library": "2.0.4",
+    "cordova-plugin-compat": "1.1.0",
+    "cordova-plugin-photos": "1.0.8",
+    "cordova-plugin-inappbrowser": "1.2.1"
 };
 // BOTTOM OF METADATA
 });

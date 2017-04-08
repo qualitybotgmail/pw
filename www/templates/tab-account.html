@@ -2,8 +2,11 @@
   <ion-content>
     <div class="list">
       <div class="item item-body text-center">
-        <img ng-if="!showUploadingButtons" ng-click="triggerProfileImgChange()" class="img-circle" style="height:164px;width:50%;border-radius:50%;border:1px solid #ddd;" ng-src="{{avatar_img}}">
-        <img ng-if="showUploadingButtons" class="img-circle" style="height:164px;width:50%;border-radius:50%;border:1px solid #ddd;" ng-src="{{uploadedProfileImg}}">
+        <div style="width:auto">
+          <ion-spinner ng-show="uploadingProfile" name="circles" style="margin-left: 20%;margin-top: 15%;position: absolute;stroke: black;"></ion-spinner>
+          <img ng-if="!uploadedProf" ng-click="triggerProfileImgChange()" class="img-circle" style="height:164px;width:50%;border-radius:50%;border:1px solid #ddd;" ng-src="{{$root.avatar_img}}">
+          <img ng-if="uploadedProf" class="img-circle" style="height:164px;width:50%;border-radius:50%;border:1px solid #ddd;" ng-style="{opacity:uploadingProfile?'0.2':'1'}" ng-src="{{uploadedProfileImg}}">
+        </div>
         <center ng-show="showUploadingButtons">
           <div style="text-align:center">
             <button class="button button-center" ng-click=" showUploadingButtons=false;">

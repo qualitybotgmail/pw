@@ -255,7 +255,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('ChatDetailCtrl', function($scope,$state,BASE_URL,backButtonOverride,$timeout,$ionicPopover,$ionicSlideBoxDelegate,NotificationService,$state,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
+.controller('ChatDetailCtrl', function($cordovaInAppBrowser,$scope,GalleryService,NewModalService,$state,BASE_URL,backButtonOverride,$timeout,$ionicPopover,$ionicSlideBoxDelegate,NotificationService,$state,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
 
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
       viewData.enableBack = true;
@@ -263,8 +263,50 @@ angular.module('starter.controllers', [])
     $scope.goBack=function() {
          $state.go('tab.chats');
     };
+    $scope.isUriImage = function(uri) {
+      uri = uri.split('?')[0];
+      var parts = uri.split('.');
+      var extension = parts[parts.length-1];
+      var imageTypes = ['jpg','jpeg','tiff','png','gif','bmp'];
+      //check if the extension matches anything in the list.
+      if(imageTypes.indexOf(extension) !== -1) {
+          return true;   
+      }else{
+        return false;
+      }
+   }
+   
+   $scope.linkify=function(text) {
+        var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        return text.replace(urlRegex, function(url) {
+          var urlx="'"+url+"'";
+            return ' <a href="" ng-click="redirectFile(' + urlx + ',true)">' + url + '</a>';
+        });
+    }
+    console.log($scope.linkify("https://www.google.com"));
+    $scope.redirectFile=function(path,x){
+      var url=path;
+    if(typeof(x)==='undefined')
+      url=API_URL+''+path;
+      $cordovaInAppBrowser.open(url, '_system')
+      .then(function(event) {
+        console.log('Success');
+      })
+      .catch(function(event) {
+        console.log('Failed');
+      });
+    
+    }
 
   $rootScope.$emit('hideModal');
+  
+  $ionicModal.fromTemplateUrl('templates/modal/gallery.html', {
+			scope: $scope,
+			animation: 'slide-in-up'
+		}).then(function(modal) {
+			$scope.galleryModal = modal;
+			
+		});
 
   $scope.base_url=BASE_URL
   $rootScope.user_id=window.localStorage.getItem('user_id');
@@ -281,6 +323,12 @@ angular.module('starter.controllers', [])
   $scope.chatPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerChatEdit()" ng-show="showEdit"><i class="icon ion-edit"></i>  編集</li><li class="item item-icon-left" ng-click="triggerChatDelete()"><i class="icon ion-ios-trash"></i> 削除</li></ul></ion-popover-view>', {
     scope: $scope
   });
+  $scope.sliderGallery=false;
+  $scope.previewImage=function(index){
+    $scope.sliderGallery=true;
+    $ionicSlideBoxDelegate.$getByHandle('gallery').slide(index);
+    
+  }
 
   $scope.updateChatCache=function(page=1,lastid=0){
     Chats.updateMessageCache('groupchats/pagedchatforapp/'+$stateParams.chatId+'/'+page+'',$stateParams.chatId,page,lastid).then(function(response){
@@ -322,6 +370,7 @@ angular.module('starter.controllers', [])
       clearInterval(interval);
   });
   
+  
   $scope.showModal = function() {
 		$ionicModal.fromTemplateUrl('templates/modal/images.html', {
 			scope: $scope,
@@ -331,6 +380,24 @@ angular.module('starter.controllers', [])
 			$scope.imagesModal.show();
 		});
 	}
+	$scope.numberOfImagesToDisplay=10;
+	$rootScope.loadMoreImages=function(){
+
+    if ($rootScope.galleryImages.length == 0){
+      $scope.$broadcast('scroll.infiniteScrollComplete');
+      return;
+    }
+
+    if ($scope.numberOfImagesToDisplay < $rootScope.galleryImages.length)
+      $scope.numberOfImagesToDisplay+=10;
+    $scope.$broadcast('scroll.infiniteScrollComplete');
+  
+	}
+	
+	$scope.showGallery = function() {
+	  NewModalService.showModal();
+	}
+
 
   $scope.zoomMin = 1;
   $scope.sliderImages=[];
@@ -606,19 +673,22 @@ angular.module('starter.controllers', [])
     });
 
   };
-
+  
   $scope.selectPictureInChats=function(type){
-
+    
+      
    $scope.uploadedChatImgs=[];
    $scope.image='';
    var options=null;
+   var source=null;
     if(type=='takePhoto'){
 
          if ($cordovaDevice.getPlatform() == 'Android'){
           var permissions = cordova.plugins.permissions;
           permissions.requestPermission(permissions.CAMERA, function(result) {
             options = {
-              sourceType: Camera.PictureSourceType.CAMERA,
+              sourceType:  Camera.PictureSourceType.CAMERA,
+              allowEdit:1,
               quality: 100,
               encodingType: Camera.EncodingType.JPEG,
               correctOrientation: true,
@@ -637,7 +707,8 @@ angular.module('starter.controllers', [])
           });
      }else{
        options = {
-              sourceType: Camera.PictureSourceType.CAMERA,
+              sourceType:Camera.PictureSourceType.CAMERA,
+              allowEdit:1,
               quality: 100,
               targetWidth: 800,
               targetHeight: 800,
@@ -655,7 +726,26 @@ angular.module('starter.controllers', [])
 
     }
     if(type=="upload"){
-        options = {
+      
+    /*  options = {
+              sourceType:Camera.PictureSourceType.PHOTOLIBRARY,
+              allowEdit:1,
+              quality: 100,
+              targetWidth: 800,
+              targetHeight: 800,
+              correctOrientation: true
+            };
+
+            $cordovaCamera.getPicture(options).then(function(img){
+               
+      	      $scope.showGallery();
+              //$scope.uploadedChatImgs.push(img);
+              
+            },function(error){
+              // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
+            });*/
+       
+       options = {
           quality: 100,
           maximumImagesCount:4,
           targetWidth: 800,
@@ -663,10 +753,12 @@ angular.module('starter.controllers', [])
         };
 
         $cordovaImagePicker.getPictures(options).then(function(results){
+          event.preventDefault();
+          $scope.showGallery();
            var Upload=null;
             for(var i=0;i < results.length;i++){
               $scope.uploadedChatImgs.push(results[i]);
-
+              
             }
         },function(error){
           $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
@@ -721,7 +813,7 @@ angular.module('starter.controllers', [])
 
       angular.forEach($scope.timelines,function(val,key){
         $rootScope.thread =val;
-
+  
         angular.extend(val.Thread,{"Owner" : val.Owner});
         $scope.timelineVal.push(val.Thread);
 
@@ -1446,13 +1538,25 @@ $scope.selectPicture = function($act) {
 
 })
 
-.controller('HeadCtrl', function($scope,$state,Like,CacheFactory,$ionicModal,NotificationService,backButtonOverride,AuthService,BASE_URL,$cordovaDevice,$ionicSlideBoxDelegate,$cordovaActionSheet,API_URL,$cordovaFileTransfer,$ionicPopover,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$ionicLoading,Groups,$http,$ionicScrollDelegate,ApiService,$rootScope,$stateParams) {
+.controller('HeadCtrl', function($scope,$state,$cordovaDevice,$cordovaInAppBrowser,Like,CacheFactory,$ionicModal,NotificationService,backButtonOverride,AuthService,BASE_URL,$cordovaDevice,$ionicSlideBoxDelegate,$cordovaActionSheet,API_URL,$cordovaFileTransfer,$ionicPopover,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$ionicLoading,Groups,$http,$ionicScrollDelegate,ApiService,$rootScope,$stateParams) {
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
     });
     $scope.goBack=function() {
          $state.go('tab.group-detail',{id:$rootScope.threadId});
     };
+    
+    $scope.redirectFile=function(path){
+    
+      $cordovaInAppBrowser.open(API_URL+''+path, '_system')
+      .then(function(event) {
+        console.log('Success');
+      })
+      .catch(function(event) {
+        console.log('Failed');
+      });
+    
+    }
      $rootScope.$emit('hideModal');
   $scope.headID=$stateParams['id'];
   //$scope.headIndex=$stateParams['index'];
@@ -1469,7 +1573,7 @@ $scope.selectPicture = function($act) {
      if($state.current.name=='tab.head'){
       var maxComment=Math.max.apply(Math,$scope.comments.Comment.map(function(o){return o.id;}));
       $scope.updateCache(maxComment);
-       ApiService.setNotified($rootScope.thread.id,'thread').then(function(response){NotificationService.setNotif(); })
+       ApiService.setNotified($scope.headID,'head').then(function(response){NotificationService.setNotif(); })
      }
 
   });
@@ -1505,6 +1609,7 @@ $scope.selectPicture = function($act) {
           $scope.thread=response.Thread;
           $scope.getHeads=response.Head;
           $scope.headUploads = response.Upload;
+          
           $rootScope.viewedHeadContents=response.Head;
           $ionicLoading.hide();
         }else{
@@ -1945,12 +2050,14 @@ $rootScope.changeHeadLike=function(id,index){
   };
 })
 
-.controller('AccountCtrl', function($scope,$http,API_URL,$cordovaFileTransfer,$rootScope,$timeout,$cordovaImagePicker,$ionicPopup,$cordovaNetwork,$cordovaCamera,$cordovaDevice,$cordovaActionSheet,$state,AuthService,$ionicHistory,$interval,$ionicModal) {
+.controller('AccountCtrl', function($scope,$http,API_URL,BASE_URL,$cordovaFileTransfer,$rootScope,$timeout,$cordovaImagePicker,$ionicPopup,$cordovaNetwork,$cordovaCamera,$cordovaDevice,$cordovaActionSheet,$state,AuthService,$ionicHistory,$interval,$ionicModal) {
 
   $scope.settings = {
     enableFriends: true
   };
-  
+  $scope.uploadingProfile=false;
+  $rootScope.avatar_img='';
+  $scope.base_url=BASE_URL;
   $ionicModal.fromTemplateUrl('templates/modal/profile-description.html', {
     scope: $scope,
     animation: 'slide-in-up'
@@ -1962,11 +2069,11 @@ $rootScope.changeHeadLike=function(id,index){
     viewData.enableBack = false;
   });
 
-  $timeout(function(){
+ 
     $rootScope.user=AuthService.username();
     $rootScope.affiliation=AuthService.affiliation();
-    $rootScope.avatar_img=AuthService.avatarImg();
-  });
+    $rootScope.avatar_img=window.localStorage.getItem('avatar_img');
+  
   
   $scope.uploadType=null;
   $scope.triggerProfileImgChange=function(){
@@ -1992,8 +2099,10 @@ $rootScope.changeHeadLike=function(id,index){
       });
   }
   $scope.showUploadingButtons=false;
+  $scope.uploadedProf=false;
   $scope.selectPictureImage=function(type){
      $scope.showUploadingButtons=false;
+     $scope.uploadedProf=false;
      $scope.uploadedProfileImg='';
      var options=null;
       if(type=='takePhoto'){
@@ -2003,17 +2112,18 @@ $rootScope.changeHeadLike=function(id,index){
             permissions.requestPermission(permissions.CAMERA, function(result) {
               options = {
                 sourceType: Camera.PictureSourceType.CAMERA,
-                quality: 100,
+                quality: 70,
                 encodingType: Camera.EncodingType.JPEG,
                 correctOrientation: true,
-                targetWidth: 530,
-                targetHeight: 530,
+                targetWidth: 400,
+                targetHeight: 400,
                 saveToPhotoAlbum: false
               };
   
               $cordovaCamera.getPicture(options).then(function(img){
                 $scope.uploadedProfileImg=img;
                 $scope.showUploadingButtons=true;
+                $scope.uploadedProf=true;
               },function(error){
                 
               });
@@ -2023,9 +2133,9 @@ $rootScope.changeHeadLike=function(id,index){
        }else{
          options = {
                 sourceType: Camera.PictureSourceType.CAMERA,
-                quality: 100,
-                targetWidth: 530,
-                targetHeight: 530,
+                quality: 70,
+                targetWidth: 400,
+                targetHeight: 400,
                 correctOrientation: true,
                 saveToPhotoAlbum: false
               };
@@ -2033,6 +2143,7 @@ $rootScope.changeHeadLike=function(id,index){
               $cordovaCamera.getPicture(options).then(function(img){
                 $scope.uploadedProfileImg=img;
                 $scope.showUploadingButtons=true;
+                $scope.uploadedProf=true;
               },function(error){
                 // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
               });
@@ -2042,10 +2153,10 @@ $rootScope.changeHeadLike=function(id,index){
       }
       if(type=="upload"){
           options = {
-            quality: 100,
+            quality: 70,
             maximumImagesCount:1,
-            targetWidth: 530,
-            targetHeight: 530
+            targetWidth: 400,
+            targetHeight: 400
           };
   
           $cordovaImagePicker.getPictures(options).then(function(results){
@@ -2055,6 +2166,7 @@ $rootScope.changeHeadLike=function(id,index){
   
               }
               $scope.showUploadingButtons=true;
+              $scope.uploadedProf=true;
           },function(error){
             $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
           });
@@ -2063,7 +2175,8 @@ $rootScope.changeHeadLike=function(id,index){
   
   $scope.changeProfileImage=function(img){
          $scope.showUploadingButtons=false;
-          $scope.uploadedProfileImg=null;
+         $scope.uploadingProfile=true;
+         // 
           
         img=encodeURI(img);
         var obj={};
@@ -2077,14 +2190,20 @@ $rootScope.changeHeadLike=function(id,index){
             'Connection': "close",
             'Authorization':'Basic '+window.localStorage.getItem("talknote_token")+''
         };
+        $rootScope.avatar_img='';
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',img,o,true).then(function(result) {
-          
-          $rootScope.avatar_img=JSON.parse(result.response)[0]['Upload']['path'];
-          $http.post(API_URL+'profiles/'+window.localStorage.getItem('profile_id')+'.json',{'Profile':{'avatar_img':$rootScope.avatar_img}},{
+         
+          $rootScope.avatar_img=BASE_URL+''+JSON.parse(result.response)[0]['Upload']['path'];
+          $http.post(API_URL+'users/'+window.localStorage.getItem('user_id')+'.json',{'User':{'id':window.localStorage.getItem('user_id'),'avatar_img':$rootScope.avatar_img}},{
             headers:{
               'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
             }
-          }).success(function(data){}).error(function(data){});
+          }).success(function(data){
+            $scope.uploadedProf=false;
+            $scope.uploadingProfile=false;
+            $scope.uploadedProfileImg='';
+            
+          }).error(function(data){});
         },function(error){
           alert('Error uploading');
         });
@@ -2093,7 +2212,7 @@ $rootScope.changeHeadLike=function(id,index){
   $scope.logout=function(){
     clearInterval($rootScope.allInterval);
     AuthService.logout();
-    $state.go('login');
+    
   }
 })
 .controller('UserChatCtrl', function($scope,$stateParams,$rootScope) {
@@ -2105,9 +2224,9 @@ $rootScope.changeHeadLike=function(id,index){
   $rootScope.showSearchList = false;
  })
 
-.controller('LoginCtrl',function($scope,$rootScope,NotificationService,$ionicPopup,$ionicLoading,$state,ApiService,AuthService,Base64,$http,$ionicHistory){
+.controller('LoginCtrl',function($scope,$rootScope,GalleryService,NotificationService,$ionicPopup,$ionicLoading,$state,ApiService,AuthService,Base64,$http,$ionicHistory){
   $scope.data={
-    'loginid':'',
+    'username':'',
     'password':''
   };
 
@@ -2116,14 +2235,15 @@ $rootScope.changeHeadLike=function(id,index){
     $ionicLoading.show({
       template:'<ion-spinner name="bubbles"></ion-spinner>'
     });
-    ApiService.Post('users/mobilelogin/',{"User":{"loginid":data.loginid,"password":data.password}}).then(function(response){
+    ApiService.Post('users/mobilelogin/',{"User":{"username":data.loginid,"password":data.password}}).then(function(response){
       if(response){
+        
       $ionicLoading.hide();
 
       if(response['user']["User"]){
         $rootScope.user_id=response['user']["User"]['id'];
         var token=Base64.encode(data.loginid + ':' + data.password);
-        AuthService.storeUserCredentials(token,response['user']["Profile"]['name'],response['user']["Profile"]['affiliation'],response['user']["Profile"]['avatar_img'],response['user']["User"]['id'],response['user']["User"]['outside_userid'],response['user']["Profile"]['id']);
+        AuthService.storeUserCredentials(token,response['user']["User"]['username'],response['user']["Profile"]['affiliation'],response['user']['User']['avatar_img'],response['user']["User"]['id'],response['user']["User"]['outside_userid'],response['user']["Profile"]['id']);
         AuthService.setdeviceToken(false);
            $rootScope.allInterval=setInterval(function(){
              NotificationService.setNotif();

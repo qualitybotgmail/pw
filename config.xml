@@ -12,28 +12,27 @@
     <preference name="webviewbounce" value="false" />
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
-    <preference name="SplashScreenDelay" value="3000"/>
--   <preference name="AutoHideSplashScreen" value="true"/>
+    <preference name="SplashScreenDelay" value="3000" />
+    <preference name="AutoHideSplashScreen" value="true" />
     <preference name="FadeSplashScreenDuration" value="3000" />
     <preference name="android-minSdkVersion" value="16" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashScreen" value="screen" />
     <preference name="KeyboardDisplayRequiresUserAction" value="false" />
     <platform name="android">
-        <splash src="res/drawable-land-ldpi/screen.png" density="land-ldpi"/>
-        <splash src="res/drawable-land-mdpi/screen.png" density="land-mdpi"/>
-        <splash src="res/drawable-land-hdpi/screen.png" density="land-hdpi"/>
-        <splash src="res/drawable-land-xhdpi/screen.png" density="land-xhdpi"/>
-        <splash src="res/drawable-land-xxhdpi/screen.png" density="land-xxhdpi"/>
-        <splash src="res/drawable-land-xxxhdpi/screen.png" density="land-xxxhdpi"/>
-        <splash src="res/drawable-port-ldpi/screen.png" density="port-ldpi"/>
-        <splash src="res/drawable-port-mdpi/screen.png" density="port-mdpi"/>
-        <splash src="res/drawable-port-hdpi/screen.png" density="port-hdpi"/>
-        <splash src="res/drawable-port-xhdpi/screen.png" density="port-xhdpi"/>
-        <splash src="res/drawable-port-xxhdpi/screen.png" density="port-xxhdpi"/>
-        <splash src="res/drawable-port-xxxhdpi/screen.png" density="port-xxxhdpi"/>
-      </platform>
-      
+        <splash density="land-ldpi" src="res/drawable-land-ldpi/screen.png" />
+        <splash density="land-mdpi" src="res/drawable-land-mdpi/screen.png" />
+        <splash density="land-hdpi" src="res/drawable-land-hdpi/screen.png" />
+        <splash density="land-xhdpi" src="res/drawable-land-xhdpi/screen.png" />
+        <splash density="land-xxhdpi" src="res/drawable-land-xxhdpi/screen.png" />
+        <splash density="land-xxxhdpi" src="res/drawable-land-xxxhdpi/screen.png" />
+        <splash density="port-ldpi" src="res/drawable-port-ldpi/screen.png" />
+        <splash density="port-mdpi" src="res/drawable-port-mdpi/screen.png" />
+        <splash density="port-hdpi" src="res/drawable-port-hdpi/screen.png" />
+        <splash density="port-xhdpi" src="res/drawable-port-xhdpi/screen.png" />
+        <splash density="port-xxhdpi" src="res/drawable-port-xxhdpi/screen.png" />
+        <splash density="port-xxxhdpi" src="res/drawable-port-xxxhdpi/screen.png" />
+    </platform>
     <feature name="Keyboard">
         <param name="ios-package" onload="true" value="IonicKeyboard" />
     </feature>
@@ -65,5 +64,9 @@
     <plugin name="cordova-plugin-image-picker" spec="https://github.com/Findiglay/cordova-imagePicker.git">
         <variable name="PHOTO_LIBRARY_USAGE_DESCRIPTION" value=" " />
     </plugin>
-     <plugin name="cordova-plugin-firebase" spec="~0.1.19" />
+    <plugin name="cordova-plugin-firebase" spec="~0.1.19" />
+    <plugin name="cordova-plugin-photo-library" spec="~2.0.4">
+        <variable name="PHOTO_LIBRARY_USAGE_DESCRIPTION" value="To choose photos" />
+    </plugin>
+    <plugin name="cordova-plugin-photos" spec="https://github.com/domax/cordova-plugin-photos.git" />
 </widget>

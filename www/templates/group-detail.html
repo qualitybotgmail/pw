@@ -20,11 +20,13 @@
     </ion-slide-box>-->
     <div class="card" ng-repeat="head in thread.Head track by $index">
       <div class="item item-avatar " ui-sref="tab.head({id:head.id,index:$index,likes:head.likes})" style="padding-top: 0px;">
-         <img ng-src="img/avatar.png">
+         <img ng-if="head.Owner.avatar_img==''" ng-src="img/avatar.png">
+         <img ng-if="head.Owner.avatar_img!=''" ng-src="{{head.Owner.avatar_img}}">
          <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</div>
-         <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="head.user_id ==$root.user_id">{{$root.user}}</div>
+       <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="head.user_id ==$root.user_id">{{$root.user}}</div>
          <!-- <p style="font-size:small;" ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</p>
          <p style="font-size:small;" ng-show="head.user_id ==$root.user_id">{{$root.user}}</p> -->
+          <span ng-show="$root.headNotif[head.id]" class="badge badge-assertive" show-badge badge-id="{{head.id}}" badge-type="head">{{$root.headNotif[head.id]}}</span>
          <p class="dateList"><span ng-show="head.user_id==$root.user_id" prevent-href="true"><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showHeadPopover($event,$index)"></i></span></p>
         <!-- <h2 class="headings"> {{head.body}} </h2> -->
         <div class="remove-first" style="white-space:pre-line;word-break:break-word;padding-right:10px;color:#000;">

@@ -44,6 +44,17 @@
     <feature name="ImagePicker">
         <param name="android-package" value="com.synconset.ImagePicker" />
     </feature>
+    <feature name="PhotoLibrary">
+        <param name="android-package" value="com.terikon.cordova.photolibrary.PhotoLibrary" />
+        <param name="onload" value="true" />
+    </feature>
+    <allow-navigation href="cdvphotolibrary:*" />
+    <feature name="Photos">
+        <param name="android-package" value="com.domax.cordova.Photos" />
+    </feature>
+    <feature name="InAppBrowser">
+        <param name="android-package" value="org.apache.cordova.inappbrowser.InAppBrowser" />
+    </feature>
     <name>Playwork</name>
     <description>
         An Ionic Framework and Cordova project.

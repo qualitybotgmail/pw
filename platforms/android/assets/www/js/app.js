@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
 
-.run(function($ionicPlatform,$rootScope,NotificationService,$cordovaKeyboard,$cordovaBadge,$state,$ionicConfig,AuthService,Groups,CacheFactory,InternetService,$cordovaNetwork) {
+.run(function($ionicPlatform,$rootScope,API_URL,$cordovaInAppBrowser,$timeout,NotificationService,NewModalService,GalleryService,$cordovaKeyboard,$cordovaBadge,$state,$ionicConfig,AuthService,Groups,CacheFactory,InternetService,$cordovaNetwork) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -24,20 +24,23 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
       StatusBar.styleDefault();
       // StatusBar.overlaysWebView(false);
     }
+     
 
   });
    if(AuthService.isAuthenticated() && InternetService.hasInternet()){
           NotificationService.setNotif();
           // console.log('HHHHH');
    }
+    
    $rootScope.$on('gotNotif', function(event, data){
 
        $rootScope.threadNotifCount=NotificationService.getThreadCount();
        $rootScope.chatNotifCount=NotificationService.getGroupchatCount();
        $rootScope.threadNotif=NotificationService.getThreadNotif();
+       $rootScope.headNotif=NotificationService.getHeadNotif();
        $rootScope.groupchatNotif=NotificationService.getGroupchatNotif();
        $rootScope.totalNotif=parseInt($rootScope.threadNotifCount) + parseInt($rootScope.chatNotifCount);
-       console.log($rootScope.totalNotif);
+       console.log($rootScope.headNotif);
        window.FirebasePlugin.setBadgeNumber(parseInt($rootScope.totalNotif));
 
        if(parseInt($rootScope.chatNotifCount) > 0){
@@ -49,17 +52,33 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
        }
 
   });
+  
+  
 
   document.addEventListener("deviceready", function () {
-
+   
     window.FirebasePlugin.grantPermission();
+     NewModalService.createModal();
+     //GalleryService.getImages();
+     
+    /* var defaultOptions = {
+    location: 'yes'
+  };
+  $cordovaInAppBrowser.setDefaultOptions(defaultOptions);*/
+    
+   $rootScope.galleryImages=[];
+   $rootScope.$on('gallery_ready',function(event,data){
+     
+     
+      $rootScope.galleryImages=GalleryService.galleryImages();
+    });
 
     var type = $cordovaNetwork.getNetwork()
 
     var isOnline = $cordovaNetwork.isOnline()
 
     var isOffline = $cordovaNetwork.isOffline()
-
+    
     // listen for Online event
     $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
       InternetService.onOnline();
@@ -70,6 +89,8 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
     $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
       InternetService.onOffline();
     });
+    
+   
 
       window.FirebasePlugin.onTokenRefresh(function(token){
         window.localStorage.setItem('newdevicetoken',token);
@@ -106,7 +127,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
         }
       }
   });
-
+ 
 
   }, false);
 
@@ -150,6 +171,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
             Groups.getHeadDetails(toParams.id).then(function(data){
               $rootScope.threadTitle=data.Thread.title;
               $rootScope.headOwner =data.Owner.username;
+              $rootScope.headAvatar =data.Owner.avatar_img;
               $rootScope.threadId=data.Thread.id;
             });
 
@@ -315,7 +337,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
   $ionicConfigProvider.navBar.alignTitle('center');
   $ionicConfigProvider.backButton.text('');
 })
-.config( ['$compileProvider',function( $compileProvider ){ $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file|blob|cdvfile):|data:image\//);}])
+.config( ['$compileProvider',function( $compileProvider ){ $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file|blob|cdvfile|cdvphotolibrary):|data:image\//);}])
 .directive('preventHref', ['$parse', '$rootScope',
   function($parse, $rootScope) {
     return {
@@ -378,6 +400,19 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
     }
   };
 })
+.directive('checkLink', function($compile, $parse) {
+    return {
+      restrict: 'A',
+      link: function(scope, element, attr) {
+        scope.$watch(attr.content, function() {
+         
+          element.html($parse(attr.content)(scope));
+          if(element[0].querySelector('a')!==null)
+             $compile(element[0].querySelector('a'))(scope);
+        }, true);
+      }
+    }
+  })
 .directive('autoGrow', function() {
   return function(scope, element, attr){
     var minHeight = '36px',

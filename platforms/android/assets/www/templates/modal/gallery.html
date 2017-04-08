@@ -1,0 +1,39 @@
+<ion-modal-view>
+   <ion-header-bar class="bar-positive">
+       <div class="buttons">
+          <button class="button" ng-click="">Cancel</button>
+      </div>
+      <h1 class="title">Select Images</h1>
+      <div class="buttons">
+          <button class="button" ng-click="">Send</button>
+      </div>
+    </ion-header-bar>
+    <ion-content >
+        <div class="row" ng-repeat="img in $root.galleryImages track by $index" ng-if="$index % 4 === 0" ng-show="!sliderGallery">
+            <div class="col col-25" ng-if="$index < $root.galleryImages.length" ng-click="previewImage($index)">
+                <i class="icon ion-ios-checkmark-outline" style="color:white;position:absolute;font-size:35px;padding-right:5px"></i>
+                <img ng-src="{{$root.galleryImages[$index].thumb}}" width="100%" />
+            </div>
+            <div class="col col-25" ng-if="$index + 1 < $root.galleryImages.length" ng-click="previewImage($index)">
+                <i class="icon ion-ios-checkmark-outline" style="color:white;position:absolute;font-size:35px;padding-right:5px"></i>
+                <img ng-src="{{$root.galleryImages[$index + 1].thumb}}" width="100%"/>
+            </div>
+            <div class="col col-25" ng-if="$index + 2 < $root.galleryImages.length" ng-click="previewImage($index)">
+                <i class="icon ion-ios-checkmark-outline" style="color:white;position:absolute;font-size:35px;padding-right:5px"></i>
+                <img ng-src="{{$root.galleryImages[$index + 2].thumb}}" width="100%" />
+            </div>
+            <div class="col col-25" ng-if="$index + 3 < $root.galleryImages.length" ng-click="previewImage($index)">
+                <i class="icon ion-ios-checkmark-outline" style="color:white;position:absolute;font-size:35px;padding-right:5px"></i>
+                <img ng-src="{{$root.galleryImages[$index + 3].thumb}}" width="100%" />
+            </div>
+        </div>
+        
+        <ion-slide-box on-slide-changed="slideChanged(index)" 
+                               show-pager="false" delegate-handle="gallery" ng-show="sliderGallery">
+                  <ion-slide ng-repeat="img in $root.galleryImages">
+                    <img ng-src="{{img.thumb}}" />
+                  </ion-slide>
+                </ion-slide-box>
+        
+    </ion-content>
+  </ion-modal-view>

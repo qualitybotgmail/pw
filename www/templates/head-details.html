@@ -8,7 +8,8 @@
 
     <div class="list" style="margin-bottom:0px">
       <div class="item item-avatar" style="border-bottom:none;">
-        <img src="img/avatar.png">
+          <img class="avatar" ng-if="headAvatar==''" ng-src="img/avatar.png">
+         <img class="avatar" ng-if="headAvatar!=''" ng-src="{{headAvatar}}">
         <h3>{{headOwner}}</h3>
         <p style="font-size:small;">{{getHeads.created}}</p>
       </div>
@@ -17,14 +18,18 @@
         <div class="remove-first" style="padding:0px 15px 10px 15px;margin:0;color:#000;white-space:pre-line;word-break:break-word;">
           {{getHeads.body}}
         </div>
-          <!-- <div class="item" ng-show="headUploads.length > 0" prevent-href="true" style="padding-left: 0px;padding-right: 0px;border-bottom:0px;">
-         <a class="item-list-detail" style="padding: 0px;border: 0px;"> -->
-        	<ion-scroll direction="x" ng-show="headUploads.length > 0" prevent-href="true">
-        		<img ng-repeat="upload in headUploads track by $index" ng-src="{{base_url}}{{upload.path}}" ng-click="showImages(0,$index,'head')" class="full-image" style="height: 350px;"/>
-
-        	</ion-scroll>
-        <!-- </a>
-        </div> -->
+           <div class="item" style="padding-left: 0px;padding-right: 0px;border-bottom:0px;">
+         <a class="item-list-detail" style="padding: 0px;border: 0px;">
+        	 <div ng-show="headUploads.non_image.length > 0" prevent-href="true">
+        	   <p style="padding-left: 15px;font-size:18px;cursor:pointer" ng-repeat="file in headUploads.non_image track by $index" ng-click="redirectFile(file.path)">{{file.name}}</p>
+        	 </div>
+          	<ion-scroll direction="x" ng-show="headUploads.image.length > 0" prevent-href="true">
+          		<img ng-repeat="upload in headUploads.image track by $index" ng-src="{{base_url}}{{upload.path}}" ng-click="showImages(0,$index,'head')" class="full-image" style="height: 350px;"/>
+  
+          	</ion-scroll>
+        	
+        </a>
+        </div>
         <p style="padding-left: 15px;">
           <a class="subdued" ng-click="updateLike(getHeads.id,getHeads.likes,getHeads.isUserLiked)"> <span><i class="icon ion-thumbsup likes" ng-class="{'active':getHeads.isUserLiked}"></i> {{getHeads.likes}}</span></a>
           <!--<a class="subdued" ng-click="updateLike(headLikes, getHeads.isUserLiked)" ><span><i class="icon ion-thumbsup" ng-class="{'active':getHeads.isUserLiked}" style="font-size:25px;"></i> {{headLikes}}</span></a>-->
@@ -36,15 +41,19 @@
       <ion-item ng-repeat="comment in comments.Comment | limitTo:numberOfItemsToDisplay track by $index" style="padding: 0px;">
         <div class="comment-list">
 
-          <img class="avatar" ng-src="img/avatar.png">
+           <img class="avatar" ng-if="comment.User.avatar_img==''" ng-src="img/avatar.png">
+         <img class="avatar" ng-if="comment.User.avatar_img!=''" ng-src="{{comment.User.avatar_img}}">
           <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="comment.user_id !=$root.user_id">{{comment.User.username}}</div>
           <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="comment.user_id ==$root.user_id">{{$root.user}}</div>
           <p class="dateList" style="margin-top: -25px;"><span ng-show="comment.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showCommentPopover($event,$index)"></i></span></p>
           <div style="padding-right:20px;color:#000;white-space:pre-line;word-break:break-word">{{comment.body}}</div>
-          <div ng-show="comment.Uploads.length > 0" prevent-href="true">
+          <div>
             <a class="item item-list-detail" style="padding: 0px;border: 0px;">
-              <ion-scroll direction="x" >
-                <img ng-repeat="upload in comment.Uploads track by $index" ng-src="{{upload.Upload.loading?upload.Upload.path:base_url+upload.Upload.path}}" ng-click="showImages({{$parent.$index}},{{$index}},'comment')" class="image-list-thumb" ng-style="{'opacity':upload.Upload.loading && typeof(upload.Upload.loading) !=='undefined'?'0.3':'1'}"/>
+               <div ng-show="comment.non_image.length > 0" prevent-href="true">
+        	   <p style="font-size:16px;cursor:pointer;padding-top:10px" ng-repeat="file in comment.non_image track by $index" ng-click="redirectFile(file.path)">{{file.name}}</p>
+        	 </div>
+              <ion-scroll direction="x" ng-show="comment.image.length > 0" prevent-href="true">
+                <img ng-repeat="upload in comment.image track by $index" ng-src="{{upload.Upload.loading?upload.Upload.path:base_url+upload.Upload.path}}" ng-click="showImages({{$parent.$index}},{{$index}},'comment')" class="image-list-thumb" ng-style="{'opacity':upload.Upload.loading && typeof(upload.Upload.loading) !=='undefined'?'0.3':'1'}"/>
                 <ion-spinner icon="ios" ng-show="typeof(upload.Upload.loading)!=='undefined' && upload.Upload.loading" class="img-spinner"></ion-spinner>
               </ion-scroll>
             </a>

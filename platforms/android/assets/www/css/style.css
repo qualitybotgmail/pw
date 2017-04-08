@@ -149,6 +149,16 @@ textarea {
 .transparent {
   background: rgba(0,0,0,0.7);
 }
+.non-image{
+    background: #007AFF !important;
+    display: inline-block !important;
+    color: white !important;
+    padding: 10px !important;
+    border-radius: 10px !important;
+    text-align: left !important;
+    max-width: 240px !important;
+    margin-left:5px;
+}
  
 .image {
     width: 100%;

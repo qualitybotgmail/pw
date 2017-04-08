@@ -149,6 +149,40 @@ textarea {
 .transparent {
   background: rgba(0,0,0,0.7);
 }
+.more-users{
+    width:12px !important;
+    height:12px !important;
+}
+.four-users{
+    width:20px !important;
+    height:20px !important;
+}
+.two-users{
+    width:20px !important;
+    height:20px !important;
+}
+.two-users:nth-child(3) {
+    width:40px !important;
+}
+.avatar-many {
+        position: absolute;
+    top: 16px;
+    left: 16px;
+    width: 40px !important;
+    height: 40px !important;
+    overflow: hidden;
+    border-radius: 50%;
+}
+.non-image{
+    background: #007AFF !important;
+    display: inline-block !important;
+    color: white !important;
+    padding: 10px !important;
+    border-radius: 10px !important;
+    text-align: left !important;
+    max-width: 240px !important;
+    margin-left:5px;
+}
  
 .image {
     width: 100%;
