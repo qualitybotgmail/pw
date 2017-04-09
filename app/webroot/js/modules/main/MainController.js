@@ -145,8 +145,9 @@ define([
                     // success
                     var tempGroupChat = result;
                     if (!tempGroupChat.existed) {
-                        tempGroupChat.User.push($rootScope.loginUser);
-                        $rootScope.createdGroupChats.push(tempGroupChat);   
+                        $rootScope.getGroupchat();
+                        // tempGroupChat.User.push($rootScope.loginUser);
+                        // $rootScope.createdGroupChats.push(tempGroupChat);   
                     }
                     $state.go('app.message',{id: result.Groupchat.id});
                 }, function (err) {

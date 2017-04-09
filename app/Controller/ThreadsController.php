@@ -178,7 +178,7 @@ class ThreadsController extends AppController {
  * @return void
  */
 	public function view($id,$lastid=0,$ajax=false) {
-		error_reporting(2);
+		//error_reporting(2);
 		if (!$this->Thread->exists($id)) {
 			throw new NotFoundException(__('Invalid thread'));
 		}
@@ -186,7 +186,7 @@ class ThreadsController extends AppController {
 		$this->Thread->Behaviors->load('Containable');
 		$thread = $this->Thread->find('first',array(
 			'conditions' => array('Thread.id' => $id),
-			'contain' => array('Head'=>array('Like','Owner','conditions'=>array('Head.id >'=>$lastid)),'User.username','User.id','Owner.username','Owner.id')
+			'contain' => array('Head'=>array('Like','Owner','conditions'=>array('Head.id >'=>$lastid)),'User.username','User.avatar_img','User.id','Owner.username','Owner.avatar_img','Owner.id')
 		));
 		$tid = $id;
 		$uid = $this->Auth->user('id');
@@ -388,19 +388,7 @@ class ThreadsController extends AppController {
 			echo json_encode(array('status' => 'NOT_EXISTING'));
 		}
 		exit;
-		
-		
-		
-// Array
-// (
-//     [Like] => Array
-//         (
-//             [user_id] => 3
-//             [message_id] => 1
-//             [thread_id] => 1
-//         )
-
-// )
+	
 
 		return $this->redirect(array('action' => 'index'));
 	}	

@@ -14,7 +14,7 @@ class UsersController extends AppController {
  *
  * @var array
  */
-	public $components = array('Paginator','Session');
+	public $components = array('Paginator','Session','RequestHandler');
 
 /**
  * index method
@@ -29,7 +29,7 @@ class UsersController extends AppController {
 		parent::beforeFilter();
 	
 		
-		$this->Auth->allow('me','dd','notifications','mobilelogin','test');
+		$this->Auth->allow('me','edit','dd','notifications','mobilelogin','test');
 	}
 	
 	
@@ -95,32 +95,32 @@ class UsersController extends AppController {
 			//$this->User->create();
 			if ($this->User->save($this->request->data)) {
 		
-			if($exist==null || count($exist) == 0)	 
-				$userid=$this->User->getInsertID();
-			
+				if($exist==null || count($exist) == 0)	 
+					$userid=$this->User->getInsertID();
 				
-				$last = $this->User->read(null,$userid);
-    		
-				$profile=array(
-					'user_id'=>$userid,
-					'name'=>$this->request->data['name'],
-					'affiliation'=>$this->request->data['affiliation']
-				);
-				
-				//$this->Profile->create();
-				$this->Profile->save($profile);
-				
-				echo json_encode(array('redirect_url'=>'https://chat.pwork.biz/users/login#'.$last['User']['hash'].''));
-				// echo json_encode(array('redirect_url'=>'https://chatplaywork.urchin.company/users/login#'.$last['User']['hash'].''));
-				exit;
-				/*}else{
-					$this->Session->setFlash(__('The user has been saved.'), 'default', array('class' => 'alert alert-success'));
-					return $this->redirect(array('action' => 'index'));
-				}*/
-				
-			} else {
-				$this->Session->setFlash(__('The user could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
-			}
+					
+					$last = $this->User->read(null,$userid);
+	    		
+					$profile=array(
+						'user_id'=>$userid,
+						'name'=>$this->request->data['name'],
+						'affiliation'=>$this->request->data['affiliation']
+					);
+					
+					//$this->Profile->create();
+					$this->Profile->save($profile);
+					
+					echo json_encode(array('redirect_url'=>'https://chat.pwork.biz/users/login#'.$last['User']['hash'].''));
+					// echo json_encode(array('redirect_url'=>'https://chatplaywork.urchin.company/users/login#'.$last['User']['hash'].''));
+					exit;
+					/*}else{
+						$this->Session->setFlash(__('The user has been saved.'), 'default', array('class' => 'alert alert-success'));
+						return $this->redirect(array('action' => 'index'));
+					}*/
+					
+				} else {
+					$this->Session->setFlash(__('The user could not be saved. Please, try again.'), 'default', array('class' => 'alert alert-danger'));
+				}
 		}
 	}
 	
@@ -171,6 +171,7 @@ class UsersController extends AppController {
 		return $this->redirect(array('action' => 'index'));
 	}
 	public function mobilelogin(){
+		$this->Session->destroy();
 		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_SERVER,true),FILE_APPEND);
 		$userdetails=array();
 		$session_id=null;
@@ -188,6 +189,7 @@ class UsersController extends AppController {
 				$profile = $this->User->Profile->findByUserId($id);
 				$userdetails['Profile'] = $profile['Profile'];
 		        $this->User->addmember_all($id);
+		        
 		        
 		    }
 		    echo json_encode(array('user'=>$userdetails));

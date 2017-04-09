@@ -70,6 +70,8 @@ class AppController extends Controller {
 		parent::beforeFilter();
 			$this->response->header('Access-Control-Allow-Origin', '*');
 			if($this->request->method() == 'OPTIONS'){
+				$method = $request->header('Access-Control-Request-Method');
+        		$headers = $request->header('Access-Control-Request-Headers');
 				$this->response->header('Access-Control-Allow-Headers', $headers);
             	$this->response->header('Access-Control-Allow-Methods', empty($method) ? 'GET, POST, PUT, DELETE' : $method);
             	$this->response->header('Access-Control-Allow-Credentials', 'true');
@@ -78,7 +80,7 @@ class AppController extends Controller {
                     'passwordHasher' => 'Blowfish',
                     'userModel' => 'User',
                     'fields' => array(
-                                'username' => 'loginid',
+                                'username' => 'username',
                                 'password'=>'password'
                         )
                 ));
@@ -104,7 +106,7 @@ class AppController extends Controller {
 		if(isset($_SERVER['PHP_AUTH_USER'])){
 			$this->Auth->authorize=array('Controller');
 			$this->loadModel("User");
-			$this->request->data['User']['loginid']=$_SERVER['PHP_AUTH_USER'];
+			$this->request->data['User']['username']=$_SERVER['PHP_AUTH_USER'];
 			$this->request->data['User']['password']=$_SERVER['PHP_AUTH_PW'];
 			$this->Auth->login();
 			

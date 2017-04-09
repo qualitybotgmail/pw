@@ -38,7 +38,7 @@ class GroupchatsController extends AppController {
 		
 		$options = array('conditions' => array('OR'=>array('Groupchat.id' => $ids,'Groupchat.user_id' => $id))); 
 		$options['contain'] = array(
-			'Message' , 'User.username','User.id', 'Owner.username','Owner.id'
+			'Message' => array('Upload') , 'User.username','User.id', 'Owner.username','Owner.id'
 		);
 		$groupchats =array('groupchats' => $this->Groupchat->find('all', $options));
 		// function gm($m){
@@ -339,7 +339,7 @@ class GroupchatsController extends AppController {
 		
 		$this->loadModel('User');
 		$this->User->Behaviors->load('Containable');
-		$users = $this->User->find("all", array('fields'=>array('id','username'),
+		$users = $this->User->find("all", array('fields'=>array('id','username','avatar_img'),
 			'contain' => array(),
 			'conditions' => array('User.id !=' => $this->Auth->user('id'))
 		));
@@ -468,7 +468,7 @@ class GroupchatsController extends AppController {
 					'page'=>$page,
 					'order' =>'created DESC',
 					'conditions' => array('Message.id >' => $lastid,'Message.groupchat_id'=>$id),
-					'contain' => array('User.username','User.id','Upload.path','Upload.id','Upload.created')
+					'contain' => array('User.username','User.id','Upload.name','Upload.path','Upload.id','Upload.created')
 		);
 		$this->Paginator->settings = $options;
 		$data=$this->Paginator->paginate('Message');
@@ -517,7 +517,7 @@ class GroupchatsController extends AppController {
 			array('conditions'=>array('groupchat_id'=>$k,'Message.created=(SELECT MAX(created) FROM messages WHERE groupchat_id='.$k.' LIMIT 1)')));
 			
 			
-			$users=$this->User->find('all',array('fields'=>array('DISTINCT User.id','User.username'),
+			$users=$this->User->find('all',array('fields'=>array('DISTINCT User.id','User.avatar_img','User.username'),
 			'joins'=>array(
 				array(
 				'table'=>'users_groupchats',
@@ -530,7 +530,7 @@ class GroupchatsController extends AppController {
 			));
 			
 			if($v!==$id){
-				$owner=$this->User->find('first',array('fields'=>array('User.id','User.username'),
+				$owner=$this->User->find('first',array('fields'=>array('User.id','User.username','User.avatar_img'),
 				'conditions'=>array('User.id'=>$v)));
 			/*foreach($users as $struct) {
 			    if ($v == $struct->id) {
@@ -540,8 +540,22 @@ class GroupchatsController extends AppController {
 			//}	
 			
 			}
+			$avatars=array();
+			if(count($users) < 3){
+				foreach($users as $u){
+					if($u['User']['id'] != $id)
+						if($u['User']['avatar_img']!='')
+							$avatars[]=$u['User']['avatar_img'];
+						else
+							$avatars[]='img/avatar.png';
+				}
+			}else{
+				foreach($users as $u){
+							$avatars[]=$u['User']['avatar_img'];
+				}
+			}
 			
-			array_push($data,array('id'=>$k,'owner'=>$v,'message'=>$mess,'users'=>$users));
+			array_push($data,array('id'=>$k,'avatar'=>$avatars,'owner'=>$v,'message'=>$mess,'users'=>$users));
 		}
 		$data=Set::sort($data, '{n}.message.Message.id', 'desc');
 		echo json_encode($data);

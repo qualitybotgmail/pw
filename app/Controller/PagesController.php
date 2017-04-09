@@ -47,7 +47,7 @@ class PagesController extends AppController {
 	public function display() {
 		$path = func_get_args();
 		if($path[0] == 'home'){
-			$this->redirect('/index.html');
+			$this->redirect('/index.html#/messages');
 		}
 		$count = count($path);
 		if (!$count) {

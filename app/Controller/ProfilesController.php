@@ -1,7 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
 App::import('Vendor','NotifCounts');
-
 /**
  * Profiles Controller
  *
@@ -195,8 +194,10 @@ class ProfilesController extends AppController {
 		if($type=='groupchat')
 			$this->Profile->clearGroupchatsCount($id,$user_id);
 		
-		if($type=='thread')
-			$this->Profile->clearThreadsCount($id,$user_id);
+		if($type=='thread'){
+			//$this->Profile->clearThreadsCount($id,$user_id);
+			$this->Profile->User->Thread->notified($id,$user_id);
+		}
 		if($type=='head')
 			$this->Profile->clearHeadsCount($id,$user_id);			
 		
