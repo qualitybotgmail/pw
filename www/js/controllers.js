@@ -529,7 +529,9 @@ angular.module('starter.controllers', [])
           $scope.image_chat_ctr++;
 
         },function(error){
-          alert('Error uploading');
+          $ionicPopup.alert({
+            template:"写真のアップロードに失敗しました。"
+          });
         });
       });
 
@@ -636,7 +638,9 @@ angular.module('starter.controllers', [])
               // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
             });
           }, function(err) {
-            alert('Your dont have permission');
+            $ionicPopup.alert({
+              template:"カメラへのアクセスを許可してください。"
+            });
           });
      }else{
        options = {
@@ -672,7 +676,7 @@ angular.module('starter.controllers', [])
 
             }
         },function(error){
-          $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
+          // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
         });
     }
 
@@ -1332,7 +1336,9 @@ $scope.selectPicture = function($act) {
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
         }, function(err) {
-          alert('You dont have permission');
+          $ionicPopup.alert({
+            template:"カメラへのアクセスを許可してください。"
+          });
         });
    }else{
      options = {
@@ -1379,7 +1385,7 @@ $scope.selectPicture = function($act) {
             }
           }
       },function(error){
-        $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
+        // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
       });
   }
 };
@@ -1427,7 +1433,9 @@ $scope.selectPicture = function($act) {
 
         },function(error){
           $ionicLoading.hide();
-          alert('Error uploading..');
+          $ionicPopup.alert({
+            template:"写真のアップロードに失敗しました。"
+          });
 
         });
       });
@@ -1685,7 +1693,7 @@ $scope.selectPictureInComment = function($act) {
             }
           }
       },function(error){
-        $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
+        // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
       });
   }
 };
@@ -1809,7 +1817,9 @@ $rootScope.changeHeadLike=function(id,index){
 
 
         },function(error){
-          alert('Error uploading');
+          $ionicPopup.alert({
+            template:"写真のアップロードに失敗しました。"
+          });
         });
 
 
@@ -2023,7 +2033,9 @@ $rootScope.changeHeadLike=function(id,index){
 
               });
             }, function(err) {
-              alert('Your dont have permission');
+              $ionicPopup.alert({
+                template:"カメラへのアクセスを許可してください。"
+              });
             });
        }else{
          options = {
@@ -2064,7 +2076,7 @@ $rootScope.changeHeadLike=function(id,index){
               }
               // $scope.showUploadingButtons=true;
           },function(error){
-            $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
+            // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
           });
       }
   };
@@ -2105,7 +2117,9 @@ $rootScope.changeHeadLike=function(id,index){
           });
         },function(error){
           $ionicLoading.hide();
-          alert('写真のアップロードに失敗しました。');
+          $ionicPopup.alert({
+            template:"写真のアップロードに失敗しました。"
+          });
         });
   };
 
@@ -2132,6 +2146,12 @@ $rootScope.changeHeadLike=function(id,index){
 
   $rootScope.allInterval=null;
   $scope.login=function(data){
+    if(data.loginid=='' || data.password==''){
+      $ionicPopup.alert({
+        template:"ログイン情報を正しく入力してください。"
+      });
+      return;
+    }
     $ionicLoading.show({
       template:'<ion-spinner name="bubbles"></ion-spinner>'
     });
@@ -2153,17 +2173,18 @@ $rootScope.changeHeadLike=function(id,index){
         $state.go('tab.groups');
       }else{
         $ionicPopup.alert({
-          title:"Error",
-          template:"Login error.Please check your credentials."
+          title:"ログイン失敗",
+          template:"ログインIDかパスワードが正しくありません。"
         });
+        $scope.data.password='';
       }
       }
 
     },function(error){
        $ionicLoading.hide();
       $ionicPopup.alert({
-          title:"Server Error",
-          template:"Error connecting to server"
+          title:"接続失敗",
+          template:"インターネットに接続しているか確認してください。"
         });
     });
   }
