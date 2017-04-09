@@ -51,7 +51,7 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('ChatsCtrl', function($scope,$ionicPopup,$cordovaNetwork,$rootScope,NotificationService,$ionicLoading,$ionicPopover,Chats,$ionicModal,ApiService,$state) {
+.controller('ChatsCtrl', function(BASE_URL,$scope,$ionicPopup,$cordovaNetwork,$rootScope,NotificationService,$ionicLoading,$ionicPopover,Chats,$ionicModal,ApiService,$state) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -66,6 +66,7 @@ angular.module('starter.controllers', [])
   $rootScope.user_id=window.localStorage.getItem('user_id');
   $rootScope.user=window.localStorage.getItem('user');
   $scope.users=null;
+  $scope.base_url=BASE_URL;
   $rootScope.chatMembers=[];
   $scope.numberOfUsersToDisplay=10;
   $rootScope.chatsPreview=[];
@@ -908,8 +909,9 @@ angular.module('starter.controllers', [])
   $scope.getGroups=function(){
     Groups.all().then(function(response){
       $scope.groups=response;
-      $ionicLoading.hide();
+      
     });
+    $ionicLoading.hide();
   };
   $scope.getGroups();
 
@@ -2194,7 +2196,7 @@ $rootScope.changeHeadLike=function(id,index){
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',img,o,true).then(function(result) {
          
           $rootScope.avatar_img=BASE_URL+''+JSON.parse(result.response)[0]['Upload']['path'];
-          $http.post(API_URL+'users/'+window.localStorage.getItem('user_id')+'.json',{'User':{'id':window.localStorage.getItem('user_id'),'avatar_img':$rootScope.avatar_img}},{
+          $http.post(API_URL+'users/'+window.localStorage.getItem('user_id')+'.json',{'User':{'id':window.localStorage.getItem('user_id'),'avatar_img':JSON.parse(result.response)[0]['Upload']['path']}},{
             headers:{
               'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
             }

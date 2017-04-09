@@ -681,7 +681,7 @@ angular.module('starter.services', [])
     if(typeof(avatar_img)==='undefined' || avatar_img=='')
       var avatar='img/avatar.png';
     else
-      avatar=avatar_img;
+      avatar=BASE_URL+''+avatar_img;
     window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
     window.localStorage.setItem('user',uname);
     window.localStorage.setItem('affiliation',affiliation);
