@@ -29,7 +29,8 @@
         </ion-item>
         <div class="list">
             <a class="item item-avatar item-icon-right" href="" ng-click="addUser(user)" ng-repeat="user in users | filter:{User:{username:$root.usersToadd}} track by $index">
-              <img src="img/avatar.png">
+              <img src="img/avatar.png" ng-show="user.User.avatar_img==''">
+              <img class="avatar" ng-src="{{base_url}}{{user.User.avatar_img}}" ng-show="user.User.avatar_img!=''">
               <h2>{{user.User.username}}</h2>
               <i ng-show="$root.addedUserIds.indexOf(user.User.id) > -1" class="icon ion-checkmark-round"></i>
             </a>

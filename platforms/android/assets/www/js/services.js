@@ -608,7 +608,7 @@ angular.module('starter.services', [])
     /* jshint ignore:end */
 })
 
-.service('AuthService', function($q, $http,$ionicHistory,CacheFactory,API_URL,BASE_URL) {
+.service('AuthService', function($q,$rootScope, $http,$state,$ionicLoading,$ionicHistory,CacheFactory,API_URL,BASE_URL) {
   var LOCAL_TOKEN_KEY = 'talknote_token';
   var username = '';
   var affiliation = '';
@@ -624,6 +624,7 @@ angular.module('starter.services', [])
      affiliation=window.localStorage.getItem('affiliation');
      avatar_img=window.localStorage.getItem('avatar_img');
      userid=window.localStorage.getItem('user_id');
+     $rootScope.avatar_img=window.localStorage.getItem('avatar_img');
     if (token) {
       useCredentials(token);
     }
@@ -680,7 +681,7 @@ angular.module('starter.services', [])
     if(typeof(avatar_img)==='undefined' || avatar_img=='')
       var avatar='img/avatar.png';
     else
-      avatar=avatar_img;
+      avatar=BASE_URL+''+avatar_img;
     window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
     window.localStorage.setItem('user',uname);
     window.localStorage.setItem('affiliation',affiliation);
@@ -705,6 +706,10 @@ angular.module('starter.services', [])
     userid='';
     isAuthenticated = false;
     var olddevicetoken=window.localStorage.getItem('devicetoken');
+     $ionicLoading.show({
+        template:'<ion-spinner name="bubbles"></ion-spinner>'
+      });
+
 
     if (olddevicetoken !== null || olddevicetoken.length !== 0){
       $http.post(API_URL+'profiles/removeregid/',{'fcmid':olddevicetoken},{
@@ -720,14 +725,16 @@ angular.module('starter.services', [])
     window.localStorage.removeItem('pwork_user_id');
     window.localStorage.removeItem('affiliation');
     window.localStorage.removeItem('avatar_img');
-     window.localStorage.removeItem('profile_id');
+    window.localStorage.removeItem('profile_id');
     CacheFactory.destroyAll();
+    $ionicHistory.clearCache();
+    $ionicHistory.clearHistory();
+    $ionicLoading.hide();
+    $state.go('login');
   }
 
   var logout = function() {
     destroyUserCredentials();
-    $ionicHistory.clearCache();
-   $ionicHistory.clearHistory();
   };
 
   loadUserCredentials();

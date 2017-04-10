@@ -2228,7 +2228,7 @@ $rootScope.changeHeadLike=function(id,index){
 
 .controller('LoginCtrl',function($scope,$rootScope,GalleryService,NotificationService,$ionicPopup,$ionicLoading,$state,ApiService,AuthService,Base64,$http,$ionicHistory){
   $scope.data={
-    'username':'',
+    'loginid':'',
     'password':''
   };
 
@@ -2237,7 +2237,7 @@ $rootScope.changeHeadLike=function(id,index){
     $ionicLoading.show({
       template:'<ion-spinner name="bubbles"></ion-spinner>'
     });
-    ApiService.Post('users/mobilelogin/',{"User":{"username":data.loginid,"password":data.password}}).then(function(response){
+    ApiService.Post('users/mobilelogin/',{"User":{"loginid":data.loginid,"password":data.password}}).then(function(response){
       if(response){
         
       $ionicLoading.hide();
@@ -2245,7 +2245,7 @@ $rootScope.changeHeadLike=function(id,index){
       if(response['user']["User"]){
         $rootScope.user_id=response['user']["User"]['id'];
         var token=Base64.encode(data.loginid + ':' + data.password);
-        AuthService.storeUserCredentials(token,response['user']["User"]['username'],response['user']["Profile"]['affiliation'],response['user']['User']['avatar_img'],response['user']["User"]['id'],response['user']["User"]['outside_userid'],response['user']["Profile"]['id']);
+        AuthService.storeUserCredentials(token,response['user']["Profile"]['name'],response['user']["Profile"]['affiliation'],response['user']['User']['avatar_img'],response['user']["User"]['id'],response['user']["User"]['outside_userid'],response['user']["Profile"]['id']);
         AuthService.setdeviceToken(false);
            $rootScope.allInterval=setInterval(function(){
              NotificationService.setNotif();
