@@ -2153,7 +2153,6 @@ $rootScope.changeHeadLike=function(id,index){
                 targetWidth: 400,
                 targetHeight: 400,
                 correctOrientation: true,
-                allowEdit:true,
                 saveToPhotoAlbum: false
               };
 
@@ -2182,8 +2181,7 @@ $rootScope.changeHeadLike=function(id,index){
           $cordovaImagePicker.getPictures(options).then(function(results){
              var Upload=null;
               for(var i=0;i < results.length;i++){
-                // $scope.uploadedProfileImg=results[i];
-                changeProfileImage(results[i]);
+                 $scope.uploadedProfileImg=results[i];
 
               }
               $scope.showUploadingButtons=true;
