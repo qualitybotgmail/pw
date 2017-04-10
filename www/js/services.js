@@ -747,7 +747,7 @@ angular.module('starter.services', [])
     isAuthenticated: function() {return isAuthenticated;},
     username: function() {return username;},
     affiliation: function() {return affiliation;},
-    avatarImg: function() {return avatar_img && avatar_img!=null && avatar_img!='null' ? avatar_img : 'img/avatar.png';},
+    avatarImg: function() {return avatar_img && avatar_img!=null && avatar_img!='null' ? BASE_URL+avatar_img : 'img/avatar.png';},
     userid:function(){return userid; },
     authToken:function(){return authToken; },
     setdeviceToken:setdeviceToken,

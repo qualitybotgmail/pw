@@ -155,10 +155,11 @@ textarea {
     position: fixed;
     right: 0;
 }
- 
+
 .transparent {
   background: rgba(0,0,0,0.7);
 }
+<<<<<<< HEAD
 .more-users{
     width:12px !important;
     height:12px !important;
@@ -430,4 +431,14 @@ textarea {
   font-size:200%;
   color:#13348B;
   line-height: 26px;
+}
+.avatar-img{
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  max-width: 40px;
+  max-height: 40px;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
 }
