@@ -520,17 +520,32 @@ class GroupchatsController extends AppController {
 			$users=$this->User->find('all',array('fields'=>array('DISTINCT User.id','User.avatar_img','User.username'),
 			'joins'=>array(
 				array(
-				'table'=>'users_groupchats',
-				'alias'=>'members',
-				'type'=>'INNER',
-				'group'=>'User.id',
-				'conditions'=>array('members.user_id=User.id')
-			)),
+					'table'=>'users_groupchats',
+					'alias'=>'members',
+					'type'=>'INNER',
+					'group'=>'User.id',
+					'conditions'=>array('members.user_id=User.id')
+				),
+				array(
+					'table'=>'profiles',
+					'alias'=>'Profile',
+					'type'=>'LEFT',
+					'conditions'=>array('Profile.user_id=User.id')
+				)
+			),
 			'conditions'=>array('OR'=>array('members.groupchat_id'=>$k))
 			));
 			
 			if($v!==$id){
 				$owner=$this->User->find('first',array('fields'=>array('User.id','User.username','User.avatar_img'),
+				'joins'=>array(
+					array(
+						'table'=>'profiles',
+						'alias'=>'Profile',
+						'type'=>'LEFT',
+						'conditions'=>array('Profile.user_id=User.id')
+					)
+				),
 				'conditions'=>array('User.id'=>$v)));
 			/*foreach($users as $struct) {
 			    if ($v == $struct->id) {
