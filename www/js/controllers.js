@@ -1083,6 +1083,7 @@ angular.module('starter.controllers', [])
 })
 
 .controller('GroupDetailCtrl', function($scope,CacheFactory,$timeout,NotificationService,backButtonOverride,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
+  delete $scope.groupID;
   $scope.groupID=$stateParams['id'];
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
@@ -1103,20 +1104,33 @@ angular.module('starter.controllers', [])
 
   var threads = CacheFactory.get('threads');
   $rootScope.$on('update_thread',function(event,id){
-
-     Groups.updateHeadCache(id,'threads/'+id,'head').then(function(response){});
+    
+    if($state.current.name=='tab.group-detail'){
+       $scope.updateCache();
+    /* Groups.updateHeadCache(id,'threads/'+id,'head').then(function(response){});*/
      ApiService.setNotified(id,'thread').then(function(response){NotificationService.setNotif(); });
+    }
 
   });
+  $rootScope.$watch('threadNotifCount', function() {
+        if($state.current.name=='tab.group-detail'){
+       if(typeof($rootScope.threadNotif[$scope.groupID])!=='undefined'){
+        $scope.updateCache();
+        ApiService.setNotified($scope.groupID,'thread').then(function(response){NotificationService.setNotif(); });
+       }
+     }
+    });
 
-  $rootScope.$on('updatesforthread',function(event,id){
+  /*$rootScope.$on('updatesforthread',function(event,id){
 
-     if($state.current.name=='tab.group-detail'){
-       $scope.updateCache();
-       ApiService.setNotified($scope.groupID,'thread').then(function(response){NotificationService.setNotif(); })
+    if($state.current.name=='tab.group-detail'){
+       if(typeof($rootScope.threadNotif[$scope.groupID])!=='undefined'){
+        $scope.updateCache();
+        ApiService.setNotified($scope.groupID,'thread').then(function(response){NotificationService.setNotif(); });
+       }
      }
 
-  });
+  });*/
 
  $scope.uploadedImgs=[];
   $ionicModal.fromTemplateUrl('templates/modal/addmember.html', {
@@ -1202,7 +1216,8 @@ angular.module('starter.controllers', [])
   }
 
   $scope.updateCache=function($lastid=0){
-    Groups.updateHeadCache($scope.groupID,'threads/'+$scope.groupID,'head').then(function(response){
+   
+    Groups.updateHeadCache($stateParams['id'],'threads/'+$stateParams['id'],'head').then(function(response){
       //console.log(response);
       if("Head" in response && (response.Head.length > 0)){
             $rootScope.thread = response;

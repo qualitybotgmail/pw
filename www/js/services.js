@@ -608,7 +608,7 @@ angular.module('starter.services', [])
     /* jshint ignore:end */
 })
 
-.service('AuthService', function($q,$rootScope, $http,$state,$ionicLoading,$ionicHistory,CacheFactory,API_URL,BASE_URL) {
+.service('AuthService', function($q,$rootScope,$interval, $http,$state,$ionicLoading,$ionicHistory,CacheFactory,API_URL,BASE_URL) {
   var LOCAL_TOKEN_KEY = 'talknote_token';
   var username = '';
   var affiliation = '';
@@ -719,6 +719,7 @@ angular.module('starter.services', [])
         }).success(function(data){}).error(function(data){});
 
     }
+    clearInterval($rootScope.allInterval);
     window.localStorage.removeItem(LOCAL_TOKEN_KEY);
     window.localStorage.removeItem('user');
     window.localStorage.removeItem('user_id');
@@ -729,6 +730,7 @@ angular.module('starter.services', [])
     CacheFactory.destroyAll();
     $ionicHistory.clearCache();
     $ionicHistory.clearHistory();
+    
     $ionicLoading.hide();
     $state.go('login');
   }

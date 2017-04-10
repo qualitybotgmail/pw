@@ -1083,6 +1083,7 @@ angular.module('starter.controllers', [])
 })
 
 .controller('GroupDetailCtrl', function($scope,CacheFactory,$timeout,NotificationService,backButtonOverride,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
+  $scope.groupID='';
   $scope.groupID=$stateParams['id'];
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
@@ -1103,15 +1104,19 @@ angular.module('starter.controllers', [])
 
   var threads = CacheFactory.get('threads');
   $rootScope.$on('update_thread',function(event,id){
-
-     Groups.updateHeadCache(id,'threads/'+id,'head').then(function(response){});
+    
+    if($state.current.name=='tab.group-detail'){
+       $scope.updateCache();
+    /* Groups.updateHeadCache(id,'threads/'+id,'head').then(function(response){});*/
      ApiService.setNotified(id,'thread').then(function(response){NotificationService.setNotif(); });
+    }
 
   });
 
   $rootScope.$on('updatesforthread',function(event,id){
 
      if($state.current.name=='tab.group-detail'){
+       console.log('TREAD ID '+$scope.groupID+'/'+$stateParams['id']);
        $scope.updateCache();
        ApiService.setNotified($scope.groupID,'thread').then(function(response){NotificationService.setNotif(); })
      }
@@ -2228,7 +2233,7 @@ $rootScope.changeHeadLike=function(id,index){
 
 .controller('LoginCtrl',function($scope,$rootScope,GalleryService,NotificationService,$ionicPopup,$ionicLoading,$state,ApiService,AuthService,Base64,$http,$ionicHistory){
   $scope.data={
-    'username':'',
+    'loginid':'',
     'password':''
   };
 

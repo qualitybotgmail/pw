@@ -40,8 +40,8 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
        $rootScope.headNotif=NotificationService.getHeadNotif();
        $rootScope.groupchatNotif=NotificationService.getGroupchatNotif();
        $rootScope.totalNotif=parseInt($rootScope.threadNotifCount) + parseInt($rootScope.chatNotifCount);
-       console.log($rootScope.headNotif);
-       window.FirebasePlugin.setBadgeNumber(parseInt($rootScope.totalNotif));
+       
+       
 
        if(parseInt($rootScope.chatNotifCount) > 0){
           $rootScope.$broadcast('updatesforgroupchat',null);
@@ -50,6 +50,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
 
           $rootScope.$broadcast('updatesforthread',null);
        }
+       window.FirebasePlugin.setBadgeNumber(parseInt($rootScope.totalNotif));
 
   });
   
