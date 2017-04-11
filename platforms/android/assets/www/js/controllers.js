@@ -51,7 +51,9 @@ angular.module('starter.controllers', [])
   };
 })
 
+
 .controller('ChatsCtrl', function(BASE_URL,$scope,$ionicPopup,$cordovaNetwork,$rootScope,NotificationService,$ionicLoading,$ionicPopover,Chats,$ionicModal,ApiService,$state) {
+
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -59,6 +61,9 @@ angular.module('starter.controllers', [])
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
+
+  $scope.baseUrl = BASE_URL;
+
   $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = false;
     });
@@ -91,13 +96,17 @@ angular.module('starter.controllers', [])
     ApiService.setNotified(chatid,'groupchat').then(function(response){NotificationService.setNotif(); });
 
   });
-   $rootScope.$on('updatesforgroupchat',function(event,id){
+  /* $rootScope.$on('updatesforgroupchat',function(event,id){
      $scope.cacheUpdate();
      //if($state.current.name=='tab.chats'){
       //  $scope.cacheUpdate();
         //ApiService.setNotified(chatid,'groupchat').then(function(response){NotificationService.setNotif(); });
      //}
 
+  });*/
+  
+  $rootScope.$watch('chatNotifCount', function() {
+    $scope.cacheUpdate();     
   });
 
 
@@ -284,7 +293,7 @@ angular.module('starter.controllers', [])
             return ' <a href="" ng-click="redirectFile(' + urlx + ',true)">' + url + '</a>';
         });
     }
-    console.log($scope.linkify("https://www.google.com"));
+    
     $scope.redirectFile=function(path,x){
       var url=path;
     if(typeof(x)==='undefined')
@@ -358,20 +367,27 @@ angular.module('starter.controllers', [])
 
 
   });
-   $rootScope.$on('updatesforgroupchat',function(event,id){
+/*   $rootScope.$on('updatesforgroupchat',function(event,id){
      //$scope.page=1;
 
       if($state.current.name=='tab.chat-detail'){
         $scope.updateChatCache();
         ApiService.setNotified($stateParams.chatId,'groupchat').then(function(response){NotificationService.setNotif(); });
       }
+  });*/
+  
+  $rootScope.$watch('chatNotifCount', function() {
+     if($state.current.name=='tab.chat-detail'){
+        $scope.updateChatCache();
+        ApiService.setNotified($stateParams.chatId,'groupchat').then(function(response){NotificationService.setNotif(); });
+      }  
   });
+  
   $rootScope.$on('stopinterval',function(event,data){
     if(interval!==null)
       clearInterval(interval);
   });
-  
-  
+
   $scope.showModal = function() {
 		$ionicModal.fromTemplateUrl('templates/modal/images.html', {
 			scope: $scope,
@@ -418,7 +434,7 @@ angular.module('starter.controllers', [])
 
   $scope.updateSlideStatus = function(slide) {
   var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle'+slide).getScrollPosition().zoom;
- 
+
   if (zoomFactor == $scope.zoomMin) {
     $ionicSlideBoxDelegate.enableSlide(true);
   } else {
@@ -594,7 +610,9 @@ angular.module('starter.controllers', [])
           $scope.image_chat_ctr++;
 
         },function(error){
-          alert('Error uploading');
+          $ionicPopup.alert({
+            template:"写真のアップロードに失敗しました。"
+          });
         });
       });
 
@@ -688,13 +706,12 @@ angular.module('starter.controllers', [])
           var permissions = cordova.plugins.permissions;
           permissions.requestPermission(permissions.CAMERA, function(result) {
             options = {
-              sourceType:  Camera.PictureSourceType.CAMERA,
-              allowEdit:1,
-              quality: 100,
+              sourceType: Camera.PictureSourceType.CAMERA,
+              quality: 70,
               encodingType: Camera.EncodingType.JPEG,
               correctOrientation: true,
-              targetWidth: 800,
-              targetHeight: 800,
+              targetWidth: 600,
+              targetHeight: 600,
               saveToPhotoAlbum: false
             };
 
@@ -704,15 +721,16 @@ angular.module('starter.controllers', [])
               // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
             });
           }, function(err) {
-            alert('Your dont have permission');
+            $ionicPopup.alert({
+              template:"カメラへのアクセスを許可してください。"
+            });
           });
      }else{
        options = {
-              sourceType:Camera.PictureSourceType.CAMERA,
-              allowEdit:1,
-              quality: 100,
-              targetWidth: 800,
-              targetHeight: 800,
+              sourceType: Camera.PictureSourceType.CAMERA,
+              quality: 70,
+              targetWidth: 600,
+              targetHeight: 600,
               correctOrientation: true,
               saveToPhotoAlbum: false
             };
@@ -727,42 +745,23 @@ angular.module('starter.controllers', [])
 
     }
     if(type=="upload"){
-      
-    /*  options = {
-              sourceType:Camera.PictureSourceType.PHOTOLIBRARY,
-              allowEdit:1,
-              quality: 100,
-              targetWidth: 800,
-              targetHeight: 800,
-              correctOrientation: true
-            };
-
-            $cordovaCamera.getPicture(options).then(function(img){
-               
-      	      $scope.showGallery();
-              //$scope.uploadedChatImgs.push(img);
-              
-            },function(error){
-              // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
-            });*/
-       
-       options = {
-          quality: 100,
+        options = {
+          quality: 70,
           maximumImagesCount:4,
-          targetWidth: 800,
-          targetHeight: 800
+          targetWidth: 600,
+          targetHeight: 600
         };
 
         $cordovaImagePicker.getPictures(options).then(function(results){
-          event.preventDefault();
-          $scope.showGallery();
+          //event.preventDefault();
+          //$scope.showGallery();
            var Upload=null;
             for(var i=0;i < results.length;i++){
               $scope.uploadedChatImgs.push(results[i]);
               
             }
         },function(error){
-          $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
+          // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
         });
     }
 
@@ -872,14 +871,22 @@ angular.module('starter.controllers', [])
        ApiService.setNotified(id,'thread').then(function(response){NotificationService.setNotif(); });
      });
   });
-   $rootScope.$on('updatesforthread',function(event,id){
+/*   $rootScope.$on('updatesforthread',function(event,id){
     if($state.current.name=='tab.groups'){
      $scope.updateCache();
      Groups.updateHeadCache(id,'threads/'+id,'head').then(function(response){
 
      });
     }
-  });
+  });*/
+  
+    $rootScope.$watch('threadNotifCount', function() {
+        if($state.current.name=='tab.groups'){
+        $scope.updateCache();
+        //ApiService.setNotified(id,'thread').then(function(response){NotificationService.setNotif(); });
+       
+     }
+    });
 
  $rootScope.showGroupList = true;
  $rootScope.showSearchList = false;
@@ -1083,7 +1090,7 @@ angular.module('starter.controllers', [])
 })
 
 .controller('GroupDetailCtrl', function($scope,CacheFactory,$timeout,NotificationService,backButtonOverride,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
-  $scope.groupID='';
+  delete $scope.groupID;
   $scope.groupID=$stateParams['id'];
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
@@ -1112,16 +1119,25 @@ angular.module('starter.controllers', [])
     }
 
   });
+  $rootScope.$watch('threadNotifCount', function() {
+        if($state.current.name=='tab.group-detail'){
+       if(typeof($rootScope.threadNotif[$scope.groupID])!=='undefined'){
+        $scope.updateCache();
+        ApiService.setNotified($scope.groupID,'thread').then(function(response){NotificationService.setNotif(); });
+       }
+     }
+    });
 
-  $rootScope.$on('updatesforthread',function(event,id){
+  /*$rootScope.$on('updatesforthread',function(event,id){
 
-     if($state.current.name=='tab.group-detail'){
-       console.log('TREAD ID '+$scope.groupID+'/'+$stateParams['id']);
-       $scope.updateCache();
-       ApiService.setNotified($scope.groupID,'thread').then(function(response){NotificationService.setNotif(); })
+    if($state.current.name=='tab.group-detail'){
+       if(typeof($rootScope.threadNotif[$scope.groupID])!=='undefined'){
+        $scope.updateCache();
+        ApiService.setNotified($scope.groupID,'thread').then(function(response){NotificationService.setNotif(); });
+       }
      }
 
-  });
+  });*/
 
  $scope.uploadedImgs=[];
   $ionicModal.fromTemplateUrl('templates/modal/addmember.html', {
@@ -1207,7 +1223,8 @@ angular.module('starter.controllers', [])
   }
 
   $scope.updateCache=function($lastid=0){
-    Groups.updateHeadCache($scope.groupID,'threads/'+$scope.groupID,'head').then(function(response){
+   
+    Groups.updateHeadCache($stateParams['id'],'threads/'+$stateParams['id'],'head').then(function(response){
       //console.log(response);
       if("Head" in response && (response.Head.length > 0)){
             $rootScope.thread = response;
@@ -1266,6 +1283,9 @@ angular.module('starter.controllers', [])
             $rootScope.showAddHead.hide();
             $scope.resetHeadForm();
             $ionicLoading.hide();
+              $rootScope.threadTitle=$rootScope.thread.Thread.title;
+              $rootScope.headOwner =$rootScope.thread.Owner.username;
+              $rootScope.headAvatar =$rootScope.thread.Owner.avatar_img;
             $state.go('tab.head',{id:response.Head.id});
 
     });
@@ -1281,7 +1301,7 @@ angular.module('starter.controllers', [])
       $scope.resetHeadForm();
       $rootScope.showAddHead.hide();
       $rootScope.headPopover.hide();
-     
+
        $state.go('tab.head',{id:$rootScope.thread.Head[$rootScope.processedHead].id,index:$rootScope.processedHead});
     });
 
@@ -1408,11 +1428,11 @@ $scope.selectPicture = function($act) {
     permissions.requestPermission(permissions.CAMERA, function(result) {
           options = {
             sourceType: Camera.PictureSourceType.CAMERA,
-            quality: 80,
+            quality: 50,
             encodingType: Camera.EncodingType.JPEG,
             correctOrientation: true,
-            targetWidth: 800,
-            targetHeight: 800,
+            targetWidth: 600,
+            targetHeight: 600,
             popoverOptions: CameraPopoverOptions,
             saveToPhotoAlbum: false
           };
@@ -1428,15 +1448,17 @@ $scope.selectPicture = function($act) {
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
         }, function(err) {
-          alert('You dont have permission');
+          $ionicPopup.alert({
+            template:"カメラへのアクセスを許可してください。"
+          });
         });
    }else{
      options = {
             sourceType: Camera.PictureSourceType.CAMERA,
-            quality: 80,
+            quality: 50,
             encodingType: Camera.EncodingType.JPEG,
-            targetWidth: 800,
-            targetHeight: 800,
+            targetWidth: 600,
+            targetHeight: 600,
             correctOrientation: true,
             popoverOptions: CameraPopoverOptions,
             saveToPhotoAlbum: false
@@ -1457,7 +1479,7 @@ $scope.selectPicture = function($act) {
   }
   if($act=="upload"){
       options = {
-        quality: 80,
+        quality: 50,
         maximumImagesCount:4,
         targetWidth: 600,
         targetHeight: 600
@@ -1475,7 +1497,7 @@ $scope.selectPicture = function($act) {
             }
           }
       },function(error){
-        $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
+        // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
       });
   }
 };
@@ -1523,7 +1545,9 @@ $scope.selectPicture = function($act) {
 
         },function(error){
           $ionicLoading.hide();
-          alert('Error uploading..');
+          $ionicPopup.alert({
+            template:"写真のアップロードに失敗しました。"
+          });
 
         });
       });
@@ -1575,7 +1599,7 @@ $scope.selectPicture = function($act) {
   //$rootScope.processedHead=$scope.headIndex;
   $rootScope.viewedHeadContents=null;
 
-  $rootScope.$on('updatesforthread',function(event,id){
+  /*$rootScope.$on('updatesforthread',function(event,id){
 
      if($state.current.name=='tab.head'){
       var maxComment=Math.max.apply(Math,$scope.comments.Comment.map(function(o){return o.id;}));
@@ -1583,7 +1607,17 @@ $scope.selectPicture = function($act) {
        ApiService.setNotified($scope.headID,'head').then(function(response){NotificationService.setNotif(); })
      }
 
-  });
+  });*/
+  $rootScope.$watch('threadNotifCount', function() {
+        if($state.current.name=='tab.head'){
+          if(typeof($rootScope.headNotif[$scope.headID])!=='undefined'){
+              var maxComment=Math.max.apply(Math,$scope.comments.Comment.map(function(o){return o.id;}));
+              $scope.updateCache(maxComment);
+              ApiService.setNotified($scope.headID,'head').then(function(response){NotificationService.setNotif(); })
+          }
+        }
+    });
+  
 
   $scope.action='';
   $scope.base_url=BASE_URL;
@@ -1684,7 +1718,7 @@ $scope.selectPicture = function($act) {
 
   $scope.updateSlideStatus = function(slide) {
   var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle'+slide).getScrollPosition().zoom;
- 
+
   if (zoomFactor == $scope.zoomMin) {
     $ionicSlideBoxDelegate.enableSlide(true);
   } else {
@@ -1733,11 +1767,11 @@ $scope.selectPictureInComment = function($act) {
         permissions.requestPermission(permissions.CAMERA, function(result) {
           options = {
             sourceType: Camera.PictureSourceType.CAMERA,
-            quality: 100,
+            quality: 50,
             encodingType: Camera.EncodingType.JPEG,
             correctOrientation: true,
-            targetWidth: 800,
-            targetHeight: 800,
+            targetWidth: 600,
+            targetHeight: 600,
             saveToPhotoAlbum: false
           };
 
@@ -1751,14 +1785,14 @@ $scope.selectPictureInComment = function($act) {
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
         }, function(err) {
-          alert('Your dont have permission');
+          // alert('Your dont have permission');
         });
    }else{
      options = {
             sourceType: Camera.PictureSourceType.CAMERA,
-            quality: 100,
-            targetWidth: 800,
-            targetHeight: 800,
+            quality: 50,
+            targetWidth: 600,
+            targetHeight: 600,
             correctOrientation: true,
             saveToPhotoAlbum: false
           };
@@ -1778,10 +1812,10 @@ $scope.selectPictureInComment = function($act) {
   }
   if($act=="upload"){
       options = {
-        quality: 100,
+        quality: 50,
         maximumImagesCount:4,
-        targetWidth: 800,
-        targetHeight: 800
+        targetWidth: 600,
+        targetHeight: 600
       };
 
       $cordovaImagePicker.getPictures(options).then(function(results){
@@ -1794,7 +1828,7 @@ $scope.selectPictureInComment = function($act) {
             }
           }
       },function(error){
-        $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
+        // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
       });
   }
 };
@@ -1918,7 +1952,9 @@ $rootScope.changeHeadLike=function(id,index){
 
 
         },function(error){
-          alert('Error uploading');
+          $ionicPopup.alert({
+            template:"写真のアップロードに失敗しました。"
+          });
         });
 
 
@@ -2057,14 +2093,16 @@ $rootScope.changeHeadLike=function(id,index){
   };
 })
 
-.controller('AccountCtrl', function($scope,$http,API_URL,BASE_URL,$cordovaFileTransfer,$rootScope,$timeout,$cordovaImagePicker,$ionicPopup,$cordovaNetwork,$cordovaCamera,$cordovaDevice,$cordovaActionSheet,$state,AuthService,$ionicHistory,$interval,$ionicModal) {
+.controller('AccountCtrl', function($scope,$http,API_URL,$cordovaFileTransfer,$rootScope,$timeout,$cordovaImagePicker,$ionicPopup,$cordovaNetwork,$cordovaCamera,$cordovaDevice,$cordovaActionSheet,$state,AuthService,$ionicHistory,$interval,$ionicModal,BASE_URL,$ionicLoading) {
 
   $scope.settings = {
     enableFriends: true
   };
+
   $scope.uploadingProfile=false;
   $rootScope.avatar_img='';
   $scope.base_url=BASE_URL;
+
   $ionicModal.fromTemplateUrl('templates/modal/profile-description.html', {
     scope: $scope,
     animation: 'slide-in-up'
@@ -2080,18 +2118,17 @@ $rootScope.changeHeadLike=function(id,index){
     $rootScope.user=AuthService.username();
     $rootScope.affiliation=AuthService.affiliation();
     $rootScope.avatar_img=window.localStorage.getItem('avatar_img');
-  
-  
+
   $scope.uploadType=null;
   $scope.triggerProfileImgChange=function(){
-    
-    
+
+
     var options = {
       buttonLabels: ['写真を選択', '写真を撮影'],
       addCancelButtonWithLabel: 'キャンセル',
       androidEnableCancelButton : true,
     };
-    
+
        $cordovaActionSheet.show(options).then(function(btnIndex) {
         var type = '';
         if (btnIndex === 1) {
@@ -2102,18 +2139,20 @@ $rootScope.changeHeadLike=function(id,index){
         }
           $scope.uploadType=type;
           $scope.selectPictureImage(type);
-  
+
       });
   }
   $scope.showUploadingButtons=false;
   $scope.uploadedProf=false;
   $scope.selectPictureImage=function(type){
+    
      $scope.showUploadingButtons=false;
      $scope.uploadedProf=false;
      $scope.uploadedProfileImg='';
+
      var options=null;
       if(type=='takePhoto'){
-  
+
            if ($cordovaDevice.getPlatform() == 'Android'){
             var permissions = cordova.plugins.permissions;
             permissions.requestPermission(permissions.CAMERA, function(result) {
@@ -2126,16 +2165,19 @@ $rootScope.changeHeadLike=function(id,index){
                 targetHeight: 400,
                 saveToPhotoAlbum: false
               };
-  
+
               $cordovaCamera.getPicture(options).then(function(img){
+
                 $scope.uploadedProfileImg=img;
                 $scope.showUploadingButtons=true;
                 $scope.uploadedProf=true;
               },function(error){
-                
+
               });
             }, function(err) {
-              alert('Your dont have permission');
+              $ionicPopup.alert({
+                template:"カメラへのアクセスを許可してください。"
+              });
             });
        }else{
          options = {
@@ -2146,36 +2188,40 @@ $rootScope.changeHeadLike=function(id,index){
                 correctOrientation: true,
                 saveToPhotoAlbum: false
               };
-  
+
               $cordovaCamera.getPicture(options).then(function(img){
                 $scope.uploadedProfileImg=img;
                 $scope.showUploadingButtons=true;
                 $scope.uploadedProf=true;
+
               },function(error){
                 // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
               });
        }
-  
-  
+
+
       }
       if(type=="upload"){
           options = {
+
             quality: 70,
             maximumImagesCount:1,
             targetWidth: 400,
             targetHeight: 400
+
           };
-  
+
           $cordovaImagePicker.getPictures(options).then(function(results){
              var Upload=null;
               for(var i=0;i < results.length;i++){
-                $scope.uploadedProfileImg=results[i];
-  
+                 $scope.uploadedProfileImg=results[i];
+
               }
               $scope.showUploadingButtons=true;
               $scope.uploadedProf=true;
+
           },function(error){
-            $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
+            // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
           });
       }
   };
@@ -2183,8 +2229,6 @@ $rootScope.changeHeadLike=function(id,index){
   $scope.changeProfileImage=function(img){
          $scope.showUploadingButtons=false;
          $scope.uploadingProfile=true;
-         // 
-          
         img=encodeURI(img);
         var obj={};
         var o=new FileUploadOptions();
@@ -2199,6 +2243,7 @@ $rootScope.changeHeadLike=function(id,index){
         };
         $rootScope.avatar_img='';
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',img,o,true).then(function(result) {
+
          
           $rootScope.avatar_img=BASE_URL+''+JSON.parse(result.response)[0]['Upload']['path'];
           $http.post(API_URL+'users/'+window.localStorage.getItem('user_id')+'.json',{'User':{'id':window.localStorage.getItem('user_id'),'avatar_img':JSON.parse(result.response)[0]['Upload']['path']}},{
@@ -2212,7 +2257,10 @@ $rootScope.changeHeadLike=function(id,index){
             
           }).error(function(data){});
         },function(error){
-          alert('Error uploading');
+          $ionicLoading.hide();
+          $ionicPopup.alert({
+            template:"写真のアップロードに失敗しました。"
+          });
         });
   };
 
@@ -2239,6 +2287,12 @@ $rootScope.changeHeadLike=function(id,index){
 
   $rootScope.allInterval=null;
   $scope.login=function(data){
+    if(data.loginid=='' || data.password==''){
+      $ionicPopup.alert({
+        template:"ログイン情報を正しく入力してください。"
+      });
+      return;
+    }
     $ionicLoading.show({
       template:'<ion-spinner name="bubbles"></ion-spinner>'
     });
@@ -2254,24 +2308,25 @@ $rootScope.changeHeadLike=function(id,index){
         AuthService.setdeviceToken(false);
            $rootScope.allInterval=setInterval(function(){
              NotificationService.setNotif();
-           },10000);
+           },5000);
 
         $scope.data.password='';
         $scope.data.loginid='';
         $state.go('tab.groups');
       }else{
         $ionicPopup.alert({
-          title:"Error",
-          template:"Login error.Please check your credentials."
+          title:"ログイン失敗",
+          template:"ログインIDかパスワードが正しくありません。"
         });
+        $scope.data.password='';
       }
       }
 
     },function(error){
        $ionicLoading.hide();
       $ionicPopup.alert({
-          title:"Server Error",
-          template:"Error connecting to server"
+          title:"接続失敗",
+          template:"インターネットに接続しているか確認してください。"
         });
     });
   }

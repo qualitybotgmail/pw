@@ -96,13 +96,17 @@ angular.module('starter.controllers', [])
     ApiService.setNotified(chatid,'groupchat').then(function(response){NotificationService.setNotif(); });
 
   });
-   $rootScope.$on('updatesforgroupchat',function(event,id){
+  /* $rootScope.$on('updatesforgroupchat',function(event,id){
      $scope.cacheUpdate();
      //if($state.current.name=='tab.chats'){
       //  $scope.cacheUpdate();
         //ApiService.setNotified(chatid,'groupchat').then(function(response){NotificationService.setNotif(); });
      //}
 
+  });*/
+  
+  $rootScope.$watch('chatNotifCount', function() {
+    $scope.cacheUpdate();     
   });
 
 
@@ -289,7 +293,7 @@ angular.module('starter.controllers', [])
             return ' <a href="" ng-click="redirectFile(' + urlx + ',true)">' + url + '</a>';
         });
     }
-    console.log($scope.linkify("https://www.google.com"));
+    
     $scope.redirectFile=function(path,x){
       var url=path;
     if(typeof(x)==='undefined')
@@ -363,14 +367,22 @@ angular.module('starter.controllers', [])
 
 
   });
-   $rootScope.$on('updatesforgroupchat',function(event,id){
+/*   $rootScope.$on('updatesforgroupchat',function(event,id){
      //$scope.page=1;
 
       if($state.current.name=='tab.chat-detail'){
         $scope.updateChatCache();
         ApiService.setNotified($stateParams.chatId,'groupchat').then(function(response){NotificationService.setNotif(); });
       }
+  });*/
+  
+  $rootScope.$watch('chatNotifCount', function() {
+     if($state.current.name=='tab.chat-detail'){
+        $scope.updateChatCache();
+        ApiService.setNotified($stateParams.chatId,'groupchat').then(function(response){NotificationService.setNotif(); });
+      }  
   });
+  
   $rootScope.$on('stopinterval',function(event,data){
     if(interval!==null)
       clearInterval(interval);
@@ -741,8 +753,8 @@ angular.module('starter.controllers', [])
         };
 
         $cordovaImagePicker.getPictures(options).then(function(results){
-          event.preventDefault();
-          $scope.showGallery();
+          //event.preventDefault();
+          //$scope.showGallery();
            var Upload=null;
             for(var i=0;i < results.length;i++){
               $scope.uploadedChatImgs.push(results[i]);
@@ -859,14 +871,22 @@ angular.module('starter.controllers', [])
        ApiService.setNotified(id,'thread').then(function(response){NotificationService.setNotif(); });
      });
   });
-   $rootScope.$on('updatesforthread',function(event,id){
+/*   $rootScope.$on('updatesforthread',function(event,id){
     if($state.current.name=='tab.groups'){
      $scope.updateCache();
      Groups.updateHeadCache(id,'threads/'+id,'head').then(function(response){
 
      });
     }
-  });
+  });*/
+  
+    $rootScope.$watch('threadNotifCount', function() {
+        if($state.current.name=='tab.groups'){
+        $scope.updateCache();
+        //ApiService.setNotified(id,'thread').then(function(response){NotificationService.setNotif(); });
+       
+     }
+    });
 
  $rootScope.showGroupList = true;
  $rootScope.showSearchList = false;
@@ -1263,6 +1283,9 @@ angular.module('starter.controllers', [])
             $rootScope.showAddHead.hide();
             $scope.resetHeadForm();
             $ionicLoading.hide();
+              $rootScope.threadTitle=$rootScope.thread.Thread.title;
+              $rootScope.headOwner =$rootScope.thread.Owner.username;
+              $rootScope.headAvatar =$rootScope.thread.Owner.avatar_img;
             $state.go('tab.head',{id:response.Head.id});
 
     });
@@ -1576,7 +1599,7 @@ $scope.selectPicture = function($act) {
   //$rootScope.processedHead=$scope.headIndex;
   $rootScope.viewedHeadContents=null;
 
-  $rootScope.$on('updatesforthread',function(event,id){
+  /*$rootScope.$on('updatesforthread',function(event,id){
 
      if($state.current.name=='tab.head'){
       var maxComment=Math.max.apply(Math,$scope.comments.Comment.map(function(o){return o.id;}));
@@ -1584,7 +1607,17 @@ $scope.selectPicture = function($act) {
        ApiService.setNotified($scope.headID,'head').then(function(response){NotificationService.setNotif(); })
      }
 
-  });
+  });*/
+  $rootScope.$watch('threadNotifCount', function() {
+        if($state.current.name=='tab.head'){
+          if(typeof($rootScope.headNotif[$scope.headID])!=='undefined'){
+              var maxComment=Math.max.apply(Math,$scope.comments.Comment.map(function(o){return o.id;}));
+              $scope.updateCache(maxComment);
+              ApiService.setNotified($scope.headID,'head').then(function(response){NotificationService.setNotif(); })
+          }
+        }
+    });
+  
 
   $scope.action='';
   $scope.base_url=BASE_URL;
@@ -2263,7 +2296,7 @@ $rootScope.changeHeadLike=function(id,index){
     $ionicLoading.show({
       template:'<ion-spinner name="bubbles"></ion-spinner>'
     });
-    ApiService.Post('users/mobilelogin/',{"User":{"loginid":data.loginid,"password":data.password}}).then(function(response){
+    ApiService.Post('users/mobilelogin/',{"User":{"username":data.loginid,"password":data.password}}).then(function(response){
       if(response){
         
       $ionicLoading.hide();
@@ -2271,11 +2304,11 @@ $rootScope.changeHeadLike=function(id,index){
       if(response['user']["User"]){
         $rootScope.user_id=response['user']["User"]['id'];
         var token=Base64.encode(data.loginid + ':' + data.password);
-        AuthService.storeUserCredentials(token,response['user']["Profile"]['name'],response['user']["Profile"]['affiliation'],response['user']['User']['avatar_img'],response['user']["User"]['id'],response['user']["User"]['outside_userid'],response['user']["Profile"]['id']);
+        AuthService.storeUserCredentials(token,response['user']["User"]['username'],response['user']["Profile"]['affiliation'],response['user']['User']['avatar_img'],response['user']["User"]['id'],response['user']["User"]['outside_userid'],response['user']["Profile"]['id']);
         AuthService.setdeviceToken(false);
            $rootScope.allInterval=setInterval(function(){
              NotificationService.setNotif();
-           },10000);
+           },5000);
 
         $scope.data.password='';
         $scope.data.loginid='';

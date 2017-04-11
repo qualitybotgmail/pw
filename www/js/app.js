@@ -43,13 +43,13 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
        
        
 
-       if(parseInt($rootScope.chatNotifCount) > 0){
+       /*if(parseInt($rootScope.chatNotifCount) > 0){
           $rootScope.$broadcast('updatesforgroupchat',null);
-       }
-       if(parseInt($rootScope.threadNotifCount) > 0){
+       }*/
+      /* if(parseInt($rootScope.threadNotifCount) > 0){
 
           $rootScope.$broadcast('updatesforthread',null);
-       }
+       }*/
        window.FirebasePlugin.setBadgeNumber(parseInt($rootScope.totalNotif));
 
   });
@@ -106,7 +106,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
         if("head_id" in data){
           Groups.getTitle(data.id).then(function(response){
             $rootScope.groupTitle=response.title;
-            $rootScope.$broadcast('updatesforthread',data.id);
+            //$rootScope.$broadcast('updatesforthread',data.id);
           });
 
         }else{
@@ -167,7 +167,8 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
        /* if(toState.name=='tab.group-detail'){
 
         }*/
-
+       /* $rootScope.threadTitle='';
+         $rootScope.headOwner='';*/
         if(toState.name=='tab.head'){
             Groups.getHeadDetails(toParams.id).then(function(data){
               $rootScope.threadTitle=data.Thread.title;

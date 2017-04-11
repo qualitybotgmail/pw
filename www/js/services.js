@@ -719,6 +719,7 @@ angular.module('starter.services', [])
         }).success(function(data){}).error(function(data){});
 
     }
+    window.FirebasePlugin.setBadgeNumber(0);
     clearInterval($rootScope.allInterval);
     window.localStorage.removeItem(LOCAL_TOKEN_KEY);
     window.localStorage.removeItem('user');
