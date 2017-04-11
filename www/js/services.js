@@ -624,7 +624,7 @@ angular.module('starter.services', [])
      affiliation=window.localStorage.getItem('affiliation');
      avatar_img=window.localStorage.getItem('avatar_img');
      userid=window.localStorage.getItem('user_id');
-    //  $rootScope.avatar_img=window.localStorage.getItem('avatar_img');
+     $rootScope.avatar_img=window.localStorage.getItem('avatar_img');
     if (token) {
       useCredentials(token);
     }
@@ -681,7 +681,7 @@ angular.module('starter.services', [])
     if(typeof(avatar_img)==='undefined' || avatar_img=='' || avatar_img==null  || avatar_img=='null')
       avatar='img/avatar.png';
     else
-      avatar=avatar_img;
+      avatar=BASE_URL+avatar_img;
     window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
     window.localStorage.setItem('user',uname);
     window.localStorage.setItem('affiliation',affiliation);
@@ -750,7 +750,7 @@ angular.module('starter.services', [])
     isAuthenticated: function() {return isAuthenticated;},
     username: function() {return username;},
     affiliation: function() {return affiliation;},
-    avatarImg: function() {return avatar_img && avatar_img!=null && avatar_img!='null' ? BASE_URL+avatar_img : 'img/avatar.png';},
+    avatarImg: function() {return avatar_img;},
     userid:function(){return userid; },
     authToken:function(){return authToken; },
     setdeviceToken:setdeviceToken,
