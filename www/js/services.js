@@ -678,7 +678,7 @@ angular.module('starter.services', [])
 
   var storeUserCredentials=function(token,uname,affiliation,avatar_img,userid,pworkid,prof_id) {
     var avatar='';
-    if(typeof(avatar_img)==='undefined' || avatar_img=='')
+    if(typeof(avatar_img)==='undefined' || avatar_img=='' || avatar_img==null)
       var avatar='img/avatar.png';
     else
       avatar=BASE_URL+''+avatar_img;

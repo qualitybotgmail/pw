@@ -296,7 +296,7 @@ angular.module('starter.controllers', [])
     
     $scope.redirectFile=function(path,x){
       var url=path;
-    if(typeof(x)==='undefined')
+    if(typeof(x)==='undefined' || x==null)
       url=API_URL+''+path;
       $cordovaInAppBrowser.open(url, '_system')
       .then(function(event) {
@@ -461,7 +461,7 @@ angular.module('starter.controllers', [])
         }
       }
       $timeout(function() {
-        if(typeof(x)!=='undefined')
+        if(typeof(x)!=='undefined' && x!=null)
             $ionicScrollDelegate.scrollTo($ionicScrollDelegate.getScrollPosition().left, parseInt($scope.scrolly)+parseInt($scope.scrolly), true);
       $scope.$broadcast('scroll.refreshComplete');
       },0);
@@ -833,7 +833,7 @@ angular.module('starter.controllers', [])
     }
 
     $scope.gotoDetails = function(id,index) {
-      if(index===undefined){
+      if(index===undefined || index==null){
          $state.go('tab.group-detail',({'id': id}));
       }else{
           $state.go('tab.head',({'id': id, 'index': index}));
@@ -1121,7 +1121,7 @@ angular.module('starter.controllers', [])
   });
   $rootScope.$watch('threadNotifCount', function() {
         if($state.current.name=='tab.group-detail'){
-       if(typeof($rootScope.threadNotif[$scope.groupID])!=='undefined'){
+       if(typeof($rootScope.threadNotif[$scope.groupID])!=='undefined' && $rootScope.threadNotif[$scope.groupID] != null){
         $scope.updateCache();
         ApiService.setNotified($scope.groupID,'thread').then(function(response){NotificationService.setNotif(); });
        }
@@ -1283,9 +1283,9 @@ angular.module('starter.controllers', [])
             $rootScope.showAddHead.hide();
             $scope.resetHeadForm();
             $ionicLoading.hide();
-              $rootScope.threadTitle=$rootScope.thread.Thread.title;
+             /* $rootScope.threadTitle=$rootScope.thread.Thread.title;
               $rootScope.headOwner =$rootScope.thread.Owner.username;
-              $rootScope.headAvatar =$rootScope.thread.Owner.avatar_img;
+              $rootScope.headAvatar =$rootScope.thread.Owner.avatar_img;*/
             $state.go('tab.head',{id:response.Head.id});
 
     });
@@ -1402,7 +1402,7 @@ angular.module('starter.controllers', [])
        $rootScope.deletedCheckbox=false;
         ApiService.Get('threads/deletemember/'+$scope.groupID+'/'+user.id,'').then(function(response){
 
-          if(typeof($scope.notMembers[user.id])==='undefined')
+          if(typeof($scope.notMembers[user.id])==='undefined' || $scope.notMembers[user.id]==null)
             $scope.notMembers.push($scope.x);
 
             $rootScope.thread.User.splice(index,1);
@@ -1530,7 +1530,7 @@ $scope.selectPicture = function($act) {
         $scope.Upload={};
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i,o).then(function(result) {
           $rootScope.thread.Head.forEach(function(v,k){
-            if(typeof(isNew)!=='undefined')
+            if(typeof(isNew)!=='undefined' && isNew!=null)
               $scope.headUploads=JSON.parse(result.response)[0];
             if(parseInt(v.id)==parseInt(id)){
                v.Uploads.push(JSON.parse(result.response)[0]);
@@ -1610,7 +1610,7 @@ $scope.selectPicture = function($act) {
   });*/
   $rootScope.$watch('threadNotifCount', function() {
         if($state.current.name=='tab.head'){
-          if(typeof($rootScope.headNotif[$scope.headID])!=='undefined'){
+          if(typeof($rootScope.headNotif[$scope.headID])!=='undefined' && $rootScope.headNotif[$scope.headID] != null){
               var maxComment=Math.max.apply(Math,$scope.comments.Comment.map(function(o){return o.id;}));
               $scope.updateCache(maxComment);
               ApiService.setNotified($scope.headID,'head').then(function(response){NotificationService.setNotif(); })
@@ -1647,6 +1647,8 @@ $scope.selectPicture = function($act) {
     Groups.updateHeadCache($scope.headID,'heads/'+$scope.headID,'comment',lastid).then(function(response){
        console.log("Head" in response);
         if("Head" in response){
+          $rootScope.threadTitle = response.Thread.title;
+          $rootScope.headOwner = response.Owner.username;
           $scope.thread=response.Thread;
           $scope.getHeads=response.Head;
           $scope.headUploads = response.Upload;
@@ -2296,7 +2298,7 @@ $rootScope.changeHeadLike=function(id,index){
     $ionicLoading.show({
       template:'<ion-spinner name="bubbles"></ion-spinner>'
     });
-    ApiService.Post('users/mobilelogin/',{"User":{"username":data.loginid,"password":data.password}}).then(function(response){
+    ApiService.Post('users/mobilelogin/',{"User":{"loginid":data.loginid,"password":data.password}}).then(function(response){
       if(response){
         
       $ionicLoading.hide();
@@ -2304,7 +2306,7 @@ $rootScope.changeHeadLike=function(id,index){
       if(response['user']["User"]){
         $rootScope.user_id=response['user']["User"]['id'];
         var token=Base64.encode(data.loginid + ':' + data.password);
-        AuthService.storeUserCredentials(token,response['user']["User"]['username'],response['user']["Profile"]['affiliation'],response['user']['User']['avatar_img'],response['user']["User"]['id'],response['user']["User"]['outside_userid'],response['user']["Profile"]['id']);
+        AuthService.storeUserCredentials(token,response['user']["Profile"]['name'],response['user']["Profile"]['affiliation'],response['user']['User']['avatar_img'],response['user']["User"]['id'],response['user']["User"]['outside_userid'],response['user']["Profile"]['id']);
         AuthService.setdeviceToken(false);
            $rootScope.allInterval=setInterval(function(){
              NotificationService.setNotif();
