@@ -70,6 +70,8 @@ class AppController extends Controller {
 		parent::beforeFilter();
 			$this->response->header('Access-Control-Allow-Origin', '*');
 			if($this->request->method() == 'OPTIONS'){
+				$method = $request->header('Access-Control-Request-Method');
+        		$headers = $request->header('Access-Control-Request-Headers');
 				$this->response->header('Access-Control-Allow-Headers', $headers);
             	$this->response->header('Access-Control-Allow-Methods', empty($method) ? 'GET, POST, PUT, DELETE' : $method);
             	$this->response->header('Access-Control-Allow-Credentials', 'true');

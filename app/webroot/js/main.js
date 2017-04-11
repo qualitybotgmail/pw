@@ -46,7 +46,7 @@ require.config({
 		canvas2image:   '../vendor/canvas2image/canvas2image',
 		text:           '../vendor/requirejs/require-text',
 		
-		fancybox :  	'../vendor/fancybox/jquery.fancybox.min',
+		fancybox :  	'../vendor/jquery-fancybox/jquery.fancybox.min',
 		ngIdleJs :		'../vendor/ngIdle/angular-idle.min',
 		bootstrapSwitch:'../vendor/bootstrap-switch/bootstrap-switch.min',
 		ngNotification :'../vendor/angular-notifications/angular-notification.min',

@@ -111,19 +111,23 @@ class Head extends AppModel {
 			)
 			
 		));
-		
+
 		$logs = array();
 		$thread_id = null;
+
 		foreach ($r['Thread'] as $t){
-			$thread_id = $t['id'];
+
 			foreach($t['Head'] as $h){
+				if($h['id'] == $hid){
+					$thread_id = $h['thread_id'];
+				}
 				foreach($h['Log'] as $l){
 					
 					$logs[] = $l['id'];
 				}
 			}
 		}
-		$this->Thread->User->Profile->clearThreadsCount($thread_id,$uid);
+
 		$lids = $this->Log->UsersLog->find('list',array(
 			'conditions' => array(
 				'AND' => array(
@@ -141,7 +145,13 @@ class Head extends AppModel {
 		//$minus = count($to_be_marked_viewed);
 		//$this->Log->User->Profile->minusNotificationCount($thread_id,$uid,'Threads',$minus);
 		$r = $this->Log->UsersLog->saveAll($to_be_marked_viewed);
+		
+		//Update notification counts
+		$notificationsCount = new NotifCounts($this->Thread->User->Profile,$uid);
+		$cleared = $notificationsCount->clear('head',$hid);
 
+		$notificationsCount->minus('thread',$thread_id,$cleared);
+		
 
 	}		
 }

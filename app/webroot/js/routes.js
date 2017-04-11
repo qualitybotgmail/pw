@@ -43,6 +43,20 @@ define([], function()
                 ],
                 name: 'app.threads'
             },
+            
+            'messages': {
+                views: {
+                    'content': {
+                        templateUrl: baseSourcePath + 'messages/messages.html?version=' + Talknote.version,
+                        controller: 'MessagesController'   
+                    }
+                },
+                dependencies: [
+                    'modules/messages/index'
+                ],
+                name: 'app.messages'
+            },
+
 
             'threads/:id': {
                 views: {

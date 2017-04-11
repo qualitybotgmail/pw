@@ -37,7 +37,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             $scope.templates = ThreadFactory.templates;
             $scope.currentPageNumber = 1;
-            $scope.loginUser  = $rootScope.loginUser ;
+            $scope.loginUser  = $rootScope.loginUser;
             
             window.notification_count_function();
             
@@ -48,6 +48,23 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                         break;
                     }
                 }  
+            };
+            
+            $scope.getNotificationCount = function(headId) {
+                var headsNotifications = $rootScope.notifications.Heads;
+                for (var i = 0; i < headsNotifications.length; i++) {
+                    var head = headsNotifications[i];
+                    if (headId == head.head_id) {
+                        return head.count;
+                        break;
+                    }
+                }
+            };
+            
+            $scope.gotoHead = function(head) {
+                $rootScope.notificationCount -= head.notification_count;
+                head.notification_count = 0;
+                $state.go('app.head', { id: head.id });
             };
             
             

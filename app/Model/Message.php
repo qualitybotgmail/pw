@@ -93,7 +93,7 @@ class Message extends AppModel {
 			
 		$id = AuthComponent::user('id');
 		$msg = $this->data['Message'];
-		
+
 		$this->Log->save(array(
 			'user_id' => 	$id,
 			'message_id' => $msg['id'],

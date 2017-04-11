@@ -59,6 +59,25 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	$scope.comment = { body: '', message_id: null};
         	$scope.loadFirstTime = true;
         	
+        	// check file if image
+        	$scope.checkFile = function(path) {
+        	  var isImage = true;
+        	  var file = path.split('.');
+        	  var ValidImageTypes = ["gif", "jpeg", "png", "jpg"];
+        	  if ($.inArray(file[(file.length - 1)], ValidImageTypes) < 0) {
+        	      isImage = false;
+        	  }
+        	  
+        	  return isImage;
+        	};
+        	
+        	// GetFileImage
+        	$scope.getFileName = function(path) {
+        	  var file = path.split('/');
+        	  console.log(file[(file.length - 1)], 'filename');
+        	  return file[(file.length - 1)];
+        	};
+        	
         	// format text 
             $scope.formatComment = function(message){
                 return message.replace(/↵/, '\n');
@@ -280,8 +299,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	// delete head thread
         	$scope.deleteGroupChat = function(groupChatId) {
         	    GroupChatModel.one(groupChatId).remove().then(function(result){
-        	        $rootScope.getGroupchat();
-        	       $state.go('app');
+        	       $rootScope.getGroupchat();
+        	       $state.go('app.messages');
         	    });
         	};
             

@@ -124,7 +124,11 @@
                                 {{m.formattedComment}}
                                 <p>
                                     <span ng-repeat="upload in m.Upload">
-                                        <a fancybox ng-href="{{upload.path}}">
+                                        <span ng-init="upload.isFileImage=checkFile(upload.path)"></span>
+                                        <a ng-href="{{upload.path}}" ng-init="upload.fileName=getFileName(upload.path)" target="_blank" ng-if="!upload.isFileImage">
+                                          {{upload.fileName}}
+                                        </a>
+                                        <a fancybox ng-href="{{upload.path}}" ng-if="upload.isFileImage">
                                             <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
                                         </a>
                                     </span>

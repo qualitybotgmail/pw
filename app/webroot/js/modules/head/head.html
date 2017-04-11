@@ -83,8 +83,12 @@
             <div class="row">
                 <div class="col-md-12">
                     <p>
-                         <span ng-repeat="upload in selectedHead.Upload">
-                            <a fancybox ng-href="{{upload.path}}">
+                        <span ng-repeat="upload in selectedHead.Upload.non_image">
+                            <span ng-init="upload.isFileImage=checkFile(upload.path)"></span>
+                            <a ng-href="{{upload.path}}" target="_blank" ng-if="!upload.isFileImage">
+                              {{upload.name}}
+                            </a>
+                            <a fancybox ng-href="{{upload.path}}" ng-if="upload.isFileImage">
                                 <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
                             </a>
                         </span>
@@ -98,9 +102,13 @@
                     <small>by : {{c.User.username == loginUser.username ? "You" : c.User.username }}</small>
                     <p class="head-comment" ng-init='c.formattedComment=formatComment(c.body)' >{{c.formattedComment}}</p>
                     <p>
-                         <span ng-repeat="upload in c.Upload">
-                            <a fancybox ng-href="{{upload.path}}">
-                                <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                        <span ng-repeat="u in c.Uploads">
+                            <span ng-init="u.isFileImage=checkFile(u.Upload.name)"></span>
+                            <a ng-href="{{u.Upload.path}}" target="_blank" ng-if="!u.isFileImage">
+                              {{u.Upload.name}}
+                            </a>
+                            <a fancybox ng-href="{{u.Upload.path}}" ng-if="u.isFileImage">
+                                <img ng-src="{{u.Upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
                             </a>
                         </span>
                     </p>
