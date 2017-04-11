@@ -4,7 +4,7 @@
       <ion-scroll direction="xy" scrollbar-x="false" scrollbar-y="false"
       zooming="true" min-zoom="1" style="width: 100%; height: 100%"
       delegate-handle="scrollHandle{{$index}}" on-scroll="updateSlideStatus($index)" on-release="updateSlideStatus($index)" overflow-scroll="false">
- 
+
       <div ng-if="imageType=='comment'" class="image" style="background-image: url( {{base_url}}{{im.Upload.path}} )"></div>
       <div ng-if="imageType=='head' || imageType==''" class="image" style="background-image: url( {{base_url}}{{im.path}} )"></div>
     </ion-scroll>

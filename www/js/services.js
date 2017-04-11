@@ -624,7 +624,7 @@ angular.module('starter.services', [])
      affiliation=window.localStorage.getItem('affiliation');
      avatar_img=window.localStorage.getItem('avatar_img');
      userid=window.localStorage.getItem('user_id');
-     $rootScope.avatar_img=window.localStorage.getItem('avatar_img');
+    //  $rootScope.avatar_img=window.localStorage.getItem('avatar_img');
     if (token) {
       useCredentials(token);
     }
@@ -678,10 +678,10 @@ angular.module('starter.services', [])
 
   var storeUserCredentials=function(token,uname,affiliation,avatar_img,userid,pworkid,prof_id) {
     var avatar='';
-    if(typeof(avatar_img)==='undefined' || avatar_img=='' || avatar_img==null)
-      var avatar='img/avatar.png';
+    if(typeof(avatar_img)==='undefined' || avatar_img=='' || avatar_img==null  || avatar_img=='null')
+      avatar='img/avatar.png';
     else
-      avatar=BASE_URL+''+avatar_img;
+      avatar=avatar_img;
     window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
     window.localStorage.setItem('user',uname);
     window.localStorage.setItem('affiliation',affiliation);
@@ -702,14 +702,16 @@ angular.module('starter.services', [])
 
   function destroyUserCredentials() {
     authToken = undefined;
+    devicetoken = undefined;
     username = '';
+    affiliation = '';
+    avatar_img = '';
     userid='';
     isAuthenticated = false;
     var olddevicetoken=window.localStorage.getItem('devicetoken');
      $ionicLoading.show({
         template:'<ion-spinner name="bubbles"></ion-spinner>'
       });
-
 
     if (olddevicetoken !== null || olddevicetoken.length !== 0){
       $http.post(API_URL+'profiles/removeregid/',{'fcmid':olddevicetoken},{
@@ -719,7 +721,7 @@ angular.module('starter.services', [])
         }).success(function(data){}).error(function(data){});
 
     }
-    window.FirebasePlugin.setBadgeNumber(0);
+    if(window.FirebasePlugin) window.FirebasePlugin.setBadgeNumber(0);
     clearInterval($rootScope.allInterval);
     window.localStorage.removeItem(LOCAL_TOKEN_KEY);
     window.localStorage.removeItem('user');
@@ -731,7 +733,7 @@ angular.module('starter.services', [])
     CacheFactory.destroyAll();
     $ionicHistory.clearCache();
     $ionicHistory.clearHistory();
-    
+
     $ionicLoading.hide();
     $state.go('login');
   }
@@ -871,7 +873,7 @@ angular.module('starter.services', [])
           ids[v.head_id]=v.count;
         })
       }
-      
+
       return ids;
     },
     getGroupchatNotif:function(){
@@ -888,15 +890,15 @@ angular.module('starter.services', [])
 })
 .service('GalleryService',function($rootScope,NewModalService,$ionicLoading){
   var galleryImages=[];
-  
+
   function requestPermission(){
     cordova.plugins.photoLibrary.requestAuthorization(
       function () {
          cordova.plugins.photoLibrary.getLibrary(
             function (result) {
-              
-             
-              
+
+
+
               if(!result.isLastChunk){
               result.library.forEach(function(val,key){
                cordova.plugins.photoLibrary.getThumbnail(
@@ -913,14 +915,14 @@ angular.module('starter.services', [])
                   quality: 0.8
                 });
               });
-                 
+
               }
               $rootScope.$broadcast('gallery_ready');
             })
         },
       function (err) {
-        
-      }, // if options not provided, defaults to {read: true}. 
+
+      }, // if options not provided, defaults to {read: true}.
       {
         read: true,
         write: true
@@ -928,7 +930,7 @@ angular.module('starter.services', [])
     );
   }
   var getImages=function(){
-    
+
     Photos.photos({"limit": 20,"interval":500},
     function(photos) {
        photos.forEach(function(val,key){
@@ -941,7 +943,7 @@ angular.module('starter.services', [])
               console.error("Error: " + error);
           });
        });
-        
+
         $rootScope.$broadcast('gallery_ready');
     },
     function(error) {
@@ -953,9 +955,9 @@ angular.module('starter.services', [])
       function (result) {
         var library = result.library;
         if(!result.isLastChunk){
-              
+
                   galleryImages=library;
-              
+
               }
               $rootScope.$broadcast('gallery_ready');
       },
@@ -971,8 +973,8 @@ angular.module('starter.services', [])
     );
       },
        function (err) {
-        
-      }, // if options not provided, defaults to {read: true}. 
+
+      }, // if options not provided, defaults to {read: true}.
       {
         read: true,
         write: true
@@ -980,9 +982,9 @@ angular.module('starter.services', [])
 
          /* cordova.plugins.photoLibrary.getLibrary(
             function (result) {
-              
-             
-              
+
+
+
               if(!result.isLastChunk){
               result.library.forEach(function(val,key){
                cordova.plugins.photoLibrary.getThumbnail(
@@ -999,7 +1001,7 @@ angular.module('starter.services', [])
                   quality: 0.8
                 });
               });
-                 
+
               }
               $rootScope.$broadcast('gallery_ready');
             },
@@ -1008,11 +1010,11 @@ angular.module('starter.services', [])
                 requestPermission();
               }
             },
-            { 
+            {
               itemsInChunk: 20, // Loading large library takes time, so output can be chunked so that result callback will be called on
               chunkTimeSec: 0.5, // each X items, or after Y secons passes. You can start displaying photos immediately.
               useOriginalFileNames: false, // default, true will be much slower on iOS
-              includeAlbumData: false // default 
+              includeAlbumData: false // default
             }
           );*/
   }
@@ -1053,7 +1055,7 @@ angular.module('starter.services', [])
 })
 .service('NewModalService', function($ionicModal) {
   var svc = {};
-  
+
   svc.createModal=function(){
     $ionicModal.fromTemplateUrl('templates/modal/gallery.html', {
       animation: 'slide-in-up'

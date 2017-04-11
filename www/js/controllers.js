@@ -104,9 +104,9 @@ angular.module('starter.controllers', [])
      //}
 
   });*/
-  
+
   $rootScope.$watch('chatNotifCount', function() {
-    $scope.cacheUpdate();     
+    $scope.cacheUpdate();
   });
 
 
@@ -280,12 +280,12 @@ angular.module('starter.controllers', [])
       var imageTypes = ['jpg','jpeg','tiff','png','gif','bmp'];
       //check if the extension matches anything in the list.
       if(imageTypes.indexOf(extension) !== -1) {
-          return true;   
+          return true;
       }else{
         return false;
       }
    }
-   
+
    $scope.linkify=function(text) {
         var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
         return text.replace(urlRegex, function(url) {
@@ -293,7 +293,7 @@ angular.module('starter.controllers', [])
             return ' <a href="" ng-click="redirectFile(' + urlx + ',true)">' + url + '</a>';
         });
     }
-    
+
     $scope.redirectFile=function(path,x){
       var url=path;
     if(typeof(x)==='undefined' || x==null)
@@ -305,17 +305,17 @@ angular.module('starter.controllers', [])
       .catch(function(event) {
         console.log('Failed');
       });
-    
+
     }
 
   $rootScope.$emit('hideModal');
-  
+
   $ionicModal.fromTemplateUrl('templates/modal/gallery.html', {
 			scope: $scope,
 			animation: 'slide-in-up'
 		}).then(function(modal) {
 			$scope.galleryModal = modal;
-			
+
 		});
 
   $scope.base_url=BASE_URL
@@ -337,7 +337,7 @@ angular.module('starter.controllers', [])
   $scope.previewImage=function(index){
     $scope.sliderGallery=true;
     $ionicSlideBoxDelegate.$getByHandle('gallery').slide(index);
-    
+
   }
 
   $scope.updateChatCache=function(page=1,lastid=0){
@@ -375,14 +375,14 @@ angular.module('starter.controllers', [])
         ApiService.setNotified($stateParams.chatId,'groupchat').then(function(response){NotificationService.setNotif(); });
       }
   });*/
-  
+
   $rootScope.$watch('chatNotifCount', function() {
      if($state.current.name=='tab.chat-detail'){
         $scope.updateChatCache();
         ApiService.setNotified($stateParams.chatId,'groupchat').then(function(response){NotificationService.setNotif(); });
-      }  
+      }
   });
-  
+
   $rootScope.$on('stopinterval',function(event,data){
     if(interval!==null)
       clearInterval(interval);
@@ -408,9 +408,9 @@ angular.module('starter.controllers', [])
     if ($scope.numberOfImagesToDisplay < $rootScope.galleryImages.length)
       $scope.numberOfImagesToDisplay+=10;
     $scope.$broadcast('scroll.infiniteScrollComplete');
-  
+
 	}
-	
+
 	$scope.showGallery = function() {
 	  NewModalService.showModal();
 	}
@@ -692,10 +692,10 @@ angular.module('starter.controllers', [])
     });
 
   };
-  
+
   $scope.selectPictureInChats=function(type){
-    
-      
+
+
    $scope.uploadedChatImgs=[];
    $scope.image='';
    var options=null;
@@ -707,7 +707,7 @@ angular.module('starter.controllers', [])
           permissions.requestPermission(permissions.CAMERA, function(result) {
             options = {
               sourceType: Camera.PictureSourceType.CAMERA,
-              quality: 70,
+              quality: 50,
               encodingType: Camera.EncodingType.JPEG,
               correctOrientation: true,
               targetWidth: 600,
@@ -728,7 +728,7 @@ angular.module('starter.controllers', [])
      }else{
        options = {
               sourceType: Camera.PictureSourceType.CAMERA,
-              quality: 70,
+              quality: 50,
               targetWidth: 600,
               targetHeight: 600,
               correctOrientation: true,
@@ -746,7 +746,7 @@ angular.module('starter.controllers', [])
     }
     if(type=="upload"){
         options = {
-          quality: 70,
+          quality: 50,
           maximumImagesCount:4,
           targetWidth: 600,
           targetHeight: 600
@@ -758,7 +758,7 @@ angular.module('starter.controllers', [])
            var Upload=null;
             for(var i=0;i < results.length;i++){
               $scope.uploadedChatImgs.push(results[i]);
-              
+
             }
         },function(error){
           // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
@@ -813,7 +813,7 @@ angular.module('starter.controllers', [])
 
       angular.forEach($scope.timelines,function(val,key){
         $rootScope.thread =val;
-  
+
         angular.extend(val.Thread,{"Owner" : val.Owner});
         $scope.timelineVal.push(val.Thread);
 
@@ -879,12 +879,12 @@ angular.module('starter.controllers', [])
      });
     }
   });*/
-  
+
     $rootScope.$watch('threadNotifCount', function() {
         if($state.current.name=='tab.groups'){
         $scope.updateCache();
         //ApiService.setNotified(id,'thread').then(function(response){NotificationService.setNotif(); });
-       
+
      }
     });
 
@@ -916,7 +916,7 @@ angular.module('starter.controllers', [])
   $scope.getGroups=function(){
     Groups.all().then(function(response){
       $scope.groups=response;
-      
+
     });
     $ionicLoading.hide();
   };
@@ -1111,7 +1111,7 @@ angular.module('starter.controllers', [])
 
   var threads = CacheFactory.get('threads');
   $rootScope.$on('update_thread',function(event,id){
-    
+
     if($state.current.name=='tab.group-detail'){
        $scope.updateCache();
     /* Groups.updateHeadCache(id,'threads/'+id,'head').then(function(response){});*/
@@ -1223,7 +1223,7 @@ angular.module('starter.controllers', [])
   }
 
   $scope.updateCache=function($lastid=0){
-   
+
     Groups.updateHeadCache($stateParams['id'],'threads/'+$stateParams['id'],'head').then(function(response){
       //console.log(response);
       if("Head" in response && (response.Head.length > 0)){
@@ -1576,9 +1576,9 @@ $scope.selectPicture = function($act) {
     $scope.goBack=function() {
          $state.go('tab.group-detail',{id:$rootScope.threadId});
     };
-    
+
     $scope.redirectFile=function(path){
-    
+
       $cordovaInAppBrowser.open(API_URL+''+path, '_system')
       .then(function(event) {
         console.log('Success');
@@ -1586,7 +1586,7 @@ $scope.selectPicture = function($act) {
       .catch(function(event) {
         console.log('Failed');
       });
-    
+
     }
      $rootScope.$emit('hideModal');
   $scope.headID=$stateParams['id'];
@@ -1617,7 +1617,7 @@ $scope.selectPicture = function($act) {
           }
         }
     });
-  
+
 
   $scope.action='';
   $scope.base_url=BASE_URL;
@@ -1652,7 +1652,7 @@ $scope.selectPicture = function($act) {
           $scope.thread=response.Thread;
           $scope.getHeads=response.Head;
           $scope.headUploads = response.Upload;
-          
+
           $rootScope.viewedHeadContents=response.Head;
           $ionicLoading.hide();
         }else{
@@ -1705,7 +1705,8 @@ $scope.selectPicture = function($act) {
     $scope.imageType=type;
     $scope.activeSlide = index;
        if(type=='head')
-          $scope.sliderImages = $scope.headUploads;
+           console.log(JSON.stringify($scope.headUploads.image));
+          $scope.sliderImages = $scope.headUploads.image;
        if(type=='comment')
           $scope.sliderImages =  $scope.comments['Comment'][parentIndex].Uploads;
 
@@ -1884,7 +1885,7 @@ $rootScope.changeHeadLike=function(id,index){
 
   $scope.sendComment=function(id){
     //if($scope.newComment!=''){
-    if(!$scope.newComment || !$scope.newComment.body) return;
+    if(!$scope.newComment || !$scope.newComment.body && $scope.uploadedCommentimgs.length == 0) return;
 
       Groups.sendComment(id,$scope.newComment).success(function(response){
         if(response.Comment){
@@ -2101,7 +2102,7 @@ $rootScope.changeHeadLike=function(id,index){
     enableFriends: true
   };
 
-  $scope.uploadingProfile=false;
+  // $scope.uploadingProfile=false;
   $rootScope.avatar_img='';
   $scope.base_url=BASE_URL;
 
@@ -2116,10 +2117,11 @@ $rootScope.changeHeadLike=function(id,index){
     viewData.enableBack = false;
   });
 
- 
+
     $rootScope.user=AuthService.username();
     $rootScope.affiliation=AuthService.affiliation();
-    $rootScope.avatar_img=window.localStorage.getItem('avatar_img');
+    $rootScope.avatar_img=AuthService.avatarImg();
+    // $rootScope.avatar_img=window.localStorage.getItem('avatar_img');
 
   $scope.uploadType=null;
   $scope.triggerProfileImgChange=function(){
@@ -2144,13 +2146,13 @@ $rootScope.changeHeadLike=function(id,index){
 
       });
   }
-  $scope.showUploadingButtons=false;
-  $scope.uploadedProf=false;
+  // $scope.showUploadingButtons=false;
+  // $scope.uploadedProf=false;
   $scope.selectPictureImage=function(type){
-    
-     $scope.showUploadingButtons=false;
-     $scope.uploadedProf=false;
-     $scope.uploadedProfileImg='';
+
+    //  $scope.showUploadingButtons=false;
+    //  $scope.uploadedProf=false;
+    //  $scope.uploadedProfileImg='';
 
      var options=null;
       if(type=='takePhoto'){
@@ -2160,19 +2162,21 @@ $rootScope.changeHeadLike=function(id,index){
             permissions.requestPermission(permissions.CAMERA, function(result) {
               options = {
                 sourceType: Camera.PictureSourceType.CAMERA,
-                quality: 70,
+                quality: 50,
                 encodingType: Camera.EncodingType.JPEG,
                 correctOrientation: true,
+                allowEdit:true,
                 targetWidth: 400,
                 targetHeight: 400,
                 saveToPhotoAlbum: false
               };
 
               $cordovaCamera.getPicture(options).then(function(img){
+                $scope.changeProfileImage(img);
 
-                $scope.uploadedProfileImg=img;
-                $scope.showUploadingButtons=true;
-                $scope.uploadedProf=true;
+                // $scope.uploadedProfileImg=img;
+                // $scope.showUploadingButtons=true;
+                // $scope.uploadedProf=true;
               },function(error){
 
               });
@@ -2184,17 +2188,19 @@ $rootScope.changeHeadLike=function(id,index){
        }else{
          options = {
                 sourceType: Camera.PictureSourceType.CAMERA,
-                quality: 70,
+                quality: 50,
                 targetWidth: 400,
                 targetHeight: 400,
                 correctOrientation: true,
+                allowEdit:true,
                 saveToPhotoAlbum: false
               };
 
               $cordovaCamera.getPicture(options).then(function(img){
-                $scope.uploadedProfileImg=img;
-                $scope.showUploadingButtons=true;
-                $scope.uploadedProf=true;
+                $scope.changeProfileImage(img);
+                // $scope.uploadedProfileImg=img;
+                // $scope.showUploadingButtons=true;
+                // $scope.uploadedProf=true;
 
               },function(error){
                 // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
@@ -2205,8 +2211,7 @@ $rootScope.changeHeadLike=function(id,index){
       }
       if(type=="upload"){
           options = {
-
-            quality: 70,
+            quality: 50,
             maximumImagesCount:1,
             targetWidth: 400,
             targetHeight: 400
@@ -2216,21 +2221,25 @@ $rootScope.changeHeadLike=function(id,index){
           $cordovaImagePicker.getPictures(options).then(function(results){
              var Upload=null;
               for(var i=0;i < results.length;i++){
-                 $scope.uploadedProfileImg=results[i];
+                // $scope.uploadedProfileImg=results[i];
+                $scope.changeProfileImage(results[i]);
 
               }
-              $scope.showUploadingButtons=true;
-              $scope.uploadedProf=true;
+              // $scope.showUploadingButtons=true;
+              // $scope.uploadedProf=true;
 
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
           });
       }
   };
-  
+
   $scope.changeProfileImage=function(img){
-         $scope.showUploadingButtons=false;
-         $scope.uploadingProfile=true;
+        //  $scope.showUploadingButtons=false;
+        //  $scope.uploadingProfile=true;
+        $ionicLoading.show({
+          template:'<ion-spinner name="bubbles"></ion-spinner>'
+        });
         img=encodeURI(img);
         var obj={};
         var o=new FileUploadOptions();
@@ -2243,21 +2252,23 @@ $rootScope.changeHeadLike=function(id,index){
             'Connection': "close",
             'Authorization':'Basic '+window.localStorage.getItem("talknote_token")+''
         };
-        $rootScope.avatar_img='';
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',img,o,true).then(function(result) {
 
-         
-          $rootScope.avatar_img=BASE_URL+''+JSON.parse(result.response)[0]['Upload']['path'];
-          $http.post(API_URL+'users/'+window.localStorage.getItem('user_id')+'.json',{'User':{'id':window.localStorage.getItem('user_id'),'avatar_img':JSON.parse(result.response)[0]['Upload']['path']}},{
+          var avatar_img = JSON.parse(result.response)[0]['Upload']['path'];
+          var user_id = window.localStorage.getItem('user_id');
+          $http.post(API_URL+'users/'+user_id+'.json',{'User':{'id':user_id,'avatar_img':avatar_img}},{
             headers:{
               'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
             }
           }).success(function(data){
-            $scope.uploadedProf=false;
-            $scope.uploadingProfile=false;
-            $scope.uploadedProfileImg='';
-            
-          }).error(function(data){});
+            // $scope.uploadedProf=false;
+            // $scope.uploadingProfile=false;
+            // $scope.uploadedProfileImg='';
+            $rootScope.avatar_img=BASE_URL + avatar_img;
+            $ionicLoading.hide();
+          }).error(function(data){
+            $ionicLoading.hide();
+          });
         },function(error){
           $ionicLoading.hide();
           $ionicPopup.alert({
@@ -2269,7 +2280,7 @@ $rootScope.changeHeadLike=function(id,index){
   $scope.logout=function(){
     clearInterval($rootScope.allInterval);
     AuthService.logout();
-    
+
   }
 })
 .controller('UserChatCtrl', function($scope,$stateParams,$rootScope) {
@@ -2300,7 +2311,7 @@ $rootScope.changeHeadLike=function(id,index){
     });
     ApiService.Post('users/mobilelogin/',{"User":{"loginid":data.loginid,"password":data.password}}).then(function(response){
       if(response){
-        
+
       $ionicLoading.hide();
 
       if(response['user']["User"]){
