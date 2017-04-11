@@ -96,7 +96,7 @@ class HeadsController extends AppController {
 			$head['Comment'][$kk]['Uploads']=$this->Upload->find('all',array('fields'=>array('name','path'),'conditions'=>array('comment_id'=>$head['Comment'][$kk]['id'])));
 			foreach($head['Comment'][$kk]['Uploads'] as $p){
 				$type='';
-				if(@is_array(getimagesize($p['Upload']['path']))){
+				if(@is_array(getimagesize(WWW_ROOT.$p['Upload']['path']))){
 				    $type = 'image';
 				} else {
 				    $type = 'non_image';
@@ -120,7 +120,7 @@ class HeadsController extends AppController {
 		
 		foreach($uploads as $up){
 			$type='';
-			if(@is_array(getimagesize($up['Upload']['path']))){
+			if(@is_array(getimagesize(WWW_ROOT.$up['Upload']['path']))){
 			    $type = 'image';
 			} else {
 			    $type = 'non_image';

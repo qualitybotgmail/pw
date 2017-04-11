@@ -61,7 +61,7 @@ class ThreadsController extends AppController {
         $this->Thread->Owner->Behaviors->load("Containable");
 		$users_threads = $this->Thread->Owner->find('first', array(
 			'conditions' => array('Owner.id' => $user_id),
-			'contain' => array('Thread.id','Thread.title','Thread.created','Thread' => array('Owner.id','Owner.username','User.id','User.username','conditions'=>array('Thread.id >'=>$lastid))),
+			'contain' => array('Thread.id','Thread.title','Thread.created','Thread' => array('Owner.id','Owner.username','User.id','User.username','User.avatar_img','conditions'=>array('Thread.id >'=>$lastid))),
 			'fields' => array('id','username')
 		));
 
