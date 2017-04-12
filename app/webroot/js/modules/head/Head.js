@@ -182,6 +182,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	    HeadsModel.one($scope.selectedHeadId.toString()).get().then(function(thread){
         	        $scope.selectedHead = thread;
         	        $scope.isFetching = false;
+        	        $scope.startInterval();
         	    });
         	};
         	
@@ -274,8 +275,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	 */
         	var init = function(){
     	        $scope.selectedHeadId = $stateParams.id;
-    	       // $scope.getHead();
-    	        $scope.startInterval();
+    	        $scope.getHead();
+    	       // $scope.startInterval();
         	};
         	init();
         	
