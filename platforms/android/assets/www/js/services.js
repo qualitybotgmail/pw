@@ -678,7 +678,7 @@ angular.module('starter.services', [])
 
   var storeUserCredentials=function(token,uname,affiliation,avatar_img,userid,pworkid,prof_id) {
     var avatar='';
-    if(typeof(avatar_img)==='undefined' || avatar_img=='')
+    if(typeof(avatar_img)==='undefined' || avatar_img=='' || avatar_img==null)
       var avatar='img/avatar.png';
     else
       avatar=BASE_URL+''+avatar_img;
@@ -719,6 +719,7 @@ angular.module('starter.services', [])
         }).success(function(data){}).error(function(data){});
 
     }
+    window.FirebasePlugin.setBadgeNumber(0);
     clearInterval($rootScope.allInterval);
     window.localStorage.removeItem(LOCAL_TOKEN_KEY);
     window.localStorage.removeItem('user');

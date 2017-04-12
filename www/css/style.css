@@ -159,6 +159,19 @@ textarea {
 .transparent {
   background: rgba(0,0,0,0.7);
 }
+.view-img{
+    color: white;
+    position: absolute;
+    margin-top: 35px;
+    margin-left: 38px;
+    padding: 5px;
+    border: solid 1px;
+    border-radius: 20%;
+    font-weight: 700;
+    z-index:2;
+    display: inline;
+    background-color: rgba(0, 0, 0, 0.5);
+}
 .more-users{
     width:20px !important;
     height:18px !important;

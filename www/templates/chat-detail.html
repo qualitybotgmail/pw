@@ -32,7 +32,7 @@
             <p ng-show="message.Message.user_id != $root.user_id" style="font-size:12px;margin:0px 0px 0px 5px;color: rgba(68, 68, 68, 0.74);">{{message.User.username}}</p>
             <div ng-repeat="upload in message.Upload track by $index" ng-class="{other: message.Message.user_id == $root.user_id}" class="messages" style="margin-bottom: 0px !important;">
             <p class="non-image" style="padding-left: 10px;font-size: 16px;" ng-show="!isUriImage(upload.path)"><a href="" style="color: white;" ng-click="redirectFile(upload.path)">{{upload.name}}</a></p>
-            <img ng-show="isUriImage(upload.path)" on-hold="showChatPopover($event,'image',{{$parent.$index}},{{$index}})" ng-click="showImages({{$parent.$index}},{{$index}})" ng-src="{{upload.loading?upload.path:base_url+upload.path}}" ng-style="{'max-height':message.Upload.length > 1?'100px':'230px','width':message.Upload.length > 1?'100px':'200px'}" class="chatimages"/>
+            <img ng-show="isUriImage(upload.path)" on-hold="showChatPopover($event,'image',{{$parent.$index}},{{$index}})" ng-click="showImages({{$index}},{{$parent.$index}})" ng-src="{{upload.loading?upload.path:base_url+upload.path}}" ng-style="{'max-height':message.Upload.length > 1?'100px':'230px','width':message.Upload.length > 1?'100px':'200px'}" class="chatimages"/>
             </div>
             <p style="font-size:12px;margin:0px 0px 0px 5px;color: rgba(68, 68, 68, 0.74);">{{message.Message.time}}</p>
         </div>
@@ -55,12 +55,16 @@
       <!-- <i class="icon ion-paper-airplane" ng-click="sendChat()" style="font-size: 30px;padding: 10px;color: dodgerblue;"></i> -->
 
       </div>
-       <div class="item" ng-show="uploadedChatImgs.length > 0" style="padding: 0px;border-top: 0px;">
-        <a class="item-thumbnail" ng-repeat="im in uploadedChatImgs track by $index">
-              <i ng-click="removeUploadedChatImg({{$index}})" class="icon ion-ios-close" style="font-size: 20px;position: absolute;margin-left: 30px;"></i>
-               <img ng-src="{{im}}" style="width:45px;height:45px">
+      <ion-scroll direction="x" class="item" ng-show="uploadedChatImgs.length > 0" style="height:120px !important">
+       <!--<div class="item" style="padding: 0px;border-top: 0px;">-->
+        <a ng-repeat="im in uploadedChatImgs track by $index" class="item-thumbnail" >
+              
+               <i ng-click="removeUploadedChatImg({{$index}})" class="icon ion-ios-close-outline" style="font-size: 30px;position: absolute;margin-left: 95px;color:white"></i>
+              <div class="view-img" ng-show="showChosenImage==$index" ng-click="showImages({{$index}});$scope.showChosenImage=-1;">view</div>
+               <div ng-click="setChosenImg($index)" style="width:120px;height:120px;background-size:120px 120px;background-repeat:no-repeat;display: inline-block;" ng-style="{'filter':showChosenImage==$index?'blur(5px)':'initial','background-image':'url('+im+')'}" ></div>
+               
         </a>
-      </div>
-      </div>
+      <!--</div>-->
+      </ion-scroll>
     </ion-footer-bar>
 </ion-view>

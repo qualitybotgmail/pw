@@ -32,14 +32,26 @@
     </span>
     </div>
     </div>
-   <div class="row" ng-show="uploadedImgs.length > 0 && $root.headAction=='add'" >
-    <div class="col">
+   <div class="row" ng-show="uploadedImgs.length > 0 && $root.headAction=='add'" style="border:0px">
+      <div class="col" style="border:0px">
+        <ion-scroll direction="x" class="item" style="height:120px !important">
+      
+        <a ng-repeat="im in uploadedImgs track by $index" class="item-thumbnail" >
+              
+               <i ng-click="removeUploadedImg($index)" class="icon ion-ios-close-outline" style="font-size: 30px;position: absolute;margin-left: 95px;color:white"></i>
+              <div class="view-img" ng-show="showChosenImage==$index" ng-click="showImages($index);$scope.showChosenImage=-1;">view</div>
+               <div ng-click="setChosenImg($index)" style="width:120px;height:120px;background-size:120px 120px;background-repeat:no-repeat;display: inline-block;" ng-style="{'filter':showChosenImage==$index?'blur(5px)':'initial','background-image':'url('+im+')'}" ></div>
+               
+        </a>
+      <!--</div>-->
+      </ion-scroll>
+    <!--<div class="col">
     <span >
     <a class="item-thumbnail" ng-repeat="im in uploadedImgs track by $index">
       <i ng-click="removeUploadedImg($index)" class="icon ion-ios-close" style="font-size: 30px;position: absolute;margin-left: 45px;"></i>
        <img ng-src="{{im}}">
     </a>
-    </span>
+    </span>-->
     </div>
     </div>
 <div style="text-align:center">

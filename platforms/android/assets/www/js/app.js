@@ -43,9 +43,9 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
        
        
 
-       if(parseInt($rootScope.chatNotifCount) > 0){
+       /*if(parseInt($rootScope.chatNotifCount) > 0){
           $rootScope.$broadcast('updatesforgroupchat',null);
-       }
+       }*/
       /* if(parseInt($rootScope.threadNotifCount) > 0){
 
           $rootScope.$broadcast('updatesforthread',null);

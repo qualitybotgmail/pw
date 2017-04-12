@@ -273,6 +273,13 @@ angular.module('starter.controllers', [])
     $scope.goBack=function() {
          $state.go('tab.chats');
     };
+    $scope.showChosenImage=-1;
+    $scope.setChosenImg=function(index){
+      if($scope.showChosenImage==index)
+        $scope.showChosenImage=-1;
+      else
+        $scope.showChosenImage=index;
+    }
     $scope.isUriImage = function(uri) {
       uri = uri.split('?')[0];
       var parts = uri.split('.');
@@ -333,7 +340,7 @@ angular.module('starter.controllers', [])
   $scope.chatPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerChatEdit()" ng-show="showEdit"><i class="icon ion-edit"></i>  編集</li><li class="item item-icon-left" ng-click="triggerChatDelete()"><i class="icon ion-ios-trash"></i> 削除</li></ul></ion-popover-view>', {
     scope: $scope
   });
-  $scope.sliderGallery=false;
+ 
   $scope.previewImage=function(index){
     $scope.sliderGallery=true;
     $ionicSlideBoxDelegate.$getByHandle('gallery').slide(index);
@@ -420,15 +427,29 @@ angular.module('starter.controllers', [])
   $scope.sliderImages=[];
   $scope.activeSlide =1;
   $scope.imageType='';
-  $scope.showImages = function(parentIndex,index) {
-    $scope.activeSlide = index;
-    console.log($scope.chats[parentIndex]);
-          $scope.sliderImages =  $scope.chats[$scope.chats.length - parseInt(parentIndex) - 1]['Upload'];
+  $scope.uploadedImages=false;
+  $scope.uploadedType='chat';
+  $scope.showImages = function(index,parentIndex) {
+    if(typeof(parentIndex)!=='undefined' && parentIndex!=null){
+      $scope.uploadedImages=false;
+      $scope.activeSlide = index;
+      console.log($scope.chats[parentIndex]);
+            $scope.sliderImages =  $scope.chats[$scope.chats.length - parseInt(parentIndex) - 1]['Upload'];
+        setTimeout(function() {
+                $ionicSlideBoxDelegate.$getByHandle('images').slide(index);
+                $ionicSlideBoxDelegate.$getByHandle('images').update();
+                $scope.$apply();
+        });
+    }else{
+      $scope.uploadedImages=true;
+      $scope.activeSlide = index;
+      $scope.sliderImages =  $scope.uploadedChatImgs;
       setTimeout(function() {
-              $ionicSlideBoxDelegate.slide(index);
-              $ionicSlideBoxDelegate.update();
-              $scope.$apply();
+        $ionicSlideBoxDelegate.$getByHandle('images').slide(index);
+        $ionicSlideBoxDelegate.$getByHandle('images').update();
+        $scope.$apply();
       });
+    }
       $scope.showModal();
   };
 
@@ -436,9 +457,9 @@ angular.module('starter.controllers', [])
   var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle'+slide).getScrollPosition().zoom;
 
   if (zoomFactor == $scope.zoomMin) {
-    $ionicSlideBoxDelegate.enableSlide(true);
+    $ionicSlideBoxDelegate.$getByHandle('images').enableSlide(true);
   } else {
-    $ionicSlideBoxDelegate.enableSlide(false);
+    $ionicSlideBoxDelegate.$getByHandle('images').enableSlide(false);
   }
 };
 
@@ -631,8 +652,16 @@ angular.module('starter.controllers', [])
 
   });
 
-  $scope.removeUploadedChatImg=function(index){
-    $scope.uploadedChatImgs.splice(index,1);
+  $scope.removeUploadedChatImg=function(index,path){
+     $scope.showChosenImage=-1;
+    if(($scope.uploadedChatImgs.indexOf(path)!=-1) && (typeof(path)!=='undefined') && path != null){
+      var ind=$scope.uploadedChatImgs.indexOf(path);
+      $scope.uploadedChatImgs.splice(index,1);
+      $scope.$apply();
+    }else{
+      $scope.uploadedChatImgs.splice(index,1);
+    }
+    
   }
 
   $scope.triggerChatEdit=function(){
@@ -1092,6 +1121,7 @@ angular.module('starter.controllers', [])
 .controller('GroupDetailCtrl', function($scope,CacheFactory,$timeout,NotificationService,backButtonOverride,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL) {
   delete $scope.groupID;
   $scope.groupID=$stateParams['id'];
+  $scope.uploadedType='head';
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
     });
@@ -1099,6 +1129,66 @@ angular.module('starter.controllers', [])
      console.log("BACK");
          $state.go('tab.groups');
     };
+    
+    $scope.showChosenImage=-1;
+    $scope.setChosenImg=function(index){
+      if($scope.showChosenImage==index)
+        $scope.showChosenImage=-1;
+      else
+        $scope.showChosenImage=index;
+    }
+    
+  $scope.showModal = function() {
+		$ionicModal.fromTemplateUrl('templates/modal/images.html', {
+			scope: $scope,
+			animation: 'slide-in-up'
+		}).then(function(modal) {
+			$scope.imagesModal = modal;
+			$scope.imagesModal.show();
+		});
+	}
+
+  $scope.zoomMin = 1;
+  $scope.sliderImages=[];
+  $scope.imageType='';
+  $scope.activeSlide =1;
+  $scope.uploadedImages=false;
+  $scope.showImages = function(index) {
+    $scope.uploadedImages=true;
+    $scope.activeSlide = index;
+    $scope.sliderImages =  $scope.uploadedImgs;
+      setTimeout(function() {
+        $ionicSlideBoxDelegate.$getByHandle('images').slide(index);
+        $ionicSlideBoxDelegate.$getByHandle('images').update();
+        $scope.$apply();
+      });
+    
+      $scope.showModal();
+  };
+
+  $scope.updateSlideStatus = function(slide) {
+    var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle'+slide).getScrollPosition().zoom;
+  
+    if (zoomFactor == $scope.zoomMin) {
+      $ionicSlideBoxDelegate.$getByHandle('images').enableSlide(true);
+    } else {
+      $ionicSlideBoxDelegate.$getByHandle('images').enableSlide(false);
+    }
+  };
+
+
+	// Close the modal
+	$scope.closeModal = function() {
+		$scope.imagesModal.hide();
+		$scope.imagesModal.remove()
+		 $scope.uploadedImages=false;
+	};
+	
+	
+	
+	
+	
+    
    $rootScope.$emit('hideModal');
   $rootScope.thread=null;
   $scope.allMembers=[];
@@ -1505,6 +1595,8 @@ $scope.selectPicture = function($act) {
   $scope.removeUploadedImg=function(index){
     $scope.uploadedImgs.splice(index,1);
   };
+  
+  
 
   $scope.result=[];
   $scope.img_ctr=0;
@@ -1576,6 +1668,13 @@ $scope.selectPicture = function($act) {
     $scope.goBack=function() {
          $state.go('tab.group-detail',{id:$rootScope.threadId});
     };
+    $scope.showChosenImage=-1;
+    $scope.setChosenImg=function(index){
+      if($scope.showChosenImage==index)
+        $scope.showChosenImage=-1;
+      else
+        $scope.showChosenImage=index;
+    }
     
     $scope.redirectFile=function(path){
     
@@ -1701,32 +1800,50 @@ $scope.selectPicture = function($act) {
   $scope.sliderImages=[];
   $scope.imageType='';
   $scope.activeSlide =1;
-  $scope.showImages = function(parentIndex,index,type) {
+  $scope.uploadedImages=false;
+  $scope.uploadedType='comment';
+  $scope.showImages = function(index,type,parentIndex){
+     if(typeof(parentIndex)!=='undefined' && parentIndex!=null){
+      $scope.uploadedImages=false;
     $scope.imageType=type;
+
     $scope.activeSlide = index;
        if(type=='head')
-          $scope.sliderImages = $scope.headUploads;
+          $scope.sliderImages = $scope.headUploads.image;
        if(type=='comment')
-          $scope.sliderImages =  $scope.comments['Comment'][parentIndex].Uploads;
-
+          $scope.sliderImages =  $scope.comments['Comment'][parentIndex].image;
+          
+       
     console.log($scope.sliderImages[index]);
+    setTimeout(function() {
+            $ionicSlideBoxDelegate.$getByHandle('images').slide(index);
+            $ionicSlideBoxDelegate.$getByHandle('images').update();
+            $scope.$apply();
+    });
+    
+    }else{
+      $scope.uploadedImages=true;
+      $scope.activeSlide = index;
+      $scope.sliderImages =  $scope.uploadedCommentimgs;
       setTimeout(function() {
-              $ionicSlideBoxDelegate.slide(index);
-              $ionicSlideBoxDelegate.update();
-              $scope.$apply();
+        $ionicSlideBoxDelegate.$getByHandle('images').slide(index);
+        $ionicSlideBoxDelegate.$getByHandle('images').update();
+        $scope.$apply();
       });
+    }
       $scope.showModal();
+    
   };
 
   $scope.updateSlideStatus = function(slide) {
-  var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle'+slide).getScrollPosition().zoom;
-
-  if (zoomFactor == $scope.zoomMin) {
-    $ionicSlideBoxDelegate.enableSlide(true);
-  } else {
-    $ionicSlideBoxDelegate.enableSlide(false);
-  }
-};
+    var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle'+slide).getScrollPosition().zoom;
+  
+    if (zoomFactor == $scope.zoomMin) {
+      $ionicSlideBoxDelegate.$getByHandle('images').enableSlide(true);
+    } else {
+      $ionicSlideBoxDelegate.$getByHandle('images').enableSlide(false);
+    }
+  };
 
 
 	// Close the modal
@@ -1890,9 +2007,11 @@ $rootScope.changeHeadLike=function(id,index){
         if(response.Comment){
           if("Uploads" in response.Comment==false){
             response.Comment["Uploads"]=[];
+            response.Comment["image"]=[];
             if($scope.uploadedCommentimgs.length > 0){
               $scope.uploadedCommentimgs.forEach(function(v,k){
                  response.Comment["Uploads"].push({'Upload':{'name':'','path':v,'loading':true}});
+                 response.Comment["image"].push({'name':'','path':v,'loading':true});
               })
 
             }
@@ -1928,27 +2047,27 @@ $rootScope.changeHeadLike=function(id,index){
 
     var obj={'comment_id':comment.id};
 
-      comment.Uploads.forEach(function(i,x) {
+      comment.image.forEach(function(i,x) {
 
-     if("loading" in i.Upload){
+     if("loading" in i){
 
-       i.Upload.path=encodeURI(i.Upload.path);
+       i.path=encodeURI(i.path);
 
         var o=new FileUploadOptions();
         o.params=obj;
         o.fileKey="file";
         o.mimeType="image/jpeg";
-        o.fileName = i.Upload.path.substr(i.Upload.path.lastIndexOf('/') + 1);
+        o.fileName = i.path.substr(i.path.lastIndexOf('/') + 1);
         o.chunkedMode = false;
         o.headers = {
             'Connection': "close",
             'Authorization':'Basic '+localStorage.getItem("talknote_token")+''
         };
         $scope.Upload={};
-        $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i.Upload.path,o,true).then(function(result) {
-          i.Upload.loading=false;
-          i.Upload.path=JSON.parse(result.response)[0]['Upload']['path'];
-          i.Upload.name=JSON.parse(result.response)[0]['Upload']['name'];
+        $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i.path,o,true).then(function(result) {
+          i.loading=false;
+          i.path=JSON.parse(result.response)[0]['Upload']['path'];
+          i.name=JSON.parse(result.response)[0]['Upload']['name'];
 
           $scope.img_comment_ctr++;
 
