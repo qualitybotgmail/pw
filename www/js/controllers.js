@@ -104,9 +104,9 @@ angular.module('starter.controllers', [])
      //}
 
   });*/
-  
+
   $rootScope.$watch('chatNotifCount', function() {
-    $scope.cacheUpdate();     
+    $scope.cacheUpdate();
   });
 
 
@@ -287,12 +287,12 @@ angular.module('starter.controllers', [])
       var imageTypes = ['jpg','jpeg','tiff','png','gif','bmp'];
       //check if the extension matches anything in the list.
       if(imageTypes.indexOf(extension) !== -1) {
-          return true;   
+          return true;
       }else{
         return false;
       }
    }
-   
+
    $scope.linkify=function(text) {
         var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
         return text.replace(urlRegex, function(url) {
@@ -300,7 +300,7 @@ angular.module('starter.controllers', [])
             return ' <a href="" ng-click="redirectFile(' + urlx + ',true)">' + url + '</a>';
         });
     }
-    
+
     $scope.redirectFile=function(path,x){
       var url=path;
     if(typeof(x)==='undefined' || x==null)
@@ -312,17 +312,17 @@ angular.module('starter.controllers', [])
       .catch(function(event) {
         console.log('Failed');
       });
-    
+
     }
 
   $rootScope.$emit('hideModal');
-  
+
   $ionicModal.fromTemplateUrl('templates/modal/gallery.html', {
 			scope: $scope,
 			animation: 'slide-in-up'
 		}).then(function(modal) {
 			$scope.galleryModal = modal;
-			
+
 		});
 
   $scope.base_url=BASE_URL
@@ -344,7 +344,7 @@ angular.module('starter.controllers', [])
   $scope.previewImage=function(index){
     $scope.sliderGallery=true;
     $ionicSlideBoxDelegate.$getByHandle('gallery').slide(index);
-    
+
   }
 
   $scope.updateChatCache=function(page=1,lastid=0){
@@ -382,14 +382,14 @@ angular.module('starter.controllers', [])
         ApiService.setNotified($stateParams.chatId,'groupchat').then(function(response){NotificationService.setNotif(); });
       }
   });*/
-  
+
   $rootScope.$watch('chatNotifCount', function() {
      if($state.current.name=='tab.chat-detail'){
         $scope.updateChatCache();
         ApiService.setNotified($stateParams.chatId,'groupchat').then(function(response){NotificationService.setNotif(); });
-      }  
+      }
   });
-  
+
   $rootScope.$on('stopinterval',function(event,data){
     if(interval!==null)
       clearInterval(interval);
@@ -415,9 +415,9 @@ angular.module('starter.controllers', [])
     if ($scope.numberOfImagesToDisplay < $rootScope.galleryImages.length)
       $scope.numberOfImagesToDisplay+=10;
     $scope.$broadcast('scroll.infiniteScrollComplete');
-  
+
 	}
-	
+
 	$scope.showGallery = function() {
 	  NewModalService.showModal();
 	}
@@ -721,10 +721,10 @@ angular.module('starter.controllers', [])
     });
 
   };
-  
+
   $scope.selectPictureInChats=function(type){
-    
-      
+
+
    $scope.uploadedChatImgs=[];
    $scope.image='';
    var options=null;
@@ -736,7 +736,7 @@ angular.module('starter.controllers', [])
           permissions.requestPermission(permissions.CAMERA, function(result) {
             options = {
               sourceType: Camera.PictureSourceType.CAMERA,
-              quality: 70,
+              quality: 50,
               encodingType: Camera.EncodingType.JPEG,
               correctOrientation: true,
               targetWidth: 600,
@@ -757,7 +757,7 @@ angular.module('starter.controllers', [])
      }else{
        options = {
               sourceType: Camera.PictureSourceType.CAMERA,
-              quality: 70,
+              quality: 50,
               targetWidth: 600,
               targetHeight: 600,
               correctOrientation: true,
@@ -775,7 +775,7 @@ angular.module('starter.controllers', [])
     }
     if(type=="upload"){
         options = {
-          quality: 70,
+          quality: 50,
           maximumImagesCount:4,
           targetWidth: 600,
           targetHeight: 600
@@ -787,7 +787,7 @@ angular.module('starter.controllers', [])
            var Upload=null;
             for(var i=0;i < results.length;i++){
               $scope.uploadedChatImgs.push(results[i]);
-              
+
             }
         },function(error){
           // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
@@ -842,7 +842,7 @@ angular.module('starter.controllers', [])
 
       angular.forEach($scope.timelines,function(val,key){
         $rootScope.thread =val;
-  
+
         angular.extend(val.Thread,{"Owner" : val.Owner});
         $scope.timelineVal.push(val.Thread);
 
@@ -908,12 +908,12 @@ angular.module('starter.controllers', [])
      });
     }
   });*/
-  
+
     $rootScope.$watch('threadNotifCount', function() {
         if($state.current.name=='tab.groups'){
         $scope.updateCache();
         //ApiService.setNotified(id,'thread').then(function(response){NotificationService.setNotif(); });
-       
+
      }
     });
 
@@ -945,7 +945,7 @@ angular.module('starter.controllers', [])
   $scope.getGroups=function(){
     Groups.all().then(function(response){
       $scope.groups=response;
-      
+
     });
     $ionicLoading.hide();
   };
@@ -1201,7 +1201,7 @@ angular.module('starter.controllers', [])
 
   var threads = CacheFactory.get('threads');
   $rootScope.$on('update_thread',function(event,id){
-    
+
     if($state.current.name=='tab.group-detail'){
        $scope.updateCache();
     /* Groups.updateHeadCache(id,'threads/'+id,'head').then(function(response){});*/
@@ -1313,7 +1313,7 @@ angular.module('starter.controllers', [])
   }
 
   $scope.updateCache=function($lastid=0){
-   
+
     Groups.updateHeadCache($stateParams['id'],'threads/'+$stateParams['id'],'head').then(function(response){
       //console.log(response);
       if("Head" in response && (response.Head.length > 0)){
@@ -1668,6 +1668,7 @@ $scope.selectPicture = function($act) {
     $scope.goBack=function() {
          $state.go('tab.group-detail',{id:$rootScope.threadId});
     };
+
     $scope.showChosenImage=-1;
     $scope.setChosenImg=function(index){
       if($scope.showChosenImage==index)
@@ -1675,9 +1676,9 @@ $scope.selectPicture = function($act) {
       else
         $scope.showChosenImage=index;
     }
-    
+
     $scope.redirectFile=function(path){
-    
+
       $cordovaInAppBrowser.open(API_URL+''+path, '_system')
       .then(function(event) {
         console.log('Success');
@@ -1685,7 +1686,7 @@ $scope.selectPicture = function($act) {
       .catch(function(event) {
         console.log('Failed');
       });
-    
+
     }
      $rootScope.$emit('hideModal');
   $scope.headID=$stateParams['id'];
@@ -1716,7 +1717,7 @@ $scope.selectPicture = function($act) {
           }
         }
     });
-  
+
 
   $scope.action='';
   $scope.base_url=BASE_URL;
@@ -1751,7 +1752,7 @@ $scope.selectPicture = function($act) {
           $scope.thread=response.Thread;
           $scope.getHeads=response.Head;
           $scope.headUploads = response.Upload;
-          
+
           $rootScope.viewedHeadContents=response.Head;
           $ionicLoading.hide();
         }else{
@@ -2001,7 +2002,7 @@ $rootScope.changeHeadLike=function(id,index){
 
   $scope.sendComment=function(id){
     //if($scope.newComment!=''){
-    if(!$scope.newComment || !$scope.newComment.body) return;
+    if(!$scope.newComment || !$scope.newComment.body && $scope.uploadedCommentimgs.length == 0) return;
 
       Groups.sendComment(id,$scope.newComment).success(function(response){
         if(response.Comment){
