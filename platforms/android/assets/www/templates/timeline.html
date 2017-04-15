@@ -7,7 +7,9 @@
   <ion-content>
       <div class="list card" ng-click="gotoDetails(timeVal.id,timeVal.index)" ng-repeat="timeVal in timelineVal | orderBy : '-modified'">
            <div class="item item-avatar">
-            <img src="img/avatar.png">
+            <img src="img/avatar.png" ng-show="timeVal.Owner.User.avatar_img==''||timeVal.Owner.User.avatar_img=='null'||timeVal.Owner.User.avatar_img==null">
+            <img class="avatar" ng-src="{{base_url}}{{timeVal.Owner.User.avatar_img}}" ng-show="timeVal.Owner.User.avatar_img!=''&&timeVal.Owner.User.avatar_img!='null'&&timeVal.Owner.User.avatar_img!=null">
+            <img>
                 <h3>{{timeVal.Owner.User.username}} {{timeVal.Owner.username}}</h3>
                 <h6>{{timeVal.modified}}</h6>
            </div>

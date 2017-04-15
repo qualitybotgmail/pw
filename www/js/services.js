@@ -1056,19 +1056,27 @@ angular.module('starter.services', [])
 .service('NewModalService', function($ionicModal) {
   var svc = {};
 
-  svc.createModal=function(){
-    $ionicModal.fromTemplateUrl('templates/modal/gallery.html', {
+/*  svc.createModal=function(_scope){
+    $ionicModal.fromTemplateUrl('templates/modal/search-groups.html', {
+      scope: _scope,
       animation: 'slide-in-up'
     }).then(function(modal) {
       svc.modal = modal;
     });
-  }
-  svc.showModal = function() {
-    if(svc.modal) svc.modal.show();
+  }*/
+  svc.showModal = function(_scope) {
+     $ionicModal.fromTemplateUrl('templates/modal/search-groups.html', {
+      scope: _scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      svc.modal = modal;
+      modal.show();
+    });
+    //if(svc.modal) svc.modal.show();
   }
 
   svc.hideModal = function(_scope) {
-    if(svc.modal) svc.modal.hide();
+    svc.modal.hide();
 }
   return svc;
 

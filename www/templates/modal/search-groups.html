@@ -8,7 +8,15 @@
             <i class="icon ion-person"> </i>{{users.User.username}}
           </ion-item>
     </ion-list>
-
+    <ion-list>
+          <ion-item class="item item-divider item-positive">
+            <i  class="icon ion-ios-people"></i> Chat History
+          </ion-item>
+          <ion-item  ng-repeat="chat in searchChats" ng-click="viewChatHistory(chat.Message.groupchat_id,chat.Message.id)">
+            <i class="icon ion-chatbox"></i> <span style="font-size: 15px;font-weight: 500;" ng-if="chat.User.id!=$root.user_id">{{chat.User.username}}:</span><span style="font-size: 15px;font-weight: 500;" ng-if="chat.User.id==$root.user_id">You:</span>
+            <p style="font-size: 12px;padding-left: 20px;">{{chat.Message.body}}</p>
+          </ion-item>
+    </ion-list>
     <ion-list>
           <ion-item class="item item-divider item-positive">
             <i  class="icon ion-ios-people"></i> グループ

@@ -265,10 +265,10 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('ChatDetailCtrl', function($cordovaInAppBrowser,$scope,GalleryService,NewModalService,$state,BASE_URL,backButtonOverride,$timeout,$ionicPopover,$ionicSlideBoxDelegate,NotificationService,$state,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
+.controller('ChatDetailCtrl', function($location,$cordovaInAppBrowser,$scope,GalleryService,NewModalService,$state,BASE_URL,backButtonOverride,$timeout,$ionicPopover,$ionicSlideBoxDelegate,NotificationService,$state,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
 
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
-      viewData.enableBack = true;
+      viewData.enableBack = false;
     });
     $scope.goBack=function() {
          $state.go('tab.chats');
@@ -317,13 +317,13 @@ angular.module('starter.controllers', [])
 
   $rootScope.$emit('hideModal');
 
-  $ionicModal.fromTemplateUrl('templates/modal/gallery.html', {
+/*  $ionicModal.fromTemplateUrl('templates/modal/gallery.html', {
 			scope: $scope,
 			animation: 'slide-in-up'
 		}).then(function(modal) {
 			$scope.galleryModal = modal;
 
-		});
+		});*/
 
   $scope.base_url=BASE_URL
   $rootScope.user_id=window.localStorage.getItem('user_id');
@@ -351,11 +351,17 @@ angular.module('starter.controllers', [])
     Chats.updateMessageCache('groupchats/pagedchatforapp/'+$stateParams.chatId+'/'+page+'',$stateParams.chatId,page,lastid).then(function(response){
       if(response.messages){
       if(response.messages.length > 0)
-        if(lastid > 0)
+        if(lastid > 0){
            $scope.chats = response.messages.concat($scope.chats);
-        else
+        }else{
           $scope.chats = response.messages;
-      }
+           
+        }
+        
+       
+          
+        }
+      
     });
   }
   $rootScope.$on('isOnline',function(event,data){
@@ -469,23 +475,48 @@ angular.module('starter.controllers', [])
 		$scope.imagesModal.hide();
 		$scope.imagesModal.remove()
 	};
+	$scope.goTo = function(id){
+     $location.hash('chat'+id);
+     $ionicScrollDelegate.anchorScroll();
+}
 
   $scope.getchats=function(x){
+    $scope.idss=[];
     Chats.get($stateParams.chatId,$scope.page).then(function(response){
       if(response.messages){
         $scope.chats = $scope.chats.concat(response.messages);
         $scope.total=response.total;
+        $scope.idss=response.messages.map(function(k){ return k.Message.id }).filter(function(e){return e});
         if($scope.page==1){
           $ionicScrollDelegate.scrollBottom();
+           if((typeof($rootScope.chatMembers)==='undefined' || $rootScope.chatMembers.length==0)){
+            $rootScope.chatMembers=[];
+            ApiService.Get('groupchats/'+$stateParams.chatId+'.json','').then(function(response){
+            
+              $rootScope.chatMembers=response.groupchats.User.map(function(k){ return k.id!=$rootScope.user_id?k.username:''; }).filter(function(e){return e});
+              $rootScope.chatMembers.push(response.groupchats.Owner.username);
+            });
+          }
+          
         }else{
-
+           $ionicScrollDelegate.scrollTop();
         }
+       
+        if($rootScope.message_id!=''){
+          $scope.goTo($rootScope.message_id);
+          if($scope.chats.length < response.total){
+            if($scope.idss.indexOf($rootScope.message_id)==-1){
+             
+              $scope.page=parseInt($scope.page)+1;
+              $scope.getchats();
+              
+            }
+          }
+        }
+        
       }
-      $timeout(function() {
-        if(typeof(x)!=='undefined' && x!=null)
-            $ionicScrollDelegate.scrollTo($ionicScrollDelegate.getScrollPosition().left, parseInt($scope.scrolly)+parseInt($scope.scrolly), true);
-      $scope.$broadcast('scroll.refreshComplete');
-      },0);
+
+             $scope.$broadcast('scroll.refreshComplete');
     });
 
   };
@@ -932,7 +963,7 @@ angular.module('starter.controllers', [])
     $scope.threadModal = modal;
   });
 
- /* $ionicModal.fromTemplateUrl('templates/modal/search-groups.html', {
+/*  $ionicModal.fromTemplateUrl('templates/modal/search-groups.html', {
     scope: $scope
   }).then(function(modal) {
     $rootScope.searchGroups = modal;
@@ -953,6 +984,11 @@ angular.module('starter.controllers', [])
 
   $scope.leave = function(group) {
     Groups.leave(group);
+  };
+  $rootScope.message_id='';
+  $scope.viewChatHistory=function(chat_id,message_id){
+    $rootScope.message_id=message_id;
+     $state.go('tab.chat-detail',{chatId:chat_id});
   };
 
   $scope.notifSettings=function(index){
@@ -1097,6 +1133,7 @@ angular.module('starter.controllers', [])
     .then(function(response){
       $scope.searchUsers = response.Users;
       $scope.searchThreads = response.Threads;
+      $scope.searchChats = response.Chats;
       $scope.searchHeads = response.Heads;
     }),function(error){
 
