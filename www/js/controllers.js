@@ -2043,9 +2043,12 @@ $rootScope.changeHeadLike=function(id,index){
 
   $scope.sendComment=function(id){
     //if($scope.newComment!=''){
-    if(!$scope.newComment || !$scope.newComment.body && $scope.uploadedCommentimgs.length == 0) return;
+    var comment = {};
+    angular.copy($scope.newComment, comment);
+    $scope.newComment=null;
+    if(!comment || !comment.body && $scope.uploadedCommentimgs.length == 0) return;
 
-      Groups.sendComment(id,$scope.newComment).success(function(response){
+      Groups.sendComment(id,comment).success(function(response){
         if(response.Comment){
           if("Uploads" in response.Comment==false){
             response.Comment["Uploads"]=[];
@@ -2064,7 +2067,7 @@ $rootScope.changeHeadLike=function(id,index){
           if("isUserLiked" in response.Comment==false){
             response.Comment["isUserLiked"]=false;
           }
-          $scope.newComment=null;
+          // $scope.newComment=null;
           $scope.uploadedCommentimgs=[];
           $scope.comments['Comment'].push(response.Comment);
           $ionicScrollDelegate.scrollBottom();
