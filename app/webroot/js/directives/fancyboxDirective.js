@@ -48,7 +48,7 @@ define([
     
         link: function(scope, element, attrs) {
           $(element).fancybox({  
-            fitToView: false,
+            fitToView: true,
             autoSize    : false,
             closeClick  : true,
             openEffect  : 'none',

@@ -461,7 +461,8 @@ class GroupchatsController extends AppController {
 		$this->loadModel('Message');
 		$this->Message->recursive = -1;
 		$this->Message->Behaviors->load('Containable');
-		$this->Message->virtualFields['date']="DATE_FORMAT(Message.created,'%m-%d-%Y')";
+		$this->Message->virtualFields['date']="DATE_FORMAT(Message.created,'%Y/%m/%d')";
+		$this->Message->virtualFields['time']="DATE_FORMAT(Message.created,'%H:%i')";
 		$this->Message->virtualFields['loading']="false";
 		$options=array(
 					'limit'=>10,
@@ -525,12 +526,6 @@ class GroupchatsController extends AppController {
 					'type'=>'INNER',
 					'group'=>'User.id',
 					'conditions'=>array('members.user_id=User.id')
-				),
-				array(
-					'table'=>'profiles',
-					'alias'=>'Profile',
-					'type'=>'LEFT',
-					'conditions'=>array('Profile.user_id=User.id')
 				)
 			),
 			'conditions'=>array('OR'=>array('members.groupchat_id'=>$k))
@@ -538,14 +533,6 @@ class GroupchatsController extends AppController {
 			
 			if($v!==$id){
 				$owner=$this->User->find('first',array('fields'=>array('User.id','User.username','User.avatar_img'),
-				'joins'=>array(
-					array(
-						'table'=>'profiles',
-						'alias'=>'Profile',
-						'type'=>'LEFT',
-						'conditions'=>array('Profile.user_id=User.id')
-					)
-				),
 				'conditions'=>array('User.id'=>$v)));
 			/*foreach($users as $struct) {
 			    if ($v == $struct->id) {
@@ -566,7 +553,10 @@ class GroupchatsController extends AppController {
 				}
 			}else{
 				foreach($users as $u){
-							$avatars[]=$u['User']['avatar_img'];
+					if($u['User']['avatar_img']!='')
+						$avatars[]=$u['User']['avatar_img'];
+					else
+						$avatars[]='img/avatar.png';
 				}
 			}
 			

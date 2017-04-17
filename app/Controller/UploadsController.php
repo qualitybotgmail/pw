@@ -1,5 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
+App::import('Vendor','ImageCorrector');
 /**
  * Uploads Controller
  *
@@ -80,13 +81,24 @@ class UploadsController extends AppController {
 			foreach($this->request->data['Upload']['file'] as $file){
 				$path = WWW_ROOT . 'files/' . $this->Auth->user('id');
 				
+				$now = time();
+				
 				@mkdir($path);
 			//	chmod($path,0777);
 				$fname = preg_replace('/\s+/', '_', $file['name']);
-				$filepath = $path . '/' .time(). $fname;
+				$filepath = $path . '/' .$now. $fname;
 				$this->Upload->create();
-			    move_uploaded_file($file['tmp_name'],$filepath);
-				$urlpath = '/files/' . $this->Auth->user('id') . '/' . time().$fname;
+			    // move_uploaded_file($file['tmp_name'],$filepath);
+
+				if(exif_imagetype($file['tmp_name']) == IMAGETYPE_JPEG){
+					$imageCorrector = new ImageCorrector();
+					$imageCorrector->orientationFixedImage($file['tmp_name'], $filepath);
+				}
+				else{
+					move_uploaded_file($file['tmp_name'],$filepath);
+				}
+
+				$urlpath = '/files/' . $this->Auth->user('id') . '/' . $now.$fname;
 				$data = array('path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'head_id'=>$head_id ,'name' => $file['name']);
 				$return = $this->Upload->save($data);
 				
@@ -190,7 +202,16 @@ class UploadsController extends AppController {
 				$fname = preg_replace('/\s+/', '_', $file['name']);
 				$filepath = $path . '/' .$now.$fname;
 				$this->Upload->create();
-			    move_uploaded_file($file['tmp_name'],$filepath);
+			    // move_uploaded_file($file['tmp_name'],$filepath);
+
+				if(exif_imagetype($file['tmp_name']) == IMAGETYPE_JPEG){
+					$imageCorrector = new ImageCorrector();
+					$imageCorrector->orientationFixedImage($file['tmp_name'], $filepath);
+				}
+				else{
+					move_uploaded_file($file['tmp_name'],$filepath);
+				}
+
 				$urlpath = '/files/' . $this->Auth->user('id') . '/' . $now.$fname;
 				$data = array('path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'head_id'=>$head_id ,'name' =>$file['name']);
 				$return = $this->Upload->save($data);
@@ -219,7 +240,16 @@ class UploadsController extends AppController {
 				$fname = preg_replace('/\s+/', '_', $file['name']);
 				$filepath = $path . '/' .$now. $fname;
 				$this->Upload->create();
-			    move_uploaded_file($file['tmp_name'],$filepath);
+			    // move_uploaded_file($file['tmp_name'],$filepath);
+
+				if(exif_imagetype($file['tmp_name']) == IMAGETYPE_JPEG){
+					$imageCorrector = new ImageCorrector();
+					$imageCorrector->orientationFixedImage($file['tmp_name'], $filepath);
+				}
+				else{
+					move_uploaded_file($file['tmp_name'],$filepath);
+				}
+
 				$urlpath = '/files/' . $this->Auth->user('id') . '/' . $now . $fname;
 				$data = array('path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'head_id'=>$head_id ,'name' =>$file['name']);
 				$return = $this->Upload->save($data);
