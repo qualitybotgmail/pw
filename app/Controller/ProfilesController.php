@@ -20,7 +20,7 @@ class ProfilesController extends AppController {
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('User'); 
-		$this->Auth->allow('me','edit','getnotif','froks','search','timeline','removeregid','setregid','notifications_count','clearNotif');
+		$this->Auth->allow('me','edit','testSearch','getnotif','froks','search','timeline','removeregid','setregid','notifications_count','clearNotif');
 	}
 	public function logged(){
 		$prof = $this->Profile->findByUserId($this->Auth->user('id'));
@@ -690,18 +690,21 @@ class ProfilesController extends AppController {
 		}
 		$this->loadModel('Thread');
 		$this->loadModel('Head'); 
-		$this->loadModel('User'); 
+		$this->loadModel('User');
+		$this->loadModel('Message');
 		
 		
 		$this->Profile->recursive = 1;
 		$this->Thread->recursive = -1; 
 		$this->Head->recursive = -1; 
 		$this->User->recursive = -1;
+		$this->Message->recursive = -1;
 		
 		$user_id = $this->Auth->user('id');
 		
 		 
 		$keyword = str_replace("+", " ", $keyword);
+		
 		$keyword = explode(" ",trim($keyword));
 		
 		$data=array();
@@ -796,8 +799,10 @@ class ProfilesController extends AppController {
 			// ['order' =>['Head.created' => 'desc']]);  
 			 
 			// echo json_encode(array($user,$head));
-
+			$messages=$this->testSearch($k);
+	
 			// if(!empty($users))$data['Users'] = $users;
+			if(!empty($messages))$data['Chats']=$messages;
 			if(!empty($pusers))$data['Users'] = array_merge($pusers,array());
 			if(!empty($thread) || !empty($user_threads))$data['Threads'] = array_merge($thread,$user_threads);
 			// if(!empty($thread))$data['Threads'] = $users_threads;
@@ -816,6 +821,39 @@ class ProfilesController extends AppController {
 		
 		echo json_encode($data);
 		exit;
+	}
+	
+	public function testSearch($q){
+		$this->loadModel('Message');
+		$this->loadModel('Groupchat');
+		$this->Message->recursive=-1;
+		$user_id = $this->Auth->user('id');
+		$this->Message->Behaviors->load('Containable');
+		$messages=$this->Message->find('all',
+		
+		array(
+			'fields'=>array('Message.groupchat_id','Message.body','Message.id'),
+			'contain' => array('User.username','User.id','Groupchat.user_id'),
+				'joins'=>array(
+					array(
+						'table'=>'users_groupchats',
+						'type'=>'INNER',
+						'alias'=>'belongs',
+						'conditions'=>array(
+							'Message.groupchat_id = belongs.groupchat_id'
+						)
+					)
+				),
+			'conditions'=>array('body LIKE'=>'%'.$q.'%',
+					'OR'=>array(
+						'Message.user_id'=>$user_id,
+						'belongs.user_id'=>$user_id,
+						'Groupchat.user_id'=>$user_id
+					))
+			)
+		);
+		
+		return $messages;
 	}
 	public function notifications_count($return = false) { 
 	

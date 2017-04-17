@@ -73,6 +73,19 @@
             </li>
           </ul>
         </div>
+                <div class="result-list">
+          <p>Chat history</p>      
+          <ul class="list-group" ng-if="!search.Chats.length">
+            <li class="list-group-item">
+              結果が見つかりません
+            </li>
+          </ul>
+          <ul class="list-group" ng-if="search.Chats.length">
+            <li class="list-group-item" ng-repeat="chat in search.Chats" ng-click="selectChat(chat.Message.groupchat_id)">
+              {{chat.User.username == loginUser.username ? "You":chat.User.username}}: {{chat.Message.body}}
+            </li>
+          </ul>
+        </div>
         <!--</p>-->
         <div class="result-list">
           <p>ヘッド</p>      

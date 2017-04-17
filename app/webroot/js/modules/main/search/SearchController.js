@@ -118,6 +118,13 @@ define(['jquery', 'app', 'angular'], function($, app, angular)
                 $state.go('app.thread', { id: threadId });
             };
             
+             $scope.selectChat = function(gcId){
+                 
+                searchService.unbindElement();
+                $scope.search = {};
+                $state.go('app.message', { id: gcId });
+            };
+            
             $scope.selectHead = function(headId){
                 searchService.unbindElement();
                 $scope.search = {};
