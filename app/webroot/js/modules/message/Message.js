@@ -58,6 +58,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	$scope.message = {};
         	$scope.comment = { body: '', message_id: null};
         	$scope.loadFirstTime = true;
+        	//angular.element(document.getElementsByClassName("search-result")).hide();
         	
         	// check file if image
         	$scope.checkFile = function(path) {

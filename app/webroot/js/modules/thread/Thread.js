@@ -62,8 +62,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             };
             
             $scope.gotoHead = function(head) {
-                $rootScope.notificationCount -= head.notification_count;
-                head.notification_count = 0;
+                if(head.notification_count){
+                    $rootScope.notificationCount -= head.notification_count;
+                    head.notification_count = 0;   
+                }
                 $state.go('app.head', { id: head.id });
             };
             
