@@ -7,7 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.controllers', 'starter.services','starter.config', 'chart.js'])
 
-.run(function($ionicPlatform,$rootScope,API_URL,$cordovaInAppBrowser,$timeout,NotificationService,NewModalService,GalleryService,$cordovaKeyboard,$cordovaBadge,$state,$ionicConfig,AuthService,Groups,CacheFactory,InternetService,$cordovaNetwork) {
+.run(function($ionicPlatform,$rootScope,$cordovaDevice,API_URL,$cordovaInAppBrowser,$timeout,NotificationService,NewModalService,GalleryService,$cordovaKeyboard,$cordovaBadge,$state,$ionicConfig,AuthService,Groups,CacheFactory,InternetService,$cordovaNetwork) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -59,7 +59,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
   document.addEventListener("deviceready", function () {
    
     window.FirebasePlugin.grantPermission();
-     NewModalService.createModal();
+     //NewModalService.createModal();
      //GalleryService.getImages();
      
     /* var defaultOptions = {
@@ -67,12 +67,17 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
   };
   $cordovaInAppBrowser.setDefaultOptions(defaultOptions);*/
     
-   $rootScope.galleryImages=[];
+  /* $rootScope.galleryImages=[];
    $rootScope.$on('gallery_ready',function(event,data){
      
      
       $rootScope.galleryImages=GalleryService.galleryImages();
     });
+    $rootScope.isIOS=true;
+    if ($cordovaDevice.getPlatform() == 'Android')
+      $rootScope.isIOS=false;*/
+      
+      //alert($rootScope.isIOS);
 
     var type = $cordovaNetwork.getNetwork()
 

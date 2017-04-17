@@ -234,9 +234,12 @@ textarea {
     padding-bottom: 4px;
 }
 
-/*.modal{
+.android-modal{
     top: 44px !important;
-}*/
+}
+.ios-modal{
+    top: 60px !important;
+}
 .chat-add{
     font-size: 35px;
     padding-right: 5px;
