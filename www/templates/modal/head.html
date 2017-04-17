@@ -9,8 +9,8 @@
     <div class="row">
       <h4>本文:</h4>
 
-        <i class="icon ion-image img" ng-click="selectPicture('upload')"></i>
-        <i class="icon ion-ios-camera cam" ng-click="selectPicture('takePhoto')"></i>
+        <i ng-show="$root.headAction=='add'" class="icon ion-image img" ng-click="selectPicture('upload')"></i>
+        <i ng-show="$root.headAction=='add'" class="icon ion-ios-camera cam" ng-click="selectPicture('takePhoto')"></i>
 
     </div>
     <div class="row">
@@ -21,47 +21,40 @@
 
       </div>
     </div>
-    <div class="row" ng-show="$root.headContent.Uploads.length > 0 && $root.headAction=='edit'" >
+    <div class="row" ng-show="uploadedImgs.length > 0 && $root.headAction=='edit'" >
+      <div class="col">
+        <ion-scroll direction="x" class="item" style="padding: 0px;height:120px !important;border:0px">
+          <a ng-repeat="im in uploadedImgs track by $index" style="height:120px;display:inline-block;text-align:center;margin-right:4px;">
+            <img ng-show="im.Upload.name" ng-src="{{base_url}}{{im.Upload.path}}" style="width:auto;max-height:120px;" />
+            <img ng-show="!im.Upload.name" ng-src="{{im.Upload.path}}" style="width:auto;max-height:120px;" />
+          </a>
+        </ion-scroll>
+      <!-- <span >
+      <a class="item-thumbnail" ng-repeat="i in $root.headContent.Uploads track by $index">
+        <!-- <i ng-click="removeUploads($index)" class="icon ion-ios-close" style="font-size: 30px;position: absolute;margin-left: 45px;"></i> -->
+         <!-- <img ng-show="i.Upload.name" ng-src="{{base_url}}{{i.Upload.path}}">
+         <img ng-show="!i.Upload.name" ng-src="{{i.Upload.path}}"> -->
+      <!-- </a> -->
+      <!-- </span> -->
+      </div>
+    </div>
+  <div class="row" ng-show="uploadedImgs.length > 0 && $root.headAction=='add'">
     <div class="col">
-    <span >
-    <a class="item-thumbnail" ng-repeat="i in $root.headContent.Uploads track by $index">
-      <i ng-click="removeUploads($index)" class="icon ion-ios-close" style="font-size: 30px;position: absolute;margin-left: 45px;"></i>
-       <img ng-show="i.Upload.name" ng-src="{{base_url}}{{i.Upload.path}}">
-       <img ng-show="!i.Upload.name" ng-src="{{i.Upload.path}}">
-    </a>
-    </span>
-    </div>
-    </div>
-   <div class="row" ng-show="uploadedImgs.length > 0 && $root.headAction=='add'" style="border:0px">
-      <div class="col" style="border:0px">
-        <ion-scroll direction="x" class="item" style="height:120px !important">
-      
-        <a ng-repeat="im in uploadedImgs track by $index" class="item-thumbnail" >
-              
-               <i ng-click="removeUploadedImg($index)" class="icon ion-ios-close-outline" style="font-size: 30px;position: absolute;margin-left: 95px;color:white"></i>
-              <div class="view-img" ng-show="showChosenImage==$index" ng-click="showImages($index);$scope.showChosenImage=-1;">view</div>
-               <div ng-click="setChosenImg($index)" style="width:120px;height:120px;background-size:120px 120px;background-repeat:no-repeat;display: inline-block;" ng-style="{'filter':showChosenImage==$index?'blur(5px)':'initial','background-image':'url('+im+')'}" ></div>
-               
+      <ion-scroll direction="x" class="item" style="padding: 0px;height:120px !important;border:0px">
+        <a ng-repeat="im in uploadedImgs track by $index" style="height:120px;display:inline-block;text-align:center;margin-right:4px;">
+          <img ng-src="{{im}}" ng-click="setChosenImg($index);showImages({{$index}});$scope.showChosenImage=-1;" style="width:auto;max-height:120px;" />
         </a>
-      <!--</div>-->
       </ion-scroll>
-    <!--<div class="col">
-    <span >
-    <a class="item-thumbnail" ng-repeat="im in uploadedImgs track by $index">
-      <i ng-click="removeUploadedImg($index)" class="icon ion-ios-close" style="font-size: 30px;position: absolute;margin-left: 45px;"></i>
-       <img ng-src="{{im}}">
-    </a>
-    </span>-->
     </div>
-    </div>
+  </div>
 <div style="text-align:center">
 <button class="button button-center" ng-click="resetHeadForm();$root.showAddHead.hide();$root.headPopover.hide();">
   キャンセル
 </button>
-<button ng-show="headAction=='edit'" class="button button-center button-positive" ng-click="$root.processEditingHead()">
+<button ng-show="headAction=='edit'" class="button button-center button-positive" ng-class="{'disabled':!$root.headContent.body}" ng-click="$root.processEditingHead()">
   更新
 </button>
-<button ng-show="headAction=='add'" class="button button-center button-positive" ng-click="processAddingHead()">
+<button ng-show="headAction=='add'" class="button button-center button-positive" ng-class="{'disabled':!$root.headContent.body}" ng-click="processAddingHead()">
   投稿
 </button>
 </div>

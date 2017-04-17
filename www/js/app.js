@@ -24,14 +24,14 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
       StatusBar.styleDefault();
       // StatusBar.overlaysWebView(false);
     }
-     
+
 
   });
    if(AuthService.isAuthenticated() && InternetService.hasInternet()){
           NotificationService.setNotif();
           // console.log('HHHHH');
    }
-    
+
    $rootScope.$on('gotNotif', function(event, data){
 
        $rootScope.threadNotifCount=NotificationService.getThreadCount();
@@ -40,8 +40,8 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
        $rootScope.headNotif=NotificationService.getHeadNotif();
        $rootScope.groupchatNotif=NotificationService.getGroupchatNotif();
        $rootScope.totalNotif=parseInt($rootScope.threadNotifCount) + parseInt($rootScope.chatNotifCount);
-       
-       
+
+
 
        /*if(parseInt($rootScope.chatNotifCount) > 0){
           $rootScope.$broadcast('updatesforgroupchat',null);
@@ -53,30 +53,30 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
        window.FirebasePlugin.setBadgeNumber(parseInt($rootScope.totalNotif));
 
   });
-  
-  
+
+
 
   document.addEventListener("deviceready", function () {
-   
+
     window.FirebasePlugin.grantPermission();
      //NewModalService.createModal();
      //GalleryService.getImages();
-     
+
     /* var defaultOptions = {
     location: 'yes'
   };
   $cordovaInAppBrowser.setDefaultOptions(defaultOptions);*/
-    
+
   /* $rootScope.galleryImages=[];
    $rootScope.$on('gallery_ready',function(event,data){
-     
-     
+
+
       $rootScope.galleryImages=GalleryService.galleryImages();
-    });
+    });*/
     $rootScope.isIOS=true;
     if ($cordovaDevice.getPlatform() == 'Android')
-      $rootScope.isIOS=false;*/
-      
+      $rootScope.isIOS=false;
+
       //alert($rootScope.isIOS);
 
     var type = $cordovaNetwork.getNetwork()
@@ -84,7 +84,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
     var isOnline = $cordovaNetwork.isOnline()
 
     var isOffline = $cordovaNetwork.isOffline()
-    
+
     // listen for Online event
     $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
       InternetService.onOnline();
@@ -95,8 +95,8 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
     $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
       InternetService.onOffline();
     });
-    
-   
+
+
 
       window.FirebasePlugin.onTokenRefresh(function(token){
         window.localStorage.setItem('newdevicetoken',token);
@@ -133,7 +133,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
         }
       }
   });
- 
+
 
   }, false);
 
@@ -185,6 +185,10 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
 
         }
   });
+
+  $rootScope.gotoChats = function(){
+    $state.go('tab.chats');
+  };
 })
 
 .config(function($stateProvider,$urlRouterProvider, $ionicConfigProvider,CacheFactoryProvider) {
@@ -342,7 +346,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
 
   $ionicConfigProvider.tabs.position('bottom');
   $ionicConfigProvider.navBar.alignTitle('center');
-  $ionicConfigProvider.backButton.text('');
+  $ionicConfigProvider.backButton.previousTitleText(false).text('');
 })
 .config( ['$compileProvider',function( $compileProvider ){ $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file|blob|cdvfile|cdvphotolibrary):|data:image\//);}])
 .directive('preventHref', ['$parse', '$rootScope',
@@ -412,7 +416,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
       restrict: 'A',
       link: function(scope, element, attr) {
         scope.$watch(attr.content, function() {
-         
+
           element.html($parse(attr.content)(scope));
           if(element[0].querySelector('a')!==null)
              $compile(element[0].querySelector('a'))(scope);

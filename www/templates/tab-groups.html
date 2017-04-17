@@ -3,7 +3,7 @@
   <ion-nav-buttons side="left">
     <label class="item item-input">
       <i class="icon ion-search placeholder-icon"></i>
-      <input type="text" placeholder="検索" ng-model="searchKey.word" ng-focus="focused()" ng-blur="blurred()"  ng-change="onSearchChange()" >
+      <input type="text" placeholder="検索" ng-model="searchKey.word"  ng-change="onSearchChange()" >
     </label>
   </ion-nav-buttons>
 
@@ -14,7 +14,44 @@
     </button>
   </ion-nav-buttons>
 
-  <ion-content>
+  <ion-content ng-show="showSearchList">
+    <ion-list>
+      <ion-item style="padding:0px;padding-left:8px;background:#f0f0f0;">
+        <span style="font-size:80%;">メンバー<span>
+      </ion-item>
+      <ion-item  ng-repeat="users in searchUsers" ng-click="createChat(users.User)" ng-if="users.User.username">
+        <i class="icon ion-person"> </i>{{users.User.username}}
+      </ion-item>
+    </ion-list>
+    <ion-list>
+      <ion-item style="padding:0px;padding-left:8px;background:#f0f0f0;">
+        <span style="font-size:80%;">メッセージ<span>
+      </ion-item>
+      <ion-item  ng-repeat="chat in searchChats" ng-click="viewChatHistory(chat.Message.groupchat_id,chat.Message.id)">
+        <i class="icon ion-chatbox"></i> <span style="font-size: 15px;font-weight: 500;" ng-if="chat.User.id!=$root.user_id">{{chat.User.username}}:</span><span style="font-size: 15px;font-weight: 500;" ng-if="chat.User.id==$root.user_id">You:</span>
+        <p style="font-size: 12px;padding-left: 20px;">{{chat.Message.body}}</p>
+      </ion-item>
+    </ion-list>
+    <ion-list>
+      <ion-item style="padding:0px;padding-left:8px;background:#f0f0f0;">
+        <span style="font-size:80%;">グループ<span>
+      </ion-item>
+      <ion-item  ng-repeat="threads in searchThreads" href="#/tab/group-detail/{{threads.Thread.id}}" ng-if="threads.Thread.title">
+        <i class="icon ion-ios-people"></i> {{threads.Thread.title}}
+      </ion-item>
+    </ion-list>
+
+    <ion-list>
+      <ion-item style="padding:0px;padding-left:8px;background:#f0f0f0;">
+        <span style="font-size:80%;">投稿<span>
+      </ion-item>
+      <ion-item  ng-repeat="heads in searchHeads track by $index" href="#/tab/head/{{heads.Head.id}}" ng-if="heads.Head.body">
+        <i class="icon ion-pin"></i> {{heads.Head.body}}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+
+  <ion-content ng-show="showGroupList">
 
   <!-- <div class="item item-divider item-stable">
        <center>Groups</center>

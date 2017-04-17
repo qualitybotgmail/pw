@@ -268,7 +268,7 @@ angular.module('starter.controllers', [])
 .controller('ChatDetailCtrl', function($location,$cordovaInAppBrowser,$scope,GalleryService,NewModalService,$state,BASE_URL,backButtonOverride,$timeout,$ionicPopover,$ionicSlideBoxDelegate,NotificationService,$state,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
 
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
-      viewData.enableBack = false;
+      viewData.enableBack = true;
     });
     $scope.goBack=function() {
          $state.go('tab.chats');
@@ -340,7 +340,7 @@ angular.module('starter.controllers', [])
   $scope.chatPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerChatEdit()" ng-show="showEdit"><i class="icon ion-edit"></i>  編集</li><li class="item item-icon-left" ng-click="triggerChatDelete()"><i class="icon ion-ios-trash"></i> 削除</li></ul></ion-popover-view>', {
     scope: $scope
   });
- 
+
   $scope.previewImage=function(index){
     $scope.sliderGallery=true;
     $ionicSlideBoxDelegate.$getByHandle('gallery').slide(index);
@@ -355,13 +355,13 @@ angular.module('starter.controllers', [])
            $scope.chats = response.messages.concat($scope.chats);
         }else{
           $scope.chats = response.messages;
-           
+
         }
-        
-       
-          
+
+
+
         }
-      
+
     });
   }
   $rootScope.$on('isOnline',function(event,data){
@@ -492,28 +492,28 @@ angular.module('starter.controllers', [])
            if((typeof($rootScope.chatMembers)==='undefined' || $rootScope.chatMembers.length==0)){
             $rootScope.chatMembers=[];
             ApiService.Get('groupchats/'+$stateParams.chatId+'.json','').then(function(response){
-            
+
               $rootScope.chatMembers=response.groupchats.User.map(function(k){ return k.id!=$rootScope.user_id?k.username:''; }).filter(function(e){return e});
               $rootScope.chatMembers.push(response.groupchats.Owner.username);
             });
           }
-          
+
         }else{
            $ionicScrollDelegate.scrollTop();
         }
-       
+
         if($rootScope.message_id!=''){
           $scope.goTo($rootScope.message_id);
           if($scope.chats.length < response.total){
             if($scope.idss.indexOf($rootScope.message_id)==-1){
-             
+
               $scope.page=parseInt($scope.page)+1;
               $scope.getchats();
-              
+
             }
           }
         }
-        
+
       }
 
              $scope.$broadcast('scroll.refreshComplete');
@@ -692,7 +692,7 @@ angular.module('starter.controllers', [])
     }else{
       $scope.uploadedChatImgs.splice(index,1);
     }
-    
+
   }
 
   $scope.triggerChatEdit=function(){
@@ -1102,27 +1102,31 @@ angular.module('starter.controllers', [])
   $rootScope.searchKey = {'word': ''};
 
   $scope.focused=function(){
-     NewModalService.showModal($scope);
-     $rootScope.showGroupList = false;
-     $rootScope.showSearchList = true;
-  };
-  $scope.blurred=function(){
-    if($rootScope.searchKey.word == ''){
-       NewModalService.hideModal($scope);
-       $rootScope.showGroupList = true;
-       $rootScope.showSearchList = false;
-
+    if($rootScope.searchKey.word != ''){
+      // NewModalService.showModal($scope);
+      $rootScope.showGroupList = false;
+      $rootScope.showSearchList = true;
     }
-  }
+  };
+  // $scope.blurred=function(){
+  //   if($rootScope.searchKey.word == ''){
+  //      NewModalService.hideModal($scope);
+  //      $rootScope.showGroupList = true;
+  //      $rootScope.showSearchList = false;
+  //
+  //   }
+  // }
 
   $scope.onSearchChange = function () {
     if($rootScope.searchKey.word == ''){
-       NewModalService.hideModal($scope);
+      //  NewModalService.hideModal($scope);
        $rootScope.showGroupList = true;
        $rootScope.showSearchList = false;
 
-    }else{
-
+    }else if(!$rootScope.showSearchList){
+      //  NewModalService.showModal($scope);
+       $rootScope.showGroupList = false;
+       $rootScope.showSearchList = true;
     }
 
     ApiService.Get('profiles/search/'+$scope.searchKey.word,'',{
@@ -1148,7 +1152,7 @@ angular.module('starter.controllers', [])
 
       $rootScope.chatMembers.push(user.username);
       $ionicLoading.hide();
-      NewModalService.hideModal($scope);
+      // NewModalService.hideModal($scope);
      $state.go('tab.chat-detail',{chatId:response.Groupchat.id});
     });
   }
@@ -1166,7 +1170,7 @@ angular.module('starter.controllers', [])
      console.log("BACK");
          $state.go('tab.groups');
     };
-    
+
     $scope.showChosenImage=-1;
     $scope.setChosenImg=function(index){
       if($scope.showChosenImage==index)
@@ -1174,7 +1178,7 @@ angular.module('starter.controllers', [])
       else
         $scope.showChosenImage=index;
     }
-    
+
   $scope.showModal = function() {
 		$ionicModal.fromTemplateUrl('templates/modal/images.html', {
 			scope: $scope,
@@ -1199,13 +1203,13 @@ angular.module('starter.controllers', [])
         $ionicSlideBoxDelegate.$getByHandle('images').update();
         $scope.$apply();
       });
-    
+
       $scope.showModal();
   };
 
   $scope.updateSlideStatus = function(slide) {
     var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle'+slide).getScrollPosition().zoom;
-  
+
     if (zoomFactor == $scope.zoomMin) {
       $ionicSlideBoxDelegate.$getByHandle('images').enableSlide(true);
     } else {
@@ -1220,12 +1224,12 @@ angular.module('starter.controllers', [])
 		$scope.imagesModal.remove()
 		 $scope.uploadedImages=false;
 	};
-	
-	
-	
-	
-	
-    
+
+
+
+
+
+
    $rootScope.$emit('hideModal');
   $rootScope.thread=null;
   $scope.allMembers=[];
@@ -1312,7 +1316,7 @@ angular.module('starter.controllers', [])
 
   $scope.triggerEdit=function(){
     HeadService.edit($rootScope,$rootScope.thread.Head[$rootScope.processedHead]);
-
+    angular.copy($rootScope.thread.Head[$rootScope.processedHead].Uploads, $scope.uploadedImgs);
   };
 
   $scope.removeUploads=function(index){
@@ -1632,8 +1636,8 @@ $scope.selectPicture = function($act) {
   $scope.removeUploadedImg=function(index){
     $scope.uploadedImgs.splice(index,1);
   };
-  
-  
+
+
 
   $scope.result=[];
   $scope.img_ctr=0;
@@ -1850,15 +1854,15 @@ $scope.selectPicture = function($act) {
           $scope.sliderImages = $scope.headUploads.image;
        if(type=='comment')
           $scope.sliderImages =  $scope.comments['Comment'][parentIndex].image;
-          
-       
+
+
     console.log($scope.sliderImages[index]);
     setTimeout(function() {
             $ionicSlideBoxDelegate.$getByHandle('images').slide(index);
             $ionicSlideBoxDelegate.$getByHandle('images').update();
             $scope.$apply();
     });
-    
+
     }else{
       $scope.uploadedImages=true;
       $scope.activeSlide = index;
@@ -1870,12 +1874,12 @@ $scope.selectPicture = function($act) {
       });
     }
       $scope.showModal();
-    
+
   };
 
   $scope.updateSlideStatus = function(slide) {
     var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle'+slide).getScrollPosition().zoom;
-  
+
     if (zoomFactor == $scope.zoomMin) {
       $ionicSlideBoxDelegate.$getByHandle('images').enableSlide(true);
     } else {
@@ -2273,7 +2277,7 @@ $rootScope.changeHeadLike=function(id,index){
     viewData.enableBack = false;
   });
 
- 
+
     $rootScope.user=AuthService.username();
     $rootScope.affiliation=AuthService.affiliation();
     $rootScope.avatar_img=window.localStorage.getItem('avatar_img');
@@ -2304,7 +2308,7 @@ $rootScope.changeHeadLike=function(id,index){
   $scope.showUploadingButtons=false;
   $scope.uploadedProf=false;
   $scope.selectPictureImage=function(type){
-    
+
      $scope.showUploadingButtons=false;
      $scope.uploadedProf=false;
      $scope.uploadedProfileImg='';
@@ -2384,7 +2388,7 @@ $rootScope.changeHeadLike=function(id,index){
           });
       }
   };
-  
+
   $scope.changeProfileImage=function(img){
          $scope.showUploadingButtons=false;
          $scope.uploadingProfile=true;
@@ -2403,7 +2407,7 @@ $rootScope.changeHeadLike=function(id,index){
         $rootScope.avatar_img='';
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',img,o,true).then(function(result) {
 
-         
+
           $rootScope.avatar_img=BASE_URL+''+JSON.parse(result.response)[0]['Upload']['path'];
           $http.post(API_URL+'users/'+window.localStorage.getItem('user_id')+'.json',{'User':{'id':window.localStorage.getItem('user_id'),'avatar_img':JSON.parse(result.response)[0]['Upload']['path']}},{
             headers:{
@@ -2413,7 +2417,7 @@ $rootScope.changeHeadLike=function(id,index){
             $scope.uploadedProf=false;
             $scope.uploadingProfile=false;
             $scope.uploadedProfileImg='';
-            
+
           }).error(function(data){});
         },function(error){
           $ionicLoading.hide();
@@ -2426,7 +2430,7 @@ $rootScope.changeHeadLike=function(id,index){
   $scope.logout=function(){
     clearInterval($rootScope.allInterval);
     AuthService.logout();
-    
+
   }
 })
 .controller('UserChatCtrl', function($scope,$stateParams,$rootScope) {
@@ -2457,7 +2461,7 @@ $rootScope.changeHeadLike=function(id,index){
     });
     ApiService.Post('users/mobilelogin/',{"User":{"loginid":data.loginid,"password":data.password}}).then(function(response){
       if(response){
-        
+
       $ionicLoading.hide();
 
       if(response['user']["User"]){

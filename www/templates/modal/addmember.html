@@ -17,7 +17,7 @@
     </ion-header-bar>
     <ion-content>
         <ul class="list">
-            <li class="item item-checkbox" item-height="55px" item-width="100%" collection-repeat="user in notMembers | filter:{username:search_filter} track by $index">
+            <li class="item item-checkbox" item-height="55px" item-width="100%" ng-repeat="user in notMembers | filter:{username:search_filter} track by $index" ng-if="user.username">
                 {{user.username}}
                <label class="checkbox">
                <input ng-click="addNewMember(user)" type="checkbox" value="1" ng-model="user.selected">

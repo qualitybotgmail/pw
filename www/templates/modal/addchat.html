@@ -28,7 +28,7 @@
           <span style="font-size:80%;">メンバー<span>
         </ion-item>
         <div class="list">
-            <a class="item item-avatar item-icon-right" href="" ng-click="addUser(user)" ng-repeat="user in users | filter:{User:{username:$root.usersToadd}} track by $index">
+            <a class="item item-avatar item-icon-right" href="" ng-click="addUser(user)" ng-repeat="user in users | filter:{User:{username:$root.usersToadd}} track by $index" ng-if="user.User.username">
               <img src="img/avatar.png" ng-show="user.User.avatar_img==''||user.User.avatar_img=='null'||user.User.avatar_img==null">
               <img class="avatar" ng-src="{{base_url}}{{user.User.avatar_img}}" ng-show="user.User.avatar_img!=''&&user.User.avatar_img!='null'&&user.User.avatar_img!=null">
               <h2>{{user.User.username}}</h2>

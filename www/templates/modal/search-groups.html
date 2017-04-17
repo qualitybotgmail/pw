@@ -1,4 +1,4 @@
-<ion-modal-view style="top:57px">
+<ion-modal-view ng-class="{'ios-modal':isIOS, 'android-modal':!isIOS}">
     <ion-content>
       <ion-list>
           <ion-item class="item item-divider item-positive">
@@ -10,7 +10,7 @@
     </ion-list>
     <ion-list>
           <ion-item class="item item-divider item-positive">
-            <i  class="icon ion-ios-people"></i> Chat History
+            <i  class="icon ion-ios-people"></i> メッセージ
           </ion-item>
           <ion-item  ng-repeat="chat in searchChats" ng-click="viewChatHistory(chat.Message.groupchat_id,chat.Message.id)">
             <i class="icon ion-chatbox"></i> <span style="font-size: 15px;font-weight: 500;" ng-if="chat.User.id!=$root.user_id">{{chat.User.username}}:</span><span style="font-size: 15px;font-weight: 500;" ng-if="chat.User.id==$root.user_id">You:</span>
