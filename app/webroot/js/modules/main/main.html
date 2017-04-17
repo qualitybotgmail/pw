@@ -31,193 +31,228 @@
     }
 
 </style>
-
-<div class="section col-sm-2">
-    <a ui-sref="app">
-        <h3 class="company-name">
-            Playwork
-        </h3>    
-    </a>
-    <h4>
-        <a ui-sref="app.threads">
-            グループ
+<div id="header_bar" style="visibility: visible;">
+    <div id="header_logo_item">
+        <a ui-sref="app">
+            <h3 class="company-name">
+                <img src="/img/playworklogo.png" alt="" height="40px">
+            </h3>    
         </a>
-        <a style="float:right;" ng-click="addThread()">
-            <i class="fa fa-plus-square-o clickable"></i>
-        </a>
-    </h4>
-    
-    <ul class="list-group">
-      <a class="list-group-item clickable thread-lists" id="thread-{{thread.Thread.id}}" ng-if="thread.Thread" ng-click="goto.thread(thread.Thread)" ng-repeat="(threadIndex,thread) in threads" ng-init="$last && fireThreadActiveEvent()">
-        <span class="badge badge-info" ng-if="thread.Thread.notifications">{{thread.Thread.notifications}}</span>
-        {{thread.Thread.title}}
-      </a>
-    </ul>
-
-    <h4>
-        <a ui-sref="app.messages">
-            メッセージ
-        </a>
-        <a style="float:right;" ng-click="addGroupChat()">
-            <i class="fa fa-plus-square-o clickable"></i>
-        </a>
-    </h4>
-    <ul class="list-group">
-      <a class="list-group-item clickable message-lists" id="message-{{groupchat.Groupchat.id}}" ng-if="groupchat.Groupchat" ng-click="goto.message(groupchat.Groupchat)" ng-repeat="(groupChatIndex,groupchat) in createdGroupChats" ng-init="$last && fireMessageActiveEvent()">
-        <span class="badge badge-info" ng-if="groupchat.Groupchat.notifications">{{groupchat.Groupchat.notifications}}</span>
-        <span ng-repeat="u in groupchat.User">
-            {{u.username}}
-            {{$last ? '' : ', '}}
-        </span>
-      </a>
-      
-    </ul>
-      
-</div>
-
-<div class="section col-sm-8">
-    <div ui-view="search"></div>
-    
-    <div ui-view="content">
-        <div class="row">
-            <h3>
-                タイムライン
-            </h3>
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="qa-message-list" id="wallmessages">
-                    	<div class="message-item" ng-repeat="(threadIndex,thread) in timeline">
-                    		<div class="message-inner">
-                    			<div class="message-head clearfix">
-                    				<div class="avatar pull-left">
-                    					<img src="/img/avatar.png" class="timeline-img">
-                    				</div>
-                    				<div class="user-detail">
-                    					<h5 class="handle">
-                    					    <a ui-sref="app.thread({ id: thread.Thread.id })">
-                    					        {{thread.Thread.title}}
-                    					    </a>
-                    					</h5>
-                    					<div class="post-meta">
-                    						<div class="asker-meta">
-                    							<span class="qa-message-what"></span>
-                    							<span class="qa-message-when">
-                    								<span class="qa-message-when-data">{{thread.Thread.created}}</span>
-                    							</span>
-                    							 <span class="qa-message-who">
-                    								<span class="qa-message-who-pad">by </span>
-                    								<span class="qa-message-who-data">
-                    								    {{thread.Owner.username}}
-                    								</span>
-                    							</span>
-                    						</div>
-                    					</div>
-                    				</div>
-                    			</div>
-                    			<div class="qa-message-content" ng-if="thread.Head.length">
-                    			    <h3>Head</h3>
-                    				<div class="message-item" ng-repeat="(headIndex,head) in thread.Head">
-                                		<div class="message-inner">
-                                			<div class="message-head clearfix">
-                                				<div class="avatar pull-left">
-                                					<img src="/img/avatar.png" class="timeline-img">
-                                				</div>
-                                				<div class="user-detail">
-                                					<h5 class="handle">
-                                					    <a ui-sref="app.head({ id: head.Head.id })">
-                                					        {{head.Head.body}}
-                                					    </a>
-                                					</h5>
-                                					<div class="post-meta">
-                                						<div class="asker-meta">
-                                							<span class="qa-message-what"></span>
-                                							<span class="qa-message-when">
-                                								<span class="qa-message-when-data">{{head.Head.created}}</span>
-                                							</span>
-                                							 <span class="qa-message-who">
-                                								<span class="qa-message-who-pad">by </span>
-                                								<span class="qa-message-who-data">
-                                								    {{head.Head.Owner.User.username}}
-                                								</span>
-                                							</span>
-                                						</div>
-                                					</div>
-                                					<div class="panel-heading-controls pull-right">
-                                                        <button class="btn btn-sm {{(head.Head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="head.Head.processing" ng-click="likeHead(threadIndex, headIndex, head.Head.id)">
-                                                             {{head.Head.likes}}
-                                                            <span class="fa fa-thumbs-o-up"></span>
-                                                        </button>
-                                                    </div>
-                                				</div>
-                                			</div>
-                                			<div class="qa-message-content">
-                                				<ul class="list-group">
-                                                    <li class="list-item" ng-if="head.Comment.length">
-                                                        <ul class="list-group commentList commentList-{{threadIndex}}-{{headIndex}}">
-                                                            <li class="list-group-item" ng-repeat="(commentIndex,c) in head.Comment" ng-init="$last && fireMessageEvent(threadIndex, headIndex)">
-                                                                <small>by : {{c.User.username}}</small>
-                                                                <p>{{c.Comment.body}}</p>
-                                                                <p>
-                                                                    <span ng-repeat="upload in c.Upload">
-                                                                        <a fancybox ng-href="{{upload.path}}">
-                                                                            <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
-                                                                        </a>
-                                                                    </span>
-                                                                </p>
-                                                                <span style="font-size:10px;">{{c.Comment.created}}</span>
-                                                                <button class="btn btn-xs {{(c.isUserLiked)?'':'btn-outline'}} btn-warning pull-right" ng-disabled="c.Comment.processing" ng-click="likeComment(threadIndex, headIndex, commentIndex, c.Comment.id)">
-                                                                    {{c.Comment.likes}}
-                                                                    <span class="fa fa-thumbs-o-up"></span>
-                                                                </button>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                    <li class="list-group-item form-group">
-                                                        <form  role="form" id="commentFrm-{{threadIndex}}-{{headIndex}}" name="commentFrm" method="POST" enctype="multipart/form-data" 
-                                                                    novalidate ng-submit="sendComment(commentFrm.$valid, threadIndex, headIndex, head.Head.id)">
-                                                            <input type="file" name="attachments" id="attachments"  multiple />
-                                                            <textarea ng-click='textboxClicked(head.Head.id)' name="body" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment[threadIndex][headIndex].body"></textarea>
-                                                            <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin-top:4px;">コメント</button>
-                                                        </form>
-                                                    </li>
-                                                </ul>
-                                			</div>
-                                		</div>
-                                	</div>
-                    			</div>
-                    		</div>
-                    	</div>
-                    </div>
-	            </div>
+    </div>
+    <div id="header_search_item" class="header_search_item">    
+        <div ui-view="search"></div>
+    </div>
+    <div id="header_my_pofile_item">
+        <div class="my_profile">
+            <div class="nav pull-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="badge badge-important" ng-if="notificationCount">{{notificationCount}}</span>
+                        <span>{{loginUser.username}}</span>
+                        </span>&nbsp;<span class="fa fa-caret-down"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a ui-sref="app.profile">
+                                プロフィール
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="/users/logout">
+                                <i class="dropdown-icon fa fa-power-off"></i>
+                                &nbsp;&nbsp;ログアウト
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </div>
         </div>
     </div>
 </div>
+<div id="scrollable_wrapper">
+    <div id="wrapper" class="clearfix">
+        
+        <div id="left_nav" style="visibility: visible;">
+            <div class="dm_group_list">
+                <ul class="left_menu" id="left_menu">
+                <!-- div class="section col-sm-2" -->
+                    <li class="left_menu_title" id="left_menu_group">
+                        <div>
+                            <a ui-sref="app.threads">
+                                グループ
+                            </a>
+                            <a style="float:right;" ng-click="addThread()">
+                                <i class="fa fa-plus-square-o clickable"></i>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="left_menu_list" style="max-height: 803px;">    
+                        <ul id="left_group_list">
+                            <li id="left_menu_allfeed" class>    
+                                <a class="list-group-item clickable thread-lists" id="thread-{{thread.Thread.id}}" ng-if="thread.Thread" ng-click="goto.thread(thread.Thread)" ng-repeat="(threadIndex,thread) in threads" ng-init="$last && fireThreadActiveEvent()">
+                                <span class="badge badge-info" ng-if="thread.Thread.notifications">{{thread.Thread.notifications}}</span>
+                                {{thread.Thread.title}}
+                                 </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="left_menu_title" id="left_menu_dm">
+                        <div>
+                            <a ui-sref="app.messages">
+                                メッセージ
+                            </a>
+                            <a style="float:right;" ng-click="addGroupChat()">
+                                <i class="fa fa-plus-square-o clickable"></i>
+                            </a>
+                        </div>
+                    </li>
+                    <li class="left_menu_list" style="max-height: 794px;">
+                        <ul class="list-group">
+                          <a class="list-group-item clickable message-lists" id="message-{{groupchat.Groupchat.id}}" ng-if="groupchat.Groupchat" ng-click="goto.message(groupchat.Groupchat)" ng-repeat="(groupChatIndex,groupchat) in createdGroupChats" ng-init="$last && fireMessageActiveEvent()">
+                            <span class="badge badge-info" ng-if="groupchat.Groupchat.notifications">{{groupchat.Groupchat.notifications}}</span>
+                            <span ng-repeat="u in groupchat.User">
+                                {{u.username}}
+                                {{$last ? '' : ', '}}
+                            </span>
+                          </a>
 
-<div class="section col-sm-2">
-    <div class="nav pull-right">
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <span class="badge badge-important" ng-if="notificationCount">{{notificationCount}}</span>
-                <span>{{loginUser.username}}</span>
-                </span>&nbsp;<span class="fa fa-caret-down"></span>
-            </a>
-            <ul class="dropdown-menu">
-                <li>
-                    <a ui-sref="app.profile">
-                        プロフィール
-                    </a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="/users/logout">
-                        <i class="dropdown-icon fa fa-power-off"></i>
-                        &nbsp;&nbsp;ログアウト
-                    </a>
-                </li>
-            </ul>
-        </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="container">
+            <div class="container_table" style="position: relative !important;">
+                <div class="container_table_row">
+                    <div class="group_feed">
+                        <div id="contents">
+                            <div ui-view="content">
+                                <div class="contents_inner" style="height: 974px;">
+                                    <div class="container_header group">
+                                        <div id="title" class="table_cell">
+                                            タイムライン
+                                        </div>
+                                    </div>
+
+                                    <div id="contents_main" style="height: 891px; overflow-y: auto; overflow-x: hidden;">                                
+                                        <div class="row">
+                                            <div class="qa-message-list" id="wallmessages">
+                                            	<div class="message-item" ng-repeat="(threadIndex,thread) in timeline">
+                                            		<div class="message-inner">
+                                            			<div class="message-head clearfix">
+                                            				<div class="avatar pull-left">
+                                            					<img src="/img/avatar.png" class="timeline-img">
+                                            				</div>
+                                            				<div class="user-detail">
+                                            					<h5 class="handle">
+                                            					    <a ui-sref="app.thread({ id: thread.Thread.id })">
+                                            					        {{thread.Thread.title}}
+                                            					    </a>
+                                            					</h5>
+                                            					<div class="post-meta">
+                                            						<div class="asker-meta">
+                                            							<span class="qa-message-what"></span>
+                                            							<span class="qa-message-when">
+                                            								<span class="qa-message-when-data">{{thread.Thread.created}}</span>
+                                            							</span>
+                                            							 <span class="qa-message-who">
+                                            								<span class="qa-message-who-pad">by </span>
+                                            								<span class="qa-message-who-data">
+                                            								    {{thread.Owner.username}}
+                                            								</span>
+                                            							</span>
+                                            						</div>
+                                            					</div>
+                                            				</div>
+                                            			</div>
+                                            			<div class="qa-message-content" ng-if="thread.Head.length">
+                                            			    <h3>Head</h3>
+                                            				<div class="message-item" ng-repeat="(headIndex,head) in thread.Head">
+                                                        		<div class="message-inner">
+                                                        			<div class="message-head clearfix">
+                                                        				<div class="avatar pull-left">
+                                                        					<img src="/img/avatar.png" class="timeline-img">
+                                                        				</div>
+                                                        				<div class="user-detail">
+                                                        					<h5 class="handle">
+                                                        					    <a ui-sref="app.head({ id: head.Head.id })">
+                                                        					        {{head.Head.body}}
+                                                        					    </a>
+                                                        					</h5>
+                                                        					<div class="post-meta">
+                                                        						<div class="asker-meta">
+                                                        							<span class="qa-message-what"></span>
+                                                        							<span class="qa-message-when">
+                                                        								<span class="qa-message-when-data">{{head.Head.created}}</span>
+                                                        							</span>
+                                                        							 <span class="qa-message-who">
+                                                        								<span class="qa-message-who-pad">by </span>
+                                                        								<span class="qa-message-who-data">
+                                                        								    {{head.Head.Owner.User.username}}
+                                                        								</span>
+                                                        							</span>
+                                                        						</div>
+                                                        					</div>
+                                                        					<div class="panel-heading-controls pull-right">
+                                                                                <button class="btn btn-sm {{(head.Head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="head.Head.processing" ng-click="likeHead(threadIndex, headIndex, head.Head.id)">
+                                                                                     {{head.Head.likes}}
+                                                                                    <span class="fa fa-thumbs-o-up"></span>
+                                                                                </button>
+                                                                            </div>
+                                                        				</div>
+                                                        			</div>
+                                                        			<div class="qa-message-content">
+                                                        				<ul class="list-group">
+                                                                            <li class="list-item" ng-if="head.Comment.length">
+                                                                                <ul class="list-group commentList commentList-{{threadIndex}}-{{headIndex}}">
+                                                                                    <li class="list-group-item" ng-repeat="(commentIndex,c) in head.Comment" ng-init="$last && fireMessageEvent(threadIndex, headIndex)">
+                                                                                        <small>by : {{c.User.username}}</small>
+                                                                                        <p>{{c.Comment.body}}</p>
+                                                                                        <p>
+                                                                                            <span ng-repeat="upload in c.Upload">
+                                                                                                <a fancybox ng-href="{{upload.path}}">
+                                                                                                    <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                                                                                                </a>
+                                                                                            </span>
+                                                                                        </p>
+                                                                                        <span style="font-size:10px;">{{c.Comment.created}}</span>
+                                                                                        <button class="btn btn-xs {{(c.isUserLiked)?'':'btn-outline'}} btn-warning pull-right" ng-disabled="c.Comment.processing" ng-click="likeComment(threadIndex, headIndex, commentIndex, c.Comment.id)">
+                                                                                            {{c.Comment.likes}}
+                                                                                            <span class="fa fa-thumbs-o-up"></span>
+                                                                                        </button>
+                                                                                    </li>
+                                                                                </ul>
+                                                                            </li>
+                                                                            <li class="list-group-item form-group">
+                                                                                <form  role="form" id="commentFrm-{{threadIndex}}-{{headIndex}}" name="commentFrm" method="POST" enctype="multipart/form-data" 
+                                                                                            novalidate ng-submit="sendComment(commentFrm.$valid, threadIndex, headIndex, head.Head.id)">
+                                                                                    <input type="file" name="attachments" id="attachments"  multiple />
+                                                                                    <textarea ng-click='textboxClicked(head.Head.id)' name="body" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment[threadIndex][headIndex].body"></textarea>
+                                                                                    <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin-top:4px;">コメント</button>
+                                                                                </form>
+                                                                            </li>
+                                                                        </ul>
+                                                        			</div>
+                                                        		</div>
+                                                        	</div>
+                                            			</div>
+                                            		</div>
+                                            	</div>
+                                            </div>    
+                        	            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
+
+
 
 <div ng-repeat="template in templates" ng-include="template"></div>
