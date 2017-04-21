@@ -184,8 +184,19 @@
                                                                     </span>
                                                                 </p>
                                                                 <span style="font-size:10px;">{{c.Comment.created}}</span>
-                                                                <button class="btn btn-xs {{(c.isUserLiked)?'':'btn-outline'}} btn-warning pull-right" ng-disabled="c.Comment.processing" ng-click="likeComment(threadIndex, headIndex, commentIndex, c.Comment.id)">
-                                                                    {{c.Comment.likes}}
+                                                                <span class="clickable pull-right" ng-if="c.Comment.likes_count == 1 && c.Comment.isUserLiked" ng-click="showUsers(c.Comment.likes)">
+                                                                    You liked this head
+                                                                </span>
+                                                                <span class="clickable pull-right" ng-if="c.Comment.likes_count == 1 && !c.Comment.isUserLiked" ng-click="showUsers(c.Comment.likes)">
+                                                                    {{c.Comment.likes[0].User.username}} liked this head
+                                                                </span>
+                                                                <span class="clickable pull-right" ng-if="c.Comment.likes_count > 1 && !c.Comment.isUserLiked" ng-click="showUsers(c.Comment.likes)">
+                                                                    {{c.Comment.likes_count}} liked this head
+                                                                </span>
+                                                                <span class="clickable pull-right" ng-if="c.Comment.likes_count > 1 && c.Comment.isUserLiked" ng-click="showUsers(c.Comment.likes)">
+                                                                    You and {{c.Comment.likes_count - 1}} liked this head 
+                                                                </span>
+                                                                <button class="btn btn-xs {{(c.Comment.isUserLiked)?'':'btn-outline'}} btn-warning pull-right" ng-disabled="c.Comment.processing" ng-click="likeComment(threadIndex, headIndex, commentIndex, c.Comment.id)">
                                                                     <span class="fa fa-thumbs-o-up"></span>
                                                                 </button>
                                                             </li>
