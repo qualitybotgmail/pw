@@ -1,4 +1,7 @@
 <style type="text/css">
+    .modal-width-50 .modal-sm {
+        width:20%;
+    }
     .blue	 {
 		color: #5bc0de;
 	}
@@ -138,10 +141,24 @@
         <span style="font-size:11px;">{{head.created}}</span>
         <span style="font-size:11px;">by: {{head.Owner.username == loginUser.username ? "You": head.Owner.username}}</span>
         <div class="panel-heading-controls">
-            <button class="btn btn-sm {{(head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="head.processing" ng-click="like($index, head)">
-                {{head.likes}}
-                <span class="fa fa-thumbs-o-up"></span>
-            </button>
+            <span>
+                <button class="btn btn-sm {{(head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="head.processing" ng-click="like($index, head)">
+                    <span class="fa fa-thumbs-o-up"></span>
+                </button>
+                <span class="clickable" ng-if="head.likes_count == 1 && head.isUserLiked" ng-click="showUsers(head.likes)">
+                    You liked this head
+                </span>
+                <span class="clickable" ng-if="head.likes_count == 1 && !head.isUserLiked" ng-click="showUsers(head.likes)">
+                    {{head.likes[0].User.username}} liked this head
+                </span>
+                <span class="clickable" ng-if="head.likes_count > 1 && !head.isUserLiked" ng-click="showUsers(head.likes)">
+                    {{head.likes_count}} liked this head
+                </span>
+                <span class="clickable" ng-if="head.likes_count > 1 && head.isUserLiked" ng-click="showUsers(head.likes)">
+                    You and {{head.likes_count - 1}} liked this head 
+                </span>
+            </span>
+            
             <div class="btn-group btn-group-sm" ng-if="thread.Owner.id == loginUser.id || head.Owner.id == loginUser.id">
               <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">
                   <span class="fa fa-cog"></span>&nbsp;<span class="fa fa-caret-down"></span>

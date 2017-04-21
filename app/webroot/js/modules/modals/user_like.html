@@ -1,0 +1,33 @@
+<script type="text/ng-template" id="users-like-modal.html">
+	<div id="users-like-modal" tabindex="-1">
+    	<div class="modal-header">
+    		<button type="button" class="close" ng-click="cancel()">&times;</button>
+    	    <h4 class="white bigger">ユーザー</h4>
+    	</div>
+    
+    	<div class="modal-body">
+    		<div class="row" >
+                <div class="col-xs-12">
+                    <table class="table table-hover"> 
+                    	<tbody> 
+                    		<tr ng-repeat="u in users"> 
+                    			<td>
+                    			   <img src="{{ (loginUser.avatar_img)? loginUser.avatar_img:'/img/avatar.png' }}" alt="{{u.User.username}}" class="img-thumbnail" 
+                    			   style="width:100px; height:100px'">
+                    			</td> 
+                    			<td style="text-align:center; vertical-align:middle;">{{u.User.username}}</td> 
+                    		</tr>
+                    	</tbody> 
+                    </table>
+        		</div>
+        	</div>
+    	</div>
+    	
+    	<div class="modal-footer">
+    		<button type="button" class="btn btn-sm" id="btn-close" ng-click="cancel()" tabindex="-1">
+    			<!-- <i class="fa fa-ban bigger-140"></i> &nbsp; -->
+    			OK
+    		</button>
+    	</div>
+	</div>
+</script>

@@ -9,6 +9,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 addThreadMember: GLOBAL.baseModulePath + 'thread/modals/add_thread_member.html?version=' + GLOBAL.version,
                 addThreadHead: GLOBAL.baseModulePath + 'thread/modals/add_thread_head.html?version=' + GLOBAL.version,
                 thread: GLOBAL.baseModulePath + 'main/modals/add_thread.html',
+                userLike: GLOBAL.baseModulePath + 'modals/user_like.html',
             };
             return factory;
         }
@@ -68,7 +69,6 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 }
                 $state.go('app.head', { id: head.id });
             };
-            
             
             // add members
             $scope.addMembers = function(thread) {
@@ -229,6 +229,30 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	    });
         	};
         	
+        	
+        	// show list of users like the head
+            $scope.showUsers = function(users) {
+                var modalConfig = {
+                        template   : $templateCache.get("users-like-modal.html"),
+                        controller : 'UserLikeModalController',
+                        windowClass: 'modal-width-50',
+                        size       : 'sm',
+                        resolve   : {
+                            fromParent: function () {
+                                return {
+                                    'users': users
+                                };
+                            }
+                        }
+                    };
+                    
+                    Modal.showModal(modalConfig, {}).then(function (selectMembers) {
+                        // 
+                    }, function (err) {
+                        // error
+                    });
+            };
+        	
         	// posting like/unlike
         	// change ThreadsModel to HeadsModel
         	$scope.like = function(index, head){
@@ -239,16 +263,24 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	    if (!head.isUserLiked) {
         	        HeadsModel.one('like').one(head.id.toString()).get().then(function(res) {
     	                $scope.thread.Head[index].isUserLiked = true;
-    	                $scope.thread.Head[index].likes += 1;
+    	                $scope.thread.Head[index].likes_count += 1;
     	                $scope.thread.Head[index].processing = false;
+    	                $scope.thread.Head[index].likes.push({User:$rootScope.loginUser});
                 	});   
         	    } else { // if thread was already like
         	        HeadsModel.one('unlike').one(head.id.toString()).get().then(function(res) {
     	                $scope.thread.Head[index].isUserLiked = false;
-    	                $scope.thread.Head[index].likes -= 1;
+    	                $scope.thread.Head[index].likes_count -= 1;
     	                $scope.thread.Head[index].processing = false;
+    	                for (var i = 0; i < $scope.thread.Head[index].likes.length; i++) {
+    	                    if ($rootScope.loginUser.id == $scope.thread.Head[index].likes[i].User.id){
+    	                        $scope.thread.Head[index].likes.splice(i, 1);
+    	                        break;
+    	                    }
+    	                }
                 	});
         	    }
+        	    console.log($scope.thread.Head[index], 'update');
         	};
         	
         	$scope.pushNotification = function() {

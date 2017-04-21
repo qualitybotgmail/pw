@@ -13,6 +13,9 @@ define([
 	// import modals
 	'../thread/modals/threadHeadModal',
 	
+	// users like the head modal
+	'../modals/userLikeModal',
+	
 	'./Head',
 
 	'../../services/modalService',

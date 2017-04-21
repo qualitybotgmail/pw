@@ -1,4 +1,7 @@
 <style type="text/css">
+    .modal-width-50 .modal-sm {
+        width:20%;
+    }
     p.head-comment,
     p.head-body{
         white-space: pre-line;
@@ -65,9 +68,20 @@
         </span>
         <div class="panel-heading-controls">
             <button class="btn btn-sm {{(selectedHead.Head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="selectedHead.Head.processing" ng-click="like($index, selectedHead.Head)">
-                 {{selectedHead.Head.likes}}
                 <span class="fa fa-thumbs-o-up"></span>
             </button>
+            <span class="clickable" ng-if="selectedHead.Head.likes_count == 1 && selectedHead.Head.isUserLiked" ng-click="showUsers(selectedHead.Head.likes)">
+                You liked this head
+            </span>
+            <span class="clickable" ng-if="selectedHead.Head.likes_count == 1 && !selectedHead.Head.isUserLiked" ng-click="showUsers(selectedHead.Head.likes)">
+                {{selectedHead.Head.likes[0].User.username}} liked this head
+            </span>
+            <span class="clickable" ng-if="selectedHead.Head.likes_count > 1 && !selectedHead.Head.isUserLiked" ng-click="showUsers(selectedHead.Head.likes)">
+                {{selectedHead.Head.likes_count}} liked this head
+            </span>
+            <span class="clickable" ng-if="selectedHead.Head.likes_count > 1 && selectedHead.Head.isUserLiked" ng-click="showUsers(selectedHead.Head.likes)">
+                You and {{selectedHead.Head.likes_count - 1}} liked this head 
+            </span>
             
             <div class="btn-group btn-group-sm">
               <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown"><span class="fa fa-cog"></span>&nbsp;<span class="fa fa-caret-down"></span></button>
@@ -113,8 +127,19 @@
                         </span>
                     </p>
                     <span style="font-size:10px;">{{c.created}}</span>
+                    <span class="clickable pull-right" ng-if="c.likes_count == 1 && c.isUserLiked" ng-click="showUsers(c.likes)">
+                        You liked this head
+                    </span>
+                    <span class="clickable pull-right" ng-if="c.likes_count == 1 && !c.isUserLiked" ng-click="showUsers(c.likes)">
+                        {{c.likes[0].User.username}} liked this head
+                    </span>
+                    <span class="clickable pull-right" ng-if="c.likes_count > 1 && !c.isUserLiked" ng-click="showUsers(c.likes)">
+                        {{c.likes_count}} liked this head
+                    </span>
+                    <span class="clickable pull-right" ng-if="c.likes_count > 1 && c.isUserLiked" ng-click="showUsers(c.likes)">
+                        You and {{c.likes_count - 1}} liked this head 
+                    </span>
                     <button class="btn btn-xs {{(c.isUserLiked)?'':'btn-outline'}} btn-warning pull-right" ng-disabled="c.processing" ng-click="likeComment($index, c)">
-                        {{c.likes}}
                         <span class="fa fa-thumbs-o-up"></span>
                     </button>
                 </li>
