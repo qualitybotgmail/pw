@@ -2,6 +2,10 @@
     .badge-important {
         background-color: #d15b47!important;
     }
+    p.head-comment,
+    a.head-body{
+        white-space: pre-line;
+    }
 </style>
 <!-- Notifications -->
 <div gritter={{gritter.notify}} gritter-options="gritter.options" gritter-remove={{gritter.remove}} gritter-remove-all={{gritter.removeAll}} gritter-ids="gritter.ids" gritter-destroy={{gritter.destroy}}>
@@ -120,11 +124,11 @@
                                 		<div class="message-inner">
                                 			<div class="message-head clearfix">
                                 				<div class="avatar pull-left">
-                                					<img src="/img/avatar.png" class="timeline-img">
+                                					<img src="{{ (head.Head.Owner.User.avatar_img)? head.Head.Owner.User.avatar_img:'/img/avatar.png' }}" class="timeline-img">
                                 				</div>
                                 				<div class="user-detail">
                                 					<h5 class="handle">
-                                					    <a ui-sref="app.head({ id: head.Head.id })">
+                                					    <a class="head-body" ui-sref="app.head({ id: head.Head.id })">
                                 					        {{head.Head.body}}
                                 					    </a>
                                 					</h5>
@@ -144,9 +148,20 @@
                                 					</div>
                                 					<div class="panel-heading-controls pull-right">
                                                         <button class="btn btn-sm {{(head.Head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="head.Head.processing" ng-click="likeHead(threadIndex, headIndex, head.Head.id)">
-                                                             {{head.Head.likes}}
                                                             <span class="fa fa-thumbs-o-up"></span>
                                                         </button>
+                                                        <span class="clickable" ng-if="head.Head.likes_count == 1 && head.Head.isUserLiked" ng-click="showUsers(head.Head.likes)">
+                                                            You liked this head
+                                                        </span>
+                                                        <span class="clickable" ng-if="head.Head.likes_count == 1 && !head.Head.isUserLiked" ng-click="showUsers(head.Head.likes)">
+                                                            {{head.Head.likes[0].User.username}} liked this head
+                                                        </span>
+                                                        <span class="clickable" ng-if="head.Head.likes_count > 1 && !head.Head.isUserLiked" ng-click="showUsers(head.Head.likes)">
+                                                            {{head.Head.likes_count}} liked this head
+                                                        </span>
+                                                        <span class="clickable" ng-if="head.Head.likes_count > 1 && head.Head.isUserLiked" ng-click="showUsers(head.Head.likes)">
+                                                            You and {{head.Head.likes_count - 1}} liked this head 
+                                                        </span>
                                                     </div>
                                 				</div>
                                 			</div>
@@ -156,11 +171,15 @@
                                                         <ul class="list-group commentList commentList-{{threadIndex}}-{{headIndex}}">
                                                             <li class="list-group-item" ng-repeat="(commentIndex,c) in head.Comment" ng-init="$last && fireMessageEvent(threadIndex, headIndex)">
                                                                 <small>by : {{c.User.username}}</small>
-                                                                <p>{{c.Comment.body}}</p>
+                                                                <p class="head-comment">{{c.Comment.body}}</p>
                                                                 <p>
                                                                     <span ng-repeat="upload in c.Upload">
-                                                                        <a fancybox ng-href="{{upload.path}}">
-                                                                            <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                                                                        <span ng-init="upload.isFileImage=checkFile(upload.Upload.path)"></span>
+                                                                        <a ng-href="{{upload.Upload.path}}" target="_blank" ng-if="!upload.isFileImage">
+                                                                          {{upload.Upload.name}}
+                                                                        </a>
+                                                                        <a fancybox ng-href="{{upload.Upload.path}}" ng-if="upload.isFileImage">
+                                                                            <img ng-src="{{upload.Upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
                                                                         </a>
                                                                     </span>
                                                                 </p>

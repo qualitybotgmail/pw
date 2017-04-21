@@ -1,0 +1,28 @@
+<script type="text/ng-template" id="message-info-modal.html">
+	<div id="message-info-modal" tabindex="-1">
+    	<div class="modal-header">
+    		<button type="button" class="close" ng-click="cancel()">&times;</button>
+    	    <h4 class="white bigger">ユーザー</h4>
+    	</div>
+    
+    	<div class="modal-body">
+    		<div class="row" >
+                <div class="col-xs-12">
+                    <small>by : {{chat.User.username}}</small>
+                    <p style="white-space: pre-line;">{{chat.Message.body}}</p>
+                    <span style="font-size:10px;">{{c.Message.created}}</span>
+        		</div>
+        	</div>
+    	</div>
+    	
+    	<div class="modal-footer">
+    		<button type="button" class="btn btn-sm" id="btn-close" ng-click="cancel()" tabindex="-1">
+    			<i class="fa fa-ban bigger-140"></i> &nbsp;
+    			close
+    		</button>
+    		<button type="button" class="btn btn-sm" id="btn-close" ng-click="goto()" tabindex="-1">
+    			Go to chat history
+    		</button>
+    	</div>
+	</div>
+</script>
