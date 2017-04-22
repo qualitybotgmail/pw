@@ -10,14 +10,15 @@
             <img src="img/avatar.png" ng-show="timeVal.Owner.User.avatar_img==''||timeVal.Owner.User.avatar_img=='null'||timeVal.Owner.User.avatar_img==null">
             <img class="avatar" ng-src="{{base_url}}{{timeVal.Owner.User.avatar_img}}" ng-show="timeVal.Owner.User.avatar_img!=''&&timeVal.Owner.User.avatar_img!='null'&&timeVal.Owner.User.avatar_img!=null">
             <img>
-                <h3>{{timeVal.Owner.User.username}} {{timeVal.Owner.username}}</h3>
+                <h3 style="margin-top: -20px;">{{timeVal.Owner.User.username}} {{timeVal.Owner.username}}</h3>
                 <h6>{{timeVal.modified}}</h6>
            </div>
          <div class="item item-body">
             <img class="full-image"  ng-repeat="uploads in timeVal.Upload" src=" {{base_url}}{{uploads.Upload.path}}">
              <p>{{timeVal.title}} {{timeVal.body}}</p>
              <h6 align="right" ng-hide="timeVal.index===undefined">
-             <a href="#" class="subdued">{{timeVal.likes}} Like</a>
+             <a href="#" class="subdued" ng-if="timeVal.likes_count < 1">{{timeVal.likes_count}} Like</a>
+             <a href="" class="subdued" ng-if="timeVal.likes_count > 0" prevent-href=true><span ng-click="showLikes(timeVal.id)">{{timeVal.likes_count}} Like</span></a>
              <a href="#" class="subdued">{{timeVal.Comment.length}} Comment</a>
              </h6>
          </div>

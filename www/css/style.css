@@ -34,7 +34,14 @@
     height: 100%;
     border-radius: 50%;
 }
-
+.likedList{
+    padding: 10px;
+    padding-bottom: 0px !important;
+    /* position: absolute; */
+    /* left: 10px; */
+    float: right;
+    font-size: 13px !important;
+}
 .dateList{
    margin-top: -24px;
     position: absolute;

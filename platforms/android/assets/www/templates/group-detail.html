@@ -10,7 +10,7 @@
       <a class="button button-small button-positive" ng-click="showAddMember()">メンバーの追加</a>
       <a class="button button-small button-positive" ng-click="showMemberList.show()">メンバーの確認</a>
     </div>
-    <a ng-show="$root.thread.Thread.user_id!=$root.user_id" class="button button-small button-full button-positive" ng-click="showMemberList.show()">現在のメンバー</a>
+    <a ng-show="$root.thread.Thread.user_id!=$root.user_id" class="button button-small button-full button-positive" ng-click="showMemberList.show()">メンバーの確認</a>
 
 <!--     <ion-slide-box ng-show="sliderImages.length > 0">
 
@@ -20,7 +20,7 @@
        </ion-slide>
     </ion-slide-box>-->
     <div class="card" ng-repeat="head in thread.Head track by $index">
-      <div class="item item-avatar " ui-sref="tab.head({id:head.id,index:$index,likes:head.likes})" style="padding-top: 0px;">
+      <div class="item item-avatar " ui-sref="tab.head({id:head.id,index:$index,likes:head.likes})" style="padding-top: 0px;padding-bottom: 5px;">
          <img ng-if="head.Owner.avatar_img==''||head.Owner.avatar_img=='null'||head.Owner.avatar_img==null" ng-src="img/avatar.png">
          <img ng-if="head.Owner.avatar_img!=''&&head.Owner.avatar_img!='null'&&head.Owner.avatar_img!=null" ng-src="{{base_url}}{{head.Owner.avatar_img}}">
          <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</div>
@@ -33,7 +33,8 @@
         <div class="remove-first" style="white-space:pre-line;word-break:break-word;padding-right:10px;color:#000;">
           {{head.body}}
         </div>
-        <div style="width:100%;height:30px;padding-top: 5px;"><a class="subdued datecomment">{{head.created}}</a><a class="subdued" prevent-href="true" style="float:right" ng-click="changeHeadLike(head.id,$index)"> <span style="font-size:15px"><i class="icon ion-thumbsup likes" ng-class="{'active':head.isUserLiked}"></i> {{head.likes}}</span></a></div>
+        <div style="width:100%;height:30px;padding-top: 5px;"><a class="subdued datecomment" style="padding-right: 0px !important;">{{head.created}}</a><a class="subdued" prevent-href="true" style="float:right;" > <span style="font-size:15px" ng-click="changeHeadLike(head.id,$index)"><i class="icon ion-thumbsup likes" ng-class="{'active':head.isUserLiked}"></i> </span></a></div>
+          <p ng-show="head.likes.length > 0" class="likedList" prevent-href="true"><span ng-click="showLikes($index,-1,'head')"><span ng-if="head.likes.length == 2 && head.isUserLiked">You and <span ng-repeat="like in head.likes" ng-if="like.User.id!=$root.user_id">{{like.User.username}}</span></span><span ng-if="head.likes.length == 1 && head.isUserLiked">You</span><span ng-if="head.likes.length > 2 && head.isUserLiked">You and {{head.likes_count - 1 }} people</span><span ng-if="head.likes.length > 1 && !head.isUserLiked">{{head.likes_count}} people</span><span ng-if="head.likes.length == 1 && !head.isUserLiked">{{head.likes[0]['User']['username']}}</span> liked this post</span></p>
       </div>
     </div>
     <!--<div ng-repeat="head in thread.Head track by $index">

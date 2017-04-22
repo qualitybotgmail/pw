@@ -843,6 +843,7 @@ angular.module('starter.services', [])
 
     total=totalThread+totalChat;
   }
+
   return{
     getallnotif:function(){return notifications; },
     gettotalcount:function(){return total; },
@@ -1065,7 +1066,7 @@ angular.module('starter.services', [])
     });
   }*/
   svc.showModal = function(_scope) {
-     $ionicModal.fromTemplateUrl('templates/modal/search-groups.html', {
+     $ionicModal.fromTemplateUrl('templates/modal/likes.html', {
       scope: _scope,
       animation: 'slide-in-up'
     }).then(function(modal) {

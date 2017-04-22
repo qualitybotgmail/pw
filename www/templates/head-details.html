@@ -34,7 +34,8 @@
         </a>
         </div>
         <p style="padding-left: 15px;">
-          <a class="subdued" ng-click="updateLike(getHeads.id,getHeads.likes,getHeads.isUserLiked)"> <span><i class="icon ion-thumbsup likes" ng-class="{'active':getHeads.isUserLiked}"></i> {{getHeads.likes}}</span></a>
+          <a class="subdued" ng-click="updateLike(getHeads.id,getHeads.likes_count,getHeads.isUserLiked)"> <span><i class="icon ion-thumbsup likes" ng-class="{'active':getHeads.isUserLiked}"></i></span></a> 
+          <span ng-show="getHeads.likes.length > 0" class="likedList" prevent-href="true" style="padding-top:0px !important;padding-right: 10px !important;"><span ng-click="showLikes(-1,-1,'head')"><span ng-if="getHeads.likes.length == 2 && getHeads.isUserLiked">You and <span ng-repeat="like in getHeads.likes" ng-if="like.User.id!=$root.user_id">{{like.User.username}}</span></span><span ng-if="getHeads.likes.length == 1 && getHeads.isUserLiked">You</span><span ng-if="getHeads.likes.length > 2 && getHeads.isUserLiked">You and {{getHeads.likes_count - 1 }} people</span><span ng-if="getHeads.likes.length > 1 && !getHeads.isUserLiked">{{getHeads.likes_count}} people</span><span ng-if="getHeads.likes.length == 1 && !getHeads.isUserLiked">{{getHeads.likes[0]['User']['username']}}</span> liked this post</span></span>
           <!--<a class="subdued" ng-click="updateLike(headLikes, getHeads.isUserLiked)" ><span><i class="icon ion-thumbsup" ng-class="{'active':getHeads.isUserLiked}" style="font-size:25px;"></i> {{headLikes}}</span></a>-->
         </p>
       </div>
@@ -65,7 +66,17 @@
               </ion-scroll>
             </div>
           </div>
-          <div style="width:100%;height:30px;padding-right:10px"><a class="subdued datecomment">{{comment.created}}</a><a class="subdued" style="float:right" ng-click="changeLike(comment.id,$index)"> <span><i class="icon ion-thumbsup likes" ng-class="{'active':comment.isUserLiked}"></i> {{comment.likes}}</span></a></div>
+          <div style="width:100%;height:30px;padding-right:10px"><a class="subdued datecomment">{{comment.created}}</a><a class="subdued" style="float:right" ng-click="changeLike(comment.id,$index)"> <span><i class="icon ion-thumbsup likes" ng-class="{'active':comment.isUserLiked}"></i></span></a>
+          
+          </div>
+          <p ng-show="comment.likes.length > 0" class="likedList" prevent-href="true" style="padding-top:0px !important;padding-right: 10px !important;">
+              <span ng-click="showLikes(-1,$index,'comment')">
+              <span ng-if="comment.likes.length == 2 && comment.isUserLiked">You and <span ng-repeat="like in comment.likes" ng-if="like.User.id!=$root.user_id">{{like.User.username}}</span></span>
+              <span ng-if="comment.likes.length == 1 && comment.isUserLiked">You</span>
+              <span ng-if="comment.likes.length > 2 && comment.isUserLiked">You and {{comment.likes_count - 1 }} people</span>
+              <span ng-if="comment.likes.length > 1 && !comment.isUserLiked">{{comment.likes_count}} people</span>
+              <span ng-if="comment.likes.length == 1 && !comment.isUserLiked">{{comment.likes[0]['User']['username']}}</span> liked this comment</span>
+          </p>
         </div>
 
       </ion-item>

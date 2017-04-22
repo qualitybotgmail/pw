@@ -10,7 +10,7 @@
     </ion-header-bar>
     <ion-header-bar class="bar-light bar-subheader" ng-init="userFilter=''">
       <!-- <span style="position: absolute;left: 10px;margin-top: 10px;font-size: 15px;">フィルター:</span> -->
-      <input type="search" id="searchUserChat" ng-model="$root.usersToadd" ng-focus="searchFocused = true"
+      <input type="search" id="searchUserChat" ng-model="usersToadd" ng-focus="searchFocused = true"
              ng-blur="searchFocused = false" ng-keyup="checkSearch($event)"
              placeholder="フィルター" class="full-width chatsearch">
     </ion-header-bar>
@@ -18,8 +18,12 @@
       <ion-item style="padding:0px;padding-left:8px;background:#f0f0f0;">
         <span style="font-size:80%;">選択したメンバー<span>
       </ion-item>
-        <div ng-show="$root.addedUsernames.length > 0">
-          <a class="item item-icon-left" href="" collection-repeat="user in $root.addedUsernames track by $index">
+        <div ng-show="$root.addedUsernames.length > 0 || $root.alreadyAdded.length > 0">
+           <a ng-show="$root.alreadyAdded.length > 0" class="item item-icon-left" href="" ng-repeat="user in $root.alreadyAdded track by $index">
+             <i class="icon ion-ios-checkmark-outline" ></i>
+            {{user}}
+          </a>
+          <a ng-show="$root.addedUsernames.length > 0" class="item item-icon-left" href="" ng-repeat="user in $root.addedUsernames track by $index">
             <i class="icon ion-ios-close-outline" ng-click="removeUserChat($index)"></i>
             {{user}}
           </a>
@@ -28,7 +32,7 @@
           <span style="font-size:80%;">メンバー<span>
         </ion-item>
         <div class="list">
-            <a class="item item-avatar item-icon-right" href="" ng-click="addUser(user)" ng-repeat="user in users | filter:{User:{username:$root.usersToadd}} track by $index">
+            <a class="item item-avatar item-icon-right" href="" ng-click="addUser(user)" ng-repeat="user in users | filter:{User:{username:$root.usersToadd}} track by $index" ng-if="user.User.username">
               <img src="img/avatar.png" ng-show="user.User.avatar_img==''||user.User.avatar_img=='null'||user.User.avatar_img==null">
               <img class="avatar" ng-src="{{base_url}}{{user.User.avatar_img}}" ng-show="user.User.avatar_img!=''&&user.User.avatar_img!='null'&&user.User.avatar_img!=null">
               <h2>{{user.User.username}}</h2>

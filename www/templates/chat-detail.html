@@ -4,12 +4,13 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-  <ion-view view-title="{{$root.chatMembers.join()}}">
- <!-- <ion-nav-buttons side="left">
-    <button class="button back-button buttons button-clear header-item" ng-click="goBack()">
-      <i class="icon ion-ios-arrow-back"></i>
+  <ion-view view-title="{{$root.chatMembers.join()}}" cache-view="false">
+ <ion-nav-buttons side="right">
+    <button class="button button-clear header-item" ng-click="addGCMember()">
+      <i class="icon ion-person-add"></i>
     </button>
-  </ion-nav-buttons> -->
+  </ion-nav-buttons>
+  
   <ion-content class="padding has-footer has-tabs has-header" style="bottom: 100px !important;">
     <ion-refresher on-refresh="doRefresh()" pulling-icon="ios-arrow-down" spinner="bubbles" on-pulling="disabledScroll()">
     </ion-refresher>
