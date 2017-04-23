@@ -53,6 +53,7 @@ define([
                 modal: GLOBAL.baseSourcePath + 'templates/modal.html?version=' + GLOBAL.version,
                 thread: GLOBAL.baseModulePath + 'main/modals/add_thread.html',
                 groupchat: GLOBAL.baseModulePath + 'main/modals/add_group_chat.html',
+                userLike: GLOBAL.baseModulePath + 'modals/user_like.html',
             };
             
             return factory;
@@ -91,6 +92,17 @@ define([
         	$scope.loadFirsttime = true;
         	$scope.templates = Factory.templates;
         	
+        	// check file if image
+        	$scope.checkFile = function(path) {
+        	  var isImage = true;
+        	  var file = path.split('.');
+        	  var ValidImageTypes = ["gif", "jpeg", "png", "jpg"];
+        	  if ($.inArray(file[(file.length - 1)], ValidImageTypes) < 0) {
+        	      isImage = false;
+        	  }
+        	  
+        	  return isImage;
+        	};
         	
         	$scope.fireThreadActiveEvent = function() {
                 if ($state.current.name === 'app.thread' && $scope.loadFirsttime) {
@@ -215,6 +227,30 @@ define([
                 });
             };
             
+            
+            // show list of users like the head
+            $scope.showUsers = function(users) {
+                var modalConfig = {
+                    template   : $templateCache.get("users-like-modal.html"),
+                    controller : 'UserLikeModalController',
+                    windowClass: 'modal-width-50',
+                    size       : 'sm',
+                    resolve   : {
+                        fromParent: function () {
+                            return {
+                                'users': users
+                            };
+                        }
+                    }
+                };
+                
+                Modal.showModal(modalConfig, {}).then(function (selectMembers) {
+                    // 
+                }, function (err) {
+                    // error
+                });
+            };
+            
             $scope.likeComment = function(threadIndex, headIndex, commentIndex, commentId){
                 // console.log($scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment);
         	    if ($scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.processing){return;};
@@ -225,14 +261,21 @@ define([
         	    if (!$scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.isUserLiked) {
         	        CommentsModel.one('like').one(commentId).get().then(function(res) {
     	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.isUserLiked = true;
-    	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.likes += 1;
+    	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.likes_count += 1;
     	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.processing = false;
+    	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.likes.push({User:$rootScope.loginUser});
                 	});   
         	    } else { // if thread was already like
         	        CommentsModel.one('unlike').one(commentId).get().then(function(res) {
     	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.isUserLiked = false;
-    	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.likes -= 1;
+    	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.likes_count -= 1;
     	                $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.processing = false;
+    	                for (var i = 0; i < $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.likes.length; i++) {
+    	                    if ($rootScope.loginUser.id == $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.likes[i].User.id){
+    	                        $scope.timeline[threadIndex].Head[headIndex].Comment[commentIndex].Comment.likes.splice(i, 1);
+    	                        break;
+    	                    }
+    	                }
                 	});
         	    }
         	};
@@ -246,14 +289,21 @@ define([
         	    if (!$scope.timeline[threadIndex].Head[headIndex].Head.isUserLiked) {
         	        HeadsModel.one('like').one(headId).get().then(function(res) {
     	                $scope.timeline[threadIndex].Head[headIndex].Head.isUserLiked = true;
-    	                $scope.timeline[threadIndex].Head[headIndex].Head.likes += 1;
+    	                $scope.timeline[threadIndex].Head[headIndex].Head.likes_count += 1;
     	                $scope.timeline[threadIndex].Head[headIndex].Head.processing = false;
+    	                $scope.timeline[threadIndex].Head[headIndex].Head.likes.push({User:$rootScope.loginUser});
                 	});   
         	    } else { // if thread was already like
         	        HeadsModel.one('unlike').one(headId).get().then(function(res) {
     	                $scope.timeline[threadIndex].Head[headIndex].Head.isUserLiked = false;
-    	                $scope.timeline[threadIndex].Head[headIndex].Head.likes -= 1;
+    	                $scope.timeline[threadIndex].Head[headIndex].Head.likes_count -= 1;
     	                $scope.timeline[threadIndex].Head[headIndex].Head.processing = false;
+    	                for (var i = 0; i < $scope.timeline[threadIndex].Head[headIndex].Head.likes.length; i++) {
+    	                    if ($rootScope.loginUser.id == $scope.timeline[threadIndex].Head[headIndex].Head.likes[i].User.id){
+    	                        $scope.timeline[threadIndex].Head[headIndex].Head.likes.splice(i, 1);
+    	                        break;
+    	                    }
+    	                }
                 	});
         	    }
         	};

@@ -17,6 +17,12 @@ define([
 	'./modals/threadModal',
 	'./modals/groupChatModal',
 	
+	// message controller
+	'./search/modal/MessageInfoController',
+	
+	// users like the head modal
+	'../modals/userLikeModal',
+	
 	'./MainController',
 	'./loading/LoadingController',
 	'./search/SearchController',
@@ -27,5 +33,6 @@ define([
 	'../../services/blockerService',
 	'../../directives/jwertyDirective',
 	'../../directives/selectTwoDirective',
+	'../../directives/fancyboxDirective',
 	
 ], function () {});

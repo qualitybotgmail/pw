@@ -1,4 +1,7 @@
 <style type="text/css">
+    .modal-width-50 .modal-sm {
+        width:20%;
+    }
     .blue	 {
 		color: #5bc0de;
 	}
@@ -75,13 +78,13 @@
                     
                     <i class="glyphicon glyphicon-user"></i>
                 	<span>:</span>
-                	<span>
+                	<span ng-if="thread.Owner.id > 0">
                 		{{thread.Owner.username}}
                 		{{thread.User.length ? ', ' : ''}}
                 	</span>
                 	<span ng-repeat="u in thread.User" ng-if="thread.User.length">
                 		<span 
-                            ng-if=" u.id === loginUser.id"
+                            ng-if="thread.Owner.id > 0 && u.id === loginUser.id"
                             class="badge delete-member" 
                             title="Leave Thread" 
                             ng-click="leaveThread($index, u)">
@@ -102,9 +105,10 @@
                 </span>
             </span>
             <br>
-            <span style="font-size:11px;">
+            <span ng-if="thread.Owner.id > 0" style="font-size:11px;">
                 {{thread.Thread.created}}
             </span>
+            <span ng-if="thread.Owner.id == 0" style="font-size:11px;">&nbsp;</span>
         </span>
         <div class="panel-heading-controls">
             <input type="checkbox" 
@@ -151,15 +155,23 @@
         </a>
         
         <span style="font-size:11px;">{{head.created}}</span>
-        <span style="font-size:11px;">by: {{head.Owner.username == loginUser.username ? "You": head.Owner.username}}</span>
+        <span style="font-size:11px;">by: {{head.Owner.username == loginUser.username ? "あなた": head.Owner.username}}</span>
         <div class="panel-heading-controls">
-            <button class="btn btn-sm {{(head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="head.processing" ng-click="like($index, head)">
-                {{head.likes}}
-                <span class="fa fa-thumbs-o-up"></span>
-            </button>
-            <div class="btn-group btn-group-sm" ng-if="thread.Owner.id == loginUser.id || head.Owner.id == loginUser.id">
+            <span>
+                <a href="javascript:void(0)" class="text-xs" ng-if="head.likes_count > 0 && !head.isUserLiked" ng-click="showUsers(head.likes)">
+                    {{head.likes_count}} 人がいいね！と言っています
+                </a>
+                <a href="javascript:void(0)" class="text-xs" ng-if="head.likes_count > 1 && head.isUserLiked" ng-click="showUsers(head.likes)">
+                    あなたと {{head.likes_count - 1}} 人がいいね！と言っています
+                </a>
+                <button ng-if="head.Owner.id != loginUser.id" class="btn btn-sm {{(head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="head.processing" ng-click="like($index, head)">
+                    <span class="fa fa-thumbs-o-up"></span>
+                </button>
+            </span>
+            
+            <div class="btn-group btn-group-sm" ng-if="head.Owner.id == loginUser.id">
               <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">
-                  <span class="fa fa-cog"></span>&nbsp;<span class="fa fa-caret-down"></span>
+                  <span class="fa fa-cog"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right" >
                     <li><a href="" class="clickable" role="button" ng-click="editHead($index, head)">編集</a></li>

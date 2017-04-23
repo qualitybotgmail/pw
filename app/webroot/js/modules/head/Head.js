@@ -7,6 +7,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             factory.templates = {
                 addThreadHead: GLOBAL.baseModulePath + 'thread/modals/add_thread_head.html?version=' + GLOBAL.version,
+                userLike: GLOBAL.baseModulePath + 'modals/user_like.html',
             };
             return factory;
         }
@@ -214,6 +215,29 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                     }, 1000);
         	    }
             };
+            
+            // show list of users like the head
+            $scope.showUsers = function(users) {
+                var modalConfig = {
+                    template   : $templateCache.get("users-like-modal.html"),
+                    controller : 'UserLikeModalController',
+                    windowClass: 'modal-width-50',
+                    size       : 'sm',
+                    resolve   : {
+                        fromParent: function () {
+                            return {
+                                'users': users
+                            };
+                        }
+                    }
+                };
+                
+                Modal.showModal(modalConfig, {}).then(function (selectMembers) {
+                    // 
+                }, function (err) {
+                    // error
+                });
+            };
         	
         	$scope.likeComment = function(indexComment, comment){
         	    if ($scope.selectedHead.Comment[indexComment].processing){return;};
@@ -224,14 +248,21 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	    if (!comment.isUserLiked) {
         	        CommentsModel.one('like').one(comment.id.toString()).get().then(function(res) {
     	                $scope.selectedHead.Comment[indexComment].isUserLiked = true;
-    	                $scope.selectedHead.Comment[indexComment].likes += 1;
+    	                $scope.selectedHead.Comment[indexComment].likes_count += 1;
     	                $scope.selectedHead.Comment[indexComment].processing = false;
+    	                $scope.selectedHead.Comment[indexComment].likes.push({User:$rootScope.loginUser});
                 	});   
         	    } else { // if thread was already like
         	        CommentsModel.one('unlike').one(comment.id.toString()).get().then(function(res) {
     	                $scope.selectedHead.Comment[indexComment].isUserLiked = false;
-    	                $scope.selectedHead.Comment[indexComment].likes -= 1;
+    	                $scope.selectedHead.Comment[indexComment].likes_count -= 1;
     	                $scope.selectedHead.Comment[indexComment].processing = false;
+    	                for (var i = 0; i < $scope.selectedHead.Comment[indexComment].likes.length; i++) {
+    	                    if ($rootScope.loginUser.id == $scope.selectedHead.Comment[indexComment].likes[i].User.id){
+    	                        $scope.selectedHead.Comment[indexComment].likes.splice(i, 1);
+    	                        break;
+    	                    }
+    	                }
                 	});
         	    }
         	};
@@ -245,14 +276,21 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	    if (!head.isUserLiked) {
         	        HeadsModel.one('like').one(head.id.toString()).get().then(function(res) {
     	                $scope.selectedHead.Head.isUserLiked = true;
-    	                $scope.selectedHead.Head.likes += 1;
+    	                $scope.selectedHead.Head.likes_count += 1;
     	                $scope.selectedHead.Head.processing = false;
+    	                $scope.selectedHead.Head.likes.push({User:$rootScope.loginUser});
                 	});   
         	    } else { // if thread was already like
         	        HeadsModel.one('unlike').one(head.id.toString()).get().then(function(res) {
     	                $scope.selectedHead.Head.isUserLiked = false;
-    	                $scope.selectedHead.Head.likes -= 1;
+    	                $scope.selectedHead.Head.likes_count -= 1;
     	                $scope.selectedHead.Head.processing = false;
+    	                for (var i = 0; i < $scope.selectedHead.Head.likes.length; i++) {
+    	                    if ($rootScope.loginUser.id == $scope.selectedHead.Head.likes[i].User.id){
+    	                        $scope.selectedHead.Head.likes.splice(i, 1);
+    	                        break;
+    	                    }
+    	                }
                 	});
         	    }
         	};

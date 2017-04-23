@@ -186,7 +186,7 @@ class ThreadsController extends AppController {
 		$this->Thread->Behaviors->load('Containable');
 		$thread = $this->Thread->find('first',array(
 			'conditions' => array('Thread.id' => $id),
-			'contain' => array('Head'=>array('Like','Owner','conditions'=>array('Head.id >'=>$lastid)),'User.username','User.avatar_img','User.id','Owner.username','Owner.avatar_img','Owner.id')
+			'contain' => array('Head'=>array('Like'=>array('User'),'Owner','conditions'=>array('Head.id >'=>$lastid)),'User.username','User.avatar_img','User.id','Owner.username','Owner.avatar_img','Owner.id')
 		));
 		$tid = $id;
 		$uid = $this->Auth->user('id');
@@ -196,7 +196,8 @@ class ThreadsController extends AppController {
 		$this->loadModel('Upload');
 		$this->Upload->recursive=-1;
 		foreach($thread['Head'] as $kk => $head){
-			$thread['Head'][$kk]['likes'] = count($head['Like']);
+			$thread['Head'][$kk]['likes_count'] = count($head['Like']);
+			$thread['Head'][$kk]['likes'] = $head['Like'];
 			$thread['Head'][$kk]['Uploads']=$this->Upload->find('all',array('fields'=>array('name','path'),'conditions'=>array('head_id'=>$thread['Head'][$kk]['id'])));
 			$thread['Head'][$kk]['isUserLiked'] = $this->Thread->Head->isLiked($head['id'],$uid);
 			unset($thread['Head'][$kk]['Owner']['password']);

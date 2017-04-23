@@ -41,15 +41,22 @@ define(['jquery', 'app', 'angular'], function($, app, angular)
     	'$scope',
     	'$state',
         '$timeout',
+        '$templateCache',
+        'modalService',
         'ProfilesModel',
         'GroupChatModel',
         'searchService',
         'Restangular',
+        'GLOBAL',
 
-        function($rootScope, $scope, $state, $timeout, ProfilesModel, GroupChatModel, searchService, Restangular) {
+        function($rootScope, $scope, $state, $timeout, $templateCache, Modal, ProfilesModel, GroupChatModel, searchService, Restangular, GLOBAL) {
             
             $scope.search = {};
             $scope.showSearch = false;
+            
+            $scope.templates = {
+                messageInfo: GLOBAL.baseModulePath + 'main/search/modal/message_info.html',
+            };
             
             $scope.$watch('qrySearch', function(newV, oldV){
                 if (!$scope.qrySearch) {
@@ -118,11 +125,34 @@ define(['jquery', 'app', 'angular'], function($, app, angular)
                 $state.go('app.thread', { id: threadId });
             };
             
-             $scope.selectChat = function(gcId){
+            $scope.selectChat = function(chat, gcId){
+                var modalConfig = {
+                    template   : $templateCache.get("message-info-modal.html"),
+                    controller : 'MessageInfoModalController',
+                    windowClass: 'modal-width-90 ',
+                    size       : 'lg',
+                    resolve   : {
+                        fromParent: function () {
+                            return {
+                                'chat': chat,
+                            };
+                        }
+                    }
+                };
+                
+                Modal.showModal(modalConfig, {}).then(function (result) {
+                    console.log(result);
+                    // success
+                    if (result.action == 'goToMsg'){
+                        $state.go('app.message', { id: gcId });   
+                    }
+                }, function (err) {
+                    // error
+                });
                  
-                searchService.unbindElement();
-                $scope.search = {};
-                $state.go('app.message', { id: gcId });
+                // searchService.unbindElement();
+                // $scope.search = {};
+                // $state.go('app.message', { id: gcId });
             };
             
             $scope.selectHead = function(headId){

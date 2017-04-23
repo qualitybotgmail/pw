@@ -13,6 +13,11 @@ define([
 	'./modals/threadHeadModal',
 	'../main/modals/threadModal',
 	
+	
+	// users like the head modal
+	'../modals/userLikeModal',
+	
+	
 	// import filters
 	'../../factories/filter',
 	
