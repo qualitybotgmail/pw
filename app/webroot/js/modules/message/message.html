@@ -58,102 +58,148 @@
      font-size:12px;
   }
 </style>
+      <div class="contents_inner dm" style="height: 974px;">
 
-<div id="loading" ng-if="!message.Groupchat.id">
-	<div class="loading-overlay-component"></div>
-	<div class="loading-element-component">
-		<i class="blue fa fa-spinner fa-spin fa-4x"></i>
-        <p class="text-yellow">LOADING</p>
-	</div>
-</div>
-<div class="colourable" ng-if="message.Groupchat.id">
-    <br/>
-    <h4 style="padding-right:15px;">
-      <span>
-          <span class="thread-users" title="members">
-            <i class="glyphicon glyphicon-user"></i>
-            <span>:</span>
-            <span ng-repeat="u in message.User" ng-if="message.User.length">
-              {{u.username}}
-              {{$last ? '' : ', '}}
-            </span>
-          </span>
-      </span>
-      <span class="pull-right" ng-if="loginUser.id == message.Owner.id">
-          <button class="btn btn-sm btn-info" ng-click="addMembers(message.Groupchat)">
-            <i class="fa fa-plus-square-o clickable"></i>
-          </button>
-          <span class="btn-group btn-group-sm">
-            <button class="btn btn-sm btn-warning dropdown-toggle" type="button" data-toggle="dropdown">
-              <span class="fa fa-cog"></span>
-              &nbsp;
-              <span class="fa fa-caret-down"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right">
-                <li><a href="" class="clickable" role="button" ng-click="deleteGroupChat(message.Groupchat.id)">削除</a></li>
-            </ul>
-          </span>
-      </span>
-    </h4>
-    <br/>
-    
-    <div id="message-list-wrapper">
-		<div class="panel-body padding-sm">
-			<a class="messages-link clickable" ng-click="getPreviousMessages()" ng-disabled="isLoadingMessage" ng-if="message.page_info.has_next">
-			  <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-if="isLoadingMessage"></span>
-			  MORE MESSAGES
-			</a>
-			<div class="messages-list commentList" >
-			    <div ng-repeat="(created_date, filteredMessages) in message.Message | groupBy: 'created_date'" ng-init="$last && fireMessageEvent()">
-			        <div class="message text-center">
-			             <hr>
-			             <h5>{{created_date}}</h5>
-			        </div>    
-			        <div class="message" ng-repeat="m in filteredMessages track by $index">
-    					  <div class="avatar">
-    				        <img src="/img/avatar.png" alt="">
-                </div>
-    				    <div class="msg">
-                            <h4 class="message-subject">
-                                By: {{m.User.username == loginUser.username ? "You" : m.User.username}}
-                                <span class="message-time">
-                                    {{m.created}}
-                                </span>
-                            </h4>
-                            <p class="message-description" ng-init='m.formattedComment=formatComment(m.body)' >
-                                {{m.formattedComment}}
-                                <p>
-                                    <span ng-repeat="upload in m.Upload">
-                                        <span ng-init="upload.isFileImage=checkFile(upload.path)"></span>
-                                        <a ng-href="{{upload.path}}" ng-init="upload.fileName=getFileName(upload.path)" target="_blank" ng-if="!upload.isFileImage">
-                                          {{upload.fileName}}
-                                        </a>
-                                        <a fancybox ng-href="{{upload.path}}" ng-if="upload.isFileImage">
-                                            <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
-                                        </a>
-                                    </span>
-                                </p>
-                            </p>
-                        </div>
-    			    </div>
-			    </div>
-			</div>
-		<!--</div>  / .panel -->
-    </div>
-</div>
-    <div style="position:relative;">
-        <form role="form" id="messageFrm" name="messageFrm" method="POST" enctype="multipart/form-data" novalidate ng-submit="sendMessage()">
-            <div class="form-group">
-              <textarea ng-click='textboxClicked()' name="body" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
-              <div style="margin-top:8px;">
-                <input type="file" id="attachments" multiple style="display:inline-block;">
-                <button type="submit" class="btn btn-primary pull-right" ng-disabled="isSending">
-                    送信
+        <div class="" ng-if="message.Groupchat.id">
+          <div id="dm_header">
+            <div class="dm_header_title">
+              <span id="dm_title" class="thread-users" title="members">
+                <i class="glyphicon glyphicon-user"></i>
+                <span>:</span>
+                <span ng-repeat="u in message.User" ng-if="message.User.length">
+                  {{u.username}}
+                  {{$last ? '' : ', '}}
+                </span>
+              </span>
+
+            <div class="btn-group pull-right" role="group" ng-if="loginUser.id == message.Owner.id">
+                <button class="btn btn-sm btn-secondary" ng-click="addMembers(message.Groupchat)">
+                  <i class="fa fa-plus-square-o clickable"></i>
                 </button>
-              </div>
+                <div class="btn-group" role="group">
+                  <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+                    <span class="fa fa-cog"></span>
+                    &nbsp;
+                    <span class="fa fa-caret-down"></span>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-right">
+                      <li><a href="" class="clickable" role="button" ng-click="deleteGroupChat(message.Groupchat.id)">削除</a></li>
+                  </ul>
+                </div>
             </div>
-        </form>
-    </div>
-</div>
+            </div>
+          </div>
+
+        <div id="share" class="dm" style="height: 805px; overflow-y: auto; overflow-x: hidden;width: 100%">
+                    <script type="text/javascript">
+                      //読み込み時の表示
+                      window_load();
+
+                      //ウィンドウサイズ変更時に更新
+                      window.onresize = window_load;
+
+                      //サイズの表示F
+                      function window_load() {
+                        var sH = window.innerHeight;
+
+                        document.getElementById("share").style.height = sH - 220 + "px";
+
+                      }
+                    </script>  
+          <div id="loading" ng-if="!message.Groupchat.id">
+           <div class="loading-overlay-component"></div>
+           <div class="loading-element-component">
+              <i class="blue fa fa-spinner fa-spin fa-4x"></i>
+              <p class="text-yellow">LOADING</p>
+           </div>
+          </div>
+            <a class="messages-link clickable" ng-click="getPreviousMessages()" ng-disabled="isLoadingMessage" ng-if="message.page_info.has_next">
+              <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-if="isLoadingMessage"></span>
+              MORE MESSAGES
+            </a>
+          <div id="dm_container">
+
+        <!-- div id="message-list-wrapper">
+
+      			<div class="messages-list commentList" -->
+    <ul id="dm_entries"><li class="status dm_entry_normal" style="margin-top: 16px;">
+
+      			    <div ng-repeat="(created_date, filteredMessages) in message.Message | groupBy: 'created_date'" ng-init="$last && fireMessageEvent()">
+      			        <div class="dm_entry_date">{{created_date}}</div>
+                   <div class="dm_border_box"></div>
+
+        <div class="message" ng-repeat="m in filteredMessages track by $index">
+
+        <div class="dm_entry_wrapper">
+            <div class="dm_entry_left">
+                
+                    <span class="icon icon_new_day" title="Talknote "><img width="40" height="40" alt="Talknote " src="/img/avatar.png"></span>
+                
+            </div>
+
+  <div class="dm_entry_center">
+                
+                    <span class="username"><span class="special_user">{{m.User.username == loginUser.username ? "あなた" : m.User.username}} </span></span>
+                    
+                    <span class="time">
+                        <abbr class="timeago">{{m.created}}</abbr>
+                    </span>
+                    <div class="message_text">
+                        <p class="message-description" ng-init='m.formattedComment=formatComment(m.body)' >
+                                    {{m.formattedComment}}
+                                    <p>
+                                    <span ng-repeat="upload in m.Upload">
+                                            <span ng-init="upload.isFileImage=checkFile(upload.path)"></span>
+                                            <a ng-href="{{upload.path}}" ng-init="upload.fileName=getFileName(upload.path)" target="_blank" ng-if="!upload.isFileImage">
+                                              {{upload.fileName}}
+                                            </a>
+                                            <a fancybox ng-href="{{upload.path}}" ng-if="upload.isFileImage">
+                                                <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                                            </a>
+                                        </span>
+                    </div>
+
+          				    <!-- div class="msg">
+                                <h4 class="message-subject">
+                                    By: {{m.User.username == loginUser.username ? "You" : m.User.username}}
+                                    <span class="message-time">
+                                        {{m.created}}
+                                    </span>
+                                </h4>
+                                <p class="message-description" ng-init='m.formattedComment=formatComment(m.body)' >
+                                    {{m.formattedComment}}
+                                    <p>
+                                        <span ng-repeat="upload in m.Upload">
+                                            <span ng-init="upload.isFileImage=checkFile(upload.path)"></span>
+                                            <a ng-href="{{upload.path}}" ng-init="upload.fileName=getFileName(upload.path)" target="_blank" ng-if="!upload.isFileImage">
+                                              {{upload.fileName}}
+                                            </a>
+                                            <a fancybox ng-href="{{upload.path}}" ng-if="upload.isFileImage">
+                                                <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                                            </a>
+                                        </span>
+                                    </p>
+                                </p>
+                            </div -->
+          			    </div>
+      			    </div>
+      			</div>
+  		<!--</div>  / .panel -->
+      </div>
+  </div>
+      <div style="position:fixed;bottom:0px;" class="col-sm-9">
+          <form role="form" id="messageFrm" name="messageFrm" method="POST" enctype="multipart/form-data" novalidate ng-submit="sendMessage()">
+              <div class="form-group">
+                <textarea ng-click='textboxClicked()' name="body" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
+                <div style="margin-top:8px;">
+                  <input type="file" id="attachments" multiple style="display:inline-block;">
+                  <button type="submit" class="btn btn-primary pull-right" ng-disabled="isSending">
+                      送信
+                  </button>
+                </div>
+              </div>
+          </form>
+      </div>
+  </div>
 
 <div ng-repeat="template in templates" ng-include="template"></div

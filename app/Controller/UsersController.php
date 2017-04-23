@@ -189,8 +189,6 @@ class UsersController extends AppController {
 				$profile = $this->User->Profile->findByUserId($id);
 				$userdetails['Profile'] = $profile['Profile'];
 		        $this->User->addmember_all($id);
-		        
-		        
 		    }
 		    echo json_encode(array('user'=>$userdetails));
 	    	}

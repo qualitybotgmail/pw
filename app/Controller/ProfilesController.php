@@ -511,7 +511,7 @@ class ProfilesController extends AppController {
 				
 				$this->_loadasoc($head,'Head','Like');
 				$head['Head']['likes_count'] = isset($head['Like'])?count($head['Like']):0;
-				$head['Head']['likes'] = isset($head['Like'])?$head['Like']:[];
+				$head['Head']['likes'] = isset($head['Like'])?$head['Like']:array();
 				$userLiked = $this->Profile->User->Head->Like->findByUserIdAndHeadId($this->Auth->user('id'),$hid);
 				$head['Head']['isUserLiked'] = count($userLiked)>0;
 				$threads[$k]['Head'][$kh] = $head;

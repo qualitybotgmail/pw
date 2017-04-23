@@ -298,7 +298,7 @@ class User extends AppModel {
 				}
 				
 			}else{
-				$data=array('user_id'=>0,'title'=>'All');
+				$data=array('user_id'=>0,'title'=>'全社');
 				$this->Thread->save($data);
 				$thread_id=$this->Thread->getInsertID();
 				
