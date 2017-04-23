@@ -18,7 +18,7 @@ class GroupchatsController extends AppController {
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('add','view','delete','notifications','userstogroupchat','pagedchatforapp','getlastmessages');
+		$this->Auth->allow('add','view','addmember','delete','notifications','userstoadd','userstogroupchat','pagedchatforapp','getlastmessages');
 	}
 /**
  * index method
@@ -350,6 +350,7 @@ class GroupchatsController extends AppController {
 	public function userstoadd($gid){
 		header('Content-Type: application/json;charset=utf-8');
 		$members = $this->Groupchat->members($gid);
+		$member_name=$this->Groupchat->member_names($gid);
 		//$this->Groupchat->User->Behaviors->load("Containable");
 		$this->loadModel("User");
 		$this->User->recursive=-1;
@@ -368,7 +369,7 @@ class GroupchatsController extends AppController {
 				
 				'fields' => array('id','username')));
 		}
-		echo json_encode(array('users'=> $users));
+		echo json_encode(array('users'=> $users,'members'=>$member_name));
 		exit;
 	}
 /**
@@ -474,8 +475,8 @@ class GroupchatsController extends AppController {
 		$this->Paginator->settings = $options;
 		$data=$this->Paginator->paginate('Message');
 		$d['messages']=$data;
-		$d['total']=$this->Message->find('count',$options);
-
+		$d['total']=$this->request->params['paging']['Message']['count'];
+		//print_r($this->request->params[0]['count']);
 		echo json_encode($d);
 		exit;
 	}

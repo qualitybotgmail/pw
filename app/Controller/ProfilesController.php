@@ -452,12 +452,22 @@ class ProfilesController extends AppController {
         $this->set('profiles',$user);
         
 	}
-
+	
+	
 	public function _loadasoc(&$obj,$modelA,$modelB,$recursive = -1,$fields = array()){
 		$this->loadModel($modelB);
 		$this->$modelB->recursive=$recursive;
+		if($modelB!='Like'){
 		$find = "findAllBy".$modelA."Id";
-		$result = $this->$modelB->$find($obj[$modelA]['id'],$fields);
+			$result = $this->$modelB->$find($obj[$modelA]['id'],$fields);
+		}else{
+			$this->Like->Behaviors->load('Containable');
+			if($modelA=='Head')
+				$result = $this->Like->find('all',array('conditions'=>array('head_id'=>$obj[$modelA]['id']),'contain'=>array('User')));
+			else
+				$result = $this->Like->find('all',array('conditions'=>array('comment_id'=>$obj[$modelA]['id']),'contain'=>array('User')));
+			
+		}
 		$obj[$modelB] = $result;
 		return $result;
 	}
@@ -500,7 +510,8 @@ class ProfilesController extends AppController {
 				$this->_loadasoc($head,'Head','Upload');
 				
 				$this->_loadasoc($head,'Head','Like');
-				$head['Head']['likes'] = isset($head['Like'])?count($head['Like']):0;
+				$head['Head']['likes_count'] = isset($head['Like'])?count($head['Like']):0;
+				$head['Head']['likes'] = isset($head['Like'])?$head['Like']:[];
 				$userLiked = $this->Profile->User->Head->Like->findByUserIdAndHeadId($this->Auth->user('id'),$hid);
 				$head['Head']['isUserLiked'] = count($userLiked)>0;
 				$threads[$k]['Head'][$kh] = $head;
@@ -516,7 +527,8 @@ class ProfilesController extends AppController {
 					}					
 										
 					$this->_loadasoc($threads[$k]['Head'][$kh]['Comment'][$i],'Comment','Like');
-					$threads[$k]['Head'][$kh]['Comment'][$i]['Comment']['likes'] = count($threads[$k]['Head'][$kh]['Comment'][$i]['Like']);
+					$threads[$k]['Head'][$kh]['Comment'][$i]['Comment']['likes_count'] = count($threads[$k]['Head'][$kh]['Comment'][$i]['Like']);
+					$threads[$k]['Head'][$kh]['Comment'][$i]['Comment']['likes'] =$threads[$k]['Head'][$kh]['Comment'][$i]['Like'];
 					$userCommentLiked = $this->Profile->User->Like->findByUserIdAndCommentId($this->Auth->user('id'),$comment['Comment']['id']);
 					$threads[$k]['Head'][$kh]['Comment'][$i]['Comment']['isUserLiked'] = count($userCommentLiked)>0;
 					$this->_loadasoc($threads[$k]['Head'][$kh]['Comment'][$i],'Comment','Upload');
@@ -538,7 +550,9 @@ class ProfilesController extends AppController {
 		$this->Profile->User->recursive=-1;
 		foreach($sort as $i => $v){
 			$o = $this->Profile->User->findById($threads[$i]['Thread']['user_id'],'username');
+			if(count($o) > 0)
 			$threads[$i]['Owner']['username'] = $o['User']['username'];
+			
 			$result[] = $threads[$i];
 		}
 		

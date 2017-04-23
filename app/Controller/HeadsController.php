@@ -78,20 +78,22 @@ class HeadsController extends AppController {
 		//$this->Head->recursive = 3;
 		$head = $this->Head->find('first',array(
 			'conditions' => array('Head.id' => $id),
-			'contain' => array('Thread','Like','Comment.created','Comment.body','Comment.id' => array('Like','User.id','User.username','User.avatar_img'),'Comment'=>array('conditions'=>array('Comment.id >'=>$lastid)),'Owner')
+			'contain' => array('Thread','Like'=>array('User'),'Comment.created','Comment.body','Comment.id' => array('Like'=>array('User'),'User.id','User.username','User.avatar_img'),'Comment'=>array('conditions'=>array('Comment.id >'=>$lastid)),'Owner')
 		));//ById($id);
 		$tid = $id;
 		$uid = $this->Auth->user('id');
 		
 		$head['Head']['isUserLiked'] = $this->Head->isLiked($tid,$uid);
-		$head['Head']['likes'] = count($head['Like']);
+		$head['Head']['likes_count'] = count($head['Like']);
+		$head['Head']['likes'] = $head['Like'];
 		unset($head['Owner']['password']);
 		unset($head['Like']);
 		$this->loadModel('Upload');
 		$this->Upload->recursive=-1;
 		
 		foreach($head['Comment'] as $kk => $comment){
-			$head['Comment'][$kk]['likes'] = count($comment['Like']);
+			$head['Comment'][$kk]['likes'] = $comment['Like'];
+			$head['Comment'][$kk]['likes_count'] = count($comment['Like']);
 			$head['Comment'][$kk]['isUserLiked'] = $this->Head->Comment->isLiked($comment['id'],$uid);
 			$head['Comment'][$kk]['Uploads']=$this->Upload->find('all',array('fields'=>array('name','path'),'conditions'=>array('comment_id'=>$head['Comment'][$kk]['id'])));
 			foreach($head['Comment'][$kk]['Uploads'] as $p){

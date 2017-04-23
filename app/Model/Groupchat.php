@@ -80,12 +80,31 @@ class Groupchat extends AppModel {
 		
 		foreach($groupchat['User'] as $k => $t){
 			
-				$ret[] = $t['id'];
+				array_push($ret,$t['id']);
 		}
-		$ret[] = CakeSession::read("Auth.User.id");
-		return $ret;
+		array_push($ret,CakeSession::read("Auth.User.id"));
+		array_push($ret,$groupchat['Owner']['id']);
 		
-	}	
+		return array_unique($ret);
+		
+	}
+	
+	public function member_names($gid){
+		
+		$groupchat = $this->findById($gid);
+
+		$ret = array();
+		
+		foreach($groupchat['User'] as $k => $t){
+				
+				array_push($ret, $t['username']);
+		}
+		array_push($ret,CakeSession::read("Auth.User.username"));
+		array_push($ret,$groupchat['Owner']['username']);
+		
+		return array_unique($ret);
+		
+	}
 	
 	public function notified($id=null,$uid){
 		
