@@ -125,7 +125,22 @@
             </div> <!-- / .btn-group -->
         </div> <!-- / .panel-heading-controls -->
     </div> <!-- / .panel-heading -->
-    <ul class="list-group">
+    <ul class="list-group" id="threadList" style="overflow-y:scroll">
+                    <script type="text/javascript">
+                      //読み込み時の表示
+                      window_load();
+
+                      //ウィンドウサイズ変更時に更新
+                      window.onresize = window_load;
+
+                      //サイズの表示F
+                      function window_load() {
+                        var sH = window.innerHeight;
+
+                        document.getElementById("threadList").style.height = sH - 200 + "px";
+
+                      }
+                    </script>          
       <li class="list-group-item" ng-repeat="head in thread.Head">
          <!--<a ui-sref="app.head({ id: head.id })">-->
          <a class="clickable" id="head-{{head.id}}" ng-click="gotoHead(head)">

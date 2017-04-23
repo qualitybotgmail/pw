@@ -89,7 +89,8 @@
                     </li>
                     <li class="left_menu_list" style="max-height: 803px;">    
                         <ul id="left_group_list">
-                            <li id="left_menu_allfeed" class>    
+                            <li id="left_menu_allfeed" class>
+
                                 <a class="list-group-item clickable thread-lists" id="thread-{{thread.Thread.id}}" ng-if="thread.Thread" ng-click="goto.thread(thread.Thread)" ng-repeat="(threadIndex,thread) in threads" ng-init="$last && fireThreadActiveEvent()">
                                 <span class="badge badge-info" ng-if="thread.Thread.notifications">{{thread.Thread.notifications}}</span>
                                 {{thread.Thread.title}}
@@ -102,21 +103,25 @@
                             <a ui-sref="app.messages">
                                 メッセージ
                             </a>
+                        </div>
+                        <div class="left_menu_add_btn_cell">
                             <a style="float:right;" ng-click="addGroupChat()">
                                 <i class="fa fa-plus-square-o clickable"></i>
                             </a>
                         </div>
                     </li>
                     <li class="left_menu_list" style="max-height: 794px;">
-                        <ul class="list-group">
+                        <ul id="left_dm_list">
+                            <li class>
                           <a class="list-group-item clickable message-lists" id="message-{{groupchat.Groupchat.id}}" ng-if="groupchat.Groupchat" ng-click="goto.message(groupchat.Groupchat)" ng-repeat="(groupChatIndex,groupchat) in createdGroupChats" ng-init="$last && fireMessageActiveEvent()">
                             <span class="badge badge-info" ng-if="groupchat.Groupchat.notifications">{{groupchat.Groupchat.notifications}}</span>
                             <span ng-repeat="u in groupchat.User">
                                 {{u.username}}
                                 {{$last ? '' : ', '}}
                             </span>
+                            
                           </a>
-
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -126,7 +131,8 @@
             <div class="container_table" style="position: relative !important;">
                 <div class="container_table_row">
                     <div class="group_feed">
-                        <div id="contents">
+                        <div id="contents" class="col-sm-12 no-padding" style="display: inline-block;">
+
                             <div ui-view="content">
                                 <div class="contents_inner" style="height: 974px;">
                                     <div class="container_header group">
@@ -136,7 +142,6 @@
                                     </div>
 
                                     <div id="contents_main" style="height: 891px; overflow-y: auto; overflow-x: hidden;">                                
-                                        <div class="row">
                                             <div class="qa-message-list" id="wallmessages">
                                             	<div class="message-item" ng-repeat="(threadIndex,thread) in timeline">
                                             		<div class="message-inner">
@@ -240,7 +245,6 @@
                                             		</div>
                                             	</div>
                                             </div>    
-                        	            </div>
                                     </div>
                                 </div>
                             </div>

@@ -71,13 +71,13 @@
                   {{$last ? '' : ', '}}
                 </span>
               </span>
-            </div>
-            <div class="btn-group pull-right" ng-if="loginUser.id == message.Owner.id">
-                <button class="btn btn-sm btn-info" ng-click="addMembers(message.Groupchat)">
+
+            <div class="btn-group pull-right" role="group" ng-if="loginUser.id == message.Owner.id">
+                <button class="btn btn-sm btn-secondary" ng-click="addMembers(message.Groupchat)">
                   <i class="fa fa-plus-square-o clickable"></i>
                 </button>
-                <div class=" btn-group-sm">
-                  <button class="btn btn-sm btn-warning dropdown-toggle" type="button" data-toggle="dropdown">
+                <div class="btn-group" role="group">
+                  <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
                     <span class="fa fa-cog"></span>
                     &nbsp;
                     <span class="fa fa-caret-down"></span>
@@ -87,9 +87,10 @@
                   </ul>
                 </div>
             </div>
+            </div>
           </div>
 
-        <div id="share" class="dm" style="height: 805px; overflow-y: auto; overflow-x: hidden;">
+        <div id="share" class="dm" style="height: 805px; overflow-y: auto; overflow-x: hidden;width: 100%">
                     <script type="text/javascript">
                       //読み込み時の表示
                       window_load();
@@ -100,6 +101,7 @@
                       //サイズの表示F
                       function window_load() {
                         var sH = window.innerHeight;
+
                         document.getElementById("share").style.height = sH - 220 + "px";
 
                       }

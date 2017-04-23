@@ -375,7 +375,7 @@ input[type="text"]::-ms-clear{visibility:hidden}
 #wrapper #container .contact_container #contact_submit{background-color:#444444;width:75px;border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;font-size:12px;height:26px;color:#FFF}
 #wrapper #container .contact_container #contact_submit:hover{background-color:#606060;cursor:pointer}
 #wrapper #container .contact_container #contact_submit:disabled{background-color:#444444;opacity:0.5;cursor:auto !important}
-#wrapper #container{display:table-cell;background-color:#fff;background-color:white \9;padding:0;min-width:500px;width:100%;overflow:hidden;box-sizing:border-box;position:relative}
+#wrapper #container{display:table-cell;background-color:#fff;background-color:white \9;padding:0;min-width:500px;width:100%;overflow:hidden;box-sizing:border-box;position:relative;padding-right: 10px;}
 #wrapper #container #chat,#wrapper #container #group,#wrapper #container #group.user_config{padding-left:33px;background-color:#FFF;overflow-y:auto;height:100%}
 #wrapper #container #userinfo,#wrapper #container #password_change,#wrapper #container #password_forget,#wrapper #container #mail_main,#wrapper #container #profile,#wrapper #container #address_main,#wrapper #container #other,#wrapper #container #desktop{padding-left:8px;background-color:#FFF;overflow-y:auto;height:100%}
 #wrapper #container .container_table{width:100%;display:table;position:absolute;top:0}
@@ -414,7 +414,7 @@ input[type="text"]::-ms-clear{visibility:hidden}
 #wrapper #container .container_title_image2 dd{overflow:hidden;padding:0 0 0 0;font-size:12px}
 #wrapper #container .container_title_image2 dd#title{padding:10px 0 0 0;font-size:15px;font-weight:bold}
 #wrapper #container .container_title_image2 dd#title a{margin-left:20px;font-size:15px}
-#contents{margin:0px 255px 0px 10px;display:table-cell;min-width:430px;box-sizing:border-box;width:100%;vertical-align:top}
+#contents{display:table-cell;min-width:430px;box-sizing:border-box;width:100%;vertical-align:top}
 #contents .contents_inner{width:100%;overflow-y:hidden}
 #contents .container_title{padding:10px 0 10px 0;margin:0 0 0 0;overflow:hidden}
 #contents .container_title h2{padding:10px 0 0 20px;font-weight:900;color:#444;font-size:20px}
@@ -921,7 +921,7 @@ body.ie .comment_actions .btn_file_upload{width:120px;height:27px}
 #left_nav .table_cell{display:table-cell}
 #left_nav #left_menu{margin:0;overflow-y:auto;box-sizing:border-box}
 #left_nav #left_menu .hover-menu{position:absolute;display:none;padding-left:10px}
-#left_nav #left_menu li a{line-height:20px;display:block;padding:0 5px 0 15px;margin:0 0 0 0;font-size:14px}
+#left_nav #left_menu li a{line-height:20px;display:block;padding:0 5px 0 15px;margin:0 0 0 0;font-size:14px;border: none !important;display: inline;font-weight: 600;}
 #left_nav #left_menu #left_menu_allfeed .leftbar-top-content-header,#left_nav #left_menu #left_menu_group .leftbar-top-content-header,#left_nav #left_menu #left_menu_dm .leftbar-top-content-header{font-size:15px;font-weight:bold}
 #left_nav #left_menu #left_menu_allfeed span.unread a{color:#f03}
 #left_nav #left_menu #left_menu_allfeed img{width:13px;height:13px;padding-top:4px;padding-right:3px;float:left}
@@ -956,7 +956,7 @@ body.ie .comment_actions .btn_file_upload{width:120px;height:27px}
 #left_nav #left_menu li.left_menu_list li.guest_enable.active a,#left_nav #left_menu li.left_menu_list li.guest_enable.active a:hover,#left_nav #left_menu li.left_menu_list li.guest_enable:hover a,#left_nav #left_menu li.left_menu_list li.guest_enable:hover a:hover{color:#4DA52F}
 #left_nav #left_menu li.left_menu_list ul{position:relative}
 #left_nav #left_menu li.left_menu_list ul li{margin:0}
-#left_nav #left_menu li.left_menu_list ul li a{line-height:22px;height:22px;display:block;padding:0px;font-weight:normal;font-size:12.5px;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#left_nav #left_menu li.left_menu_list ul li a{line-height:22px;height:22px;display:block;padding:0px;font-weight:normal;font-size:12.5px;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border: none !important;}
 #left_nav #left_menu li.left_menu_list ul li span.left_gear_btn{display:table-cell;height:22px;width:22px;vertical-align:middle}
 #left_nav #left_menu li.left_menu_list ul li span.left_gear_btn img{height:13px;margin-top:-4px}
 #left_nav #left_menu li.left_menu_list ul li span.left_gear_btn a.left_gear_btn_cover{display:block;background:none;padding-left:6px;padding-right:0;box-sizing:border-box;width:inherit;font-size:11px}

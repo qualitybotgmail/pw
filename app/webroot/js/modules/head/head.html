@@ -46,14 +46,29 @@
         <p class="text-yellow">LOADING</p>
 	</div>
 </div>
-<div class="panel colourable" ng-if="selectedHead.Thread.id">
+<div class="panel colourable" ng-if="selectedHead.Thread.id" id="threadContent" style="overflow-y: scroll;height: 900px;">
+                    <script type="text/javascript">
+                      //読み込み時の表示
+                      window_load();
+
+                      //ウィンドウサイズ変更時に更新
+                      window.onresize = window_load;
+
+                      //サイズの表示F
+                      function window_load() {
+                        var sH = window.innerHeight;
+
+                        document.getElementById("threadContent").style.height = sH - 220 + "px";
+
+                      }
+                    </script>  
     <div class="panel-heading">
         <span class="panel-title">
             <div>
                 <small>
                     {{selectedHead.Thread.title}}
                 </small>
-                <p class="lead head-body" ng-init="fromattedBody=formatComment(selectedHead.Head.body)">
+                <p class="head-body" ng-init="fromattedBody=formatComment(selectedHead.Head.body)" style="font-weight: 600;">
                     {{fromattedBody}}
                 </p>
             </div>
@@ -120,18 +135,20 @@
                 </li>
             </ul>
         </li>
-        <li class="list-group-item form-group">
+    </ul>
+
+</div> <!-- / .panel -->
+        <div id="threadCommentFrm" style="display: fixed; bottom:0;" class="col-sm-12">
             <form  role="form" id="commentFrm" name="commentFrm" method="POST" enctype="multipart/form-data" 
                         novalidate ng-submit="sendComment()">
-                
-                <input type="text" name="data[Upload][comment_id]" class="hidden" id="comment-id" ng-model="comment.comment_id" />
-                <input type="file" name="data[Upload][file]" id="attachments"  multiple />
+                <span id="CommentFrmHead" style="position: relative;">
+                        <input type="text" name="data[Upload][comment_id]" class="hidden" id="comment-id" ng-model="comment.comment_id" />
+                    <input style="display: inline;" type="file" name="data[Upload][file]" id="attachments"  multiple />
+                    <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin-top:4px;">コメント</button>
+                </span>
                 <textarea ng-click='textboxClicked()' name="data[Upload][body]" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
-                <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin-top:4px;">コメント</button>
                 
             </form>
-        </li>
-    </ul>
-</div> <!-- / .panel -->
+        </div>
 
 <div ng-repeat="template in templates" ng-include="template"></div>
