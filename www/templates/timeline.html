@@ -17,9 +17,9 @@
             <img class="full-image"  ng-repeat="uploads in timeVal.Upload" src=" {{base_url}}{{uploads.Upload.path}}">
              <p>{{timeVal.title}} {{timeVal.body}}</p>
              <h6 align="right" ng-hide="timeVal.index===undefined">
-             <a href="#" class="subdued" ng-if="timeVal.likes_count < 1">{{timeVal.likes_count}} Like</a>
-             <a href="" class="subdued" ng-if="timeVal.likes_count > 0" prevent-href=true><span ng-click="showLikes(timeVal.id)">{{timeVal.likes_count}} Like</span></a>
-             <a href="#" class="subdued">{{timeVal.Comment.length}} Comment</a>
+             <a href="#" class="subdued" ng-if="timeVal.likes_count < 1">いいね！ {{timeVal.likes_count}}</a>
+             <a href="" class="subdued" ng-if="timeVal.likes_count > 0" prevent-href=true><span ng-click="showLikes(timeVal.id)">いいね！ {{timeVal.likes_count}}</span></a>
+             <a href="#" class="subdued">コメント {{timeVal.Comment.length}}</a>
              </h6>
          </div>
       </div>
