@@ -63,7 +63,7 @@ angular.module('starter.controllers', [])
   //});
 
   $scope.baseUrl = BASE_URL;
-  	$rootScope.allowDelete=true;
+  
   $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = false;
     });
@@ -127,7 +127,7 @@ angular.module('starter.controllers', [])
       $scope.$broadcast('scroll.infiniteScrollComplete');
       return;
     }
-
+    console.log($scope.chatsPreview.length);
     if ($scope.numberOfGCToDisplay < $scope.chatsPreview.length)
       $scope.numberOfGCToDisplay+=10;
 
@@ -266,7 +266,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('ChatDetailCtrl', function($location,$cordovaInAppBrowser,$scope,GalleryService,NewModalService,$state,BASE_URL,backButtonOverride,$timeout,$ionicPopover,$ionicSlideBoxDelegate,NotificationService,$state,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
+.controller('ChatDetailCtrl', function($cordovaDevice,$http,$ionicLoading,$location,$cordovaInAppBrowser,$scope,GalleryService,NewModalService,$state,BASE_URL,backButtonOverride,$timeout,$ionicPopover,$ionicSlideBoxDelegate,NotificationService,$state,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
 
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
       viewData.enableBack = true;
@@ -280,6 +280,45 @@ angular.module('starter.controllers', [])
         $scope.showChosenImage=-1;
       else
         $scope.showChosenImage=index;
+    }
+    
+     $scope.resetForm=function(){
+      $rootScope.addedUsernames=[];
+      $rootScope.showList=true;
+      $rootScope.addedUserIds=[];
+      $rootScope.usersToadd='';
+      $scope.addModal.hide();
+    };
+    
+    $scope.addMemberGC=function(){
+      $ionicLoading.show({
+          template:'<ion-spinner name="bubbles"></ion-spinner>'
+        });
+        ApiService.Get('groupchats/addmember/'+$stateParams.chatId+'/',$rootScope.addedUserIds.join()).then(function(response){
+    
+          //$rootScope.chatMembers = $rootScope.addedUsernames;
+         
+           $http.get(API_URL+"groupchats/pagedchatforapp/"+$stateParams.chatId+'/'+1,{
+              headers:{
+                'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+              }
+            }).success(function(response){
+                $scope.chats = response.messages;
+                $scope.total=response.total;
+                $rootScope.chatMembers=$rootScope.addedUsernames.concat($scope.alreadyAdded);
+                 $scope.resetForm();
+                 $ionicLoading.hide();
+                $ionicScrollDelegate.scrollBottom();
+                Chats.updateCache('groupchat').then(function(response){
+                  if(response.length > 0){
+            
+                    $rootScope.chatsPreview=response;
+            
+                  }
+                });
+            });
+        });
+        
     }
 	
     $scope.isUriImage = function(uri) {
@@ -296,11 +335,25 @@ angular.module('starter.controllers', [])
    }
 
    $scope.linkify=function(text) {
-        var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-        return text.replace(urlRegex, function(url) {
+      var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        var phoneRegex=/(0\d{1,4}-|\(0\d{1,4}\) ?)?\d{1,4}-\d{4}/ig;
+        var x=text.match(phoneRegex);
+        var y=text.match(urlRegex);
+        var newtext=text;
+        
+        if(y != null){
+          newtext=text.replace(urlRegex, function(url) {
           var urlx="'"+url+"'";
             return ' <a href="" ng-click="redirectFile(' + urlx + ',true)">' + url + '</a>';
         });
+        }
+        if(x!= null){
+          newtext=newtext.replace(phoneRegex, function(url) {
+              return ' <a href="tel:'+url+'">' + url + '</a>';
+          });
+        }
+          return newtext;
+       
     }
 
     $scope.redirectFile=function(path,x){
@@ -367,7 +420,7 @@ angular.module('starter.controllers', [])
     });
   }
   
-  $ionicModal.fromTemplateUrl('templates/modal/addchat.html', {
+  $ionicModal.fromTemplateUrl('templates/modal/addgcmember.html', {
 		scope: $scope,
 		animation: 'slide-in-up'
 	}).then(function(modal) {
@@ -380,19 +433,27 @@ angular.module('starter.controllers', [])
 		$scope.addModal.show();
 	};
 	
+	$rootScope.removeUserChatGC=function(index){
+    $rootScope.addedUserIds.splice(index,1);
+    $rootScope.addedUsernames.splice(index,1);
+  
+  }
+	
   $scope.userLength=0;
   $scope.usersToadd="";
 	$scope.ctr=0;
 	$rootScope.addedUsernames=[];
 	$rootScope.allowDelete=false;
-	$rootScope.alreadyAdded=[];
+	$scope.alreadyAdded=[];
 	$scope.getUsers=function(){
 	  ApiService.Get('groupchats/userstoadd/'+$stateParams.chatId,'').then(function(response){
-	    $scope.users=response.users;
+	    $scope.addUsers=response.users;
 	    
-	    $rootScope.alreadyAdded=Object.values(response.members);
-	    alert(JSON.stringify($rootScope.alreadyAdded))
-	    $scope.userLength=Math.floor($scope.users.length/10);
+	    angular.forEach(response.members, function(element) {
+        	$scope.alreadyAdded.push(element);
+      });
+	    
+	    $scope.userLength=Math.floor($scope.addUsers.length/10);
 	  });
 	}
 	$scope.getUsers();
@@ -404,7 +465,8 @@ angular.module('starter.controllers', [])
       $rootScope.showList=true;
   }
   
-  $scope.addUser=function(user){
+  $rootScope.addUserGC=function(user){
+    console.log(user);
     if($rootScope.addedUserIds.indexOf(user.User.id) == -1){
       $rootScope.addedUsernames.push(user.User.username);
       $rootScope.showList=false;
@@ -553,7 +615,8 @@ angular.module('starter.controllers', [])
           }
 
         }else{
-           $ionicScrollDelegate.scrollTop();
+          $ionicScrollDelegate.scrollTop();
+            
         }
 
         if($rootScope.message_id!=''){
@@ -969,7 +1032,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('GroupsCtrl', function($scope,Groups,$ionicLoading,NewModalService,NotificationService,$http,ApiService,$ionicPopover,$ionicModal,$rootScope,$ionicPopup,API_URL,$state) {
+.controller('GroupsCtrl', function($cordovaInAppBrowser,$scope,Groups,$ionicLoading,NewModalService,NotificationService,$http,ApiService,$ionicPopover,$ionicModal,$rootScope,$ionicPopup,API_URL,$state) {
  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
     viewData.enableBack = false;
 });
@@ -1035,6 +1098,7 @@ angular.module('starter.controllers', [])
   }).then(function(modal) {
     $rootScope.searchGroups = modal;
   });*/
+
 
   $rootScope.$on('hideModal',function(){
     NewModalService.hideModal($scope);
@@ -1226,7 +1290,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('GroupDetailCtrl', function($scope,CacheFactory,$timeout,NotificationService,backButtonOverride,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL,NewModalService) {
+.controller('GroupDetailCtrl', function($cordovaInAppBrowser,$scope,CacheFactory,$timeout,NotificationService,backButtonOverride,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL,NewModalService) {
   delete $scope.groupID;
   $scope.groupID=$stateParams['id'];
   $scope.uploadedType='head';
@@ -1246,6 +1310,47 @@ angular.module('starter.controllers', [])
       else
         $scope.showChosenImage=index;
     }
+    
+    $scope.linkify=function(text) {
+      var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        var phoneRegex=/(0\d{1,4}-|\(0\d{1,4}\) ?)?\d{1,4}-\d{4}/ig;
+        var x=text.match(phoneRegex);
+        var y=text.match(urlRegex);
+        var newtext=text;
+        
+        if(y != null){
+          newtext=text.replace(urlRegex, function(url) {
+          var urlx="'"+url+"'";
+            return ' <a href="" ng-click="redirectFile(' + urlx + ',true);$event.preventDefault();$event.stopPropagation()">' + url + '</a>';
+        });
+        }
+        if(x!= null){
+          newtext=newtext.replace(phoneRegex, function(url) {
+              return '<a href="" ng-click="redirectTo(url);$event.preventDefault();$event.stopPropagation()" test-link>' + url + '</a>';
+          });
+        }
+          return newtext;
+       
+    }
+    
+    $scope.redirectTo=function(url){
+        window.location.href = 'tel:'+ url;
+    }
+
+    $scope.redirectFile=function(path,x){
+      var url=path;
+    if(typeof(x)==='undefined' || x==null)
+      url=API_URL+''+path;
+      $cordovaInAppBrowser.open(url, '_system')
+      .then(function(event) {
+        console.log('Success');
+      })
+      .catch(function(event) {
+        console.log('Failed');
+      });
+
+    }
+    
   $rootScope.showLiked=[];
   $scope.showLikes=function(head){
     $rootScope.showLiked=$rootScope.thread.Head[head]['likes'];
@@ -1810,13 +1915,33 @@ $scope.selectPicture = function($act) {
       NewModalService.showModal($scope);
     }
     
-    $scope.closeLikeModal=function(){
-      NewModalService.hideModal($scope);
+     $scope.linkify=function(text) {
+      var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        var phoneRegex=/(0\d{1,4}-|\(0\d{1,4}\) ?)?\d{1,4}-\d{4}/ig;
+        var x=text.match(phoneRegex);
+        var y=text.match(urlRegex);
+        var newtext=text;
+        
+        if(y != null){
+          newtext=text.replace(urlRegex, function(url) {
+          var urlx="'"+url+"'";
+            return ' <a href="" ng-click="redirectFile(' + urlx + ',true)">' + url + '</a>';
+        });
+        }
+        if(x!= null){
+          newtext=newtext.replace(phoneRegex, function(url) {
+              return '<a href="tel:'+url+'" test-link>' + url + '</a>';
+          });
+        }
+          return newtext;
+       
     }
 
-    $scope.redirectFile=function(path){
-
-      $cordovaInAppBrowser.open(API_URL+''+path, '_system')
+    $scope.redirectFile=function(path,x){
+      var url=path;
+    if(typeof(x)==='undefined' || x==null)
+      url=API_URL+''+path;
+      $cordovaInAppBrowser.open(url, '_system')
       .then(function(event) {
         console.log('Success');
       })
@@ -1825,6 +1950,11 @@ $scope.selectPicture = function($act) {
       });
 
     }
+    
+    $scope.closeLikeModal=function(){
+      NewModalService.hideModal($scope);
+    }
+
      $rootScope.$emit('hideModal');
   $scope.headID=$stateParams['id'];
   //$scope.headIndex=$stateParams['index'];

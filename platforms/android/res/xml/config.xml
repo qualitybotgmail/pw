@@ -68,6 +68,7 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
+    <access launch-external="yes" origin="tel:*" />
     <splash density="land-ldpi" src="res/drawable-land-ldpi/screen.png" />
     <splash density="land-mdpi" src="res/drawable-land-mdpi/screen.png" />
     <splash density="land-hdpi" src="res/drawable-land-hdpi/screen.png" />

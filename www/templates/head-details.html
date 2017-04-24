@@ -17,7 +17,7 @@
 
       <div class="item item-body" style="padding: 0px;border-top:none;">
         <div class="remove-first" style="padding:0px 15px 10px 15px;margin:0;color:#000;white-space:pre-line;word-break:break-word;">
-          {{getHeads.body}}
+          <span content="linkify(getHeads.body)" check-link></span>
         </div>
            <div class="item" style="padding:0px;border-bottom:0px;" ng-show="headUploads.non_image.length > 0 || headUploads.image.length > 0">
          <a class="item-list-detail" style="padding: 0px;border: 0px;">
@@ -50,7 +50,9 @@
           <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="comment.user_id !=$root.user_id">{{comment.User.username}}</div>
           <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="comment.user_id ==$root.user_id">{{$root.user}}</div>
           <p class="dateList" style="margin-top: -25px;"><span ng-show="comment.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showCommentPopover($event,$index)"></i></span></p>
-          <div style="padding-right:20px;color:#000;white-space:pre-line;word-break:break-word">{{comment.body}}</div>
+          <div style="padding-right:20px;color:#000;white-space:pre-line;word-break:break-word">
+            <span content="linkify(comment.body)" check-link></span>
+          </div>
           <div>
             <div class="item item-list-detail" style="padding: 0px;border: 0px;">
                <div ng-show="comment.non_image.length > 0" prevent-href="true">

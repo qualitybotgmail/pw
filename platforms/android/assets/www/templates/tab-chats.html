@@ -27,6 +27,6 @@
        <span ng-show="$root.groupchatNotif[chat.id]" show-badge badge-id="{{chat.id}}" badge-type="groupchat" class="badge badge-assertive">{{$root.groupchatNotif[chat.id]}}</span>
       </ion-item>
     </ion-list>
-    <ion-infinite-scroll ng-if="numberOfGCToDisplay < chats.length" on-infinite="loadMoreGC()" distance="1%"></ion-infinite-scroll>
+    <ion-infinite-scroll ng-if="numberOfGCToDisplay < chatsPreview.length" on-infinite="loadMoreGC()" distance="1%"></ion-infinite-scroll>
   </ion-content>
 </ion-view>

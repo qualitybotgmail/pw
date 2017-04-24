@@ -266,7 +266,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('ChatDetailCtrl', function($http,$ionicLoading,$location,$cordovaInAppBrowser,$scope,GalleryService,NewModalService,$state,BASE_URL,backButtonOverride,$timeout,$ionicPopover,$ionicSlideBoxDelegate,NotificationService,$state,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
+.controller('ChatDetailCtrl', function($cordovaDevice,$http,$ionicLoading,$location,$cordovaInAppBrowser,$scope,GalleryService,NewModalService,$state,BASE_URL,backButtonOverride,$timeout,$ionicPopover,$ionicSlideBoxDelegate,NotificationService,$state,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
 
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
       viewData.enableBack = true;
@@ -335,11 +335,25 @@ angular.module('starter.controllers', [])
    }
 
    $scope.linkify=function(text) {
-        var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-        return text.replace(urlRegex, function(url) {
+      var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        var phoneRegex=/(0\d{1,4}-|\(0\d{1,4}\) ?)?\d{1,4}-\d{4}/ig;
+        var x=text.match(phoneRegex);
+        var y=text.match(urlRegex);
+        var newtext=text;
+        
+        if(y != null){
+          newtext=text.replace(urlRegex, function(url) {
           var urlx="'"+url+"'";
             return ' <a href="" ng-click="redirectFile(' + urlx + ',true)">' + url + '</a>';
         });
+        }
+        if(x!= null){
+          newtext=newtext.replace(phoneRegex, function(url) {
+              return ' <a href="tel:'+url+'">' + url + '</a>';
+          });
+        }
+          return newtext;
+       
     }
 
     $scope.redirectFile=function(path,x){
@@ -1018,7 +1032,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('GroupsCtrl', function($scope,Groups,$ionicLoading,NewModalService,NotificationService,$http,ApiService,$ionicPopover,$ionicModal,$rootScope,$ionicPopup,API_URL,$state) {
+.controller('GroupsCtrl', function($cordovaInAppBrowser,$scope,Groups,$ionicLoading,NewModalService,NotificationService,$http,ApiService,$ionicPopover,$ionicModal,$rootScope,$ionicPopup,API_URL,$state) {
  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
     viewData.enableBack = false;
 });
@@ -1084,6 +1098,7 @@ angular.module('starter.controllers', [])
   }).then(function(modal) {
     $rootScope.searchGroups = modal;
   });*/
+
 
   $rootScope.$on('hideModal',function(){
     NewModalService.hideModal($scope);
@@ -1275,7 +1290,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('GroupDetailCtrl', function($scope,CacheFactory,$timeout,NotificationService,backButtonOverride,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL,NewModalService) {
+.controller('GroupDetailCtrl', function($cordovaInAppBrowser,$scope,CacheFactory,$timeout,NotificationService,backButtonOverride,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL,NewModalService) {
   delete $scope.groupID;
   $scope.groupID=$stateParams['id'];
   $scope.uploadedType='head';
@@ -1295,6 +1310,47 @@ angular.module('starter.controllers', [])
       else
         $scope.showChosenImage=index;
     }
+    
+    $scope.linkify=function(text) {
+      var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        var phoneRegex=/(0\d{1,4}-|\(0\d{1,4}\) ?)?\d{1,4}-\d{4}/ig;
+        var x=text.match(phoneRegex);
+        var y=text.match(urlRegex);
+        var newtext=text;
+        
+        if(y != null){
+          newtext=text.replace(urlRegex, function(url) {
+          var urlx="'"+url+"'";
+            return ' <a href="" ng-click="redirectFile(' + urlx + ',true);$event.preventDefault();$event.stopPropagation()">' + url + '</a>';
+        });
+        }
+        if(x!= null){
+          newtext=newtext.replace(phoneRegex, function(url) {
+              return '<a href="" ng-click="redirectTo(url);$event.preventDefault();$event.stopPropagation()" test-link>' + url + '</a>';
+          });
+        }
+          return newtext;
+       
+    }
+    
+    $scope.redirectTo=function(url){
+        window.location.href = 'tel:'+ url;
+    }
+
+    $scope.redirectFile=function(path,x){
+      var url=path;
+    if(typeof(x)==='undefined' || x==null)
+      url=API_URL+''+path;
+      $cordovaInAppBrowser.open(url, '_system')
+      .then(function(event) {
+        console.log('Success');
+      })
+      .catch(function(event) {
+        console.log('Failed');
+      });
+
+    }
+    
   $rootScope.showLiked=[];
   $scope.showLikes=function(head){
     $rootScope.showLiked=$rootScope.thread.Head[head]['likes'];
@@ -1859,13 +1915,33 @@ $scope.selectPicture = function($act) {
       NewModalService.showModal($scope);
     }
     
-    $scope.closeLikeModal=function(){
-      NewModalService.hideModal($scope);
+     $scope.linkify=function(text) {
+      var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        var phoneRegex=/(0\d{1,4}-|\(0\d{1,4}\) ?)?\d{1,4}-\d{4}/ig;
+        var x=text.match(phoneRegex);
+        var y=text.match(urlRegex);
+        var newtext=text;
+        
+        if(y != null){
+          newtext=text.replace(urlRegex, function(url) {
+          var urlx="'"+url+"'";
+            return ' <a href="" ng-click="redirectFile(' + urlx + ',true)">' + url + '</a>';
+        });
+        }
+        if(x!= null){
+          newtext=newtext.replace(phoneRegex, function(url) {
+              return '<a href="tel:'+url+'" test-link>' + url + '</a>';
+          });
+        }
+          return newtext;
+       
     }
 
-    $scope.redirectFile=function(path){
-
-      $cordovaInAppBrowser.open(API_URL+''+path, '_system')
+    $scope.redirectFile=function(path,x){
+      var url=path;
+    if(typeof(x)==='undefined' || x==null)
+      url=API_URL+''+path;
+      $cordovaInAppBrowser.open(url, '_system')
       .then(function(event) {
         console.log('Success');
       })
@@ -1874,6 +1950,11 @@ $scope.selectPicture = function($act) {
       });
 
     }
+    
+    $scope.closeLikeModal=function(){
+      NewModalService.hideModal($scope);
+    }
+
      $rootScope.$emit('hideModal');
   $scope.headID=$stateParams['id'];
   //$scope.headIndex=$stateParams['index'];
