@@ -2545,13 +2545,13 @@ $rootScope.changeHeadLike=function(id,index){
 
       });
   }
-  $scope.showUploadingButtons=false;
-  $scope.uploadedProf=false;
+  // $scope.showUploadingButtons=false;
+  // $scope.uploadedProf=false;
   $scope.selectPictureImage=function(type){
 
-     $scope.showUploadingButtons=false;
-     $scope.uploadedProf=false;
-     $scope.uploadedProfileImg='';
+    //  $scope.showUploadingButtons=false;
+    //  $scope.uploadedProf=false;
+    //  $scope.uploadedProfileImg='';
 
      var options=null;
       if(type=='takePhoto'){
@@ -2561,19 +2561,20 @@ $rootScope.changeHeadLike=function(id,index){
             permissions.requestPermission(permissions.CAMERA, function(result) {
               options = {
                 sourceType: Camera.PictureSourceType.CAMERA,
-                quality: 70,
+                quality: 50,
                 encodingType: Camera.EncodingType.JPEG,
                 correctOrientation: true,
+                allowEdit:true,
                 targetWidth: 400,
                 targetHeight: 400,
                 saveToPhotoAlbum: false
               };
 
               $cordovaCamera.getPicture(options).then(function(img){
-
-                $scope.uploadedProfileImg=img;
-                $scope.showUploadingButtons=true;
-                $scope.uploadedProf=true;
+                $scope.changeProfileImage(img);
+                // $scope.uploadedProfileImg=img;
+                // $scope.showUploadingButtons=true;
+                // $scope.uploadedProf=true;
               },function(error){
 
               });
@@ -2585,17 +2586,19 @@ $rootScope.changeHeadLike=function(id,index){
        }else{
          options = {
                 sourceType: Camera.PictureSourceType.CAMERA,
-                quality: 70,
+                quality: 50,
                 targetWidth: 400,
                 targetHeight: 400,
                 correctOrientation: true,
+                allowEdit:true,
                 saveToPhotoAlbum: false
               };
 
               $cordovaCamera.getPicture(options).then(function(img){
-                $scope.uploadedProfileImg=img;
-                $scope.showUploadingButtons=true;
-                $scope.uploadedProf=true;
+                $scope.changeProfileImage(img);
+                // $scope.uploadedProfileImg=img;
+                // $scope.showUploadingButtons=true;
+                // $scope.uploadedProf=true;
 
               },function(error){
                 // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
@@ -2607,7 +2610,7 @@ $rootScope.changeHeadLike=function(id,index){
       if(type=="upload"){
           options = {
 
-            quality: 70,
+            quality: 50,
             maximumImagesCount:1,
             targetWidth: 400,
             targetHeight: 400
@@ -2617,11 +2620,11 @@ $rootScope.changeHeadLike=function(id,index){
           $cordovaImagePicker.getPictures(options).then(function(results){
              var Upload=null;
               for(var i=0;i < results.length;i++){
-                 $scope.uploadedProfileImg=results[i];
-
+                //  $scope.uploadedProfileImg=results[i];
+                $scope.changeProfileImage(results[i]);
               }
-              $scope.showUploadingButtons=true;
-              $scope.uploadedProf=true;
+              // $scope.showUploadingButtons=true;
+              // $scope.uploadedProf=true;
 
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
@@ -2630,8 +2633,11 @@ $rootScope.changeHeadLike=function(id,index){
   };
 
   $scope.changeProfileImage=function(img){
-         $scope.showUploadingButtons=false;
-         $scope.uploadingProfile=true;
+        //  $scope.showUploadingButtons=false;
+        //  $scope.uploadingProfile=true;
+        $ionicLoading.show({
+          template:'<ion-spinner name="bubbles"></ion-spinner>'
+        });
         img=encodeURI(img);
         var obj={};
         var o=new FileUploadOptions();
@@ -2644,21 +2650,26 @@ $rootScope.changeHeadLike=function(id,index){
             'Connection': "close",
             'Authorization':'Basic '+window.localStorage.getItem("talknote_token")+''
         };
-        $rootScope.avatar_img='';
+        // $rootScope.avatar_img='';
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',img,o,true).then(function(result) {
 
 
-          $rootScope.avatar_img=BASE_URL+''+JSON.parse(result.response)[0]['Upload']['path'];
-          $http.post(API_URL+'users/'+window.localStorage.getItem('user_id')+'.json',{'User':{'id':window.localStorage.getItem('user_id'),'avatar_img':JSON.parse(result.response)[0]['Upload']['path']}},{
+          var avatar_img = JSON.parse(result.response)[0]['Upload']['path'];
+          var user_id = window.localStorage.getItem('user_id');
+          $http.post(API_URL+'users/'+user_id+'.json',{'User':{'id':user_id,'avatar_img':avatar_img}},{
             headers:{
               'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
             }
           }).success(function(data){
-            $scope.uploadedProf=false;
-            $scope.uploadingProfile=false;
-            $scope.uploadedProfileImg='';
+            // $scope.uploadedProf=false;
+            // $scope.uploadingProfile=false;
+            // $scope.uploadedProfileImg='';
+            $rootScope.avatar_img=BASE_URL + avatar_img;
+            $ionicLoading.hide();
 
-          }).error(function(data){});
+          }).error(function(data){
+            $ionicLoading.hide();
+          });
         },function(error){
           $ionicLoading.hide();
           $ionicPopup.alert({
