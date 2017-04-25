@@ -101,7 +101,7 @@ class GroupchatsController extends AppController {
 			'contain' => array(
 				
 				'Message'=>array(
-					'conditions' => array('id >' => $lastid),
+					'conditions' => array('id >=' => $lastid),
 					'User.username','User.id','Upload.path','Upload.created'),'User.username','User.id','Owner.username','Owner.id'
 			)		
 		);
