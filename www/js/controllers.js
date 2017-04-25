@@ -63,7 +63,7 @@ angular.module('starter.controllers', [])
   //});
 
   $scope.baseUrl = BASE_URL;
-  
+
   $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = false;
     });
@@ -281,7 +281,7 @@ angular.module('starter.controllers', [])
       else
         $scope.showChosenImage=index;
     }
-    
+
      $scope.resetForm=function(){
       $rootScope.addedUsernames=[];
       $rootScope.showList=true;
@@ -289,15 +289,15 @@ angular.module('starter.controllers', [])
       $rootScope.usersToadd='';
       $scope.addModal.hide();
     };
-    
+
     $scope.addMemberGC=function(){
       $ionicLoading.show({
           template:'<ion-spinner name="bubbles"></ion-spinner>'
         });
         ApiService.Get('groupchats/addmember/'+$stateParams.chatId+'/',$rootScope.addedUserIds.join()).then(function(response){
-    
+
           //$rootScope.chatMembers = $rootScope.addedUsernames;
-         
+
            $http.get(API_URL+"groupchats/pagedchatforapp/"+$stateParams.chatId+'/'+1,{
               headers:{
                 'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
@@ -311,16 +311,16 @@ angular.module('starter.controllers', [])
                 $ionicScrollDelegate.scrollBottom();
                 Chats.updateCache('groupchat').then(function(response){
                   if(response.length > 0){
-            
+
                     $rootScope.chatsPreview=response;
-            
+
                   }
                 });
             });
         });
-        
+
     }
-	
+
     $scope.isUriImage = function(uri) {
       uri = uri.split('?')[0];
       var parts = uri.split('.');
@@ -340,7 +340,7 @@ angular.module('starter.controllers', [])
         var x=text.match(phoneRegex);
         var y=text.match(urlRegex);
         var newtext=text;
-        
+
         if(y != null){
           newtext=text.replace(urlRegex, function(url) {
           var urlx="'"+url+"'";
@@ -353,7 +353,7 @@ angular.module('starter.controllers', [])
           });
         }
           return newtext;
-       
+
     }
 
     $scope.redirectFile=function(path,x){
@@ -419,7 +419,7 @@ angular.module('starter.controllers', [])
 
     });
   }
-  
+
   $ionicModal.fromTemplateUrl('templates/modal/addgcmember.html', {
 		scope: $scope,
 		animation: 'slide-in-up'
@@ -432,13 +432,13 @@ angular.module('starter.controllers', [])
     $rootScope.addedUsernames=[];
 		$scope.addModal.show();
 	};
-	
+
 	$rootScope.removeUserChatGC=function(index){
     $rootScope.addedUserIds.splice(index,1);
     $rootScope.addedUsernames.splice(index,1);
-  
+
   }
-	
+
   $scope.userLength=0;
   $scope.usersToadd="";
 	$scope.ctr=0;
@@ -448,23 +448,23 @@ angular.module('starter.controllers', [])
 	$scope.getUsers=function(){
 	  ApiService.Get('groupchats/userstoadd/'+$stateParams.chatId,'').then(function(response){
 	    $scope.addUsers=response.users;
-	    
+
 	    angular.forEach(response.members, function(element) {
         	$scope.alreadyAdded.push(element);
       });
-	    
+
 	    $scope.userLength=Math.floor($scope.addUsers.length/10);
 	  });
 	}
 	$scope.getUsers();
-	
+
 	$scope.checkSearch=function(e){
     if(e.keyCode === 8 && $rootScope.usersToadd=='')
        $rootScope.showList=true;
     else
       $rootScope.showList=true;
   }
-  
+
   $rootScope.addUserGC=function(user){
     console.log(user);
     if($rootScope.addedUserIds.indexOf(user.User.id) == -1){
@@ -479,7 +479,7 @@ angular.module('starter.controllers', [])
     }
 
   }
-	
+
   $rootScope.$on('isOnline',function(event,data){
       $scope.updateChatCache(1);
       $rootScope.isOffline=false;
@@ -616,11 +616,11 @@ angular.module('starter.controllers', [])
 
         }else{
           $ionicScrollDelegate.scrollTop();
-            
+
         }
 
         if($rootScope.message_id!=''){
-           
+
           $scope.goTo($rootScope.message_id);
           if($scope.chats.length < response.total){
             console.log($scope.idss.indexOf($rootScope.message_id));
@@ -1044,7 +1044,7 @@ angular.module('starter.controllers', [])
    'created':'',
    'user_id':''
  };
- 
+
   $scope.updateCache=function(){
     Groups.updateThreadCache('thread').then(function(response){
      if(response.length > 0){
@@ -1310,14 +1310,14 @@ angular.module('starter.controllers', [])
       else
         $scope.showChosenImage=index;
     }
-    
+
     $scope.linkify=function(text) {
       var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
         var phoneRegex=/(0\d{1,4}-|\(0\d{1,4}\) ?)?\d{1,4}-\d{4}/ig;
         var x=text.match(phoneRegex);
         var y=text.match(urlRegex);
         var newtext=text;
-        
+
         if(y != null){
           newtext=text.replace(urlRegex, function(url) {
           var urlx="'"+url+"'";
@@ -1330,9 +1330,9 @@ angular.module('starter.controllers', [])
           });
         }
           return newtext;
-       
+
     }
-    
+
     $scope.redirectTo=function(url){
         window.location.href = 'tel:'+ url;
     }
@@ -1350,17 +1350,17 @@ angular.module('starter.controllers', [])
       });
 
     }
-    
+
   $rootScope.showLiked=[];
   $scope.showLikes=function(head){
     $rootScope.showLiked=$rootScope.thread.Head[head]['likes'];
     NewModalService.showModal($scope);
   }
-  
+
   $scope.closeLikeModal=function(){
     NewModalService.hideModal($scope);
   }
-  
+
   $scope.showModal = function() {
 		$ionicModal.fromTemplateUrl('templates/modal/images.html', {
 			scope: $scope,
@@ -1903,10 +1903,10 @@ $scope.selectPicture = function($act) {
       else
         $scope.showChosenImage=index;
     }
-    
+
     $rootScope.showLiked=[];
     $scope.showLikes=function(head,comment,type){
-      
+
       if(type=='head'){
         $rootScope.showLiked=$scope.getHeads['likes'];
       }else{
@@ -1914,14 +1914,14 @@ $scope.selectPicture = function($act) {
       }
       NewModalService.showModal($scope);
     }
-    
+
      $scope.linkify=function(text) {
       var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
         var phoneRegex=/(0\d{1,4}-|\(0\d{1,4}\) ?)?\d{1,4}-\d{4}/ig;
         var x=text.match(phoneRegex);
         var y=text.match(urlRegex);
         var newtext=text;
-        
+
         if(y != null){
           newtext=text.replace(urlRegex, function(url) {
           var urlx="'"+url+"'";
@@ -1934,7 +1934,7 @@ $scope.selectPicture = function($act) {
           });
         }
           return newtext;
-       
+
     }
 
     $scope.redirectFile=function(path,x){
@@ -1950,7 +1950,7 @@ $scope.selectPicture = function($act) {
       });
 
     }
-    
+
     $scope.closeLikeModal=function(){
       NewModalService.hideModal($scope);
     }
@@ -2246,7 +2246,7 @@ $rootScope.changeHeadLike=function(id,index){
 
     }else{
         $scope.getHeads.likes_count=parseInt(likes) - 1;
-        
+
         var index=$scope.getHeads.likes.map(function(o,k){ if(o.user_id==$rootScope.user_id){return k};});
         $scope.getHeads.likes.splice(index,1);
         $scope.getHeads.isUserLiked =false;
@@ -2270,7 +2270,7 @@ $rootScope.changeHeadLike=function(id,index){
       $scope.comments['Comment'][index]['likes_count']=parseInt($scope.comments['Comment'][index]['likes_count']) - 1;
        var inx=$scope.comments['Comment'][index]['likes'].map(function(o,k){ if(o.user_id==$rootScope.user_id){return k};});
        $scope.comments['Comment'][index]['likes'].splice(inx,1);
-      
+
        if(Like.unlike('comments',id))
         $scope.likedComment=-1;
     }
@@ -2691,7 +2691,7 @@ $rootScope.changeHeadLike=function(id,index){
   $scope.login=function(data){
     if(data.loginid=='' || data.password==''){
       $ionicPopup.alert({
-        template:"ログイン情報を正しく入力してくだ���い。"
+        template:"ログイン情報を正しく入力してください。"
       });
       return;
     }
