@@ -1326,7 +1326,8 @@ angular.module('starter.controllers', [])
         }
         if(x!= null){
           newtext=newtext.replace(phoneRegex, function(url) {
-              return '<a href="" ng-click="redirectTo(url);$event.preventDefault();$event.stopPropagation()" test-link>' + url + '</a>';
+              var urlx="'"+url+"'";
+              return '<a href="" ng-click="redirectTo('+urlx+');$event.preventDefault();$event.stopPropagation()" test-link>' + url + '</a>';
           });
         }
           return newtext;
