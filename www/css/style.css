@@ -349,6 +349,9 @@ textarea {
   text-align: left !important;
   max-width: 240px !important;
 }
+.messages:not(.other) .message span > a{
+  color:white !important;
+}
  .message .item-avatar{
      padding-left: 0px !important;
  }
