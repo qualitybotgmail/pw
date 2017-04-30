@@ -17,8 +17,8 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         function(){
             var _this = this;
             _this.scrollDown = function(){
-                var $t = $('.commentList');
-                $t.animate({"scrollTop": $('.commentList')[0].scrollHeight}, "slow");
+                var $t = $('#share');
+                $t.animate({"scrollTop": $('#share')[0].scrollHeight}, "slow");
             };
         }
     ]);
@@ -286,7 +286,11 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                     			}
                     			// console.log(lastMessage.Upload.length, '!==', latestMessage.Upload.length, ' : ', lastMessage.Upload.length !== latestMessage.Upload.length);
                     			if (lastMessage.Upload.length !== latestMessage.Upload.length){
-                    			    $scope.message.Message[messageLength -1] = latestMessage;
+                    			    $scope.message.Message[currentMessageLength -1].Upload = latestMessage.Upload;
+                    			} 
+                    			
+                    			if (lastMessage.body !== latestMessage.body) {
+                    			    $scope.message.Message[currentMessageLength -1].body = latestMessage.body;    
                     			}
             	            }
                         }
