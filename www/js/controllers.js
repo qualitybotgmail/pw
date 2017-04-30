@@ -334,9 +334,10 @@ angular.module('starter.controllers', [])
       }
    }
 
-   $scope.linkify=function(text) {
+    $scope.linkify=function(text) {
+      if(!text) return "";
       var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-        var phoneRegex=/(0\d{1,4}-|\(0\d{1,4}\) ?)?\d{1,4}-\d{4}/ig;
+        var phoneRegex=/(0\d{1,4}-|\(0\d{1,4}\) ?)?\d{1,4}-\d{3,4}/ig;
         var x=text.match(phoneRegex);
         var y=text.match(urlRegex);
         var newtext=text;
@@ -518,6 +519,8 @@ angular.module('starter.controllers', [])
   });
 
   $scope.showModal = function() {
+    $scope.screenWidth = $rootScope.isIOS ? window.screen.width : window.outerWidth;
+    $scope.screenHeight = $rootScope.isIOS ? window.screen.height : window.outerHeight;
 		$ionicModal.fromTemplateUrl('templates/modal/images.html', {
 			scope: $scope,
 			animation: 'slide-in-up'
@@ -1312,8 +1315,9 @@ angular.module('starter.controllers', [])
     }
 
     $scope.linkify=function(text) {
+      if(!text) return "";
       var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-        var phoneRegex=/(0\d{1,4}-|\(0\d{1,4}\) ?)?\d{1,4}-\d{4}/ig;
+        var phoneRegex=/(0\d{1,4}-|\(0\d{1,4}\) ?)?\d{1,4}-\d{3,4}/ig;
         var x=text.match(phoneRegex);
         var y=text.match(urlRegex);
         var newtext=text;
@@ -1363,6 +1367,8 @@ angular.module('starter.controllers', [])
   }
 
   $scope.showModal = function() {
+    $scope.screenWidth = $rootScope.isIOS ? window.screen.width : window.outerWidth;
+    $scope.screenHeight = $rootScope.isIOS ? window.screen.height : window.outerHeight;
 		$ionicModal.fromTemplateUrl('templates/modal/images.html', {
 			scope: $scope,
 			animation: 'slide-in-up'
@@ -1916,9 +1922,10 @@ $scope.selectPicture = function($act) {
       NewModalService.showModal($scope);
     }
 
-     $scope.linkify=function(text) {
+    $scope.linkify=function(text) {
+      if(!text) return "";
       var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-        var phoneRegex=/(0\d{1,4}-|\(0\d{1,4}\) ?)?\d{1,4}-\d{4}/ig;
+        var phoneRegex=/(0\d{1,4}-|\(0\d{1,4}\) ?)?\d{1,4}-\d{3,4}/ig;
         var x=text.match(phoneRegex);
         var y=text.match(urlRegex);
         var newtext=text;
@@ -2056,6 +2063,8 @@ $scope.selectPicture = function($act) {
 
 
   	$scope.showModal = function() {
+      $scope.screenWidth = $rootScope.isIOS ? window.screen.width : window.outerWidth;
+      $scope.screenHeight = $rootScope.isIOS ? window.screen.height : window.outerHeight;
 		$ionicModal.fromTemplateUrl('templates/modal/images.html', {
 			scope: $scope,
 			animation: 'slide-in-up'
