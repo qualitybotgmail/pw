@@ -266,7 +266,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('ChatDetailCtrl', function($cordovaDevice,$http,$ionicLoading,$location,$cordovaInAppBrowser,$scope,GalleryService,NewModalService,$state,BASE_URL,backButtonOverride,$timeout,$ionicPopover,$ionicSlideBoxDelegate,NotificationService,$state,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
+.controller('ChatDetailCtrl', function($cordovaDevice,Base64,$http,$ionicLoading,$location,$cordovaInAppBrowser,$scope,GalleryService,NewModalService,$state,BASE_URL,backButtonOverride,$timeout,$ionicPopover,$ionicSlideBoxDelegate,NotificationService,$state,$stateParams,$cordovaFileTransfer,API_URL,$cordovaDevice,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$cordovaActionSheet,Chats,ApiService,AuthService,$ionicScrollDelegate,$rootScope,$ionicModal) {
 
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
       viewData.enableBack = true;
@@ -898,7 +898,12 @@ angular.module('starter.controllers', [])
             };
 
             $cordovaCamera.getPicture(options).then(function(img){
-              $scope.uploadedChatImgs.push(img);
+              var currdir=null;
+              var filename=img.split("/")[img.split("/").length - 1]
+              currdir = img.substr(0, img.lastIndexOf("/"));
+              var xx=filename.split(".");
+              var newx = Base64.encode(xx[0]);
+              $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
             },function(error){
               // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
             });
@@ -918,7 +923,14 @@ angular.module('starter.controllers', [])
             };
 
             $cordovaCamera.getPicture(options).then(function(img){
-              $scope.uploadedChatImgs.push(img);
+              var currdir=null;
+              var filename=img.split("/")[img.split("/").length - 1]
+              currdir = img.substr(0, img.lastIndexOf("/"));
+              var xx=filename.split(".");
+              var newx = Base64.encode(xx[0]);
+              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
+            
             },function(error){
               // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
             });
@@ -938,9 +950,14 @@ angular.module('starter.controllers', [])
           //event.preventDefault();
           //$scope.showGallery();
            var Upload=null;
+           var currdir=null;
             for(var i=0;i < results.length;i++){
-              $scope.uploadedChatImgs.push(results[i]);
-
+              var filename=results[i].split("/")[results[i].split("/").length - 1]
+              currdir = results[i].substr(0, results[i].lastIndexOf("/"));
+              var xx=filename.split(".");
+              var newx = Base64.encode(xx[0]);
+              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1])
             }
         },function(error){
           // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
@@ -948,6 +965,30 @@ angular.module('starter.controllers', [])
     }
 
   }
+  
+    $scope.renameFile=function(fileUri,currentName, currentDir, newName) {
+      
+      window.resolveLocalFileSystemURL(
+          fileUri,
+          function(fileEntry){
+                window.resolveLocalFileSystemURL(currentDir,
+                        function(dirEntry) {
+                            // move the file to a new directory and rename it
+                            fileEntry.moveTo(dirEntry, newName,function(){
+                              $scope.uploadedChatImgs.push(currentDir+'/'+newName);
+                            }, renameFail);
+                        },
+                        renameFail);
+          },
+          renameFail);
+  
+  }
+  
+  //and the sample fail function
+  function renameFail() {
+      console.log('failed');
+  }
+  
   $scope.processedMessageIndex=null;
   $scope.processedImageIndex=null;
   $scope.processedType=null;
@@ -1293,7 +1334,7 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('GroupDetailCtrl', function($cordovaInAppBrowser,$scope,CacheFactory,$timeout,NotificationService,backButtonOverride,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL,NewModalService) {
+.controller('GroupDetailCtrl', function($cordovaInAppBrowser,Base64,$scope,CacheFactory,$timeout,NotificationService,backButtonOverride,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL,NewModalService) {
   delete $scope.groupID;
   $scope.groupID=$stateParams['id'];
   $scope.uploadedType='head';
@@ -1552,6 +1593,10 @@ angular.module('starter.controllers', [])
       }
     });
   };
+  
+  $rootScope.$on('uploadingImageComplete',function(event,data){
+    $scope.updateCache();
+  });
 
   $scope.getThread=function(){
     Groups.get($scope.groupID).then(function(response){
@@ -1577,15 +1622,24 @@ angular.module('starter.controllers', [])
     });
   };
   $scope.getUsersToAdd();
-
+  $rootScope.uploadingHeadImages=[];
+  $rootScope.uploadingHeadImages["Uploads"]=[];
+  $rootScope.uploadingHeadImages["image"]=[];
   $scope.processAddingHead=function(){
     $ionicLoading.show({
       template:'<ion-spinner name="bubbles"></ion-spinner>'
     });
     ApiService.Post('heads.json',$rootScope.headContent).then(function(response){
-      if("Uploads" in response.Head==false){
-        response.Head["Uploads"]=[];
-      }
+    
+              
+            if($scope.uploadedImgs.length > 0){
+              $scope.uploadedImgs.forEach(function(v,k){
+                 $rootScope.uploadingHeadImages["Uploads"].push({'Upload':{'name':'','path':v,'loading':true}});
+                 $rootScope.uploadingHeadImages["image"].push({'name':'','path':v,'loading':true});
+              })
+
+            }
+     
       if("likes" in response.Head==false){
         response.Head["likes"]=0;
       }
@@ -1603,11 +1657,10 @@ angular.module('starter.controllers', [])
             $rootScope.showAddHead.hide();
             $scope.resetHeadForm();
             $ionicLoading.hide();
-             /* $rootScope.threadTitle=$rootScope.thread.Thread.title;
-              $rootScope.headOwner =$rootScope.thread.Owner.username;
-              $rootScope.headAvatar =$rootScope.thread.Owner.avatar_img;*/
+          
+           window.localStorage.setItem('uploadingImages',JSON.stringify($rootScope.uploadingHeadImages["image"]));
             $state.go('tab.head',{id:response.Head.id});
-
+         
     });
   };
 
@@ -1738,6 +1791,36 @@ angular.module('starter.controllers', [])
      }
    });
   };
+  
+  $scope.renameFile=function(fileUri,currentName, currentDir, newName) {
+    
+    window.resolveLocalFileSystemURL(
+        fileUri,
+        function(fileEntry){
+              window.resolveLocalFileSystemURL(currentDir,
+                      function(dirEntry) {
+                          // move the file to a new directory and rename it
+                          fileEntry.moveTo(dirEntry, newName,function(){
+                            var dd=currentDir+'/'+newName;
+                            $scope.uploadedImgs.push(dd);
+                            if($rootScope.headAction=='edit'){
+                              var Upload={'Upload':{'path':dd}};
+                              $rootScope.headContent.Uploads.push(Upload);
+                            }
+                             
+                            
+                          }, $scope.renameFail());
+                      },
+                      $scope.renameFail());
+        },
+        $scope.renameFail());
+  
+  }
+  
+  //and the sample fail function
+  $scope.renameFail=function() {
+  }
+  
 
 // Take image with the camera or from library
 
@@ -1762,12 +1845,15 @@ $scope.selectPicture = function($act) {
           };
 
           $cordovaCamera.getPicture(options).then(function(img){
-
-              $scope.uploadedImgs.push(img);
-            if($rootScope.headAction=='edit'){
-              var Upload={'Upload':{'path':img}};
-              $rootScope.headContent.Uploads.push(Upload);
-            }
+              var currdir=null;
+              var filename=img.split("/")[img.split("/").length - 1]
+              currdir = img.substr(0, img.lastIndexOf("/"));
+              var xx=filename.split(".");
+              var newx = Base64.encode(xx[0]);
+              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
+           
+            
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -1789,12 +1875,14 @@ $scope.selectPicture = function($act) {
           };
 
           $cordovaCamera.getPicture(options).then(function(img){
-
-              $scope.uploadedImgs.push(img);
-          if($rootScope.headAction=='edit'){
-              var Upload={'Upload':{'path':img}};
-              $rootScope.headContent.Uploads.push(Upload);
-            }
+              var currdir=null;
+              var filename=img.split("/")[img.split("/").length - 1]
+              currdir = img.substr(0, img.lastIndexOf("/"));
+              var xx=filename.split(".");
+              var newx = Base64.encode(xx[0]);
+              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
+              
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -1810,15 +1898,16 @@ $scope.selectPicture = function($act) {
       };
 
       $cordovaImagePicker.getPictures(options).then(function(results){
+
          var Upload=null;
           for(var i=0;i < results.length;i++){
-
-
-              $scope.uploadedImgs.push(results[i]);
-             if($rootScope.headAction=='edit'){
-             Upload={'Upload':{'path':results[i]}};
-              $rootScope.headContent.Uploads.push(Upload);
-            }
+              var currdir=null;
+              var filename=results[i].split("/")[results[i].split("/").length - 1]
+              currdir = results[i].substr(0, results[i].lastIndexOf("/"));
+              var xx=filename.split(".");
+              var newx = Base64.encode(xx[0]);
+              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1])
           }
       },function(error){
         // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
@@ -1855,16 +1944,19 @@ $scope.selectPicture = function($act) {
         };
         $scope.Upload={};
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i,o).then(function(result) {
-          $rootScope.thread.Head.forEach(function(v,k){
-            if(typeof(isNew)!=='undefined' && isNew!=null)
-              $scope.headUploads=JSON.parse(result.response)[0];
+          console.log(result);
+          if(typeof(isNew)!=='undefined' && isNew!=null){
+            $rootScope.$broadcast('uploadingImageComplete',id);
+          }
+          
+         /* $rootScope.thread.Head.forEach(function(v,k){
             if(parseInt(v.id)==parseInt(id)){
                v.Uploads.push(JSON.parse(result.response)[0]);
                threads.put('threads/'+$scope.groupID, $rootScope.thread);
                if(threads.get('heads/'+id))
                   threads.put('heads/'+id,v);
             }
-          });
+          });*/
 
           $scope.img_ctr++;
 
@@ -1895,7 +1987,7 @@ $scope.selectPicture = function($act) {
 
 })
 
-.controller('HeadCtrl', function($scope,$state,NewModalService,$cordovaDevice,$cordovaInAppBrowser,Like,CacheFactory,$ionicModal,NotificationService,backButtonOverride,AuthService,BASE_URL,$cordovaDevice,$ionicSlideBoxDelegate,$cordovaActionSheet,API_URL,$cordovaFileTransfer,$ionicPopover,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$ionicLoading,Groups,$http,$ionicScrollDelegate,ApiService,$rootScope,$stateParams) {
+.controller('HeadCtrl', function($scope,Base64,$state,NewModalService,$cordovaDevice,$cordovaInAppBrowser,Like,CacheFactory,$ionicModal,NotificationService,backButtonOverride,AuthService,BASE_URL,$cordovaDevice,$ionicSlideBoxDelegate,$cordovaActionSheet,API_URL,$cordovaFileTransfer,$ionicPopover,$cordovaCamera,$cordovaImagePicker,$ionicPopup,$ionicLoading,Groups,$http,$ionicScrollDelegate,ApiService,$rootScope,$stateParams) {
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
     });
@@ -1910,7 +2002,6 @@ $scope.selectPicture = function($act) {
       else
         $scope.showChosenImage=index;
     }
-
     $rootScope.showLiked=[];
     $scope.showLikes=function(head,comment,type){
 
@@ -1921,7 +2012,14 @@ $scope.selectPicture = function($act) {
       }
       NewModalService.showModal($scope);
     }
-
+    $rootScope.$on('uploadingImageComplete',function(event,data){
+      if((window.localStorage.getItem('uploadingImages') !== null) && (data==$stateParams['id'])){
+        $rootScope.uploadingHeadImages["Uploads"]=[];
+        $rootScope.uploadingHeadImages["image"]=[];
+         window.localStorage.removeItem('uploadingImages');
+        $scope.gethead(true);
+      }
+    });
     $scope.linkify=function(text) {
       if(!text) return "";
       var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
@@ -2016,18 +2114,17 @@ $scope.selectPicture = function($act) {
     if(interval!==null)
       clearInterval(interval);
   });
-
+  $scope.stillUploading=false;
   $scope.updateCache=function(lastid=0){
 
     Groups.updateHeadCache($scope.headID,'heads/'+$scope.headID,'comment',lastid).then(function(response){
-       console.log("Head" in response);
+      console.log(response);
         if("Head" in response){
           $rootScope.threadTitle = response.Thread.title;
           $rootScope.headOwner = response.Owner.username;
           $scope.thread=response.Thread;
           $scope.getHeads=response.Head;
           $scope.headUploads = response.Upload;
-
           $rootScope.viewedHeadContents=response.Head;
           $ionicLoading.hide();
         }else{
@@ -2042,16 +2139,20 @@ $scope.selectPicture = function($act) {
 
     });
   };
+  $scope.headUploads=[];
+  $scope.gethead=function(x=false){
 
-  $scope.gethead=function(){
-
-      Groups.getComments($scope.headID).then(function(response){
-        console.log(response+'getHead');
-        /*$rootScope.threadTitle = response.Thread.title;
-        $rootScope.headOwner = response.Owner.username;*/
+      Groups.getComments($scope.headID,x).then(function(response){
         $scope.getHeads = response.Head;
         $scope.thread=response.Thread;
-        $scope.headUploads = response.Upload;
+         if(window.localStorage.getItem('uploadingImages') !== null){
+            $scope.stillUploading=true;
+           $scope.headUploads["image"]=[];
+          $scope.headUploads["image"] = JSON.parse(window.localStorage.getItem('uploadingImages'));
+         }else{
+            $scope.stillUploading=false;
+          $scope.headUploads = response.Upload;
+         }
         $scope.comments=response;
         $rootScope.viewedHeadContents=response.Head;
         $ionicLoading.hide();
@@ -2150,6 +2251,35 @@ $scope.selectPicture = function($act) {
 
       });
     };
+    
+  $scope.renameFile=function(fileUri,currentName, currentDir, newName) {
+      
+      window.resolveLocalFileSystemURL(
+          fileUri,
+          function(fileEntry){
+                window.resolveLocalFileSystemURL(currentDir,
+                        function(dirEntry) {
+                            // move the file to a new directory and rename it
+                            fileEntry.moveTo(dirEntry, newName,function(){
+                              var dd=currentDir+'/'+newName;
+                              $scope.uploadedCommentimgs.push(dd);
+                              if($scope.action=='edit'){
+                                var Upload={'Upload':{'path':dd}};
+                                $scope.newComment.Uploads.push(Upload);
+                              }
+                            }, $scope.renameFail());
+                        },
+                        $scope.renameFail());
+          },
+          $scope.renameFail());
+  
+  }
+  
+  //and the sample fail function
+  $scope.renameFail=function() {
+      console.log('failed');
+  }
+  
 
   // Take image with the camera or from library
 
@@ -2173,11 +2303,14 @@ $scope.selectPictureInComment = function($act) {
           };
 
           $cordovaCamera.getPicture(options).then(function(img){
-            $scope.uploadedCommentimgs.push(img);
-            if($scope.action=='edit'){
-              var Upload={'Upload':{'path':img}};
-              $scope.newComment.Uploads.push(Upload);
-            }
+              var currdir=null;
+              var filename=img.split("/")[img.split("/").length - 1]
+              currdir = img.substr(0, img.lastIndexOf("/"));
+              var xx=filename.split(".");
+              var newx = Base64.encode(xx[0]);
+              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
+            
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -2195,16 +2328,18 @@ $scope.selectPictureInComment = function($act) {
           };
 
           $cordovaCamera.getPicture(options).then(function(img){
-            $scope.uploadedCommentimgs.push(img);
-            if($scope.action=='edit'){
-              var Upload={'Upload':{'path':img}};
-              $scope.newComment.Uploads.push(Upload);
-            }
+              var currdir=null;
+              var filename=img.split("/")[img.split("/").length - 1]
+              currdir = img.substr(0, img.lastIndexOf("/"));
+              var xx=filename.split(".");
+              var newx = Base64.encode(xx[0]);
+              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
    }
-
+  
 
   }
   if($act=="upload"){
@@ -2218,11 +2353,12 @@ $scope.selectPictureInComment = function($act) {
       $cordovaImagePicker.getPictures(options).then(function(results){
          var Upload=null;
           for(var i=0;i < results.length;i++){
-            $scope.uploadedCommentimgs.push(results[i]);
-            if($scope.action=='edit'){
-             Upload={'Upload':{'path':results[i]}};
-              $scope.newComment.Uploads.push(Upload);
-            }
+             var currdir=null;
+              var filename=results[i].split("/")[results[i].split("/").length - 1]
+              currdir = results[i].substr(0, results[i].lastIndexOf("/"));
+              var xx=filename.split(".");
+              var newx = Base64.encode(xx[0]);
+              $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1])
           }
       },function(error){
         // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
@@ -2357,6 +2493,7 @@ $rootScope.changeHeadLike=function(id,index){
         $scope.Upload={};
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i.path,o,true).then(function(result) {
           i.loading=false;
+          console.log(result);
           i.path=JSON.parse(result.response)[0]['Upload']['path'];
           i.name=JSON.parse(result.response)[0]['Upload']['name'];
 
@@ -2505,7 +2642,7 @@ $rootScope.changeHeadLike=function(id,index){
   };
 })
 
-.controller('AccountCtrl', function($scope,$http,API_URL,$cordovaFileTransfer,$rootScope,$timeout,$cordovaImagePicker,$ionicPopup,$cordovaNetwork,$cordovaCamera,$cordovaDevice,$cordovaActionSheet,$state,AuthService,$ionicHistory,$interval,$ionicModal,BASE_URL,$ionicLoading) {
+.controller('AccountCtrl', function($scope,Base64,$http,API_URL,$cordovaFileTransfer,$rootScope,$timeout,$cordovaImagePicker,$ionicPopup,$cordovaNetwork,$cordovaCamera,$cordovaDevice,$cordovaActionSheet,$state,AuthService,$ionicHistory,$interval,$ionicModal,BASE_URL,$ionicLoading) {
 
   $scope.settings = {
     enableFriends: true
@@ -2525,11 +2662,35 @@ $rootScope.changeHeadLike=function(id,index){
   $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
     viewData.enableBack = false;
   });
+  
+  $scope.renameFile=function(fileUri,currentName, currentDir, newName) {
+    
+    window.resolveLocalFileSystemURL(
+        fileUri,
+        function(fileEntry){
+              window.resolveLocalFileSystemURL(currentDir,
+                      function(dirEntry) {
+                          // move the file to a new directory and rename it
+                          fileEntry.moveTo(dirEntry, newName,function(){
+                            var dd=currentDir+'/'+newName;
+                            $scope.changeProfileImage(dd);
+                          }, renameFail);
+                      },
+                      renameFail);
+        },
+        renameFail);
+  
+  }
+  
+  //and the sample fail function
+  function renameFail() {
+      console.log('failed');
+  }
 
 
-    $rootScope.user=AuthService.username();
-    $rootScope.affiliation=AuthService.affiliation();
-    $rootScope.avatar_img=window.localStorage.getItem('avatar_img');
+  $rootScope.user=AuthService.username();
+  $rootScope.affiliation=AuthService.affiliation();
+  $rootScope.avatar_img=window.localStorage.getItem('avatar_img');
 
   $scope.uploadType=null;
   $scope.triggerProfileImgChange=function(){
@@ -2580,10 +2741,12 @@ $rootScope.changeHeadLike=function(id,index){
               };
 
               $cordovaCamera.getPicture(options).then(function(img){
-                $scope.changeProfileImage(img);
-                // $scope.uploadedProfileImg=img;
-                // $scope.showUploadingButtons=true;
-                // $scope.uploadedProf=true;
+                 var currdir=null;
+                  var filename=img.split("/")[img.split("/").length - 1]
+                  currdir = img.substr(0, img.lastIndexOf("/"));
+                  var xx=filename.split(".");
+                  var newx = Base64.encode(xx[0]);
+                  $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
               },function(error){
 
               });
@@ -2604,10 +2767,12 @@ $rootScope.changeHeadLike=function(id,index){
               };
 
               $cordovaCamera.getPicture(options).then(function(img){
-                $scope.changeProfileImage(img);
-                // $scope.uploadedProfileImg=img;
-                // $scope.showUploadingButtons=true;
-                // $scope.uploadedProf=true;
+                 var currdir=null;
+                  var filename=img.split("/")[img.split("/").length - 1]
+                  currdir = img.substr(0, img.lastIndexOf("/"));
+                  var xx=filename.split(".");
+                  var newx = Base64.encode(xx[0]);
+                  $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
 
               },function(error){
                 // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
@@ -2629,11 +2794,14 @@ $rootScope.changeHeadLike=function(id,index){
           $cordovaImagePicker.getPictures(options).then(function(results){
              var Upload=null;
               for(var i=0;i < results.length;i++){
-                //  $scope.uploadedProfileImg=results[i];
-                $scope.changeProfileImage(results[i]);
+                var currdir=null;
+                var filename=results[i].split("/")[results[i].split("/").length - 1]
+                currdir = results[i].substr(0, results[i].lastIndexOf("/"));
+                var xx=filename.split(".");
+                var newx = Base64.encode(xx[0]);
+                $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1])
               }
-              // $scope.showUploadingButtons=true;
-              // $scope.uploadedProf=true;
+              
 
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
@@ -2719,7 +2887,7 @@ $rootScope.changeHeadLike=function(id,index){
     $ionicLoading.show({
       template:'<ion-spinner name="bubbles"></ion-spinner>'
     });
-    ApiService.Post('users/mobilelogin/',{"User":{"loginid":data.loginid,"password":data.password}}).then(function(response){
+    ApiService.Post('users/mobilelogin/',{"User":{"username":data.loginid,"password":data.password}}).then(function(response){
       if(response){
 
       $ionicLoading.hide();
@@ -2727,7 +2895,7 @@ $rootScope.changeHeadLike=function(id,index){
       if(response['user']["User"]){
         $rootScope.user_id=response['user']["User"]['id'];
         var token=Base64.encode(data.loginid + ':' + data.password);
-        AuthService.storeUserCredentials(token,response['user']["Profile"]['name'],response['user']["Profile"]['affiliation'],response['user']['User']['avatar_img'],response['user']["User"]['id'],response['user']["User"]['outside_userid'],response['user']["Profile"]['id']);
+        AuthService.storeUserCredentials(token,response['user']["User"]['username'],response['user']["Profile"]['affiliation'],response['user']['User']['avatar_img'],response['user']["User"]['id'],response['user']["User"]['outside_userid'],response['user']["Profile"]['id']);
         AuthService.setdeviceToken(false);
            $rootScope.allInterval=setInterval(function(){
              NotificationService.setNotif();

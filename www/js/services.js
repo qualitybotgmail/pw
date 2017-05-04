@@ -364,11 +364,11 @@ angular.module('starter.services', [])
         }
       });
     },
-    getComments:function(headId) {
+    getComments:function(headId,reload=false) {
       var threads = CacheFactory.get('threads');
       var deferred=$q.defer();
-
-      if(threads.get('heads/'+headId)){
+    
+      if(threads.get('heads/'+headId) && !reload){
         deferred.resolve(threads.get('heads/'+headId));
       }else{
         $http.get(API_URL+"heads/"+headId+".json",{

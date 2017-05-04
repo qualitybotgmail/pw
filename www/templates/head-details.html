@@ -25,10 +25,12 @@
         	   <p style="padding-left: 15px;font-size:18px;cursor:pointer" ng-repeat="file in headUploads.non_image track by $index" ng-click="redirectFile(file.path)">{{file.name}}</p>
         	 </div>
           	<div ng-show="headUploads.image.length == 1" prevent-href="true" style="width:100%;text-align:center;">
-          		<img ng-repeat="upload in headUploads.image track by $index" ng-src="{{base_url}}{{upload.path}}" ng-click="showImages($index,'head',0)" style="width:100%;height:auto;"/>
+          		<img ng-show="!stillUploading" ng-repeat="upload in headUploads.image track by $index" ng-src="{{base_url}}{{upload.path}}" ng-click="showImages($index,'head',0)" style="width:100%;height:auto;"/>
+          		<img ng-show="stillUploading" ng-repeat="upload in headUploads.image track by $index" ng-src="{{upload.path}}" ng-click="showImages($index,'head',0)" style="width:100%;height:auto;"/>
           	</div>
           	<ion-scroll direction="x" ng-show="headUploads.image.length > 1" prevent-href="true">
-          		<img ng-repeat="upload in headUploads.image track by $index" ng-src="{{base_url}}{{upload.path}}" ng-click="showImages($index,'head',0)" style="width:auto;height:350px;"/>
+          		<img ng-show="!stillUploading" ng-repeat="upload in headUploads.image track by $index" ng-src="{{base_url}}{{upload.path}}" ng-click="showImages($index,'head',0)" style="width:auto;height:350px;"/>
+          		<img ng-show="stillUploading" ng-repeat="upload in headUploads.image track by $index" ng-src="{{upload.path}}" ng-click="showImages($index,'head',0)" style="width:auto;height:350px;"/>
           	</ion-scroll>
 
         </a>
