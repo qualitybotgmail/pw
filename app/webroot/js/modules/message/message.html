@@ -63,31 +63,41 @@
         <div class="" ng-if="message.Groupchat.id">
           <div id="dm_header">
             <div class="dm_header_title">
-              <span id="dm_title" class="thread-users" title="members">
-                <i class="glyphicon glyphicon-user"></i>
-                <span>:</span>
-                <span ng-repeat="u in message.User" ng-if="message.User.length">
-                  {{u.username}}
-                  {{$last ? '' : ', '}}
-                </span>
-              </span>
-
-            <div class="btn-group pull-right" role="group" ng-if="loginUser.id == message.Owner.id">
-                <button class="btn btn-sm btn-secondary" ng-click="addMembers(message.Groupchat)">
-                  <i class="fa fa-plus-square-o clickable"></i>
-                </button>
-                <div class="btn-group" role="group">
-                  <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-                    <span class="fa fa-cog"></span>
-                    &nbsp;
-                    <span class="fa fa-caret-down"></span>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-right">
-                      <li><a href="" class="clickable" role="button" ng-click="deleteGroupChat(message.Groupchat.id)">削除</a></li>
-                  </ul>
+              <div class="col-md-8">
+                <span id="dm_title" class="thread-users" title="members">
+                  <i class="glyphicon glyphicon-user"></i>
+                  <span>:</span>
+                  <span ng-repeat="u in message.User | limitTo: noOfUserToView" ng-if="message.User.length">
+                    {{u.username}}
+                    {{$last ? '' : ', '}}
+                    <br ng-if="$last"/>
+                    <a href="javascript:void(0)" ng-if="noOfUserToView < message.User.length && $last" ng-click="loadUser()">
+                        もっと 。 。                
+                    </a>
+                    <a href="javascript:void(0)" ng-if="noOfUserToView > message.User.length && $last" ng-click="hideUser()">
+                        隠す
+                    </a>
+                  </span>
+                </span>  
+              </div>
+              <div class="col-md-4">
+                <div class="btn-group pull-right" role="group" ng-if="loginUser.id == message.Owner.id">
+                    <button class="btn btn-sm btn-secondary" ng-click="addMembers(message.Groupchat)">
+                      <i class="fa fa-plus-square-o clickable"></i>
+                    </button>
+                    <div class="btn-group" role="group">
+                      <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+                        <span class="fa fa-cog"></span>
+                        &nbsp;
+                        <span class="fa fa-caret-down"></span>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-right">
+                          <li><a href="" class="clickable" role="button" ng-click="deleteGroupChat(message.Groupchat.id)">削除</a></li>
+                      </ul>
+                    </div>
                 </div>
-            </div>
-            </div>
+                </div>
+            </div>  
           </div>
 
         <div id="share" class="dm" style="height: 805px; overflow-y: auto; overflow-x: hidden;width: 100%">

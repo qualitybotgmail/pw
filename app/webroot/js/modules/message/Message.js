@@ -52,6 +52,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	$scope.pageLimit = 10;
         	$scope.pageIndex = 1;
         	$scope.loginUser  = $rootScope.loginUser ;
+        	$scope.noOfUserToView = 10;
         	
         	
         	// var for selected message
@@ -59,6 +60,20 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	$scope.comment = { body: '', message_id: null};
         	$scope.loadFirstTime = true;
         	//angular.element(document.getElementsByClassName("search-result")).hide();
+        	
+        	$scope.checkUserLength = function () {
+        	    
+        	};
+        	
+        	//load additional user
+        	$scope.loadUser = function(){
+        	    $scope.noOfUserToView += 10;
+        	};
+        	
+        	// hide user 
+        	$scope.hideUser = function(){
+        	    $scope.noOfUserToView = 10;
+        	};
         	
         	// check file if image
         	$scope.checkFile = function(path) {
@@ -286,11 +301,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                     			}
                     			// console.log(lastMessage.Upload.length, '!==', latestMessage.Upload.length, ' : ', lastMessage.Upload.length !== latestMessage.Upload.length);
                     			if (lastMessage.Upload.length !== latestMessage.Upload.length){
-                    			    $scope.message.Message[currentMessageLength -1].Upload = latestMessage.Upload;
-                    			} 
-                    			
-                    			if (lastMessage.body !== latestMessage.body) {
-                    			    $scope.message.Message[currentMessageLength -1].body = latestMessage.body;    
+                    			    $scope.message.Message[messageLength -1] = latestMessage;
                     			}
             	            }
                         }
