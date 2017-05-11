@@ -28,6 +28,16 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         
         function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, Modal, ThreadsModel, IgnoredThreadsModel, ThreadsFactory) {
             
+            //load additional user
+        	$scope.loadUser = function($index, groupchat) {
+        	    $rootScope.createdGroupChats[$index].noOfUserToView += 10;
+        	};
+        	
+        	// hide user 
+        	$scope.hideUser = function($index, groupchat){
+        	    $rootScope.createdGroupChats[$index].noOfUserToView = 10;
+        	};
+        	
             // $scope.currentPageNumber = 1;
             // $scope.threads = [];
             

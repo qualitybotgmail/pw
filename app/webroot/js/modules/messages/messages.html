@@ -35,9 +35,15 @@
                         	<!--<span>-->
                         	<!--	<b>You</b>,&nbsp;-->
                         	<!--</span>-->
-                        	<span ng-repeat="u in groupchat.User">
+                        	<span ng-repeat="u in groupchat.User | limitTo: groupchat.noOfUserToView ">
                                 {{u.username}}
                                 {{$last ? '' : ', '}}
+                                <span class="btn btn-xs btn-primary" ng-if="groupchat.noOfUserToView < groupchat.User.length && $last" ng-click="loadUser(groupChatIndex, groupchat)">
+                                    more...
+                                </span>
+                                <span class="btn btn-xs btn-warning" ng-if="groupchat.noOfUserToView > groupchat.User.length && $last" ng-click="hideUser(groupChatIndex, groupchat)">
+                                    hide
+                                </span>
                             </span>
                         </span>
                     </a>
