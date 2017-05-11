@@ -70,7 +70,6 @@
                   <span ng-repeat="u in message.User | limitTo: noOfUserToView" ng-if="message.User.length">
                     {{u.username}}
                     {{$last ? '' : ', '}}
-                    <br ng-if="$last"/>
                     <a href="javascript:void(0)" ng-if="noOfUserToView < message.User.length && $last" ng-click="loadUser()">
                         もっと 。 。                
                     </a>

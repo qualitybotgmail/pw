@@ -256,6 +256,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	            res.groupchats.Message.reverse();
         	        }
         	        $scope.message = res.groupchats;
+        	        $scope.noOfUserToView = ($scope.message.User.length > 10)? 10: $scope.message.User.length;
         	        $scope.isLoadingMessage = false;
         	        $scope.startInterval();
         	    });
