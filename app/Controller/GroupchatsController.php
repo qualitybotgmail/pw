@@ -101,7 +101,7 @@ class GroupchatsController extends AppController {
 			'contain' => array(
 				
 				'Message'=>array(
-					'conditions' => array('id >' => $lastid),
+					'conditions' => array('id >=' => $lastid),
 					'User.username','User.id','Upload.path','Upload.created'),'User.username','User.id','Owner.username','Owner.id'
 			)		
 		);
@@ -462,8 +462,10 @@ class GroupchatsController extends AppController {
 		$this->loadModel('Message');
 		$this->Message->recursive = -1;
 		$this->Message->Behaviors->load('Containable');
+		// $this->Message->virtualFields['date']="DATE_FORMAT(Message.created,'%m-%d-%Y')";
 		$this->Message->virtualFields['date']="DATE_FORMAT(Message.created,'%Y/%m/%d')";
 		$this->Message->virtualFields['time']="DATE_FORMAT(Message.created,'%H:%i')";
+
 		$this->Message->virtualFields['loading']="false";
 		$options=array(
 					'limit'=>10,

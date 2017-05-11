@@ -49,41 +49,70 @@
         <p class="text-yellow">LOADING</p>
 	</div>
 </div>
-<div class="panel colourable" ng-if="selectedHead.Thread.id">
+<div class="panel colourable" ng-if="selectedHead.Thread.id" id="threadContent" style="overflow-y: scroll;height: 900px;">
+                    <script type="text/javascript">
+                      //読み込み時の表示
+                      window_load();
+
+                      //ウィンドウサイズ変更時に更新
+                      window.onresize = window_load;
+
+                      //サイズの表示F
+                      function window_load() {
+                        var sH = window.innerHeight;
+
+                        document.getElementById("threadContent").style.height = sH - 220 + "px";
+
+                      }
+                    </script>  
     <div class="panel-heading">
         <span class="panel-title">
             <div>
                 <small>
                     {{selectedHead.Thread.title}}
                 </small>
-                <p class="lead head-body" ng-init="fromattedBody=formatComment(selectedHead.Head.body)">
+                <p class="head-body" ng-init="fromattedBody=formatComment(selectedHead.Head.body)" style="font-weight: 600;">
                     {{fromattedBody}}
                 </p>
+                <p style="margin-top:8px;">
+                  <span ng-repeat="upload in selectedHead.Upload.image">
+                      <span ng-init="upload.isFileImage=checkFile(upload.path)"></span>
+                      <a ng-href="{{upload.path}}" target="_blank" ng-if="!upload.isFileImage">
+                        {{upload.name}}
+                      </a>
+                      <a fancybox ng-href="{{upload.path}}" ng-if="upload.isFileImage">
+                          <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                      </a>
+                  </span>
+                  <span ng-repeat="upload in selectedHead.Upload.non_image">
+                      <span ng-init="upload.isFileImage=checkFile(upload.path)"></span>
+                      <a ng-href="{{upload.path}}" target="_blank" ng-if="!upload.isFileImage">
+                        {{upload.name}}
+                      </a>
+                      <a fancybox ng-href="{{upload.path}}" ng-if="upload.isFileImage">
+                          <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                      </a>
+                  </span>
+                </p>
             </div>
-            
-            <br>
+
             <span style="font-size:11px;">
-                {{selectedHead.Thread.created}}
+                {{selectedHead.Head.created}}
             </span>
+		        <span style="font-size:11px;">by: {{selectedHead.Owner.username == loginUser.username ? "あなた": selectedHead.Owner.username}}</span>
         </span>
         <div class="panel-heading-controls">
-            <button class="btn btn-sm {{(selectedHead.Head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="selectedHead.Head.processing" ng-click="like($index, selectedHead.Head)">
+            <a href="javascript:void(0)" class="text-xs" ng-if="selectedHead.Head.likes_count > 0 && !selectedHead.Head.isUserLiked" ng-click="showUsers(selectedHead.Head.likes)">
+                {{selectedHead.Head.likes_count}} 人がいいね！と言っています
+            </a>
+            <a href="javascript:void(0)" class="text-xs" ng-if="selectedHead.Head.likes_count > 1 && selectedHead.Head.isUserLiked" ng-click="showUsers(selectedHead.Head.likes)">
+                あなたと {{selectedHead.Head.likes_count - 1}} 人がいいね！と言っています
+            </a>
+            <button ng-if="selectedHead.Owner.id != loginUser.id" class="btn btn-sm {{(selectedHead.Head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="selectedHead.Head.processing" ng-click="like($index, selectedHead.Head)">
                 <span class="fa fa-thumbs-o-up"></span>
             </button>
-            <span class="clickable" ng-if="selectedHead.Head.likes_count == 1 && selectedHead.Head.isUserLiked" ng-click="showUsers(selectedHead.Head.likes)">
-                You liked this head
-            </span>
-            <span class="clickable" ng-if="selectedHead.Head.likes_count == 1 && !selectedHead.Head.isUserLiked" ng-click="showUsers(selectedHead.Head.likes)">
-                {{selectedHead.Head.likes[0].User.username}} liked this head
-            </span>
-            <span class="clickable" ng-if="selectedHead.Head.likes_count > 1 && !selectedHead.Head.isUserLiked" ng-click="showUsers(selectedHead.Head.likes)">
-                {{selectedHead.Head.likes_count}} liked this head
-            </span>
-            <span class="clickable" ng-if="selectedHead.Head.likes_count > 1 && selectedHead.Head.isUserLiked" ng-click="showUsers(selectedHead.Head.likes)">
-                You and {{selectedHead.Head.likes_count - 1}} liked this head 
-            </span>
             
-            <div class="btn-group btn-group-sm">
+            <div ng-if="selectedHead.Owner.id == loginUser.id" class="btn-group btn-group-sm">
               <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown"><span class="fa fa-cog"></span>&nbsp;<span class="fa fa-caret-down"></span></button>
               <ul class="dropdown-menu dropdown-menu-right">
                 <li><a href="" class="clickable" role="button" ng-click="editHead(selectedHead.Head)">編集</a></li>
@@ -93,27 +122,10 @@
         </div> <!-- / .panel-heading-controls -->
     </div> <!-- / .panel-heading -->
     <ul class="list-group">
-        <li class="list-group-item">
-            <div class="row">
-                <div class="col-md-12">
-                    <p>
-                        <span ng-repeat="upload in selectedHead.Upload.non_image">
-                            <span ng-init="upload.isFileImage=checkFile(upload.path)"></span>
-                            <a ng-href="{{upload.path}}" target="_blank" ng-if="!upload.isFileImage">
-                              {{upload.name}}
-                            </a>
-                            <a fancybox ng-href="{{upload.path}}" ng-if="upload.isFileImage">
-                                <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
-                            </a>
-                        </span>
-                    </p>
-                </div>
-            </div>
-        </li>
         <li class="list-item" ng-if="selectedHead.Comment.length">
             <ul class="list-group commentList">
                 <li class="list-group-item" ng-repeat="c in selectedHead.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
-                    <small>by : {{c.User.username == loginUser.username ? "You" : c.User.username }}</small>
+                    <small>{{c.User.username == loginUser.username ? "あなた" : c.User.username }}</small>
                     <p class="head-comment" ng-init='c.formattedComment=formatComment(c.body)' >{{c.formattedComment}}</p>
                     <p>
                         <span ng-repeat="u in c.Uploads">
@@ -127,36 +139,32 @@
                         </span>
                     </p>
                     <span style="font-size:10px;">{{c.created}}</span>
-                    <span class="clickable pull-right" ng-if="c.likes_count == 1 && c.isUserLiked" ng-click="showUsers(c.likes)">
-                        You liked this head
-                    </span>
-                    <span class="clickable pull-right" ng-if="c.likes_count == 1 && !c.isUserLiked" ng-click="showUsers(c.likes)">
-                        {{c.likes[0].User.username}} liked this head
-                    </span>
-                    <span class="clickable pull-right" ng-if="c.likes_count > 1 && !c.isUserLiked" ng-click="showUsers(c.likes)">
-                        {{c.likes_count}} liked this head
-                    </span>
-                    <span class="clickable pull-right" ng-if="c.likes_count > 1 && c.isUserLiked" ng-click="showUsers(c.likes)">
-                        You and {{c.likes_count - 1}} liked this head 
-                    </span>
-                    <button class="btn btn-xs {{(c.isUserLiked)?'':'btn-outline'}} btn-warning pull-right" ng-disabled="c.processing" ng-click="likeComment($index, c)">
+                    <button ng-if="c.User.id != loginUser.id" class="btn btn-xs {{(c.isUserLiked)?'':'btn-outline'}} btn-warning pull-right" ng-disabled="c.processing" ng-click="likeComment($index, c)">
                         <span class="fa fa-thumbs-o-up"></span>
                     </button>
+                    <a href="javascript:void(0)" class="text-xs pull-right" ng-if="c.likes_count > 0 && !c.isUserLiked" ng-click="showUsers(c.likes)">
+                        {{c.likes_count}} 人がいいね！と言っています
+                    </a>
+                    <a href="javascript:void(0)" class="text-xs pull-right" ng-if="c.likes_count > 1 && c.isUserLiked" ng-click="showUsers(c.likes)">
+                        あなたと {{c.likes_count - 1}} 人がいいね！と言っています
+                    </a>
                 </li>
             </ul>
         </li>
-        <li class="list-group-item form-group">
+    </ul>
+
+</div> <!-- / .panel -->
+        <div id="threadCommentFrm" style="display: fixed; bottom:0;" class="col-sm-12">
             <form  role="form" id="commentFrm" name="commentFrm" method="POST" enctype="multipart/form-data" 
                         novalidate ng-submit="sendComment()">
-                
-                <input type="text" name="data[Upload][comment_id]" class="hidden" id="comment-id" ng-model="comment.comment_id" />
-                <input type="file" name="data[Upload][file]" id="attachments"  multiple />
+                <span id="CommentFrmHead" style="position: relative;">
+                        <input type="text" name="data[Upload][comment_id]" class="hidden" id="comment-id" ng-model="comment.comment_id" />
+                    <input style="display: inline;" type="file" name="data[Upload][file]" id="attachments"  multiple />
+                    <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin-top:4px;">コメント</button>
+                </span>
                 <textarea ng-click='textboxClicked()' name="data[Upload][body]" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
-                <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin-top:4px;">コメント</button>
                 
             </form>
-        </li>
-    </ul>
-</div> <!-- / .panel -->
+        </div>
 
 <div ng-repeat="template in templates" ng-include="template"></div>

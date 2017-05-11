@@ -17,6 +17,7 @@ class ImageCorrector{
                     break;
             }
         }
+        header('Content-type: image/jpeg');
         imagejpeg($image ,$output);
         imagedestroy($image);
     }

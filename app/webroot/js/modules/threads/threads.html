@@ -20,7 +20,7 @@
     }
     
 </style>
-<div class="panel colourable"  ng-if="thread.Thread" ng-repeat="thread in threads">
+<div class="panel colourable col-sm-12" ng-if="thread.Thread" ng-repeat="thread in threads">
     <div class="panel-heading">
         <span class="panel-title">
             <div>
@@ -35,7 +35,7 @@
                 <span class="thread-users" title="members">
                 	<i class="glyphicon glyphicon-user"></i>
                 	<span>:</span>
-                	<span>
+                	<span ng-if="thread.Owner.id > 0">
                 		{{thread.Owner.username}}
                 		{{thread.User.length ? ', ' : ''}}
                 	</span>
@@ -46,9 +46,10 @@
                 </span>
             </span>
             <br>
-            <span style="font-size:11px;">
+            <span ng-if="thread.Owner.id > 0" style="font-size:11px;">
                 {{thread.Thread.created}}
             </span>
+            <span ng-if="thread.Owner.id == 0" style="font-size:11px;">&nbsp;</span>
         </span>
         <div class="panel-heading-controls">
             <input type="checkbox" 
