@@ -514,3 +514,6 @@ line-height: 22px;
 .text-yellow{
 	color: orange;
 }
+#main-wrapper{
+  overflow-y:scroll!important;
+}

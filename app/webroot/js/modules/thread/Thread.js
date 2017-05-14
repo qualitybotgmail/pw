@@ -39,8 +39,20 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             $scope.templates = ThreadFactory.templates;
             $scope.currentPageNumber = 1;
             $scope.loginUser  = $rootScope.loginUser;
+            $scope.noOfUserToView = 10;
             
             window.notification_count_function();
+            
+            //load additional user
+        	$scope.loadUser = function(){
+        	    $scope.noOfUserToView += 10;
+        	};
+        	
+        	// hide user 
+        	$scope.hideUser = function(){
+        	    $scope.noOfUserToView = 10;
+        	};
+        	
             
             var _updateThreadTitle = function(threadId){
                 for (var i = 0; i < $rootScope.threads.length; i++) {
@@ -174,6 +186,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	        result.Thread.push_notification = true;
         	        var thread = result;
         	        $scope.thread = thread;
+        	        $scope.noOfUserToView = ($scope.thread.User.length > 10)?10:$scope.thread.User.length;
         	        $scope.checkNotificationSetting(thread);
         	    });
         	};

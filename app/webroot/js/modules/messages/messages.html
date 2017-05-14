@@ -38,14 +38,14 @@
                         	<span ng-repeat="u in groupchat.User | limitTo: groupchat.noOfUserToView ">
                                 {{u.username}}
                                 {{$last ? '' : ', '}}
-                                <span class="btn btn-xs btn-primary" ng-if="groupchat.noOfUserToView < groupchat.User.length && $last" ng-click="loadUser(groupChatIndex, groupchat)">
-                                    more...
-                                </span>
-                                <span class="btn btn-xs btn-warning" ng-if="groupchat.noOfUserToView > groupchat.User.length && $last" ng-click="hideUser(groupChatIndex, groupchat)">
-                                    hide
-                                </span>
                             </span>
                         </span>
+                    </a>
+                    <a href="javascript:void(0)" ng-if="groupchat.noOfUserToView < groupchat.User.length" ng-click="loadUser(groupChatIndex, groupchat)">
+                        more...
+                    </a>
+                    <a href="javascript:void(0)" ng-if="groupchat.noOfUserToView >= groupchat.User.length && groupchat.noOfUserToView > 10" ng-click="hideUser(groupChatIndex, groupchat)">
+                        hide
                     </a>
                     <span class="badge badge-info" ng-if="groupchat.Groupchat.notifications">{{groupchat.Groupchat.notifications}}</span>
                 </label>

@@ -299,8 +299,8 @@ define([
 	    	        $rootScope.createdGroupChats = res.groupchats;
 	    	        
 	    	        angular.forEach($rootScope.createdGroupChats, function(value, key) {
-	    	            value.noOfUserToView = (value.User.length > 10)?10:value.noOfUserToView;
-	    	        })
+	    	            value.noOfUserToView = (value.User.length > 10)?10:value.User.length;
+	    	        });
 	    	    });	
     	    }
     	    

@@ -73,7 +73,7 @@
                     <a href="javascript:void(0)" ng-if="noOfUserToView < message.User.length && $last" ng-click="loadUser()">
                         more...
                     </a>
-                    <a href="javascript:void(0)" ng-if="noOfUserToView > message.User.length && $last" ng-click="hideUser()">
+                    <a href="javascript:void(0)" ng-if="noOfUserToView >= message.User.length && noOfUserToView > 10 && $last" ng-click="hideUser()">
                         hide
                     </a>
                   </span>
