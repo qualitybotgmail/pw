@@ -517,3 +517,7 @@ line-height: 22px;
 #main-wrapper{
   overflow-y:scroll!important;
 }
+
+a.list-group-item.active, a.list-group-item.active:hover, a.list-group-item.active:focus {
+  background-color: #ffffff !important;
+}

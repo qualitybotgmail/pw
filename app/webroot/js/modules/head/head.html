@@ -42,14 +42,8 @@
     
 </style>
 
-<div id="loading" ng-if="!selectedHead.Thread.id">
-	<div class="loading-overlay-component"></div>
-	<div class="loading-element-component">
-		<i class="blue fa fa-spinner fa-spin fa-4x"></i>
-        <p class="text-yellow">LOADING</p>
-	</div>
-</div>
-<div class="panel colourable" ng-if="selectedHead.Thread.id" id="threadContent" style="overflow-y: scroll;height: 900px;">
+
+<div class="panel colourable" ng-if="selectedHead.Thread.id" id="threadContent" style="overflow-y: scroll;height: 900px;margin-bottom:0px !important;">
                     <script type="text/javascript">
                       //読み込み時の表示
                       window_load();
@@ -61,10 +55,17 @@
                       function window_load() {
                         var sH = window.innerHeight;
 
-                        document.getElementById("threadContent").style.height = sH - 220 + "px";
+                        document.getElementById("threadContent").style.height = sH - 190 + "px";
 
                       }
                     </script>  
+<div id="loading" ng-if="!selectedHead.Thread.id">
+	<div class="loading-overlay-component"></div>
+	<div class="loading-element-component">
+		<i class="blue fa fa-spinner fa-spin fa-4x"></i>
+        <p class="text-yellow">LOADING</p>
+	</div>
+</div>                    
     <div class="panel-heading">
         <span class="panel-title">
             <div>
@@ -154,7 +155,7 @@
     </ul>
 
 </div> <!-- / .panel -->
-        <div id="threadCommentFrm" style="display: fixed; bottom:0;" class="col-sm-12">
+        <div id="threadCommentFrm" style="display: fixed; bottom:0;background-color:#f3f3f3;padding:10px;" class="col-sm-12">
             <form  role="form" id="commentFrm" name="commentFrm" method="POST" enctype="multipart/form-data" 
                         novalidate ng-submit="sendComment()">
                 <span id="CommentFrmHead" style="position: relative;">
