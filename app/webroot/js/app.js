@@ -297,6 +297,10 @@ define([
     	    $rootScope.getGroupchat = function() {
     	    	Restangular.one('groupchats').get().then(function(res){
 	    	        $rootScope.createdGroupChats = res.groupchats;
+	    	        
+	    	        angular.forEach($rootScope.createdGroupChats, function(value, key) {
+	    	            value.noOfUserToView = (value.User.length > 10)?10:value.User.length;
+	    	        });
 	    	    });	
     	    }
     	    

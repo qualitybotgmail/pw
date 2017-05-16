@@ -483,14 +483,28 @@ class ProfilesController extends AppController {
 		
 		$u = $this->Profile->User->findById($this->Auth->user('id'));
 		$threads = array();
+		$t_dates = array();
 		foreach($u['Thread'] as $t){
 			$threads[] = array("Thread" => $t);
+			$t_dates[] = $t['modified'];
 		}
-		
+		// rsort($t_dates);
+
+		array_multisort($t_dates,$threads);
+		$threads = array_reverse($threads);
+	
 		foreach($threads as $k => $t){
 			$threads[$k]['Head'] = array();
 			$tid = $t['Thread']['id'];
-			$heads = $this->Profile->User->Thread->Head->findAllByThreadId($tid);
+			
+			$t_conditions = array(
+				'order' => array('Head.modified DESC'),
+				'conditions' => array(
+					'thread_id' => $tid
+				
+			));
+			$heads = $this->Profile->User->Thread->Head->find('all',$t_conditions);
+		//	$heads = $this->Profile->User->Thread->Head->findAllByThreadId($tid);
 		
 			foreach($heads as $kh=> $head){
 				$hid = $head['Head']['id'];
