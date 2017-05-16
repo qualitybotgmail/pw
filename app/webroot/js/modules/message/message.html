@@ -58,8 +58,23 @@
      font-size:12px;
   }
 </style>
-      <div class="contents_inner dm" style="height: 974px;">
+      <div class="contents_inner dm">
+        <div id="share" class="dm" style="height: 805px; overflow-y: auto; overflow-x: hidden;width: 100%">
+                    <script type="text/javascript">
+                      //読み込み時の表示
+                      window_load();
 
+                      //ウィンドウサイズ変更時に更新
+                      window.onresize = window_load;
+
+                      //サイズの表示F
+                      function window_load() {
+                        var sH = window.innerHeight;
+
+                        document.getElementById("share").style.height = sH - 190 + "px";
+
+                      }
+                    </script>  
         <div class="" ng-if="message.Groupchat.id">
           <div id="dm_header">
             <div class="dm_header_title">
@@ -99,22 +114,7 @@
             </div>  
           </div>
 
-        <div id="share" class="dm" style="height: 805px; overflow-y: auto; overflow-x: hidden;width: 100%">
-                    <script type="text/javascript">
-                      //読み込み時の表示
-                      window_load();
 
-                      //ウィンドウサイズ変更時に更新
-                      window.onresize = window_load;
-
-                      //サイズの表示F
-                      function window_load() {
-                        var sH = window.innerHeight;
-
-                        document.getElementById("share").style.height = sH - 220 + "px";
-
-                      }
-                    </script>  
           <div id="loading" ng-if="!message.Groupchat.id">
            <div class="loading-overlay-component"></div>
            <div class="loading-element-component">
@@ -122,10 +122,12 @@
               <p class="text-yellow">LOADING</p>
            </div>
           </div>
+          <span style="padding-left:10px;">
             <a class="messages-link clickable" ng-click="getPreviousMessages()" ng-disabled="isLoadingMessage" ng-if="message.page_info.has_next">
               <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" ng-if="isLoadingMessage"></span>
               MORE MESSAGES
             </a>
+          </span>
           <div id="dm_container">
 
         <!-- div id="message-list-wrapper">
@@ -200,19 +202,17 @@
   		<!--</div>  / .panel -->
       </div>
   </div>
-      <div style="position:fixed;bottom:0px;" class="col-sm-9">
-          <form role="form" id="messageFrm" name="messageFrm" method="POST" enctype="multipart/form-data" novalidate ng-submit="sendMessage()">
-              <div class="form-group">
-                <textarea ng-click='textboxClicked()' name="body" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
-                <div style="margin-top:8px;">
-                  <input type="file" id="attachments" multiple style="display:inline-block;">
-                  <button type="submit" class="btn btn-primary pull-right" ng-disabled="isSending">
-                      送信
-                  </button>
-                </div>
-              </div>
-          </form>
-      </div>
-  </div>
+</div>
 
+  </div>
+        <div id="threadMessageFrm" style="display: fixed; bottom:0;background-color:#f3f3f3;padding:10px;" class="col-sm-12">
+          <form role="form" id="messageFrm" name="messageFrm" method="POST" enctype="multipart/form-data" novalidate ng-submit="sendMessage()">
+                <span id="MessageFrmHead" style="position: relative;">
+                    <input type="file" id="attachments" multiple style="display:inline-block;">
+                    <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin-top:4px;" ng-disabled="isSending">コメント</button>
+                </span>
+                <textarea ng-click='textboxClicked()' name="body" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
+                
+            </form>
+        </div>
 <div ng-repeat="template in templates" ng-include="template"></div

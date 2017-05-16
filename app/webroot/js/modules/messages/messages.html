@@ -21,7 +21,22 @@
     
 </style>
 
+<div class="" id="messages" style="overflow-y: scroll;height: 900px;margin-bottom:0px !important;">
+                    <script type="text/javascript">
+                      //読み込み時の表示
+                      window_load();
 
+                      //ウィンドウサイズ変更時に更新
+                      window.onresize = window_load;
+
+                      //サイズの表示F
+                      function window_load() {
+                        var sH = window.innerHeight;
+
+                        document.getElementById("messages").style.height = sH - 65 + "px";
+
+                      }
+                    </script>  
 <div class="panel colourable" id="message-{{groupchat.Groupchat.id}}" ng-if="groupchat.Groupchat" ng-repeat="(groupChatIndex,groupchat) in createdGroupChats" ng-init="$last && fireMessageActiveEvent()">
     <div class="panel-heading">
         <span class="panel-title">
@@ -79,5 +94,5 @@
     <!--    {{groupchat.Groupchat.notifications}}-->
     <!--</span>-->
 </a>
-
+    </div>
 <div ng-repeat="template in templates" ng-include="template"></div>

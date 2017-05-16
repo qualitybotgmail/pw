@@ -89,7 +89,7 @@ class UsersController extends AppController {
 				$userid=$exist['User']['id'];
 				$prof=$this->Profile->find('first',array('conditions'=>array('user_id'=>$userid)));
 				$this->Profile->id=$prof['Profile']['id'];
-			
+				$this->User->addmember_all($userid);
 			}
 			
 			//$this->User->create();
@@ -97,8 +97,8 @@ class UsersController extends AppController {
 		
 				if($exist==null || count($exist) == 0)	 
 					$userid=$this->User->getInsertID();
-				
-					
+					$this->User->addmember_all($userid);
+
 					$last = $this->User->read(null,$userid);
 	    		
 					$profile=array(

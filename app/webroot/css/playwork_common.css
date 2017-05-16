@@ -375,7 +375,7 @@ input[type="text"]::-ms-clear{visibility:hidden}
 #wrapper #container .contact_container #contact_submit{background-color:#444444;width:75px;border-radius:3px;-moz-border-radius:3px;-webkit-border-radius:3px;font-size:12px;height:26px;color:#FFF}
 #wrapper #container .contact_container #contact_submit:hover{background-color:#606060;cursor:pointer}
 #wrapper #container .contact_container #contact_submit:disabled{background-color:#444444;opacity:0.5;cursor:auto !important}
-#wrapper #container{display:table-cell;background-color:#fff;background-color:white \9;padding:0;min-width:500px;width:100%;overflow:hidden;box-sizing:border-box;position:relative;padding-right: 10px;}
+#wrapper #container{display:table-cell;background-color:#fff;background-color:white \9;padding:0;min-width:500px;width:100%;overflow:hidden;box-sizing:border-box;position:relative;/*padding-right: 10px;*/}
 #wrapper #container #chat,#wrapper #container #group,#wrapper #container #group.user_config{padding-left:33px;background-color:#FFF;overflow-y:auto;height:100%}
 #wrapper #container #userinfo,#wrapper #container #password_change,#wrapper #container #password_forget,#wrapper #container #mail_main,#wrapper #container #profile,#wrapper #container #address_main,#wrapper #container #other,#wrapper #container #desktop{padding-left:8px;background-color:#FFF;overflow-y:auto;height:100%}
 #wrapper #container .container_table{width:100%;display:table;position:absolute;top:0}
@@ -913,7 +913,7 @@ body.ie .comment_actions .btn_file_upload{width:120px;height:27px}
 #left_nav{vertical-align:top;z-index:15;display:table-cell;visibility:hidden;background-color:#fff;color:#525860;width:250px;overflow-x:hidden;overflow-y:auto;margin:0;box-sizing:border-box;height:100%}
 @-moz-document url-prefix(){#left_nav{min-height:100%}
 }
-#left_nav .dm_group_list,#left_nav .left_profile,#left_nav .account_menu,#left_nav .manage_menu{border-right:solid 1px #eee;margin-right:7px;height:100%;position:absolute;width:240px;padding-left:5px}
+#left_nav .dm_group_list,#left_nav .left_profile,#left_nav .account_menu,#left_nav .manage_menu{border-right:solid 1px #eee;padding-right:7px;height:100%;position:absolute;width:250px;padding-left:5px}
 @-moz-document url-prefix(){#left_nav .dm_group_list,#left_nav .left_profile,#left_nav .account_menu,#left_nav .manage_menu{min-height:100%}
 }
 #left_nav a{color:#525860}
