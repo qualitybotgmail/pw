@@ -20,6 +20,7 @@
  */
 
 App::uses('Controller', 'Controller');
+App::import("Vendor","Cacher");
 
 /**
  * Application Controller
@@ -30,6 +31,7 @@ App::uses('Controller', 'Controller');
  * @package		app.Controller
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
+
 class AppController extends Controller {
 
     public $components = array("Cookie",
@@ -48,6 +50,13 @@ class AppController extends Controller {
             )
         )
     );
+
+    public function getCache($name){
+
+    	$cache = new CacheObj($this->Auth->user('id'),$name);
+    	return $cache;
+    }
+    
     public function status($s){
         echo json_encode(array('status' => $s));
         exit;
@@ -116,6 +125,7 @@ class AppController extends Controller {
 		$this->layout = 'bootstrap';
 		$this->Auth->allow('add','view','logout','login','findallby','findby','contains','upload');
 		
+
 	}
 	public function _plural(){
 		$spl =	explode("Controller",get_class($this));

@@ -26,6 +26,14 @@ class GroupchatsController extends AppController {
  * @return void
  */
 	public function index() {
+		$cache = $this->getCache('groupchats');
+		//$cache->clear();
+		$groupchats = $cache->get();
+
+		if($groupchats && count($groupchats)> 0){
+			$this->set('groupchats',$groupchats);
+			return;
+		}		
 		$this->Groupchat->recursive = 1;
 		
 		$id = $this->Auth->user('id');
@@ -47,7 +55,7 @@ class GroupchatsController extends AppController {
 		// 	return $m;
 		// }
 		//$groupchats['groupchats'] = array_map('gm',$groupchats['groupchats']);
-		
+		$cache->set($groupchats);
 		$this->set('groupchats', $groupchats);
 		//	print_r($groupchats);
 	//	exit;
@@ -90,7 +98,17 @@ class GroupchatsController extends AppController {
 	public function view($id = null,$chunks = null,$page = null,$lastid = 0) {
 		
 	//	print_r($this->Groupchat->findAllById($id));exit;
-		
+		$cache = $this->getCache('groupchats');	
+		if($cache){
+			$groupchats = $cache->get();
+			if($groupchats){
+				$this->set(array(
+					'groupchats' => $groupchats, 
+					'_serialize' => array('groupchats')
+				));
+				return;
+			}
+		}
 		if (!$this->Groupchat->exists($id)) {
 			throw new NotFoundException(__('Invalid groupchat'));
 		}
@@ -130,6 +148,7 @@ class GroupchatsController extends AppController {
 		if($lastid == 0){
 			$this->Groupchat->notified($id,$this->Auth->user('id'));
 		}
+		$cache->set($groupchats);
 		$this->set(array(
 			'groupchats' => $groupchats, 
 			'_serialize' => array('groupchats')
