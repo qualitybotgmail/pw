@@ -163,7 +163,7 @@
                     <input style="display: inline;" type="file" name="data[Upload][file]" id="attachments"  multiple />
                     <button type="submit" class="btn btn-sm btn-primary pull-right" style="margin-top:4px;">コメント</button>
                 </span>
-                <textarea ng-click='textboxClicked()' name="data[Upload][body]" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
+                <textarea ng-click='textboxClicked(selectedHead.Head.id)' name="data[Upload][body]" class="form-control" id="body" placeholder="共有したい情報を投稿" ng-model="comment.body"></textarea>
                 
             </form>
         </div>

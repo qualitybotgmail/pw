@@ -303,7 +303,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	// get thread for every 7 secs
         	$scope.startInterval = function() {
-        	   // console.log('starting interval');
+        	    // stops any running interval to avoid two intervals running at the same time
+                $scope.stopInterval();
+      
+        	    // console.log('starting interval');
         	    pendingQry = $interval($scope.getHead, 7000);    
         	};
         	
