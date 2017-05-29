@@ -17,8 +17,9 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         function(){
             var _this = this;
             _this.scrollDown = function(){
-                var $t = $('.commentList');
-                $t.animate({"scrollTop": $('.commentList')[0].scrollHeight}, "slow");
+                var $t = $('.colourable');
+                if(!$t[0]) return;
+                $t.animate({"scrollTop": $('.colourable')[0].scrollHeight}, "slow");
             };
         }
     ]);
@@ -77,6 +78,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             // format text 
             $scope.formatComment = function(comment){
+                if(!comment) return '';
                 return comment.replace(/↵/, '\n');
             };
             
