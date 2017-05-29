@@ -17,8 +17,9 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         function(){
             var _this = this;
             _this.scrollDown = function(){
-                var $t = $('.commentList');
-                $t.animate({"scrollTop": $('.commentList')[0].scrollHeight}, "slow");
+                var $t = $('.colourable');
+                if(!$t[0]) return;
+                $t.animate({"scrollTop": $('.colourable')[0].scrollHeight}, "slow");
             };
         }
     ]);
@@ -58,6 +59,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             $scope.comment = {};
             $scope.comment.body = '';
             $scope.isFetching = false;
+            $scope.isFetchingLatestComment = false;
             
             
             $scope.currentPageNumber = 1;
@@ -76,6 +78,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             
             // format text 
             $scope.formatComment = function(comment){
+                if(!comment) return '';
                 return comment.replace(/↵/, '\n');
             };
             
@@ -188,6 +191,9 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	};
         	
         	$scope.getLatestComment = function() {
+        	    if ($scope.isFetchingLatestComment) return;
+        	    $scope.isFetchingLatestComment = true;
+        	    
         	    HeadsModel.one($scope.selectedHeadId.toString()).get().then(function(thread){
         	        var currentCommentLength = $scope.selectedHead.Comment.length;
         	        var commentLength = thread.Comment.length;
@@ -196,10 +202,12 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	            if (lastComment.id !== thread.Comment[commentLength - 1].id || lastComment.Upload.length !== thread.Comment[commentLength - 1].Upload.length) {
         	                $scope.selectedHead.Comment.splice((commentLength - 1), 1);
         	                $scope.selectedHead.Comment.push(thread.Comment[commentLength - 1]);
-        	                HeadService.scrollDown();        
+        	                $scope.isFetchingLatestComment = false;
+        	                HeadService.scrollDown();
         	            }
         	        } else {
         	            $scope.selectedHead.Comment.push(thread.Comment[commentLength - 1]);
+        	            $scope.isFetchingLatestComment = false;
         	            HeadService.scrollDown();
         	        }
         	    });
@@ -297,7 +305,10 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	
         	// get thread for every 7 secs
         	$scope.startInterval = function() {
-        	   // console.log('starting interval');
+        	    // stops any running interval to avoid two intervals running at the same time
+                $scope.stopInterval();
+      
+        	    // console.log('starting interval');
         	    pendingQry = $interval($scope.getHead, 7000);    
         	};
         	

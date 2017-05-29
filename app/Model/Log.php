@@ -1,5 +1,7 @@
 <?php
 App::import('Vendor','NotifCounts');
+App::import('Vendor','Util');
+App::import("Vendor","Cacher");
 App::uses('AppModel', 'Model');
 /**
  * Log Model
@@ -424,12 +426,20 @@ public $actsAs = array('Containable');
 						
 			file_put_contents("/tmp/dadacurl",date("g:i:s")."\n".print_r($notifdata,true));
 			$this->push($fcmids,$notifdata);
-			
+			//here you
 		
 			//Update caches of the users
 			$uids[] = $uid;
 			
 			foreach($uids as $uid){
+				//Delete caches
+				
+				foreach(array("threads","heads","groupchats") as $n){
+					$cache = new CacheObj($uid,$n);
+					$cache->clear();
+				}
+				
+				
 				if($uid == AuthComponent::user('id')) continue;
 				//delete the file so that the cache is updated
 				$not = new NotifCounts($this->User->Profile,$uid);

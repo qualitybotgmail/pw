@@ -21,6 +21,7 @@ class ThreadsController extends AppController {
  * @return void
  */
 	
+
 	public function index_old() { 
 		
 		$user_id = $this->Auth->user('id');
@@ -51,11 +52,20 @@ class ThreadsController extends AppController {
 	}
 
 	public function index($lastid=0) { 
-	
+		
+		$cache = $this->getCache('threads');
+		//$cache->clear();
+		$list = $cache->get();
+
+		if($list && count($list)> 0){
+			$this->set('threads',$list);
+			return;
+		}
+		
 		$user_id = $this->Auth->user('id');
 		$this->Thread->Owner->recursive=2;
 		
-
+		
         // this query if to get all the threads
         // where user is a member only
         $this->Thread->Owner->Behaviors->load("Containable");
@@ -91,7 +101,9 @@ class ThreadsController extends AppController {
 				array_push($result,array('Thread' => $thread,'Owner' => $owner,'User' => $user));
 			}				
 		}
-		
+
+	
+		$cache->set($result);		
 		$this->set('threads', $result);
 	}
 	
@@ -105,6 +117,12 @@ class ThreadsController extends AppController {
 	public function updates($lastid=0) { 
 	
 		$user_id = $this->Auth->user('id');
+		$cache = $this->getCache('threads');
+		$result = $cache->get();
+		if($result){
+			echo json_encode($result);
+			exit;			
+		}
 		$this->Thread->Owner->recursive=2;
 		
 
@@ -137,6 +155,7 @@ class ThreadsController extends AppController {
 			$result[] = array('Thread' => $thread,'Owner' => $owner,'User' => $user);
 							
 		}
+	$cache->set($result);
 	echo json_encode($result);
 	exit;
 	}
@@ -166,8 +185,7 @@ class ThreadsController extends AppController {
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('User'); 
-
-			$this->Auth->allow('index','threadTitle','updateThread','testThread','view','updates','edit','delete','notifications','addmember','userstoadd','deletemember');
+		$this->Auth->allow('index','threadTitle','updateThread','testThread','view','updates','edit','delete','notifications','addmember','userstoadd','deletemember','cache');
 	}
 
 /**
@@ -179,6 +197,18 @@ class ThreadsController extends AppController {
  */
 	public function view($id,$lastid=0,$ajax=false) {
 		//error_reporting(2);
+		$cache = $this->getCache('threads');
+		$viewCached = $cache->get();
+		if($viewCached){
+			if($ajax){
+				
+				return $viewCached;
+			}else{
+				$this->set('thread',$viewCached);
+				return;
+			}
+				
+		}
 		if (!$this->Thread->exists($id)) {
 			throw new NotFoundException(__('Invalid thread'));
 		}
@@ -209,9 +239,11 @@ class ThreadsController extends AppController {
 		} 
 		$this->Thread->notified($id,$uid);
 		//set viewed for the user
-	if($ajax)
+	$cache->set($thread);
+	if($ajax){
+		
 		return $thread;
-	else
+	}else
 		$this->set('thread',$thread);
 	}
 	

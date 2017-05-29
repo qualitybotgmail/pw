@@ -26,6 +26,7 @@ define([
             var _this = this;
             _this.scrollDown = function(threadIndex, headIndex){
                 var $t = $('.commentList-'+threadIndex+'-'+headIndex);
+                if(!$t[0]) return;
                 $t.animate({"scrollTop": $('.commentList-'+threadIndex+'-'+headIndex)[0].scrollHeight}, "slow");
             };
             

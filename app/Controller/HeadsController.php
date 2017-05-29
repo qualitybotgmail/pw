@@ -28,7 +28,14 @@ class HeadsController extends AppController {
  */
 
 	public function index() {
-		
+		$cache = $this->getCache('heads');
+		//$cache->clear();
+		$heads = $cache->get();
+
+		if($heads && count($heads)> 0){
+			$this->set('heads',$heads);
+			return;
+		}
 		$this->Head->recursive = 2;
 
 		// $id = $this->Auth->user('id');
@@ -55,7 +62,7 @@ class HeadsController extends AppController {
 			}
 			//total likes of comments
 		}
-		
+		$cache->set($heads);
 		$this->set('heads', $heads);
 		 
 
@@ -70,7 +77,19 @@ class HeadsController extends AppController {
  */
 
 	public function view($id = null,$lastid=0,$ajax=false) {
-	
+		$cache = $this->getCache('heads');
+		//$cache->clear();
+		$head = $cache->get();
+
+		if($head && count($head)> 0){
+			if($ajax)
+				return $head;
+			else{
+				$this->set('head',$head);
+				return;
+			}
+		}
+		
 		if (!$this->Head->exists($id)) {
 			throw new NotFoundException(__('Invalid head'));
 		}
@@ -132,6 +151,7 @@ class HeadsController extends AppController {
 		}	
 		$this->Head->notified($id,$uid);
 	
+		$cache->set($head);
 		if($ajax)
 			return $head;
 		else
