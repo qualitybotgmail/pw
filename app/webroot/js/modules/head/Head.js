@@ -58,6 +58,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             $scope.comment = {};
             $scope.comment.body = '';
             $scope.isFetching = false;
+            $scope.isFetchingLatestComment = false;
             
             
             $scope.currentPageNumber = 1;
@@ -188,6 +189,9 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	};
         	
         	$scope.getLatestComment = function() {
+        	    if ($scope.isFetchingLatestComment) return;
+        	    $scope.isFetchingLatestComment = true;
+        	    
         	    HeadsModel.one($scope.selectedHeadId.toString()).get().then(function(thread){
         	        var currentCommentLength = $scope.selectedHead.Comment.length;
         	        var commentLength = thread.Comment.length;
@@ -196,10 +200,12 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	            if (lastComment.id !== thread.Comment[commentLength - 1].id || lastComment.Upload.length !== thread.Comment[commentLength - 1].Upload.length) {
         	                $scope.selectedHead.Comment.splice((commentLength - 1), 1);
         	                $scope.selectedHead.Comment.push(thread.Comment[commentLength - 1]);
-        	                HeadService.scrollDown();        
+        	                $scope.isFetchingLatestComment = false;
+        	                HeadService.scrollDown();
         	            }
         	        } else {
         	            $scope.selectedHead.Comment.push(thread.Comment[commentLength - 1]);
+        	            $scope.isFetchingLatestComment = false;
         	            HeadService.scrollDown();
         	        }
         	    });
