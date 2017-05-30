@@ -1,11 +1,11 @@
 <ion-modal-view>
-   <ion-header-bar class="bar bar-header ">
+   <ion-header-bar class="bar bar-stable">
        <div class="buttons">
-          <button class="button" ng-click="resetForm()">キャンセル</button>
+          <button class="button button-center button-outline button-bar-side" ng-click="resetForm()">キャンセル</button>
       </div>
       <h1 class="title">メンバーを選択 <span style="font-size:14px;"> ({{$root.addedUsernames.length + alreadyAdded.length}})</span></h1>
       <div class="buttons">
-          <button class="button" ng-class="{'disabled': $root.addedUsernames==0}" ng-click="addMemberGC()">決定</button>
+          <button class="button button-center button-outline button-bar" ng-class="{'disabled': $root.addedUsernames==0}" ng-click="addMemberGC()">決定</button>
       </div>
     </ion-header-bar>
     <ion-header-bar class="bar-light bar-subheader" ng-init="userFilter=''">

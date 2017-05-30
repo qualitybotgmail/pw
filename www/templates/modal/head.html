@@ -1,13 +1,13 @@
 <ion-modal-view>
-   <ion-header-bar class="bar-positive">
+   <ion-header-bar class="bar bar-stable">
      <div class="buttons">
-         <button class="button" ng-click="resetHeadForm();$root.showAddHead.hide();$root.headPopover.hide();">閉じる</button>
+         <button class="button button-center button-outline button-bar" ng-click="resetHeadForm();$root.showAddHead.hide();$root.headPopover.hide();"><span class="fixbuttontext">閉じる</span></button>
      </div>
       <h1 class="title">共有したい情報を投稿</h1>
     </ion-header-bar>
     <ion-content>
     <div class="row">
-      <h4>本文:</h4>
+      <h4 class="smartfont">本文:</h4>
 
         <i ng-show="$root.headAction=='add'" class="icon ion-image img" ng-click="selectPicture('upload')"></i>
         <i ng-show="$root.headAction=='add'" class="icon ion-ios-camera cam" ng-click="selectPicture('takePhoto')"></i>
@@ -48,13 +48,13 @@
     </div>
   </div>
 <div style="text-align:center">
-<button class="button button-center" ng-click="resetHeadForm();$root.showAddHead.hide();$root.headPopover.hide();">
+<button class="button button-center button-left button-mordal" ng-click="resetHeadForm();$root.showAddHead.hide();$root.headPopover.hide();">
   キャンセル
 </button>
-<button ng-show="headAction=='edit'" class="button button-center button-positive" ng-class="{'disabled':!$root.headContent.body}" ng-click="$root.processEditingHead()">
+<button ng-show="headAction=='edit'" class="button button-center button-right button-mordal" ng-class="{'disabled':!$root.headContent.body}" ng-click="$root.processEditingHead()">
   更新
 </button>
-<button ng-show="headAction=='add'" class="button button-center button-positive" ng-class="{'disabled':!$root.headContent.body}" ng-click="processAddingHead()">
+<button ng-show="headAction=='add'" class="button button-center button-right button-mordal" ng-class="{'disabled':!$root.headContent.body}" ng-click="processAddingHead()">
   投稿
 </button>
 </div>

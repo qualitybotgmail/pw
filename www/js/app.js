@@ -50,7 +50,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
 
           $rootScope.$broadcast('updatesforthread',null);
        }*/
-       window.FirebasePlugin.setBadgeNumber(parseInt($rootScope.totalNotif));
+       if(window.FirebasePlugin) window.FirebasePlugin.setBadgeNumber(parseInt($rootScope.totalNotif));
 
   });
 

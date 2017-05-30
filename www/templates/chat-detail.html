@@ -7,7 +7,7 @@
   <ion-view view-title="{{$root.chatMembers.join()}}" cache-view="false">
  <ion-nav-buttons side="right">
     <button class="button button-clear header-item" ng-click="addGCMember()">
-      <i class="icon ion-person-add"></i>
+      <i class="icon ion-ios-plus-empty"></i>
     </button>
   </ion-nav-buttons>
   
@@ -52,7 +52,7 @@
         <textarea rows="1" auto-grow ng-model="newChat" ng-Required="true" placeholder="メッセージを書く" name="content" style="width:100%;padding: 10px;border-radius:0px;border-left:1px solid #ddd;height:auto !important;"></textarea>
       </label>
 
-      <a style="padding:11px" ng-click="sendChat()">送信</a>
+      <a style="padding: 5px 11px;background-color: rgba(68, 68, 68, 0.76);color: #fff;margin: 5px;border-radius:3px;" ng-click="sendChat()">送信</a>
       <!-- <i class="icon ion-paper-airplane" ng-click="sendChat()" style="font-size: 30px;padding: 10px;color: dodgerblue;"></i> -->
 
       </div>

@@ -1,3 +1,18 @@
+@font-face {
+	font-family: 'Smart';
+	src: url(../font/03amartfontUI.otf);
+}
+@font-face {
+	font-family: 'Shingodb';
+	src: url(../font/A-OTF-ShinGoPro-DeBold_4.otf);
+}
+.smartfont {
+	font-family: Smart;
+}
+.shingodb {
+	font-family: Shingodb;    
+}
+
 /* Empty. Add your own CSS if you like */
 .members span{
    padding: 4px;
@@ -323,7 +338,7 @@ textarea {
     color: black !important;
     background-color: #C7C7CC !important;
     display: inline-block !important;
-  padding: 10px !important;
+  padding: 5px 10px !important;
   border-radius: 10px !important;
   text-align: left !important;
   max-width: 240px !important;
@@ -344,7 +359,7 @@ textarea {
   background: #007AFF !important;
   display: inline-block !important;
   color: white !important;
-  padding: 10px !important;
+  padding: 5px 10px !important;
   border-radius: 10px !important;
   text-align: left !important;
   max-width: 240px !important;
@@ -381,12 +396,15 @@ textarea {
 .summary-header {
   position:relative;
   width:90%;
-  background:#13348B;
+  /*background:#13348B;*/
   padding: 6px 0px;
   margin: 8px auto;
 }
+.summary-title {
+  margin: 20px auto;
+}
 .summary-header-child{
-  color:white;
+  /*color:white;*/
   font-weight:600;
   line-height: 24px;
   margin: 0 !important;
@@ -423,8 +441,8 @@ textarea {
   padding: 12px 15px;
   margin:0 auto;
   margin-bottom: 8px;
-  background-color: #ffffff;
-  border:1px solid #ddd;
+  background-color: #f6f6f6;
+  /*border:1px solid #ddd;*/
   display: box;
   display: -webkit-box;
   display: -moz-box;
@@ -435,9 +453,9 @@ textarea {
   -webkit-box-pack: justify;
   -o-box-pack: justify;
   -ms-box-pack: justify;
-  -webkit-border-radius: 10px;
+  /*-webkit-border-radius: 10px;
   -moz-border-radius: 10px;
-  border-radius: 10px;
+  border-radius: 10px;*/
 }
 .incentive-child {
   padding: 4px;
@@ -469,4 +487,103 @@ textarea {
 }
 .slider-pager .slider-pager-page {
   color:#aaa;
+}
+
+
+#timeline-menu{
+    font-size: 26pt;
+}
+.group-title{
+    font-family: Shingo;
+    font-size: 13pt;
+
+}
+.group-on{
+  background-image: url(../img/playwork_ft_icon01.png);
+}
+.group-off{
+  background-image: url(../img/playwork_ft_icon02.png);
+}
+.message-on{
+  background-image: url(../img/playwork_ft_icon03.png);
+}
+.message-off{
+  background-image: url(../img/playwork_ft_icon04.png);
+}
+.performance-on{
+  background-image: url(../img/playwork_ft_icon05.png);
+}
+.performance-off{
+  background-image: url(../img/playwork_ft_icon06.png);
+}
+.account-on{
+  background-image: url(../img/playwork_ft_icon07.png);
+}
+.account-off{
+  background-image: url(../img/playwork_ft_icon08.png);
+}
+.icon{
+  background-size:40px;
+background-repeat: no-repeat;
+background-position: center;
+}
+.button-clear{
+    background-color: #ffffff !important;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+}
+.bar.bar-stable {
+	font-family: Smart;      
+    color: #fff !important;
+  background-color:#2a3d4e !important;
+  border-bottom: 3px solid #faed00;    
+       }
+.bar.bar-stable .title {
+    color: #fff !important;
+}       
+.item-input {
+  border-radius:7px !important; }
+
+.button-left{
+	font-family: Smart;      
+    font-size:11pt;
+    color: #fff;
+    background-color: #32485c !important;
+    border-radius: 3px;
+}
+.button-right{
+	font-family: Smart;      
+    font-size:11pt;
+    color: #fff;
+    background-color: #2a3d4e !important;
+     border-radius: 3px;   
+}
+.button-bar-side{
+font-family: Smart;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+    border-radius: 3px;
+    text-align: center !important;
+    width: 85px;
+}
+.fixbuttontext {
+    text-align: center;
+    width:100%;
+}
+.button-mordal{
+    text-align: center !important;
+    width: 100px;
+    min-height: 35px !important;
+    line-height: 30px !important;
+}
+span.fontperf1 {
+	font-family: Smart; 
+    font-size:23px;
+    color: #2a3d4e !important;
+}
+span.fontperf2 {
+	font-family: Smart; 
+    font-size:40px;
+    color: #009fe8 !important;
 }

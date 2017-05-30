@@ -1,29 +1,31 @@
 <ion-view view-title="進捗管理">
   <ion-content class="padding text-center">
     <div class="summary-header">
-      <h4 class="summary-header-child">現在 <span>{{data.bp}}</span> BP</h4>
-      <h4 class="summary-header-child">総支給額 <span> {{data.salary | number: 0}}</span> 円</h4>
+      <span class="summary-header-child fontperf1">現在<span class="fontperf2">{{data.bp}}</span> BP　</span>
+      <span class="summary-header-child fontperf1">総支給額 <span class="fontperf2"> {{data.salary | number: 0}}</span> 円</span>
     </div>
-    <h3 style="color:#13348B;font-weight:bold;">進捗達成率</h3>
+    <div class="summary-title">    
+      <span class="fontperf1" style="font-size:25px !important;">進捗達成率</span>
+    </div>
     <div class="progress-parent">
       <h2 class="progress">{{data.progress}}%</h2>
       <canvas id="doughnut" class="chart chart-doughnut" chart-data="graph" chart-labels="labels" chart-colors="colors"></canvas>
     </div>
     <div class="incentive-parent">
-      <div class="incentive-child head">基本給</div>
-      <div class="incentive-child"><span>{{data.pay | number: 0}}</span> 円</div>
+      <div class="incentive-child"><span class="fontperf1" style="font-size:20px">基本給</span></div>
+      <div class="incentive-child"><span class="fontperf2">{{data.pay | number: 0}}</span><span class="fontperf1" style="font-size:20px"> 円</span></div>
     </div>
     <div class="incentive-parent">
-      <div class="incentive-child head">時給インセン</div>
-      <div class="incentive-child"><span>{{data.hourlyIncentive | number: 0}}</span> 円</div>
+      <div class="incentive-child"><span class="fontperf1" style="font-size:20px">時給インセン</span></div>
+      <div class="incentive-child"><span class="fontperf2">{{data.hourlyIncentive | number: 0}}</span><span class="fontperf1" style="font-size:20px"> 円</span></div>
     </div>
     <div class="incentive-parent">
-      <div class="incentive-child head">月次インセン</div>
-      <div class="incentive-child"><span>{{data.monthlyIncentive | number: 0}}</span> 円</div>
+      <div class="incentive-child"><span class="fontperf1" style="font-size:20px">月次インセン</span></div>
+      <div class="incentive-child"><span class="fontperf2">{{data.monthlyIncentive | number: 0}}</span><span class="fontperf1" style="font-size:20px"> 円</span></div>
     </div>
     <div class="incentive-parent">
-      <div class="incentive-child head">特別インセン</div>
-      <div class="incentive-child"><span>{{data.incentive | number: 0}}</span> 円</div>
+      <div class="incentive-child"><span class="fontperf1" style="font-size:20px">特別インセン</span></div>
+      <div class="incentive-child"><span class="fontperf2">{{data.incentive | number: 0}}</span><span class="fontperf1" style="font-size:20px"> 円</span></div>
     </div>
   </ion-content>
 </ion-view>

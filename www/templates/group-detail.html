@@ -1,16 +1,16 @@
 <ion-view can-swipe-back="false" >
     <ion-nav-title><i class='icon ion-person-stalker'></i> : {{$root.groupTitle}}</ion-nav-title>
   <ion-nav-buttons side="right" ng-show="false">
-    <button class="button button-icon button-clear ion-ios-compose-outline" ng-click="triggerAdd()">
+    <button class="button button-icon button-clear ion-ios-plus-empty" ng-click="triggerAdd()">
     </button>
   </ion-nav-buttons>
   <ion-content class="padding">
 
     <div class="button-bar" ng-show="$root.thread.Thread.user_id==$root.user_id">
-      <a class="button button-small button-positive" ng-click="showAddMember()">メンバーの追加</a>
-      <a class="button button-small button-positive" ng-click="showMemberList.show()">メンバーの確認</a>
+      <a class="button button-small button-positive button-left" ng-click="showAddMember()">メンバーの追加</a>
+      <a class="button button-small button-positive button-right" ng-click="showMemberList.show()">メンバーの確認</a>
     </div>
-    <a ng-show="$root.thread.Thread.user_id!=$root.user_id" class="button button-small button-full button-positive" ng-click="showMemberList.show()">メンバーの確認</a>
+    <a ng-show="$root.thread.Thread.user_id!=$root.user_id" class="button button-small button-full button-positive button-right" ng-click="showMemberList.show()">メンバーの確認</a>
 
 <!--     <ion-slide-box ng-show="sliderImages.length > 0">
 

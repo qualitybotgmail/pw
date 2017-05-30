@@ -1,8 +1,8 @@
 <ion-view view-title="アカウント管理">
   <ion-content>
     <div class="list">
-      <div class="item item-body text-center">
-        <img ng-click="triggerProfileImgChange()" class="img-circle" style="height:164px;width:164px;border-radius:50%;border:1px solid #ddd;" ng-src="{{avatar_img}}">
+      <div class="item item-body text-center" style="padding:100px;">
+        <img ng-click="triggerProfileImgChange()" class="img-circle" style="height:100px;width:100px;border-radius:50%;border:1px solid #ddd;" ng-src="{{avatar_img}}">
         <!-- <center ng-show="showUploadingButtons">
         <div style="width:auto">
           <ion-spinner ng-show="uploadingProfile" name="circles" style="margin-left: 20%;margin-top: 15%;position: absolute;stroke: black;"></ion-spinner>
@@ -18,12 +18,14 @@
             </button>
           </div>
         </center> -->
-        <h2 style="font-size:120%;">{{user}}</h2>
+        <h2 class="smartfont" style="font-size:120%;">{{user}}</h2>
         <h3>{{affiliation}}</h3>
         <!--<center><div ng-click="triggerEditDesc()" class="profile-desc"><i class="icon ion-edit"></i> Add Description</div></center>-->
       </div>
-      <div class="item" ng-click="logout()">
+      <div style="position:relative;  width:90%;  padding: 6px 0px;  margin: 8px auto;text-align: center;">
+      <span class="text-center button" ng-click="logout()">
         ログアウト
+      </span>
       </div>
     </div>
   </ion-content>

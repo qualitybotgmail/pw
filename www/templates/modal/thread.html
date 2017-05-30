@@ -1,22 +1,23 @@
 <ion-modal-view>
-  <ion-header-bar class="bar-basic">
+  <ion-header-bar class="bar bar-stable">
     <h1 class="title">グループ<span ng-show="$root.modalAction=='edit'">編集</span><span ng-show="$root.modalAction=='add'">作成</span></h1>
   </ion-header-bar>
   <ion-content>
     <div class="list">
       <label class="item item-input item-stacked-label">
         <!-- <input type="text" placeholder="グループ名" ng-model="$root.modalContent.title"> -->
-        <textarea row="1" placeholder="グループ名" ng-model="$root.modalContent.title"></textarea>
+        <input placeholder="グループ名" ng-model="$root.modalContent.title"></input>
       </label>
     </div>
     <div style="text-align:center">
-      <button class="button button-center" ng-click="$root.modalContent=[];threadModal.hide();settingsPopover.hide();">
+      <button class="button button-center button-left button-mordal" ng-click="$root.modalContent=[];threadModal.hide();settingsPopover.hide();" style="margin-right:10px">
         キャンセル
       </button>
-      <button ng-show="$root.modalAction=='edit'" class="button button-center button-positive" ng-class="{'disabled':!$root.modalContent.title}" ng-click="processEditingThread()">
+      
+      <button ng-show="$root.modalAction=='edit'" class="button button-center button-right button-mordal" ng-class="{'disabled':!$root.modalContent.title}" ng-click="processEditingThread()">
         更新
       </button>
-      <button ng-show="$root.modalAction=='add'" class="button button-center button-positive" ng-class="{'disabled':!$root.modalContent.title}" ng-click="processAddingThread()">
+      <button ng-show="$root.modalAction=='add'" class="button button-center button-right button-mordal" ng-class="{'disabled':!$root.modalContent.title}" ng-click="processAddingThread()">
         保存
       </button>
     </div>

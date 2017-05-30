@@ -1,11 +1,11 @@
 <ion-modal-view>
-   <ion-header-bar class="bar bar-header ">
+   <ion-header-bar class="bar bar-stable">
        <div class="buttons">
-          <button class="button" ng-click="resetForm()">キャンセル</button>
+          <button class="button button-center button-outline button-bar-side" ng-click="resetForm()"><span class="fixbuttontext">キャンセル</span></button>
       </div>
       <h1 class="title">メンバーを選択 <span style="font-size:14px;"> ({{$root.addedUsernames.length}})</span></h1>
       <div class="buttons">
-          <button class="button" ng-class="{'disabled': $root.addedUsernames==0}" ng-click="createGroupChat()">決定</button>
+          <button class="button button-center button-outline button-bar-side" ng-class="{'disabled': $root.addedUsernames==0}" ng-click="createGroupChat()"><span class="fixbuttontext">決定</span></button>
       </div>
     </ion-header-bar>
     <ion-header-bar class="bar-light bar-subheader" ng-init="userFilter=''">
