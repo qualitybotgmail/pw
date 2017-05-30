@@ -1,15 +1,15 @@
 <ion-modal-view>
-   <ion-header-bar class="bar-positive">
+   <ion-header-bar class="bar bar-stable">
        <div class="buttons">
-          <button class="button" ng-click="cancelAddMember()">Cancel</button>
+          <button class="button button-center button-outline button-bar-side" ng-click="cancelAddMember()"><span class="fixbuttontext">キャンセル</span></button>
       </div>
-      <h1 class="title">Add Member</h1>
+      <h1 class="title">メンバーの追加</h1>
       <div class="buttons">
-          <button class="button" ng-click="processAddMember()">Done</button>
+          <button class="button button-center button-outline button-bar-side" ng-click="processAddMember()"><span class="fixbuttontext">追加</span></button>
       </div>
     </ion-header-bar>
      <ion-header-bar class="bar-light bar-subheader">
-      <input type="search" ng-model="search_filter" placeholder="Filter users..."
+      <input type="search" ng-model="search_filter" placeholder="メンバーの検索"
              ng-focus="searchFocused = true"
              ng-blur="searchFocused = false"
              ng-change="scrollTop()"
@@ -17,7 +17,7 @@
     </ion-header-bar>
     <ion-content>
         <ul class="list">
-            <li class="item item-checkbox" item-height="55px" item-width="100%" collection-repeat="user in notMembers | filter:{username:search_filter} track by $index" >
+            <li class="item item-checkbox" item-height="55px" item-width="100%" ng-repeat="user in notMembers | filter:{username:search_filter} track by $index" ng-if="user.username">
                 {{user.username}}
                <label class="checkbox">
                <input ng-click="addNewMember(user)" type="checkbox" value="1" ng-model="user.selected">

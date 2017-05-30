@@ -1,4 +1,0 @@
-#!/bin/bash
-
-export ANDROID_HOME=/root/androidsdk
-cordova plugin add cordova-plugin-http

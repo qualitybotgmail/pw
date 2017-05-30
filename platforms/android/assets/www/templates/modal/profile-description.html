@@ -1,0 +1,26 @@
+<ion-modal-view>
+   <ion-header-bar class="bar bar-stable">
+     <div class="buttons">
+         <button class="button button-center button-outline button-bar-side" ng-click="showMemberList.hide()"><span class="fixbuttontext">キャンセル</span></button>
+     </div>
+      <h1 class="title">プロフィール</h1>
+       <div class="buttons">
+          <button class="button button-center button-outline button-bar-side" ng-click="processAddMember()"><span class="fixbuttontext">保存</span></button>
+      </div>
+    </ion-header-bar>   
+    <ion-content>
+        <ul class="list">
+              <!--<li class="item " ng-class="{'item-icon-left':thread.Owner.id==$root.user_id}" item-height="55px" item-width="100%" collection-repeat="us in thread.User track by $index" >-->
+                <!--{{us.username}}-- > fe
+               <!--<label class="checkboxff" ng-show="thread.Owner.id==$root.user_id">
+               <input ng-show="thread.Owner.id==$root.user_id" ng-click="removeMember(us,$index)" type="checkbox" value="1" ng-model="us.selected">
+               </label>-->
+               <li class="item" ng-class="{'item-icon-left':thread.Owner.id==$root.user_id}" item-height="55px" item-width="100%" collection-repeat="us in thread.User track by $index">
+                <i class="icon ion-ios-close-outline" ng-show="thread.Owner.id==$root.user_id" style="font-size: 27px;cursor:pointer" ng-click="removeMember(us,$index)"></i>
+                {{us.username}}
+              </li>
+           <!-- </li>-->
+
+        </ul>
+    </ion-content>
+  </ion-modal-view>

@@ -1,3 +1,18 @@
+@font-face {
+	font-family: 'Smart';
+	src: url(../font/03amartfontUI.otf);
+}
+@font-face {
+	font-family: 'Shingodb';
+	src: url(../font/A-OTF-ShinGoPro-DeBold_4.otf);
+}
+.smartfont {
+	font-family: Smart;
+}
+.shingodb {
+	font-family: Shingodb;    
+}
+
 /* Empty. Add your own CSS if you like */
 .members span{
    padding: 4px;
@@ -12,12 +27,12 @@
     margin-top: -3px;
 }
 .comment-list{
-    border-top: 1px solid #ccc;
+    /*border-top: 1px solid #ccc;*/
      padding-left: 72px;
 }
 .comment-list .item-avatar{
     width: 100% !important;
-   
+
 }
 .comment-list h2{
     font-size: 18px !important;
@@ -26,7 +41,7 @@
 }
 .comment-list .avatar{
     position: absolute;
-    margin-top: 16px;
+    /*margin-top: 16px;*/
     left: 16px;
     max-width: 45px;
     max-height: 45px;
@@ -34,19 +49,37 @@
     height: 100%;
     border-radius: 50%;
 }
-
+.likedList{
+    /*padding: 10px;*/
+    /*padding-bottom: 0px !important;*/
+    /* position: absolute; */
+    /* left: 10px; */
+    float: right;
+    font-size: 12px !important;
+}
 .dateList{
-   margin-top: -30px;
+   margin-top: -24px;
     position: absolute;
     right: 0px;
     color: gray;
 }
 .datecomment{
     position: absolute;
-    right: 40px;
     margin-top: 5px;
     padding-right: 15px !important;
     font-size:13px !important;
+}
+.group-icon{
+    background: url("../img/icon_2.png") no-repeat;
+    width: 26px;
+    height: 26px;
+    background-size: 26px;
+    position:absolute;
+    left:15px;
+    top:13px;
+}
+.remove-first::first-line {
+    line-height: 0px;
 }
 .headings{
     overflow: hidden !important;
@@ -58,7 +91,17 @@
 }
 .likes{
     font-size:22px !important;
-    
+
+}
+.avatar{
+        position: absolute;
+    top: 16px;
+    left: 16px;
+    max-width: 40px;
+    max-height: 40px;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
 }
 .active{
     color:#0c60ee;
@@ -96,7 +139,7 @@
     left: 55%;
     padding-top: 50%;
     z-index: 99999;
-    
+
 }
 .img-spinner svg{
     stroke: black;
@@ -109,23 +152,20 @@ textarea {
    -webkit-transition: 0.05s;
    -o-transition: 0.05s;
  }
- 
+
  .image-list-thumb {
     padding: 2px 2px 2px 2px;
-    height: 300px;
+    max-height: 250px;
+    max-width: 250px;
 }
- 
+
 .image-modal {
     width: 100% !important;
     height: 100%;
     top: 0 !important;
     left: 0 !important;
 }
- 
-.transparent {
-    background: transparent !important;
-}
- 
+
 .fullscreen-image {
     max-width: 100%;
     max-height: 100%;
@@ -136,14 +176,67 @@ textarea {
     position: fixed;
     right: 0;
 }
- 
-.slider {
+
+.transparent {
+  background: rgba(0,0,0,0.7);
+}
+.view-img{
+    color: white;
+    position: absolute;
+    margin-top: 35px;
+    margin-left: 38px;
+    padding: 5px;
+    border: solid 1px;
+    border-radius: 20%;
+    font-weight: 700;
+    z-index:2;
+    display: inline;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.more-users{
+    width:20px !important;
+    height:18px !important;
+}
+.four-users{
+    width:20px !important;
+    height:20px !important;
+}
+.two-users{
+    width:20px !important;
+    height:20px !important;
+}
+.two-users:nth-child(3) {
+    width:40px !important;
+}
+.avatar-many {
+        position: absolute;
+    top: 16px;
+    left: 16px;
+    width: 40px !important;
+    height: 40px !important;
+    overflow: hidden;
+    border-radius: 50%;
+}
+.non-image{
+    background: #007AFF !important;
+    display: inline-block !important;
+    color: white !important;
+    padding: 10px !important;
+    border-radius: 10px !important;
+    text-align: left !important;
+    max-width: 240px !important;
+    margin-left:5px;
+}
+
+.image {
     width: 100%;
-    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center, center;
 }
 .item-body p {
-     margin-top: 0px !important; 
-     margin-bottom: 0px !important; 
+     margin-top: 0px !important;
+     margin-bottom: 0px !important;
 }
 .settingComment{
     margin-bottom: 0px !important;
@@ -161,8 +254,11 @@ textarea {
     padding-bottom: 4px;
 }
 
-.modal{
+.android-modal{
     top: 44px !important;
+}
+.ios-modal{
+    top: 64px !important;
 }
 .chat-add{
     font-size: 35px;
@@ -171,8 +267,8 @@ textarea {
 }
 .chatsearch{
     width: 100%;
-    padding-left: 35px !important;
-    
+    padding-left: 15px !important;
+
 }
 .messages {
   display: -webkit-box !important;
@@ -242,9 +338,9 @@ textarea {
     color: black !important;
     background-color: #C7C7CC !important;
     display: inline-block !important;
-  padding: 10px !important;
+  padding: 5px 10px !important;
   border-radius: 10px !important;
-  text-align: right !important;
+  text-align: left !important;
   max-width: 240px !important;
 }
 .messages.other .message {
@@ -263,10 +359,13 @@ textarea {
   background: #007AFF !important;
   display: inline-block !important;
   color: white !important;
-  padding: 10px !important;
+  padding: 5px 10px !important;
   border-radius: 10px !important;
   text-align: left !important;
   max-width: 240px !important;
+}
+.messages:not(.other) .message span > a{
+  color:white !important;
 }
  .message .item-avatar{
      padding-left: 0px !important;
@@ -289,19 +388,26 @@ textarea {
  }
  .chatimages{
      border-radius:20px;
-     padding-right:5px
+     margin-right:5px;
+     height:auto;
+     max-width:200px;
  }
- 
+
 .summary-header {
   position:relative;
   width:90%;
-  background:#13348B;
-  padding:15px;
-  margin:auto;
+  /*background:#13348B;*/
+  padding: 6px 0px;
+  margin: 8px auto;
+}
+.summary-title {
+  margin: 20px auto;
 }
 .summary-header-child{
-  color:white;
+  /*color:white;*/
   font-weight:600;
+  line-height: 24px;
+  margin: 0 !important;
 }
 .summary-header-child span{
   font-size:160%;
@@ -310,6 +416,7 @@ textarea {
   position:relative;
   width:80%;
   margin:auto;
+  margin-bottom:8px;
 }
 .progress-parent .progress {
   position:absolute;
@@ -321,13 +428,21 @@ textarea {
   display:inline-table;
   color:#666;
 }
+.profile-desc{
+    color: blue;
+    font-size: 14px;
+    border: solid 1px;
+    padding: 5px;
+    width: 70%;
+}
 .incentive-parent {
   position:relative;
   width:90%;
-  padding:15px;
+  padding: 12px 15px;
   margin:0 auto;
-  background-color: #ffffff;
-  border:1px solid #ddd;
+  margin-bottom: 8px;
+  background-color: #f6f6f6;
+  /*border:1px solid #ddd;*/
   display: box;
   display: -webkit-box;
   display: -moz-box;
@@ -337,24 +452,138 @@ textarea {
   -moz-box-pack: justify;
   -webkit-box-pack: justify;
   -o-box-pack: justify;
-  -ms-box-pack: justify; 
-  -webkit-border-radius: 10px;
+  -ms-box-pack: justify;
+  /*-webkit-border-radius: 10px;
   -moz-border-radius: 10px;
-  border-radius: 10px;
+  border-radius: 10px;*/
 }
 .incentive-child {
-  padding:15px;
+  padding: 4px;
   font-weight:600;
   color:#666;
 }
 .incentive-child.head {
-  width:150px;
+  width:124px;
   background:#13348B;
-  font-size:140%;
+  font-size:120%;
   color:white;
-  padding:20px 0;
+  line-height:28px;
+  height: 36px;
 }
 .incentive-child span{
-  font-size:250%;
+  font-size:200%;
   color:#13348B;
+  line-height: 26px;
+}
+.avatar-img{
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  max-width: 40px;
+  max-height: 40px;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.slider-pager .slider-pager-page {
+  color:#aaa;
+}
+
+
+#timeline-menu{
+    font-size: 26pt;
+}
+.group-title{
+    font-family: Shingo;
+    font-size: 13pt;
+
+}
+.group-on{
+  background-image: url(../img/playwork_ft_icon01.png);
+}
+.group-off{
+  background-image: url(../img/playwork_ft_icon02.png);
+}
+.message-on{
+  background-image: url(../img/playwork_ft_icon03.png);
+}
+.message-off{
+  background-image: url(../img/playwork_ft_icon04.png);
+}
+.performance-on{
+  background-image: url(../img/playwork_ft_icon05.png);
+}
+.performance-off{
+  background-image: url(../img/playwork_ft_icon06.png);
+}
+.account-on{
+  background-image: url(../img/playwork_ft_icon07.png);
+}
+.account-off{
+  background-image: url(../img/playwork_ft_icon08.png);
+}
+.icon{
+  background-size:40px;
+background-repeat: no-repeat;
+background-position: center;
+}
+.button-clear{
+    background-color: #ffffff !important;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+}
+.bar.bar-stable {
+	font-family: Smart;      
+    color: #fff !important;
+  background-color:#2a3d4e !important;
+  border-bottom: 3px solid #faed00;    
+       }
+.bar.bar-stable .title {
+    color: #fff !important;
+}       
+.item-input {
+  border-radius:7px !important; }
+
+.button-left{
+	font-family: Smart;      
+    font-size:11pt;
+    color: #fff;
+    background-color: #32485c !important;
+    border-radius: 3px;
+}
+.button-right{
+	font-family: Smart;      
+    font-size:11pt;
+    color: #fff;
+    background-color: #2a3d4e !important;
+     border-radius: 3px;   
+}
+.button-bar-side{
+font-family: Smart;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+    border-radius: 3px;
+    text-align: center !important;
+    width: 85px;
+}
+.fixbuttontext {
+    text-align: center;
+    width:100%;
+}
+.button-mordal{
+    text-align: center !important;
+    width: 100px;
+    min-height: 35px !important;
+    line-height: 30px !important;
+}
+span.fontperf1 {
+	font-family: Smart; 
+    font-size:23px;
+    color: #2a3d4e !important;
+}
+span.fontperf2 {
+	font-family: Smart; 
+    font-size:40px;
+    color: #009fe8 !important;
 }

@@ -300,6 +300,20 @@ angular.module('starter.services', [])
 
       return deferred.promise;
     },
+    getTitle:function(id){
+      var deferred=$q.defer();
+      $http.get(API_URL+"threads/threadTitle/"+id,{
+          headers:{
+            'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+          }
+        }).success(function(data){
+           deferred.resolve(data);
+        }).error(function(data){
+          deferred.reject(data);
+        });
+
+        return deferred.promise;
+    },
     edit:function(threadId,title){
       return $http.post(API_URL+"threads/"+threadId+".json",{'title':title,'id':threadId},{
       headers:{
@@ -350,11 +364,11 @@ angular.module('starter.services', [])
         }
       });
     },
-    getComments:function(headId) {
+    getComments:function(headId,reload=false) {
       var threads = CacheFactory.get('threads');
       var deferred=$q.defer();
-
-      if(threads.get('heads/'+headId)){
+    
+      if(threads.get('heads/'+headId) && !reload){
         deferred.resolve(threads.get('heads/'+headId));
       }else{
         $http.get(API_URL+"heads/"+headId+".json",{
@@ -594,7 +608,7 @@ angular.module('starter.services', [])
     /* jshint ignore:end */
 })
 
-.service('AuthService', function($q, $http,$ionicHistory,CacheFactory,API_URL) {
+.service('AuthService', function($q,$rootScope,$interval, $http,$state,$ionicLoading,$ionicHistory,CacheFactory,API_URL,BASE_URL) {
   var LOCAL_TOKEN_KEY = 'talknote_token';
   var username = '';
   var affiliation = '';
@@ -610,6 +624,7 @@ angular.module('starter.services', [])
      affiliation=window.localStorage.getItem('affiliation');
      avatar_img=window.localStorage.getItem('avatar_img');
      userid=window.localStorage.getItem('user_id');
+     $rootScope.avatar_img=window.localStorage.getItem('avatar_img');
     if (token) {
       useCredentials(token);
     }
@@ -661,13 +676,19 @@ angular.module('starter.services', [])
       }
   };
 
-  var storeUserCredentials=function(token,uname,affiliation,avatar_img,userid,pworkid) {
+  var storeUserCredentials=function(token,uname,affiliation,avatar_img,userid,pworkid,prof_id) {
+    var avatar='';
+    if(typeof(avatar_img)==='undefined' || avatar_img=='' || avatar_img==null  || avatar_img=='null')
+      avatar='img/avatar.png';
+    else
+      avatar=BASE_URL+avatar_img;
     window.localStorage.setItem(LOCAL_TOKEN_KEY, token);
     window.localStorage.setItem('user',uname);
     window.localStorage.setItem('affiliation',affiliation);
-    window.localStorage.setItem('avatar_img',avatar_img);
+    window.localStorage.setItem('avatar_img',avatar);
     window.localStorage.setItem('user_id',userid);
     window.localStorage.setItem('pwork_user_id',pworkid);
+      window.localStorage.setItem('profile_id',prof_id);
     useCredentials(token);
     loadUserCredentials();
   }
@@ -681,10 +702,16 @@ angular.module('starter.services', [])
 
   function destroyUserCredentials() {
     authToken = undefined;
+    devicetoken = undefined;
     username = '';
+    affiliation = '';
+    avatar_img = '';
     userid='';
     isAuthenticated = false;
     var olddevicetoken=window.localStorage.getItem('devicetoken');
+     $ionicLoading.show({
+        template:'<ion-spinner name="bubbles"></ion-spinner>'
+      });
 
     if (olddevicetoken !== null || olddevicetoken.length !== 0){
       $http.post(API_URL+'profiles/removeregid/',{'fcmid':olddevicetoken},{
@@ -694,17 +721,25 @@ angular.module('starter.services', [])
         }).success(function(data){}).error(function(data){});
 
     }
+    if(window.FirebasePlugin) window.FirebasePlugin.setBadgeNumber(0);
+    clearInterval($rootScope.allInterval);
     window.localStorage.removeItem(LOCAL_TOKEN_KEY);
     window.localStorage.removeItem('user');
     window.localStorage.removeItem('user_id');
     window.localStorage.removeItem('pwork_user_id');
+    window.localStorage.removeItem('affiliation');
+    window.localStorage.removeItem('avatar_img');
+    window.localStorage.removeItem('profile_id');
     CacheFactory.destroyAll();
+    $ionicHistory.clearCache();
+    $ionicHistory.clearHistory();
+
+    $ionicLoading.hide();
+    $state.go('login');
   }
 
   var logout = function() {
     destroyUserCredentials();
-    $ionicHistory.clearCache();
-   $ionicHistory.clearHistory();
   };
 
   loadUserCredentials();
@@ -715,7 +750,7 @@ angular.module('starter.services', [])
     isAuthenticated: function() {return isAuthenticated;},
     username: function() {return username;},
     affiliation: function() {return affiliation;},
-    avatarImg: function() {return avatar_img && avatar_img!=null && avatar_img!='null' ? avatar_img : 'img/avatar.png';},
+    avatarImg: function() {return avatar_img;},
     userid:function(){return userid; },
     authToken:function(){return authToken; },
     setdeviceToken:setdeviceToken,
@@ -808,6 +843,7 @@ angular.module('starter.services', [])
 
     total=totalThread+totalChat;
   }
+
   return{
     getallnotif:function(){return notifications; },
     gettotalcount:function(){return total; },
@@ -831,6 +867,16 @@ angular.module('starter.services', [])
       return ids;
 
     },
+    getHeadNotif:function(){
+      var ids=[];
+      if(notifications.Heads.length > 0){
+        notifications.Heads.forEach(function(v,k){
+          ids[v.head_id]=v.count;
+        })
+      }
+
+      return ids;
+    },
     getGroupchatNotif:function(){
       var ids=[];
       if(notifications.Groupchats.length > 0){
@@ -842,6 +888,141 @@ angular.module('starter.services', [])
     },
     setNotif:setNotif
   };
+})
+.service('GalleryService',function($rootScope,NewModalService,$ionicLoading){
+  var galleryImages=[];
+
+  function requestPermission(){
+    cordova.plugins.photoLibrary.requestAuthorization(
+      function () {
+         cordova.plugins.photoLibrary.getLibrary(
+            function (result) {
+
+
+
+              if(!result.isLastChunk){
+              result.library.forEach(function(val,key){
+               cordova.plugins.photoLibrary.getThumbnail(
+                val.id, // or libraryItem.id
+                function (thumbnailBlob) {
+                  galleryImages.push({'id':val.id,'thumb':thumbnailBlob});
+                },
+                function (err) {
+                  console.log('Error occured');
+                },
+                { // optional options
+                  thumbnailWidth: 100,
+                  thumbnailHeight: 100,
+                  quality: 0.8
+                });
+              });
+
+              }
+              $rootScope.$broadcast('gallery_ready');
+            })
+        },
+      function (err) {
+
+      }, // if options not provided, defaults to {read: true}.
+      {
+        read: true,
+        write: true
+      }
+    );
+  }
+  var getImages=function(){
+
+    Photos.photos({"limit": 20,"interval":500},
+    function(photos) {
+       photos.forEach(function(val,key){
+         Photos.thumbnail(val.id,
+          {"asDataUrl": true, "quality": 100},
+          function(data) {
+              galleryImages.push({'id':val.id,'thumb':data});
+          },
+          function(error) {
+              console.error("Error: " + error);
+          });
+       });
+
+        $rootScope.$broadcast('gallery_ready');
+    },
+    function(error) {
+        console.error("Error: " + error);
+    });
+  /*cordova.plugins.photoLibrary.requestAuthorization(
+      function () {
+    cordova.plugins.photoLibrary.getLibrary(
+      function (result) {
+        var library = result.library;
+        if(!result.isLastChunk){
+
+                  galleryImages=library;
+
+              }
+              $rootScope.$broadcast('gallery_ready');
+      },
+      function (err) { },
+      {
+        thumbnailWidth: 100,
+        thumbnailHeight: 100,
+        quality: 0.6,
+        itemsInChunk: 10, // Loading large library takes time, so output can be chunked so that result callback will be called on
+        chunkTimeSec: 0.1, // each X items, or after Y secons passes. You can start displaying photos immediately.
+        useOriginalFileNames: false, // default, true will be much slower on iOS
+      }
+    );
+      },
+       function (err) {
+
+      }, // if options not provided, defaults to {read: true}.
+      {
+        read: true,
+        write: true
+      });*/
+
+         /* cordova.plugins.photoLibrary.getLibrary(
+            function (result) {
+
+
+
+              if(!result.isLastChunk){
+              result.library.forEach(function(val,key){
+               cordova.plugins.photoLibrary.getThumbnail(
+                val.id, // or libraryItem.id
+                function (thumbnailBlob) {
+                  galleryImages.push({'id':val.id,'thumb':thumbnailBlob});
+                },
+                function (err) {
+                  console.log('Error occured');
+                },
+                { // optional options
+                  thumbnailWidth: 100,
+                  thumbnailHeight: 100,
+                  quality: 0.8
+                });
+              });
+
+              }
+              $rootScope.$broadcast('gallery_ready');
+            },
+            function (err) {
+              if (err.startsWith('Permission')) {
+                requestPermission();
+              }
+            },
+            {
+              itemsInChunk: 20, // Loading large library takes time, so output can be chunked so that result callback will be called on
+              chunkTimeSec: 0.5, // each X items, or after Y secons passes. You can start displaying photos immediately.
+              useOriginalFileNames: false, // default, true will be much slower on iOS
+              includeAlbumData: false // default
+            }
+          );*/
+  }
+  return{
+    getImages:getImages,
+    galleryImages:function(){ return galleryImages; }
+  }
 })
 .factory('backButtonOverride', function ($rootScope, $ionicPlatform) {
     var results = {};
@@ -876,19 +1057,27 @@ angular.module('starter.services', [])
 .service('NewModalService', function($ionicModal) {
   var svc = {};
 
-
-  svc.showModal = function(_scope) {
+/*  svc.createModal=function(_scope){
     $ionicModal.fromTemplateUrl('templates/modal/search-groups.html', {
-      scope: _scope, // passing in scope from controller
+      scope: _scope,
+      animation: 'slide-in-up'
+    }).then(function(modal) {
+      svc.modal = modal;
+    });
+  }*/
+  svc.showModal = function(_scope) {
+     $ionicModal.fromTemplateUrl('templates/modal/likes.html', {
+      scope: _scope,
       animation: 'slide-in-up'
     }).then(function(modal) {
       svc.modal = modal;
       modal.show();
     });
+    //if(svc.modal) svc.modal.show();
   }
 
   svc.hideModal = function(_scope) {
-    if(svc.modal) svc.modal.hide();
+    svc.modal.hide();
 }
   return svc;
 
@@ -907,12 +1096,12 @@ angular.module('starter.services', [])
               deferred.resolve(data);
           }
           else{
-              console.error(JSON.stringify(data));
+              //console.error(JSON.stringify(data));
               deferred.reject(data);
           }
       })
       .error(function(data){
-          console.error(JSON.stringify(data));
+          //console.error(JSON.stringify(data));
           deferred.reject(data);
       });
       return deferred.promise;

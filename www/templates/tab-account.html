@@ -1,9 +1,32 @@
-<ion-view view-title="Account">
-  <ion-content class="padding text-center">
-    <img style="width:50%;" ng-src="{{avatar_img}}">
-    <h3>{{user}}</h3>
-    <h4>{{affiliation}}</h4>
-
-    <h4 style="margin-top:100px;" ng-click="logout()">ログアウト</h4>
+<ion-view view-title="アカウント管理">
+  <ion-content>
+    <div class="list">
+      <div class="item item-body text-center" style="padding:100px;">
+        <img ng-click="triggerProfileImgChange()" class="img-circle" style="height:100px;width:100px;border-radius:50%;border:1px solid #ddd;" ng-src="{{avatar_img}}">
+        <!-- <center ng-show="showUploadingButtons">
+        <div style="width:auto">
+          <ion-spinner ng-show="uploadingProfile" name="circles" style="margin-left: 20%;margin-top: 15%;position: absolute;stroke: black;"></ion-spinner>
+          <img ng-if="!uploadedProf" ng-click="triggerProfileImgChange()" class="img-circle" style="height:164px;width:50%;border-radius:50%;border:1px solid #ddd;" ng-src="{{$root.avatar_img}}">
+          <img ng-if="uploadedProf" class="img-circle" style="height:164px;width:50%;border-radius:50%;border:1px solid #ddd;" ng-style="{opacity:uploadingProfile?'0.2':'1'}" ng-src="{{uploadedProfileImg}}">
+        </div>
+          <div style="text-align:center">
+            <button class="button button-center" ng-click=" showUploadingButtons=false;">
+              キャンセル
+            </button>
+            <button class="button button-center button-positive" ng-click="changeProfileImage(uploadedProfileImg)">
+              Save
+            </button>
+          </div>
+        </center> -->
+        <h2 class="smartfont" style="font-size:120%;">{{user}}</h2>
+        <h3>{{affiliation}}</h3>
+        <!--<center><div ng-click="triggerEditDesc()" class="profile-desc"><i class="icon ion-edit"></i> Add Description</div></center>-->
+      </div>
+      <div style="position:relative;  width:90%;  padding: 6px 0px;  margin: 8px auto;text-align: center;">
+      <span class="text-center button" ng-click="logout()">
+        ログアウト
+      </span>
+      </div>
+    </div>
   </ion-content>
 </ion-view>

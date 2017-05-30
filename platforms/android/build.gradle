@@ -177,6 +177,7 @@ android {
 
     lintOptions {
       abortOnError false;
+      disable 'MissingTranslation'
     }
 
     compileSdkVersion cdvCompileSdkVersion
@@ -256,6 +257,7 @@ dependencies {
     compile "com.google.firebase:firebase-messaging:+"
     compile "com.google.firebase:firebase-crash:+"
     compile "com.google.firebase:firebase-config:+"
+    compile "com.android.support:support-v4:24.1.1+"
     // SUB-PROJECT DEPENDENCIES END
 }
 

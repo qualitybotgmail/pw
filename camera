@@ -1,4 +1,0 @@
-#!/bin/bash
-
-export ANDROID_HOME=/root/android-sdk-linux
-sudo /usr/local/bin/ionic build android

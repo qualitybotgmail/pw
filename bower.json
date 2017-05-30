@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "ngCordova": "^0.1.27-alpha",
-    "angular-cache": "^4.6.0"
+    "angular-cache": "^4.6.0",
+    "ionic-image-lazy-load": "ion-image-lazy-load#*"
   }
 }

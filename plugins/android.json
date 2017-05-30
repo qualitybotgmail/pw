@@ -21,10 +21,6 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"Camera\"><param name=\"android-package\" value=\"org.apache.cordova.camera.CameraLauncher\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<preference name=\"webView\" value=\"org.crosswalk.engine.XWalkWebViewEngine\" />",
                             "count": 1
                         },
@@ -57,14 +53,6 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"File\"><param name=\"android-package\" value=\"org.apache.cordova.file.FileUtils\" /><param name=\"onload\" value=\"true\" /></feature>",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"FileTransfer\"><param name=\"android-package\" value=\"org.apache.cordova.filetransfer.FileTransfer\" /></feature>",
-                            "count": 1
-                        },
-                        {
                             "xml": "<feature name=\"FilePath\"><param name=\"android-package\" value=\"com.hiddentao.cordova.filepath.FilePath\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
                         },
@@ -85,11 +73,35 @@
                             "count": 1
                         },
                         {
+                            "xml": "<feature name=\"StatusBar\"><param name=\"android-package\" value=\"org.apache.cordova.statusbar.StatusBar\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
                             "xml": "<feature name=\"Whitelist\"><param name=\"android-package\" value=\"org.apache.cordova.whitelist.WhitelistPlugin\" /><param name=\"onload\" value=\"true\" /></feature>",
                             "count": 1
                         },
                         {
                             "xml": "<feature name=\"Keyboard\"><param name=\"android-package\" value=\"io.ionic.keyboard.IonicKeyboard\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Camera\"><param name=\"android-package\" value=\"org.apache.cordova.camera.CameraLauncher\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"File\"><param name=\"android-package\" value=\"org.apache.cordova.file.FileUtils\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<allow-navigation href=\"cdvfile:*\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"FileTransfer\"><param name=\"android-package\" value=\"org.apache.cordova.filetransfer.FileTransfer\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"InAppBrowser\"><param name=\"android-package\" value=\"org.apache.cordova.inappbrowser.InAppBrowser\" /></feature>",
                             "count": 1
                         }
                     ]
@@ -98,10 +110,6 @@
             "AndroidManifest.xml": {
                 "parents": {
                     "/*": [
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
-                            "count": 4
-                        },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
                             "count": 3
@@ -113,6 +121,10 @@
                         {
                             "xml": "<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />",
                             "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
+                            "count": 4
                         },
                         {
                             "xml": "<uses-permission android:name=\"android.permission.INTERNET\" />",
@@ -144,6 +156,12 @@
                     "/manifest": [
                         {
                             "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
+                            "count": 1
+                        }
+                    ],
+                    "application": [
+                        {
+                            "xml": "<provider android:authorities=\"${applicationId}.provider\" android:exported=\"false\" android:grantUriPermissions=\"true\" android:name=\"android.support.v4.content.FileProvider\"><meta-data android:name=\"android.support.FILE_PROVIDER_PATHS\" android:resource=\"@xml/provider_paths\" /></provider>",
                             "count": 1
                         }
                     ]
@@ -178,7 +196,10 @@
         "cordova-plugin-badge": {
             "PACKAGE_NAME": "com.widsley.playwork.android"
         },
-        "cordova-plugin-camera": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-console": {
             "PACKAGE_NAME": "com.widsley.playwork.android"
         },
         "cordova-plugin-crosswalk-webview": {
@@ -190,12 +211,6 @@
             "PACKAGE_NAME": "com.widsley.playwork.android"
         },
         "cordova-plugin-device": {
-            "PACKAGE_NAME": "com.widsley.playwork.android"
-        },
-        "cordova-plugin-file": {
-            "PACKAGE_NAME": "com.widsley.playwork.android"
-        },
-        "cordova-plugin-file-transfer": {
             "PACKAGE_NAME": "com.widsley.playwork.android"
         },
         "cordova-plugin-filepath": {
@@ -213,10 +228,25 @@
         "cordova-plugin-splashscreen": {
             "PACKAGE_NAME": "com.widsley.playwork.android"
         },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.widsley.playwork.android"
         },
         "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "com.widsley.playwork.android"
+        },
+        "cordova-plugin-inappbrowser": {
             "PACKAGE_NAME": "com.widsley.playwork.android"
         }
     },

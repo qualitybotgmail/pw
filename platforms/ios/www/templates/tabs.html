@@ -16,22 +16,22 @@ navigation history that also transitions its views in and out.
   </ion-tab> -->
 
   <!-- Groups Tab -->
-  <ion-tab title="Groups" icon-off="ion-person-stalker" icon-on="ion-person-stalker" href="#/tab/groups" badge="$root.threadNotifCount" badge-style="badge-assertive">
+  <ion-tab title="グループ" icon-off="group-off" icon-on="group-on" href="#/tab/groups" badge="$root.threadNotifCount" badge-style="badge-assertive">
     <ion-nav-view name="tab-groups"></ion-nav-view>
   </ion-tab>
 
   <!-- Chats Tab -->
-  <ion-tab title="Chats" icon-off="ion-chatboxes" icon-on="ion-chatboxes" href="#/tab/chats" badge="$root.chatNotifCount" badge-style="badge-assertive">
+  <ion-tab title="メッセージ" icon-off="message-off" icon-on="message-on" ng-click="gotoChats()" badge="$root.chatNotifCount" badge-style="badge-assertive">
     <ion-nav-view name="tab-chats"></ion-nav-view>
   </ion-tab>
 
   <!-- Performance Tab -->
-  <ion-tab title="Performance" icon-off="ion-connection-bars" icon-on="ion-connection-bars" href="#/tab/performance">
+  <ion-tab title="進捗管理" icon-off="performance-off" icon-on="performance-on" href="#/tab/performance">
     <ion-nav-view name="tab-performance"></ion-nav-view>
   </ion-tab>
 
   <!-- Account Tab -->
-  <ion-tab title="Account" icon-off="ion-gear-b" icon-on="ion-gear-b" href="#/tab/account">
+  <ion-tab title="アカウント管理" icon-off="account-off" icon-on="account-on" href="#/tab/account">
     <ion-nav-view name="tab-account"></ion-nav-view>
   </ion-tab>
 

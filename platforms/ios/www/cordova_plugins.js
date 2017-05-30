@@ -16,6 +16,78 @@ module.exports = [
         ]
     },
     {
+        "file": "plugins/cordova-plugin-console/www/console-via-logger.js",
+        "id": "cordova-plugin-console.console",
+        "clobbers": [
+            "console"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-console/www/logger.js",
+        "id": "cordova-plugin-console.logger",
+        "clobbers": [
+            "cordova.logger"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-device/www/device.js",
+        "id": "cordova-plugin-device.device",
+        "clobbers": [
+            "device"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-firebase/www/firebase.js",
+        "id": "cordova-plugin-firebase.FirebasePlugin",
+        "clobbers": [
+            "FirebasePlugin"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-image-picker/www/imagepicker.js",
+        "id": "cordova-plugin-image-picker.ImagePicker",
+        "clobbers": [
+            "plugins.imagePicker"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-network-information/www/network.js",
+        "id": "cordova-plugin-network-information.network",
+        "clobbers": [
+            "navigator.connection",
+            "navigator.network.connection"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-network-information/www/Connection.js",
+        "id": "cordova-plugin-network-information.Connection",
+        "clobbers": [
+            "Connection"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-splashscreen/www/splashscreen.js",
+        "id": "cordova-plugin-splashscreen.SplashScreen",
+        "clobbers": [
+            "navigator.splashscreen"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-statusbar/www/statusbar.js",
+        "id": "cordova-plugin-statusbar.statusbar",
+        "clobbers": [
+            "window.StatusBar"
+        ]
+    },
+    {
+        "file": "plugins/ionic-plugin-keyboard/www/ios/keyboard.js",
+        "id": "ionic-plugin-keyboard.keyboard",
+        "clobbers": [
+            "cordova.plugins.Keyboard"
+        ],
+        "runs": true
+    },
+    {
         "file": "plugins/cordova-plugin-camera/www/CameraConstants.js",
         "id": "cordova-plugin-camera.Camera",
         "clobbers": [
@@ -41,13 +113,6 @@ module.exports = [
         "id": "cordova-plugin-camera.CameraPopoverHandle",
         "clobbers": [
             "CameraPopoverHandle"
-        ]
-    },
-    {
-        "file": "plugins/cordova-plugin-device/www/device.js",
-        "id": "cordova-plugin-device.device",
-        "clobbers": [
-            "device"
         ]
     },
     {
@@ -216,48 +281,12 @@ module.exports = [
         ]
     },
     {
-        "file": "plugins/cordova-plugin-firebase/www/firebase.js",
-        "id": "cordova-plugin-firebase.FirebasePlugin",
+        "file": "plugins/cordova-plugin-inappbrowser/www/inappbrowser.js",
+        "id": "cordova-plugin-inappbrowser.inappbrowser",
         "clobbers": [
-            "FirebasePlugin"
+            "cordova.InAppBrowser.open",
+            "window.open"
         ]
-    },
-    {
-        "file": "plugins/cordova-plugin-image-picker/www/imagepicker.js",
-        "id": "cordova-plugin-image-picker.ImagePicker",
-        "clobbers": [
-            "plugins.imagePicker"
-        ]
-    },
-    {
-        "file": "plugins/cordova-plugin-network-information/www/network.js",
-        "id": "cordova-plugin-network-information.network",
-        "clobbers": [
-            "navigator.connection",
-            "navigator.network.connection"
-        ]
-    },
-    {
-        "file": "plugins/cordova-plugin-network-information/www/Connection.js",
-        "id": "cordova-plugin-network-information.Connection",
-        "clobbers": [
-            "Connection"
-        ]
-    },
-    {
-        "file": "plugins/cordova-plugin-splashscreen/www/splashscreen.js",
-        "id": "cordova-plugin-splashscreen.SplashScreen",
-        "clobbers": [
-            "navigator.splashscreen"
-        ]
-    },
-    {
-        "file": "plugins/ionic-plugin-keyboard/www/ios/keyboard.js",
-        "id": "ionic-plugin-keyboard.keyboard",
-        "clobbers": [
-            "cordova.plugins.Keyboard"
-        ],
-        "runs": true
     }
 ];
 module.exports.metadata = 
@@ -266,18 +295,22 @@ module.exports.metadata =
     "cordova-plugin-actionsheet": "2.3.3",
     "cordova-plugin-app-event": "1.2.0",
     "cordova-plugin-badge": "0.7.4",
-    "cordova-plugin-camera": "2.1.1",
+    "cordova-plugin-compat": "1.1.0",
+    "cordova-plugin-console": "1.0.6",
     "cordova-plugin-crosswalk-webview": "2.3.0",
-    "cordova-plugin-device": "1.1.4",
-    "cordova-plugin-file": "4.1.1",
-    "cordova-plugin-file-transfer": "1.5.1",
+    "cordova-plugin-device": "1.1.5",
     "cordova-plugin-filepath": "1.0.2",
     "cordova-plugin-firebase": "0.1.19",
     "cordova-plugin-image-picker": "1.1.1",
-    "cordova-plugin-network-information": "1.2.1",
-    "cordova-plugin-splashscreen": "3.0.0",
-    "cordova-plugin-whitelist": "1.2.2",
-    "ionic-plugin-keyboard": "2.2.1"
+    "cordova-plugin-network-information": "1.3.2",
+    "cordova-plugin-splashscreen": "4.0.2",
+    "cordova-plugin-statusbar": "2.2.2",
+    "cordova-plugin-whitelist": "1.3.2",
+    "ionic-plugin-keyboard": "2.2.1",
+    "cordova-plugin-camera": "2.4.0",
+    "cordova-plugin-file": "4.3.2",
+    "cordova-plugin-file-transfer": "1.6.2",
+    "cordova-plugin-inappbrowser": "1.7.0"
 }
 // BOTTOM OF METADATA
 });

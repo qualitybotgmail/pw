@@ -1,9 +1,9 @@
 <ion-modal-view>
-   <ion-header-bar class="bar-positive">
-      <h1 class="title">Members</h1>
-      <div class="buttons">
-          <button class="button" ng-click="showMemberList.hide()">Close</button>
-      </div>
+   <ion-header-bar class="bar bar-stable">
+     <div class="buttons">
+         <button class="button button-center button-outline button-bar-side" ng-click="showMemberList.hide()"><span class="fixbuttontext">閉じる</span></button>
+     </div>
+      <h1 class="title">現在のメンバー</h1>
     </ion-header-bar>
     <ion-content>
         <ul class="list">
@@ -17,7 +17,7 @@
                 {{us.username}}
               </li>
            <!-- </li>-->
-          
-        </ul> 
+
+        </ul>
     </ion-content>
   </ion-modal-view>
