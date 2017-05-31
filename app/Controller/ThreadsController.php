@@ -216,7 +216,7 @@ class ThreadsController extends AppController {
 		$this->Thread->Behaviors->load('Containable');
 		$thread = $this->Thread->find('first',array(
 			'conditions' => array('Thread.id' => $id),
-			'contain' => array('Head'=>array('Like'=>array('User'),'Owner','conditions'=>array('Head.id >'=>$lastid)),'User.username','User.avatar_img','User.id','Owner.username','Owner.avatar_img','Owner.id')
+			'contain' => array('Head'=>array('Like'=>array('User'),'Owner','conditions'=>array('Head.id >'=>$lastid),'order' => array('Head.created DESC')),'User.username','User.avatar_img','User.id','Owner.username','Owner.avatar_img','Owner.id')
 		));
 		$tid = $id;
 		$uid = $this->Auth->user('id');
