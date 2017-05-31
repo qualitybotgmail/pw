@@ -259,6 +259,12 @@ public $actsAs = array('Containable');
 			$fcmids = array();
 			$notifdata=array('data'=>array(),'title'=>'','body'=>'');
 			$uid = AuthComponent::user('id');
+			
+			foreach(array("threads","heads","groupchats") as $n){
+				$cache = new CacheObj($uid,$n);
+				$cache->clear();
+			}
+				
 			App::uses('IgnoredThread', 'Model');
 			$this->IgnoredThread = new IgnoredThread;
 			$profile = $this->User->Profile->findByUserId($uid);

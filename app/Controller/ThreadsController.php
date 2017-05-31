@@ -310,7 +310,7 @@ class ThreadsController extends AppController {
 	public function addmember($thread_id = null,$member_id = null) {
 		header('Content-Type: application/json;charset=utf-8');
 		$ids = explode(",",$member_id);
-	
+		
 		$me = $this->Thread->User->findById($this->Auth->user('id'));
 		try{
 			$thread = $this->Thread->findById($thread_id);
@@ -325,6 +325,19 @@ class ThreadsController extends AppController {
 			$oldcount = count($users);
 			$users = array_merge($ids,$users);
 			$users = array_unique($users);
+			
+			$toclear_cache = $users;
+			$toclear_cache[] = $this->Auth->user('id');
+			
+			foreach($toclear_cache as $t_uid){
+				
+					foreach(array("threads","heads") as $n){
+							$cache = new CacheObj($t_uid,$n);
+							$cache->clear();
+					}
+				
+				
+			}
 			$usernames = $this->Thread->User->find('list',array('fields' => 'username','recursive'=>-1,'conditions'=>array(
 				'User.id' => $ids	
 			)));
@@ -462,7 +475,10 @@ class ThreadsController extends AppController {
 			$this->set(compact('users'));
 		
 	}
-
+	public function cache($id){
+		print_r($this->Thread->members($id));
+		exit;
+	}
 	public function comment($id = null) {
 		header('Content-Type: application/json;charset=utf-8');
 		if (!$this->Thread->exists($id)) {
@@ -543,7 +559,14 @@ class ThreadsController extends AppController {
 	public function deletemember($thread_id = null, $member_id = null) { 
 		$this->loadModel('User');
 		header('Content-Type: application/json;charset=utf-8'); 
-		
+		$members = $this->Thread->members($thread_id);
+		$members[] = $this->Auth->user('id');
+		foreach($members as $uid){
+			foreach(array("threads","heads") as $n){
+					$cache = new CacheObj($uid,$n);
+					$cache->clear();
+			}
+		}
 		try{ 
     		 $this->Thread->query("delete from users_threads where user_id = $member_id and thread_id = $thread_id");
     		// $result = $this->User->deleteAssoc($member_id,'Thread',$thread_id);

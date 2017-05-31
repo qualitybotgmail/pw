@@ -4,6 +4,7 @@ class CacheObj{
 	var $uid;
 	var $cache;
 	var $name;
+	
 	public function CacheObj($uid,$name){
 		$this->uid = $uid;
 		$this->name = $name;
