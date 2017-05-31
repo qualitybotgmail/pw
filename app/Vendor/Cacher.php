@@ -4,6 +4,7 @@ class CacheObj{
 	var $uid;
 	var $cache;
 	var $name;
+	
 	public function CacheObj($uid,$name){
 		$this->uid = $uid;
 		$this->name = $name;
@@ -25,14 +26,11 @@ class CacheObj{
 	}
 	
 	public function get($key = null){
-	  
+	    
 		if($key == null){
 			$key = $_SERVER['REQUEST_URI'];
 		}
 		$ret = @$this->cache[$key];
-        if($ret && count($ret)>0){
-            $ret['cached'] = true;
-        }
 		return $ret;
 		
 	}

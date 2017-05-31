@@ -1,4 +1,5 @@
 <?php
+App::import("Vendor","Cacher");
 App::uses('AppModel', 'Model');
 App::import('Vendor','NotifCounts');
 /**
@@ -99,17 +100,33 @@ class Thread extends AppModel {
 	}
 
 	public function afterSave($created, $options = array()){
-
+		$id = AuthComponent::user('id');
 		if(!$created){
 			$type = 'Thread.edit';
-			$id = AuthComponent::user('id');
+			
 			$this->Log->save(array(
 				'user_id' => 	$id,
 				'thread_id' => $this->data['Thread']['id'],
 				'type' => $type
 			));
+		}else{
+			foreach(array("threads","heads","groupchats") as $n){
+					$cache = new CacheObj($id,$n);
+					$cache->clear();
+			}
 		}
 
+	}
+	public function beforeDelete($cascade = true)
+	{
+		$members = $this->members($this->id);
+		//Clear the caches
+		foreach($members as $uid){
+			foreach(array("threads","heads","groupchats") as $n){
+					$cache = new CacheObj($uid,$n);
+					$cache->clear();
+			}			
+		}
 	}
 	public function logsFor($tid){
 		$id = AuthComponent::user('id');
