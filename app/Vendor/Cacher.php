@@ -25,14 +25,11 @@ class CacheObj{
 	}
 	
 	public function get($key = null){
-	  
+	    
 		if($key == null){
 			$key = $_SERVER['REQUEST_URI'];
 		}
 		$ret = @$this->cache[$key];
-        if($ret && count($ret)>0){
-            $ret['cached'] = true;
-        }
 		return $ret;
 		
 	}
