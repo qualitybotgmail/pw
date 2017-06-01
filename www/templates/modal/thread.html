@@ -10,16 +10,17 @@
       </label>
     </div>
     <div style="text-align:center">
-      <button class="button button-center button-left button-mordal" ng-click="$root.modalContent=[];threadModal.hide();settingsPopover.hide();" style="margin-right:10px">
-        キャンセル
-      </button>
+
       
-      <button ng-show="$root.modalAction=='edit'" class="button button-center button-right button-mordal" ng-class="{'disabled':!$root.modalContent.title}" ng-click="processEditingThread()">
+      <button ng-show="$root.modalAction=='edit'" class="button button-center button-left button-mordal" ng-class="{'disabled':!$root.modalContent.title}" ng-click="processEditingThread()">
         更新
       </button>
-      <button ng-show="$root.modalAction=='add'" class="button button-center button-right button-mordal" ng-class="{'disabled':!$root.modalContent.title}" ng-click="processAddingThread()">
-        保存
+      <button ng-show="$root.modalAction=='add'" class="button button-center button-left button-mordal" ng-class="{'disabled':!$root.modalContent.title}" ng-click="processAddingThread()">
+        作成
       </button>
+      <button class="button button-center button-right button-mordal" ng-click="$root.modalContent=[];threadModal.hide();settingsPopover.hide();" style="margin-left:10px">
+        キャンセル
+      </button>      
     </div>
   </ion-content>
 </ion-modal-view>

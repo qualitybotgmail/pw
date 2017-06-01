@@ -16,7 +16,7 @@
       </div>
 
       <div class="item item-body" style="padding: 0px;border-top:none;">
-        <div class="remove-first" style="padding:0px 15px 10px 15px;margin:0;color:#000;white-space:pre-line;word-break:break-word;">
+        <div class="remove-first ShingoProL"" style="padding:0px 15px 10px 15px;margin:0;color:#000;white-space:pre-line;word-break:break-word;">
           <span content="linkify(getHeads.body)" check-link></span>
         </div>
            <div class="item" style="padding:0px;border-bottom:0px;" ng-show="headUploads.non_image.length > 0 || headUploads.image.length > 0">
@@ -59,8 +59,8 @@
           <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="comment.user_id !=$root.user_id">{{comment.User.username}}</div>
           <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="comment.user_id ==$root.user_id">{{$root.user}}</div>
           <p class="dateList" style="margin-top: -25px;"><span ng-show="comment.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showCommentPopover($event,$index)"></i></span></p>
-          <div style="padding-right:20px;color:#000;white-space:pre-line;word-break:break-word">
-            <span content="linkify(comment.body)" check-link></span>
+          <div style="padding-right:20px;color:#000;word-break:break-word">
+            <span class="ShingoProL" content="linkify(comment.body)" check-link></span>
           </div>
           <div>
             <div class="item item-list-detail" style="padding: 0px;border: 0px;">
@@ -77,7 +77,7 @@
               </ion-scroll>
             </div>
           </div>
-          <div style="width:100%;height:24px;padding-right:10px">
+          <div style="width:100%;height:24px;padding-right:10px;bottom: 0;position: absolute;">
             <a class="subdued datecomment">{{comment.created}}</a>
             <a ng-if="comment.user_id!=$root.user_id" class="subdued" style="float:right" ng-click="changeLike(comment.id,$index)">
               <span><i class="icon ion-thumbsup likes" ng-class="{'active':comment.isUserLiked}"></i></span>
@@ -106,8 +106,8 @@
         <textarea rows="1" auto-grow ng-model="newComment.body" ng-Required="true" placeholder="コメントを書く" name="content" style="width:100%;padding: 10px;border-radius:0px;border-left:1px solid #ddd;height:auto !important;"></textarea>
       </label>
 
-      <a ng-if="action=='add' || action==''" style="padding:11px" ng-click="sendComment(comments.Head.id)">送信</a>
-      <a ng-if="action=='edit'" style="padding:11px;" ng-click="editComment(comments.Head.id)">送信</a>
+      <a ng-if="action=='add' || action==''" style="padding: 5px 11px;background-color: rgba(68, 68, 68, 0.76);color: #fff;margin: 5px;border-radius:3px;" ng-click="sendComment(comments.Head.id)">送信</a>
+      <a ng-if="action=='edit'" style="padding: 5px 11px;background-color: rgba(68, 68, 68, 0.76);color: #fff;margin: 5px;border-radius:3px;" ng-click="editComment(comments.Head.id)">送信</a>
       <!-- <button ng-show="aaction=='add' || action==''" class="button button-basic" ng-click="sendComment(comments.Head.id)">
         Send
       </button>

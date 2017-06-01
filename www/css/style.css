@@ -6,13 +6,19 @@
 	font-family: 'Shingodb';
 	src: url(../font/A-OTF-ShinGoPro-DeBold_4.otf);
 }
+@font-face {
+	font-family: 'ShingoProL';
+	src: url(../font/A-OTF-ShinGoPro-Light_0.otf);
+}
 .smartfont {
 	font-family: Smart;
 }
 .shingodb {
 	font-family: Shingodb;    
 }
-
+.ShingoProL {
+	font-family: ShingoProL;    
+}
 /* Empty. Add your own CSS if you like */
 .members span{
    padding: 4px;
@@ -29,6 +35,7 @@
 .comment-list{
     /*border-top: 1px solid #ccc;*/
      padding-left: 72px;
+     min-height:80px;
 }
 .comment-list .item-avatar{
     width: 100% !important;
@@ -335,10 +342,11 @@ textarea {
 }
 
 .messages.other span {
-    color: black !important;
-    background-color: #C7C7CC !important;
-    display: inline-block !important;
-  padding: 5px 10px !important;
+  background: #00b6e3 !important;
+  display: inline-block !important;
+  color: white !important;    
+  display: inline-block !important;
+  padding: 5px 10px 8px 10px !important;
   border-radius: 10px !important;
   text-align: left !important;
   max-width: 240px !important;
@@ -356,7 +364,7 @@ textarea {
     transform: translate3d(120px, 0, 0) !important;
   }
 .messages span{
-  background: #007AFF !important;
+  background-color: #C7C7CC !important;
   display: inline-block !important;
   color: white !important;
   padding: 5px 10px !important;
@@ -395,10 +403,10 @@ textarea {
 
 .summary-header {
   position:relative;
-  width:90%;
+  width:100%;
   /*background:#13348B;*/
   padding: 6px 0px;
-  margin: 8px auto;
+  margin: 8px 0px;
 }
 .summary-title {
   margin: 20px auto;
@@ -438,6 +446,7 @@ textarea {
 .incentive-parent {
   position:relative;
   width:90%;
+  height: 60px;
   padding: 12px 15px;
   margin:0 auto;
   margin-bottom: 8px;
@@ -573,17 +582,28 @@ font-family: Smart;
 }
 .button-mordal{
     text-align: center !important;
-    width: 100px;
+    width: 110px;
     min-height: 35px !important;
     line-height: 30px !important;
+    font-size:13px;
 }
 span.fontperf1 {
 	font-family: Smart; 
-    font-size:23px;
+    font-size:20px;
     color: #2a3d4e !important;
 }
 span.fontperf2 {
 	font-family: Smart; 
-    font-size:40px;
+    font-size:35px;
     color: #009fe8 !important;
+}
+ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-color-active-positive .tab-item.active, ion-tabs.tabs-color-active-positive .tab-item.activated {
+    color: #2a3d4e !important;
+}
+.active {
+    color: #2a3d4e !important;
+}
+.searchinput {
+    height: 100% !important;
+    width: 100%;
 }
