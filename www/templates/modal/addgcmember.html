@@ -12,7 +12,7 @@
       <!-- <span style="position: absolute;left: 10px;margin-top: 10px;font-size: 15px;">フィルター:</span> -->
       <input type="search" ng-model="usersToadd2" ng-focus="searchFocused = true"
              ng-blur="searchFocused = false" ng-keyup="checkSearch($event)"
-             placeholder="フィルター" class="full-width chatsearch">
+             placeholder="メンバーの検索" class="full-width chatsearch searchinput">
     </ion-header-bar>
     <ion-content class="has-subheader">
       <ion-item style="padding:0px;padding-left:8px;background:#f0f0f0;">
@@ -21,11 +21,11 @@
         <div ng-show="$root.addedUsernames.length > 0 || alreadyAdded.length > 0">
            <a ng-show="alreadyAdded.length > 0" class="item item-icon-left" href="" ng-repeat="user in alreadyAdded track by $index">
              <i class="icon ion-ios-checkmark-outline" ></i>
-            {{user}}
+            <span class="shingodb" style="font-size:13px">{{user}}</span>
           </a>
           <a ng-show="$root.addedUsernames.length > 0" class="item item-icon-left" href="" collection-repeat="user in $root.addedUsernames track by $index">
             <i class="icon ion-ios-close-outline" ng-click="$root.removeUserChatGC($index)"></i>
-            {{user}}
+            <span class="shingodb" style="font-size:13px">{{user}}</span>
           </a>
         </div>
         <ion-item style="padding:0px;padding-left:8px;background:#f0f0f0;">
@@ -35,7 +35,7 @@
             <a class="item item-avatar item-icon-right" href="" ng-click="$root.addUserGC(user)" ng-repeat="user in addUsers | filter:{User:{username:usersToadd2}} track by $index" ng-if="user.User.username">
               <img src="img/avatar.png" ng-show="user.User.avatar_img==''||user.User.avatar_img=='null'||user.User.avatar_img==null">
               <img class="avatar" ng-src="{{base_url}}{{user.User.avatar_img}}" ng-show="user.User.avatar_img!=''&&user.User.avatar_img!='null'&&user.User.avatar_img!=null">
-              <h2>{{user.User.username}}</h2>
+              <span class="shingodb" style="font-size:13px">{{user.User.username}}</span>
               <i ng-show="$root.addedUserIds.indexOf(user.User.id) > -1" class="icon ion-checkmark-round"></i>
             </a>
         </div>

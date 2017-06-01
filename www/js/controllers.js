@@ -1590,6 +1590,9 @@ angular.module('starter.controllers', [])
       if("Head" in response && (response.Head.length > 0)){
             $rootScope.thread = response;
 
+      }else{
+        if("User" in response)
+          $rootScope.thread.User = response.User;
       }
     });
   };
@@ -1734,12 +1737,6 @@ angular.module('starter.controllers', [])
   $scope.processAddMember=function(){
     if($scope.newMembers.length > 0){
 
-      // angular.forEach($scope.notMembers,function(val,key){
-      //   if($scope.newMembers.indexOf(val.id) > -1){
-      //     val.selected=false;
-      //     $rootScope.thread.User.push(val);
-      //     $scope.notMembers.splice(key,1);
-      // })
       for (var i = $scope.notMembers.length - 1; i >= 0; i--) {
         if(!$scope.notMembers[i]) continue;
         if($scope.newMembers.indexOf($scope.notMembers[i].id) > -1){
@@ -1755,6 +1752,7 @@ angular.module('starter.controllers', [])
           $scope.newIndexes=[];
           $scope.search_filter='';
           $scope.addMemberModal.hide();
+           $scope.updateCache();
       },function(error){
 
       });
@@ -1783,6 +1781,7 @@ angular.module('starter.controllers', [])
             $scope.notMembers.push($scope.x);
 
             $rootScope.thread.User.splice(index,1);
+            $scope.updateCache();
         },function(error){
 
         });

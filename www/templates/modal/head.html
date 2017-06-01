@@ -3,7 +3,7 @@
      <div class="buttons">
          <button class="button button-center button-outline button-bar" ng-click="resetHeadForm();$root.showAddHead.hide();$root.headPopover.hide();"><span class="fixbuttontext">閉じる</span></button>
      </div>
-      <h1 class="title">共有したい情報を投稿</h1>
+      <h1 class="title">スレッドの作成</h1>
     </ion-header-bar>
     <ion-content>
     <div class="row">
@@ -48,14 +48,15 @@
     </div>
   </div>
 <div style="text-align:center">
-<button class="button button-center button-left button-mordal" ng-click="resetHeadForm();$root.showAddHead.hide();$root.headPopover.hide();">
-  キャンセル
-</button>
-<button ng-show="headAction=='edit'" class="button button-center button-right button-mordal" ng-class="{'disabled':!$root.headContent.body}" ng-click="$root.processEditingHead()">
+
+<button ng-show="headAction=='edit'" class="button button-center button-left button-mordal" ng-class="{'disabled':!$root.headContent.body}" ng-click="$root.processEditingHead()">
   更新
 </button>
-<button ng-show="headAction=='add'" class="button button-center button-right button-mordal" ng-class="{'disabled':!$root.headContent.body}" ng-click="processAddingHead()">
-  投稿
+<button ng-show="headAction=='add'" class="button button-center button-left button-mordal" ng-class="{'disabled':!$root.headContent.body}" ng-click="processAddingHead()">
+  作成
+</button>
+<button class="button button-center button-right button-mordal" ng-click="resetHeadForm();$root.showAddHead.hide();$root.headPopover.hide();" style="margin-left:10px;">
+  キャンセル
 </button>
 </div>
  </ion-content>
