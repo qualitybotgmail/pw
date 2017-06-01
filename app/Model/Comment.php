@@ -117,5 +117,18 @@ class Comment extends AppModel {
 	
 
 	}		
-	
+	public function beforeDelete($cascade = true)
+	{
+		$head = $this->Head->findById($this->head_id);
+		$members = $this->members($head['Head']['thread_id']);
+		$members[] =  AuthComponent::user('id');
+		//Clear the caches
+		foreach($members as $uid){
+			foreach(array("threads","heads","groupchats") as $n){
+					$cache = new CacheObj($uid,$n);
+					$cache->clear();
+			}			
+		}
+		return true;
+	}	
 }

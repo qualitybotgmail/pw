@@ -153,5 +153,18 @@ class Head extends AppModel {
 		$notificationsCount->minus('thread',$thread_id,$cleared);
 		
 
-	}		
+	}	
+	public function beforeDelete($cascade = true)
+	{
+		$members = $this->members($this->thread_id);
+		$members[] =  AuthComponent::user('id');
+		//Clear the caches
+		foreach($members as $uid){
+			foreach(array("threads","heads","groupchats") as $n){
+					$cache = new CacheObj($uid,$n);
+					$cache->clear();
+			}			
+		}
+		return true;
+	}	
 }
