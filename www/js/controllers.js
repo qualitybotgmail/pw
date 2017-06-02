@@ -2629,12 +2629,12 @@ $rootScope.changeHeadLike=function(id,index){
         template:'<ion-spinner name="bubbles"></ion-spinner>'
       });
         ApiService.Delete('comments/'+$scope.comments['Comment'][$scope.processedCommentIndex].id+'.json','').then(function(response){
-          if(response.status=='OK'){
+          
              $scope.comments.Comment.splice($scope.processedCommentIndex,1);
              $scope.updateCache();
             $scope.commentPopover.hide();
             $ionicLoading.hide();
-          }
+          
         },function(error){
 
         });
