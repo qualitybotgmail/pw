@@ -120,7 +120,8 @@ class Comment extends AppModel {
 	public function beforeDelete($cascade = true)
 	{
 		$head = $this->Head->findById($this->head_id);
-		$members = $this->members($head['Head']['thread_id']);
+		if(isset($head['Head']))
+		$members = $this->Head->Thread->members($head['Head']['thread_id']);
 		$members[] =  AuthComponent::user('id');
 		//Clear the caches
 		foreach($members as $uid){

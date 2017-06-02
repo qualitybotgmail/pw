@@ -266,7 +266,9 @@ class HeadsController extends AppController {
  * @return void
  */
 	public function delete($id = null) {
+		
 		$this->Head->id = $id;
+
 		if (!$this->Head->exists()) {
 			throw new NotFoundException(__('Invalid head'));
 		}

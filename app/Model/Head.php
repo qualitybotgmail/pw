@@ -156,7 +156,7 @@ class Head extends AppModel {
 	}	
 	public function beforeDelete($cascade = true)
 	{
-		$members = $this->members($this->thread_id);
+		$members = $this->Thread->members($this->thread_id);
 		$members[] =  AuthComponent::user('id');
 		//Clear the caches
 		foreach($members as $uid){
