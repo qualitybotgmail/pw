@@ -21,7 +21,7 @@
         <div ng-class="{other: message.Message.user_id == $root.user_id}" class="messages" style="margin-bottom: 0px !important;">
           <div class="message" ng-show="message.Message.body!=''" ng-class="{'slide-right': hideTime, '': !hideTime}" style="padding: 5px !important;">
             <p ng-show="message.Message.user_id != $root.user_id" style="font-size:12px;margin:0px;color: rgba(68, 68, 68, 0.74);">{{message.User.username}}</p>
-            <span style="white-space:pre-line;word-break:break-word;" on-hold="message.Message.user_id == $root.user_id?showChatPopover($event,'chat',{{$index}}):''" ng-style="{opacity:errorSending && (message.Message.id==-1)?'0.4':'1'}" content="linkify(message.Message.body)" check-link></span>
+            <span class="ShingoProL" style="white-space:pre-line;word-break:break-word;" on-hold="message.Message.user_id == $root.user_id?showChatPopover($event,'chat',{{$index}}):''" ng-style="{opacity:errorSending && (message.Message.id==-1)?'0.4':'1'}" content="linkify(message.Message.body)" check-link></span>
 
              <p style="font-size:12px;margin:0px;color: rgba(68, 68, 68, 0.74);">{{message.Message.time}}</p>
 
@@ -44,7 +44,7 @@
   <ion-footer-bar align-title="left" style="padding: 0px;height:auto;border-bottom:1px solid #ddd;" keyboard-attach>
 
     <div style="width:100%">
-      <div class="item offline" ng-show="$root.isOffline"><i class="icon ion-android-alert"></i> No internet connection</div>
+      <div class="item offline" ng-show="$root.isOffline"><i class="icon ion-android-alert"></i>ネットワークに接続されていません</div>
     <div class="item item-input-inset" style="padding:0px">
         <i ng-show="!isEdit" class="icon ion-ios-camera" style="font-size: 35px;padding-left: 5px;color: rgba(68, 68, 68, 0.76);" ng-click="loadImage()"></i>
       <label class="item-input-wrapper item-icon-left" style="padding-left:5px;padding-right:0px;background-color: white;">

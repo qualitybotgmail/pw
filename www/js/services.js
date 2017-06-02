@@ -373,7 +373,7 @@ angular.module('starter.services', [])
     getComments:function(headId,reload=false) {
       var threads = CacheFactory.get('threads');
       var deferred=$q.defer();
-    
+
       if(threads.get('heads/'+headId) && !reload){
         deferred.resolve(threads.get('heads/'+headId));
       }else{
@@ -1083,7 +1083,7 @@ angular.module('starter.services', [])
   }
 
   svc.hideModal = function(_scope) {
-    svc.modal.hide();
+    if(svc.modal) svc.modal.hide();
 }
   return svc;
 

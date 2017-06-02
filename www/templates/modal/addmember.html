@@ -13,12 +13,12 @@
              ng-focus="searchFocused = true"
              ng-blur="searchFocused = false"
              ng-change="scrollTop()"
-             class="full-width">
+             class="full-width searchinput">
     </ion-header-bar>
     <ion-content>
         <ul class="list">
             <li class="item item-checkbox" item-height="55px" item-width="100%" ng-repeat="user in notMembers | filter:{username:search_filter} track by $index" ng-if="user.username">
-                {{user.username}}
+               <span class="shingodb" style="font-size:13px"> {{user.username}} </span>
                <label class="checkbox">
                <input ng-click="addNewMember(user)" type="checkbox" value="1" ng-model="user.selected">
                </label>
