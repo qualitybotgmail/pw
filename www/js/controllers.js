@@ -2129,7 +2129,7 @@ $scope.selectPicture = function($act) {
         }else{
           $scope.gethead();
         }
-      if("Comment" in response && (response.Comment.length > 0)){
+      if("Comment" in response){
         if(lastid > 0)
           $scope.comments.Comment = $scope.comments.Comment.concat(response.Comment);
         else

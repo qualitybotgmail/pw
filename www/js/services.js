@@ -268,7 +268,14 @@ angular.module('starter.services', [])
                 threads.put('heads/'+id, data);
                 deferred.resolve(data);
               }else{
+                if(data && data.Comment){
+                  cacheData.Comment=data.Comment;
+                  threads.put('heads/'+id, cacheData);
+                  deferred.resolve(data);
+                }else{
+                  
                 deferred.resolve([]);
+              }
               }
             }
           })
