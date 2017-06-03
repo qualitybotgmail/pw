@@ -255,7 +255,7 @@ angular.module('starter.services', [])
           }).success(function(data){
 
             if(type=='head'){
-              if(data && data.Head.length > 0){
+              if(data && data.Head){
                 //cacheData.Head=cacheData.Head.concat(data.Head);
                 threads.put('threads/'+id, data);
                 deferred.resolve(data);

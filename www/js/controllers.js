@@ -1590,8 +1590,7 @@ angular.module('starter.controllers', [])
   $scope.updateCache=function($lastid=0){
 
     Groups.updateHeadCache($stateParams['id'],'threads/'+$stateParams['id'],'head').then(function(response){
-      //console.log(response);
-      if("Head" in response && (response.Head.length > 0)){
+      if("Head" in response){
             $rootScope.thread = response;
 
       }else{
@@ -1699,10 +1698,10 @@ angular.module('starter.controllers', [])
           if(response.status=='OK'){
 
             $rootScope.thread.Head.splice($scope.processedHead,1);
+            $scope.updateCache();
             $rootScope.showAddHead.hide();
             $scope.resetHeadForm();
             $rootScope.headPopover.hide();
-            $scope.updateCache();
             $ionicLoading.hide();
           }
         },function(error){
