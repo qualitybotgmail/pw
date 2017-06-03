@@ -271,6 +271,8 @@ class ThreadsController extends AppController {
  */
 	public function add() {
 
+		$cache = new CacheObj($this->Auth->user('id'),'threads');
+		$cache->clear();
 		if ($this->request->is('post')) {
 			
 			$this->Thread->create();
@@ -560,18 +562,17 @@ class ThreadsController extends AppController {
 		$this->loadModel('User');
 		header('Content-Type: application/json;charset=utf-8'); 
 		$members = $this->Thread->members($thread_id);
-		$members[] = $this->Auth->user('id');
+		$members[] =  $this->Auth->user('id');
+		//Clear the caches
 		foreach($members as $uid){
-			foreach(array("threads","heads") as $n){
-					$cache = new CacheObj($uid,$n);
+					$cache = new CacheObj($uid,"threads");
 					$cache->clear();
-			}
+						
 		}
 		try{ 
     		 $this->Thread->query("delete from users_threads where user_id = $member_id and thread_id = $thread_id");
     		// $result = $this->User->deleteAssoc($member_id,'Thread',$thread_id);
-			echo json_encode(array('status' => 'DELETED')); 
-		  
+			echo json_encode(array('status' => 'DELETED'));
 			exit;
 		}catch(Exception $e){
 			echo json_encode(array('status' => 'FAILED to catch'));

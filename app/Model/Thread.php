@@ -83,11 +83,12 @@ class Thread extends AppModel {
 		$thread = $this->findById($thread_id);
 		
 		$ret = array();
+		if(isset($thread['User'])){
 		foreach($thread['User'] as $k => $t){
 			if (is_numeric($k))
 				$ret[] = $t['id'];
 		}
-		
+		}
 		return $ret;
 		
 	}
@@ -120,6 +121,7 @@ class Thread extends AppModel {
 	public function beforeDelete($cascade = true)
 	{
 		$members = $this->members($this->id);
+		$members[] =  AuthComponent::user('id');
 		//Clear the caches
 		foreach($members as $uid){
 			foreach(array("threads","heads","groupchats") as $n){
@@ -127,6 +129,7 @@ class Thread extends AppModel {
 					$cache->clear();
 			}			
 		}
+		return true;
 	}
 	public function logsFor($tid){
 		$id = AuthComponent::user('id');
