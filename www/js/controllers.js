@@ -89,8 +89,11 @@ angular.module('starter.controllers', [])
 
       }
     });
-  }
-
+  };
+   $rootScope.$on('update_groupchat_fromchat',function(event,data){
+     $scope.cacheUpdate();
+   });
+   
   $rootScope.$on('update_groupchat',function(event,id){
     var chatid=id;
     $scope.cacheUpdate();
@@ -403,21 +406,16 @@ angular.module('starter.controllers', [])
 
   }
 
-  $scope.updateChatCache=function(page=1,lastid=0){
-    Chats.updateMessageCache('groupchats/pagedchatforapp/'+$stateParams.chatId+'/'+page+'',$stateParams.chatId,page,lastid).then(function(response){
+  $scope.updateChatCache=function(page=1,lastid=0,chats=null){
+    Chats.updateMessageCache('groupchats/pagedchatforapp/'+$stateParams.chatId+'/'+page+'',$stateParams.chatId,page,lastid,chats).then(function(response){
       if(response.messages){
-      if(response.messages.length > 0)
         if(lastid > 0){
            $scope.chats = response.messages.concat($scope.chats);
         }else{
           $scope.chats = response.messages;
 
         }
-
-
-
-        }
-
+      }
     });
   }
 
@@ -603,6 +601,7 @@ angular.module('starter.controllers', [])
     $scope.idss=[];
     Chats.get($stateParams.chatId,$scope.page).then(function(response){
       if(response.messages){
+        
         $scope.chats = $scope.chats.concat(response.messages);
         $scope.total=response.total;
         $scope.idss=response.messages.map(function(k){ return k.Message.id }).filter(function(e){return e});
@@ -840,14 +839,19 @@ angular.module('starter.controllers', [])
            $scope.processedMessageIndex=null;
            $scope.processedImageIndex=null;
            $scope.processedType=null;
-
+           $scope.updateChatCache($scope.page,0,$scope.chats);
+           $rootScope.$emit('update_groupchat_fromchat');
           });
         }else{
-          ApiService.Delete('messages/delete/'+$scope.chats[$scope.chats.length - parseInt($scope.processedMessageIndex) - 1]['Message']['id'],'').then(function(response){});
+          ApiService.Delete('messages/delete/'+$scope.chats[$scope.chats.length - parseInt($scope.processedMessageIndex) - 1]['Message']['id'],'').then(function(response){
             $scope.chats.splice($scope.chats.length - parseInt($scope.processedMessageIndex) - 1,1);
             $scope.processedMessageIndex=null;
             $scope.processedImageIndex=null;
             $scope.processedType=null;
+            $scope.updateChatCache($scope.page,0,$scope.chats);
+            $rootScope.$emit('update_groupchat_fromchat');
+          });
+           
         }
       }
     });
