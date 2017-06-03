@@ -14,10 +14,10 @@
 	font-family: Smart;
 }
 .shingodb {
-	font-family: Shingodb;    
+	font-family: Shingodb;
 }
 .ShingoProL {
-	font-family: ShingoProL;    
+	font-family: ShingoProL;
 }
 /* Empty. Add your own CSS if you like */
 .members span{
@@ -344,7 +344,7 @@ textarea {
 .messages.other span {
   background: #00b6e3 !important;
   display: inline-block !important;
-  color: white !important;    
+  color: white !important;
   display: inline-block !important;
   padding: 5px 10px 8px 10px !important;
   border-radius: 10px !important;
@@ -366,7 +366,7 @@ textarea {
 .messages span{
   background-color: #C7C7CC !important;
   display: inline-block !important;
-  color: white !important;
+  color: black !important;
   padding: 5px 10px !important;
   border-radius: 10px !important;
   text-align: left !important;
@@ -543,30 +543,30 @@ background-position: center;
     width: 30px;
 }
 .bar.bar-stable {
-	font-family: Smart;      
+	font-family: Smart;
     color: #fff !important;
   background-color:#2a3d4e !important;
-  border-bottom: 3px solid #faed00;    
+  border-bottom: 3px solid #faed00;
        }
 .bar.bar-stable .title {
     color: #fff !important;
-}       
+}
 .item-input {
   border-radius:7px !important; }
 
 .button-left{
-	font-family: Smart;      
+	font-family: Smart;
     font-size:11pt;
     color: #fff;
     background-color: #32485c !important;
     border-radius: 3px;
 }
 .button-right{
-	font-family: Smart;      
+	font-family: Smart;
     font-size:11pt;
     color: #fff;
     background-color: #2a3d4e !important;
-     border-radius: 3px;   
+     border-radius: 3px;
 }
 .button-bar-side{
 font-family: Smart;
@@ -588,12 +588,12 @@ font-family: Smart;
     font-size:13px;
 }
 span.fontperf1 {
-	font-family: Smart; 
+	font-family: Smart;
     font-size:20px;
     color: #2a3d4e !important;
 }
 span.fontperf2 {
-	font-family: Smart; 
+	font-family: Smart;
     font-size:35px;
     color: #009fe8 !important;
 }
