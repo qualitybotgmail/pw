@@ -14,8 +14,8 @@
                 <h6>{{timeVal.modified}}</h6>
            </div>
          <div class="item item-body">
-            <p>{{timeVal.title}} {{timeVal.body}}</p>
-            <img style="margin-top:10px;" class="full-image"  ng-repeat="uploads in timeVal.Upload" src=" {{base_url}}{{uploads.Upload.path}}">
+            <img class="full-image"  ng-repeat="uploads in timeVal.Upload" src=" {{base_url}}{{uploads.Upload.path}}">
+             <span class="ShingoProL">{{timeVal.title}} {{timeVal.body}}</span>
              <h6 align="right" ng-hide="timeVal.index===undefined">
              <a href="#" class="subdued" ng-if="timeVal.likes_count < 1">いいね！ {{timeVal.likes_count}}</a>
              <a href="" class="subdued" ng-if="timeVal.likes_count > 0" prevent-href=true><span ng-click="showLikes(timeVal.id)">いいね！ {{timeVal.likes_count}}</span></a>

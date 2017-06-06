@@ -20,6 +20,9 @@
 	font-family: ShingoProL;    
 }
 /* Empty. Add your own CSS if you like */
+.text-sm {
+    font-size: 80%;
+}
 .members span{
    padding: 4px;
     margin: 5px;
@@ -344,7 +347,7 @@ textarea {
 .messages.other span {
   background: #00b6e3 !important;
   display: inline-block !important;
-  color: white !important;    
+  color: black !important;    
   display: inline-block !important;
   padding: 5px 10px 8px 10px !important;
   border-radius: 10px !important;
@@ -364,9 +367,9 @@ textarea {
     transform: translate3d(120px, 0, 0) !important;
   }
 .messages span{
-  background-color: #C7C7CC !important;
+  background-color: #e6e6e5 !important;
   display: inline-block !important;
-  color: white !important;
+  color: black !important;
   padding: 5px 10px !important;
   border-radius: 10px !important;
   text-align: left !important;
@@ -546,7 +549,8 @@ background-position: center;
 	font-family: Smart;      
     color: #fff !important;
   background-color:#2a3d4e !important;
-  border-bottom: 3px solid #faed00;    
+  /*border-bottom: 3px solid #faed00;*/    
+  border-bottom: 3px solid #00b6e3;
        }
 .bar.bar-stable .title {
     color: #fff !important;
@@ -606,4 +610,5 @@ ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-col
 .searchinput {
     height: 100% !important;
     width: 100%;
+    padding-left: 15px !important;
 }
