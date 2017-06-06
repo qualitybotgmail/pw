@@ -56,9 +56,9 @@
 
            <img class="avatar" ng-if="comment.User.avatar_img==''||comment.User.avatar_img=='null'||comment.User.avatar_img==null" ng-src="img/avatar.png">
          <img class="avatar" ng-if="comment.User.avatar_img!=''&&comment.User.avatar_img!='null'&&comment.User.avatar_img!=null" ng-src="{{base_url}}{{comment.User.avatar_img}}">
-          <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="comment.user_id !=$root.user_id">{{comment.User.username}}</div>
-          <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="comment.user_id ==$root.user_id">{{$root.user}}</div>
-          <p class="dateList" style="margin-top: -25px;"><span ng-show="comment.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showCommentPopover($event,$index)"></i></span></p>
+          <div style="font-size:smaller;padding-top:5px;height:30px;margin:0;" ng-show="comment.user_id !=$root.user_id">{{comment.User.username}}</div>
+          <div style="font-size:smaller;padding-top:5px;height:30px;margin:0;" ng-show="comment.user_id ==$root.user_id">{{$root.user}}</div>
+          <p class="dateList" style=""><span ng-show="comment.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showCommentPopover($event,$index)"></i></span></p>
           <div style="padding-right:20px;color:#000;word-break:break-word">
             <span class="ShingoProL" content="linkify(comment.body)" check-link></span>
           </div>

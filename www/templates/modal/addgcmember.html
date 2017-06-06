@@ -10,7 +10,7 @@
     </ion-header-bar>
     <ion-header-bar class="bar-light bar-subheader" ng-init="userFilter=''">
       <!-- <span style="position: absolute;left: 10px;margin-top: 10px;font-size: 15px;">フィルター:</span> -->
-      <input type="search" ng-model="usersToadd2" ng-focus="searchFocused = true"
+      <input class="searchinput" type="search" ng-model="usersToadd2" ng-focus="searchFocused = true"
              ng-blur="searchFocused = false" ng-keyup="checkSearch($event)"
              placeholder="メンバーの検索" class="full-width chatsearch searchinput">
     </ion-header-bar>
