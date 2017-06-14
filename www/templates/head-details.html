@@ -16,7 +16,7 @@
       </div>
 
       <div class="item item-body" style="padding: 0px;border-top:none;">
-        <div class="remove-first ShingoProL"" style="padding:0px 15px 10px 15px;margin:0;color:#000;white-space:pre-line;word-break:break-word;">
+        <div class="remove-first ShingoProL"" style="white-space: pre-line;word-break: break-word;padding:0px 15px 10px 15px;margin:0;color:#000;white-space:pre-line;word-break:break-word;">
           <span content="linkify(getHeads.body)" check-link></span>
         </div>
            <div class="item" style="padding:0px;border-bottom:0px;" ng-show="headUploads.non_image.length > 0 || headUploads.image.length > 0">
@@ -59,8 +59,8 @@
           <div style="font-size:smaller;padding-top:5px;height:30px;margin:0;" ng-show="comment.user_id !=$root.user_id">{{comment.User.username}}</div>
           <div style="font-size:smaller;padding-top:5px;height:30px;margin:0;" ng-show="comment.user_id ==$root.user_id">{{$root.user}}</div>
           <p class="dateList" style=""><span ng-show="comment.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showCommentPopover($event,$index)"></i></span></p>
-          <div style="padding-right:20px;color:#000;word-break:break-word">
-            <span class="ShingoProL" content="linkify(comment.body)" check-link></span>
+          <div style="padding: 0 15px 20px 15px;color:#000;word-break:break-word">
+            <span class="ShingoProL" style="white-space: pre-line;" content="linkify(comment.body)" check-link></span>
           </div>
           <div>
             <div class="item item-list-detail" style="padding: 0px;border: 0px;">
@@ -78,7 +78,7 @@
             </div>
           </div>
           <div style="width:100%;height:24px;padding-right:10px;bottom: 0;position: absolute;">
-            <a class="subdued datecomment">{{comment.created}}</a>
+            <p class="subdued datecomment">{{comment.created}}</p>
             <a ng-if="comment.user_id!=$root.user_id" class="subdued" style="float:right" ng-click="changeLike(comment.id,$index)">
               <span><i class="icon ion-thumbsup likes" ng-class="{'active':comment.isUserLiked}"></i></span>
             </a>

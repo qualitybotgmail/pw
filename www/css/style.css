@@ -14,10 +14,11 @@
 	font-family: Smart;
 }
 .shingodb {
-	font-family: Shingodb;    
+	font-family: Shingodb;
 }
 .ShingoProL {
-	font-family: ShingoProL;    
+	font-family: ShingoProL;
+    font-size: 90%;
 }
 /* Empty. Add your own CSS if you like */
 .text-sm {
@@ -227,6 +228,7 @@ textarea {
     overflow: hidden;
     border-radius: 50%;
 }
+/*
 .non-image{
     background: #007AFF !important;
     display: inline-block !important;
@@ -237,7 +239,29 @@ textarea {
     max-width: 240px !important;
     margin-left:5px;
 }
-
+*/
+.non-image.other {
+  background: #00b6e3 !important;
+  display: inline-block !important;
+  color: black !important;
+  display: inline-block !important;
+  padding: 5px 10px 8px 10px !important;
+  border-radius: 10px !important;
+  text-align: left !important;
+  max-width: 240px !important;
+}
+.non-image {
+  background-color: #e6e6e5 !important;
+  display: inline-block !important;
+  color: black !important;
+  padding: 5px 10px !important;
+  border-radius: 10px !important;
+  text-align: left !important;
+  max-width: 240px !important;
+}
+.non-image.other > a{
+  color:#11228f;
+}
 .image {
     width: 100%;
     background-size: contain;
@@ -347,12 +371,15 @@ textarea {
 .messages.other span {
   background: #00b6e3 !important;
   display: inline-block !important;
-  color: black !important;    
+  color: black !important;
   display: inline-block !important;
   padding: 5px 10px 8px 10px !important;
   border-radius: 10px !important;
   text-align: left !important;
   max-width: 240px !important;
+}
+.messages.other span > a{
+  color:#11228f;
 }
 .messages.other .message {
     -webkit-transform: translate3d(0, 0, 0) !important;
@@ -375,9 +402,9 @@ textarea {
   text-align: left !important;
   max-width: 240px !important;
 }
-.messages:not(.other) .message span > a{
+/*.messages:not(.other) .message span > a{
   color:white !important;
-}
+}*/
  .message .item-avatar{
      padding-left: 0px !important;
  }
@@ -546,31 +573,31 @@ background-position: center;
     width: 30px;
 }
 .bar.bar-stable {
-	font-family: Smart;      
+	font-family: Smart;
     color: #fff !important;
   background-color:#2a3d4e !important;
-  /*border-bottom: 3px solid #faed00;*/    
+  /*border-bottom: 3px solid #faed00;*/
   border-bottom: 3px solid #00b6e3;
        }
 .bar.bar-stable .title {
     color: #fff !important;
-}       
+}
 .item-input {
   border-radius:7px !important; }
 
 .button-left{
-	font-family: Smart;      
+	font-family: Smart;
     font-size:11pt;
     color: #fff;
     background-color: #32485c !important;
     border-radius: 3px;
 }
 .button-right{
-	font-family: Smart;      
+	font-family: Smart;
     font-size:11pt;
     color: #fff;
     background-color: #2a3d4e !important;
-     border-radius: 3px;   
+     border-radius: 3px;
 }
 .button-bar-side{
 font-family: Smart;
@@ -592,12 +619,12 @@ font-family: Smart;
     font-size:13px;
 }
 span.fontperf1 {
-	font-family: Smart; 
+	font-family: Smart;
     font-size:20px;
     color: #2a3d4e !important;
 }
 span.fontperf2 {
-	font-family: Smart; 
+	font-family: Smart;
     font-size:35px;
     color: #009fe8 !important;
 }
@@ -608,7 +635,10 @@ ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-col
     color: #2a3d4e !important;
 }
 .searchinput {
-    height: 100% !important;
+    /*height: 100% !important;*/
     width: 100%;
     padding-left: 15px !important;
+}
+input[type="search"] {
+    padding-top: 0 !important;
 }
