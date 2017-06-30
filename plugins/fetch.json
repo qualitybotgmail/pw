@@ -158,5 +158,14 @@
         },
         "is_top_level": true,
         "variables": {}
+    },
+    "com.guinatal.refreshgallery": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/lotterfriends/refreshgallery",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

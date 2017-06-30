@@ -1,0 +1,1108 @@
+{
+    "ace": {
+        "search": {
+            "@backwards": "false",
+            "@highlightmatches": "true",
+            "@matchcase": "false",
+            "@preservecase": "false",
+            "@regex": "false",
+            "@wholeword": "false",
+            "@wraparound": "true"
+        }
+    },
+    "breakpoints": {
+        "json()": [
+            {
+                "path": "/www/js/controllers.js",
+                "line": 288,
+                "column": 4,
+                "text": "controllers.js",
+                "content": "    var filename = url.split(\"/\").pop  targetPath = cordova.file.externalRootDirectory + filename,",
+                "time": 1498757924554,
+                "enabled": true
+            }
+        ]
+    },
+    "collab": {
+        "panel": {
+            "chat": {
+                "@closed": false
+            },
+            "notifications": {
+                "@closed": true
+            }
+        }
+    },
+    "console": {
+        "@expanded": false,
+        "@height": 210,
+        "@maximized": false,
+        "json()": {
+            "meta": {
+                "accessList": [
+                    "searchResults",
+                    "tab31",
+                    "tab22",
+                    "tab24",
+                    "tab29"
+                ]
+            },
+            "name": "pane1",
+            "nodes": [
+                {
+                    "type": "tab",
+                    "name": "searchResults",
+                    "path": "/.c9/searchresults",
+                    "className": [
+                        "searchResults",
+                        "changed"
+                    ],
+                    "document": {
+                        "changed": true,
+                        "filter": true,
+                        "title": "searchresults",
+                        "tooltip": "/.c9/searchresults",
+                        "ace": {
+                            "folds": [],
+                            "customSyntax": "c9search",
+                            "scrolltop": 0,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 4,
+                                    "column": 0
+                                },
+                                "end": {
+                                    "row": 4,
+                                    "column": 0
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "tabSize": 4,
+                                "useSoftTabs": true,
+                                "guessTabSize": false,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": 0
+                        },
+                        "meta": {
+                            "searchResults": true,
+                            "ignoreSave": true,
+                            "newfile": true,
+                            "timestamp": 1493529874623
+                        }
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab22",
+                    "path": "",
+                    "className": [
+                        "tab22"
+                    ],
+                    "document": {
+                        "changed": false,
+                        "filter": true,
+                        "title": "bash - \"root@ionicwork: /daryl\"",
+                        "tooltip": "bash - \"root@ionicwork: /daryl\"",
+                        "terminal": {
+                            "id": "devel_470",
+                            "cwd": "",
+                            "width": 1103,
+                            "height": 210,
+                            "scrollTop": 6636
+                        },
+                        "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+                        "meta": {
+                            "timestamp": 1491879912601
+                        }
+                    },
+                    "editorType": "terminal",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab24",
+                    "path": "",
+                    "className": [
+                        "tab24"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "bash - \"1e4a9f78d73a\"",
+                        "tooltip": "bash - \"1e4a9f78d73a\"",
+                        "terminal": {
+                            "id": "devel_81",
+                            "cwd": "",
+                            "width": 1103,
+                            "height": 210,
+                            "scrollTop": 7986
+                        },
+                        "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+                        "meta": {
+                            "timestamp": 1491965970025
+                        },
+                        "changed": false
+                    },
+                    "editorType": "terminal",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab29",
+                    "path": "",
+                    "className": [
+                        "tab29"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "bash - \"root@ionicwork: /daryl/platforms/android/build/outputs/apk\"",
+                        "tooltip": "bash - \"root@ionicwork: /daryl/platforms/android/build/outputs/apk\"",
+                        "terminal": {
+                            "id": "devel_128",
+                            "cwd": "",
+                            "width": 1103,
+                            "height": 378,
+                            "scrollTop": 12663
+                        },
+                        "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+                        "meta": {
+                            "timestamp": 1491969109747
+                        },
+                        "changed": false
+                    },
+                    "editorType": "terminal",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab31",
+                    "path": "",
+                    "className": [
+                        "tab31"
+                    ],
+                    "document": {
+                        "changed": false,
+                        "meta": {
+                            "timestamp": 1493009238020
+                        },
+                        "filter": true,
+                        "title": "bash - \"root@ionicwork: /daryl\"",
+                        "tooltip": "bash - \"root@ionicwork: /daryl\"",
+                        "terminal": {
+                            "id": "devel_624",
+                            "cwd": "",
+                            "width": 0,
+                            "height": 0
+                        }
+                    },
+                    "editorType": "terminal",
+                    "active": true
+                }
+            ],
+            "skin": "editor_tab",
+            "skinset": "default",
+            "type": "pane"
+        }
+    },
+    "experiments": {
+        "@@enabled": true,
+        "@autosave": 0,
+        "@flat-dark": 0,
+        "@git": 1,
+        "@plugin-manager": 1,
+        "@plugins": 0,
+        "@sdk": 0,
+        "@test": 0
+    },
+    "ext": {
+        "counters": {
+            "@ace": 1,
+            "@acestatus": 1,
+            "@divider": 5,
+            "@document": 15,
+            "@form": 5,
+            "@imgeditor": 1,
+            "@immediate": 1,
+            "@menu": 5,
+            "@menuitem": 13,
+            "@pane": 8,
+            "@session": 14,
+            "@tab": 15,
+            "@undoManager": 15,
+            "@welcome": 1
+        }
+    },
+    "findinfiles": {
+        "@console": "true",
+        "@matchcase": "false",
+        "@regex": "false",
+        "@scope": "selection",
+        "@wholeword": "false"
+    },
+    "menus": {
+        "@minimized": false
+    },
+    "nak": {
+        "@installed": true
+    },
+    "panecycle": {
+        "json()": [
+            "tab8"
+        ]
+    },
+    "panels": {
+        "@active-left": "tree",
+        "@active-right": "none",
+        "@width-left": 263,
+        "@width-right": 171,
+        "collab": {
+            "@enabled": "false",
+            "@name": "collab"
+        },
+        "commands.panel": {
+            "@enabled": "false",
+            "@name": "commands.panel"
+        },
+        "debugger": {
+            "@enabled": "false",
+            "@name": "debugger"
+        },
+        "navigate": {
+            "@enabled": "false",
+            "@name": "navigate"
+        },
+        "outline": {
+            "@enabled": "false",
+            "@name": "outline"
+        },
+        "scm": {
+            "@enabled": "false",
+            "@name": "scm"
+        },
+        "tree": {
+            "@enabled": "false",
+            "@name": "tree"
+        }
+    },
+    "projecttree": {
+        "@scrollpos": -10,
+        "@showfs": true,
+        "expanded": {
+            "json()": [
+                "/",
+                "/www/lib/angular-chart.js/dist",
+                "/hooks/after_prepare",
+                "/platforms/android/res/values",
+                "/.nano",
+                "/platforms/android/src/com",
+                "/platforms/android/src/org",
+                "/platforms/android/src/org/apache",
+                "/platforms/android/src/org/apache/cordova",
+                "/platforms/android/src/org/apache/cordova/firebase",
+                "/www/lib/ionic/js",
+                "/plugins/cordova-plugin-inappbrowser/src",
+                "/platforms/android/build/outputs",
+                "/platforms/android/build/outputs/apk",
+                "/platforms/android",
+                "/plugins/cordova-plugin-image-picker",
+                "/www/templates/modal",
+                "/www"
+            ]
+        }
+    },
+    "recentfiles": {
+        "json()": []
+    },
+    "search-history": {
+        "search": {
+            "json()": [
+                "cordova.",
+                "cordova",
+                "processedImageIndex",
+                "chatPopo",
+                "chatPopover",
+                "chatPopOver",
+                "showDelete",
+                "chatPopover",
+                "chatPopoover",
+                "chatPopover",
+                "showChatPopover",
+                "chatCtrl",
+                "chatCtr",
+                "destroyUserCredentials",
+                "subMitPhoto",
+                "picker",
+                "camera",
+                "permission",
+                "permissions",
+                "Camera",
+                "submitCommentPhoto",
+                "pload",
+                "updateCache",
+                "updatethread",
+                "processDeletingHead",
+                "triggerDelete",
+                "processDeletingHead",
+                "triggerDelete",
+                "gr",
+                "processDeletingHead",
+                "triggerDelete",
+                "GroupCtrl",
+                "updateChatCache",
+                "page",
+                "updateChatCache",
+                "updateMessageCache",
+                "triggerChatdelete",
+                "triggerDelete",
+                "triggerCommentDelete",
+                "showMemberList",
+                "updateCache",
+                "Groups",
+                "threads/add",
+                "checkForUpdates",
+                "interval",
+                "setNotif",
+                "notification",
+                "submitCommentPhoto",
+                "uploadedCommentimgs",
+                "$rootScope.user",
+                "chatsPreview",
+                "addedUsernames",
+                "chatMembers",
+                "reload",
+                "rename",
+                "updateCache",
+                "uploadingImages",
+                "submitPhoto",
+                "uploadingImages",
+                "setItem",
+                "updateCache",
+                "uploadingImageComplete",
+                "uploadingImage",
+                "uploading",
+                "uploadingImageComplete",
+                "on",
+                "submitP",
+                "resetHeadForm",
+                "headUploads",
+                "updateCache",
+                "submitPhoto",
+                "broadcas",
+                "broadcast",
+                "submitCommentPhoto",
+                "headUploads",
+                "sliderImages",
+                "headUploads",
+                "submitPhoto",
+                "headUploads",
+                "updateCache",
+                "getHead",
+                "headUploads",
+                "processAddingHead",
+                "headUploads",
+                "renameFail",
+                "selectPicture",
+                "renameFile",
+                "selectPicture",
+                "renameFile",
+                "selectPicture",
+                "renameFIle",
+                "removeFile",
+                "selectPictureInComment",
+                "selectPicture",
+                "renameFile",
+                "base64",
+                "slider",
+                "image",
+                "comment",
+                "Comment.body",
+                "android",
+                "numberOfGCToDisplay",
+                "addMember",
+                "addmember",
+                "addUser",
+                "chats",
+                "getchats",
+                "resetForm",
+                "addUser",
+                "chatCtrl",
+                "userstoadd",
+                "addedUsernames",
+                "userstoadd",
+                "usersToadd",
+                "Search",
+                "addchat",
+                "groupchats",
+                "msp",
+                "changeLike",
+                "showLikes",
+                "likes",
+                "like",
+                "updateLike",
+                "changeLike",
+                "$rootScope.avatar_img",
+                "map",
+                "updateLike",
+                "showLikes",
+                "closeLikeModal",
+                "updateCache",
+                "newModalService",
+                "newModalService.showmodal",
+                "newModalService",
+                "loginCtrl",
+                "20px",
+                "select",
+                "newmodalService",
+                "platform",
+                "hidemodal",
+                "getchats",
+                "$rootScope.message_id",
+                "chats",
+                "message_id",
+                "updateChatCache",
+                "chatMembers",
+                "searchThreads",
+                "hideModal",
+                "svc.modal.show();",
+                "ionicmodal",
+                "search-groups",
+                "gallery.html",
+                "<<",
+                "head",
+                "<<",
+                "<<<<",
+                "head",
+                "<<",
+                "submitCommentPhoto",
+                "showImages",
+                "$scope.uploadedChatImgs",
+                "showImages",
+                "head.html",
+                "HeadCtrl",
+                "undefined",
+                "watch",
+                "updateChatCache",
+                "<<<",
+                "$watch",
+                "watch",
+                "firebase",
+                "isOpen",
+                "$watch",
+                ">>",
+                "HEAD",
+                "updatesforthread",
+                "$interval",
+                "updateCache",
+                "updatesforthread",
+                "setNotified",
+                "updateHeadCache",
+                "updatesforthread",
+                "GroupdetailCtrl",
+                "updateCache",
+                "updateHeadCache",
+                "GroupCtr",
+                "Groups",
+                "loading",
+                "headOwner",
+                "GroupCHatsC",
+                "$cordovaDevice",
+                "setNotif",
+                "login",
+                "showModal",
+                "getImages",
+                "showGallery",
+                "getImages",
+                "clearNotif",
+                "showGallery",
+                "gallery_read",
+                "showGallery"
+            ]
+        },
+        "searchfiles": {
+            "json()": [
+                "background-img",
+                "background-image",
+                "summary-header",
+                "JavaVersion.VERSION_1_6",
+                "ionic-image-lazy-load",
+                "sanitationwhite",
+                "helloCordova",
+                "hellocordova",
+                "com.android.application",
+                "dependencies",
+                "compile",
+                "build.gradle",
+                "apply",
+                "com.android.application",
+                "build.gradle"
+            ]
+        }
+    },
+    "tabs": {
+        "json()": {
+            "focus": "tab8",
+            "meta": {
+                "accessList": [
+                    "tab8",
+                    "tab10",
+                    "tab0",
+                    "tab3",
+                    "tab14",
+                    "tab11",
+                    "tab1",
+                    "tab2",
+                    "tab4",
+                    "tab5",
+                    "tab6",
+                    "tab7",
+                    "tab12",
+                    "tab13",
+                    "tab9"
+                ]
+            },
+            "name": "pane0",
+            "nodes": [
+                {
+                    "type": "tab",
+                    "name": "tab0",
+                    "path": "/www/js/controllers.js",
+                    "className": [
+                        "tab0"
+                    ],
+                    "document": {
+                        "changed": false,
+                        "meta": {
+                            "timestamp": 1498784774693
+                        },
+                        "filter": true,
+                        "title": "controllers.js",
+                        "tooltip": "/www/js/controllers.js",
+                        "ace": {}
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab1",
+                    "path": "/www/js/services.js",
+                    "className": [
+                        "tab1"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "services.js",
+                        "tooltip": "/www/js/services.js",
+                        "ace": {
+                            "folds": [
+                                {
+                                    "start": {
+                                        "row": 83,
+                                        "column": 13
+                                    },
+                                    "end": {
+                                        "row": 109,
+                                        "column": 7
+                                    },
+                                    "placeholder": "..."
+                                }
+                            ],
+                            "scrolltop": 10424,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 739,
+                                    "column": 37
+                                },
+                                "end": {
+                                    "row": 739,
+                                    "column": 37
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 719,
+                                "state": "no_regex",
+                                "mode": "ace/mode/javascript"
+                            }
+                        },
+                        "hash": "12f22f200fb68d724bf2614c335c40e1e53f0a2b",
+                        "meta": {
+                            "timestamp": 1496501171827
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab2",
+                    "path": "/www/templates/group-detail.html",
+                    "className": [
+                        "tab2"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "group-detail.html",
+                        "tooltip": "/www/templates/group-detail.html",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 80.5,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 28,
+                                    "column": 0
+                                },
+                                "end": {
+                                    "row": 28,
+                                    "column": 0
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 5,
+                                "state": "start",
+                                "mode": "ace/mode/html"
+                            }
+                        },
+                        "changed": false,
+                        "meta": {
+                            "timestamp": 1498717827672
+                        }
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab4",
+                    "path": "/www/js/config.js",
+                    "className": [
+                        "tab4"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "config.js",
+                        "tooltip": "/www/js/config.js",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 0,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 4,
+                                    "column": 0
+                                },
+                                "end": {
+                                    "row": 4,
+                                    "column": 0
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 2370,
+                                "mode": "ace/mode/javascript"
+                            }
+                        },
+                        "hash": "6ad2b3457324a1ce13d8048511e527a5772ce445",
+                        "meta": {
+                            "timestamp": 1498726955577
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab5",
+                    "path": "/config.xml",
+                    "className": [
+                        "tab5"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "config.xml",
+                        "tooltip": "/config.xml",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 0,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 72,
+                                    "column": 48
+                                },
+                                "end": {
+                                    "row": 72,
+                                    "column": 48
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 0,
+                                "state": "start",
+                                "mode": "ace/mode/xml"
+                            }
+                        },
+                        "hash": "de9a2834bb4d2b81238ff4f6229568a8346891d5",
+                        "meta": {
+                            "timestamp": 1498717824188
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab6",
+                    "path": "/platforms/android/AndroidManifest.xml",
+                    "className": [
+                        "tab6"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "AndroidManifest.xml",
+                        "tooltip": "/platforms/android/AndroidManifest.xml",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 18,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 34,
+                                    "column": 0
+                                },
+                                "end": {
+                                    "row": 34,
+                                    "column": 0
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 881,
+                                "mode": "ace/mode/xml"
+                            }
+                        },
+                        "hash": "13b542da9cca8551053d86b4568d7183bce6f2cf",
+                        "meta": {
+                            "timestamp": 1498717825052
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab3",
+                    "path": "/www/js/app.js",
+                    "className": [
+                        "tab3"
+                    ],
+                    "document": {
+                        "changed": false,
+                        "meta": {
+                            "timestamp": 1496285652491
+                        },
+                        "filter": true,
+                        "title": "app.js",
+                        "tooltip": "/www/js/app.js",
+                        "ace": {}
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab7",
+                    "path": "",
+                    "className": [
+                        "tab7"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "Welcome",
+                        "welcome": {},
+                        "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+                        "meta": {
+                            "welcome": true,
+                            "timestamp": 1498732387223
+                        },
+                        "changed": false
+                    },
+                    "editorType": "welcome",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab10",
+                    "path": "",
+                    "className": [
+                        "tab10"
+                    ],
+                    "document": {
+                        "changed": false,
+                        "meta": {
+                            "timestamp": 1498733151977
+                        },
+                        "filter": true,
+                        "title": "bash - \"62ccdaece55c\"",
+                        "tooltip": "bash - \"62ccdaece55c\"",
+                        "terminal": {
+                            "id": "devel_566",
+                            "cwd": "",
+                            "width": 1103,
+                            "height": 606
+                        }
+                    },
+                    "editorType": "terminal",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab11",
+                    "path": "/ionic.project",
+                    "className": [
+                        "tab11"
+                    ],
+                    "document": {
+                        "changed": false,
+                        "meta": {
+                            "timestamp": 1498717824188
+                        },
+                        "filter": true,
+                        "title": "ionic.project",
+                        "tooltip": "/ionic.project",
+                        "ace": {}
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab12",
+                    "path": "/package.json",
+                    "className": [
+                        "tab12"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "package.json",
+                        "tooltip": "/package.json",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 128,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 31,
+                                    "column": 5
+                                },
+                                "end": {
+                                    "row": 31,
+                                    "column": 32
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 44,
+                                "state": "start",
+                                "mode": "ace/mode/json"
+                            }
+                        },
+                        "hash": "ec4179e243593f4a70ac4676c98813165238c3fc",
+                        "meta": {
+                            "timestamp": 1498717824480
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab13",
+                    "path": "/plugins/cordova-plugin-image-picker/package.json",
+                    "className": [
+                        "tab13"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "package.json",
+                        "tooltip": "/plugins/cordova-plugin-image-picker/package.json",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 0,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 0,
+                                    "column": 0
+                                },
+                                "end": {
+                                    "row": 0,
+                                    "column": 0
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 43,
+                                "mode": "ace/mode/json"
+                            }
+                        },
+                        "hash": "583bcd726b0dc58cc62760b77c860e0f48076541",
+                        "meta": {
+                            "timestamp": 1498717827556
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab8",
+                    "path": "",
+                    "className": [
+                        "tab8",
+                        "focus"
+                    ],
+                    "document": {
+                        "changed": false,
+                        "meta": {
+                            "timestamp": 1498756931134
+                        },
+                        "filter": true,
+                        "title": "bash - \"root@ionicwork: /daryl\"",
+                        "tooltip": "bash - \"root@ionicwork: /daryl\"",
+                        "terminal": {
+                            "id": "devel_201",
+                            "cwd": "",
+                            "width": 1103,
+                            "height": 606
+                        }
+                    },
+                    "editorType": "terminal",
+                    "active": true
+                },
+                {
+                    "type": "tab",
+                    "name": "tab9",
+                    "path": "/www/templates/auth-login.html",
+                    "className": [
+                        "tab9"
+                    ],
+                    "document": {
+                        "filter": true,
+                        "title": "auth-login.html",
+                        "tooltip": "/www/templates/auth-login.html",
+                        "ace": {
+                            "folds": [],
+                            "scrolltop": 0,
+                            "scrollleft": 0,
+                            "selection": {
+                                "start": {
+                                    "row": 8,
+                                    "column": 18
+                                },
+                                "end": {
+                                    "row": 8,
+                                    "column": 18
+                                },
+                                "isBackwards": false
+                            },
+                            "options": {
+                                "guessTabSize": true,
+                                "useWrapMode": false,
+                                "wrapToView": true
+                            },
+                            "firstLineState": {
+                                "row": 2862,
+                                "mode": "ace/mode/html"
+                            }
+                        },
+                        "hash": "9515f17ce9c84cbbeb5188ba79cae29cd4b7a85d",
+                        "meta": {
+                            "timestamp": 1491382996511
+                        },
+                        "changed": false
+                    },
+                    "editorType": "ace",
+                    "active": false
+                },
+                {
+                    "type": "tab",
+                    "name": "tab14",
+                    "path": "/www/templates/chat-detail.html",
+                    "className": [
+                        "tab14"
+                    ],
+                    "document": {
+                        "changed": false,
+                        "meta": {
+                            "timestamp": 1498759649251
+                        },
+                        "filter": true,
+                        "title": "chat-detail.html",
+                        "tooltip": "/www/templates/chat-detail.html",
+                        "ace": {}
+                    },
+                    "editorType": "ace",
+                    "active": false
+                }
+            ],
+            "skin": "editor_tab",
+            "skinset": "default",
+            "type": "pane"
+        }
+    },
+    "tree_selection": {
+        "json()": [
+            "/www/js/controllers.js"
+        ]
+    }
+}

@@ -284,6 +284,26 @@ angular.module('starter.controllers', [])
       else
         $scope.showChosenImage=index;
     }
+    $scope.downloadImage=function(){
+      var uri =  BASE_URL+''+$scope.chats[$scope.chats.length - parseInt($scope.processedMessageIndex) - 1]['Upload'][$scope.processedImageIndex]['path'];
+      var filename = uri.split("/").pop;
+      var targetPath = window.cordova.file.externalRootDirectory + filename;
+      var options = {},trustHosts = true;
+
+    $cordovaFileTransfer.download(uri, targetPath, options, trustHosts)
+      .then(
+        function(result) {
+          alert('Download success');
+          refreshMedia.refresh(targetPath);
+        },
+        function(err) {
+          alert('Error: ' + JSON.stringify(err));
+        },
+        function(progress) {
+          // progressing download...
+        }
+      );
+    }
 
      $scope.resetForm=function(){
       $rootScope.addedUsernames=[];
@@ -395,8 +415,9 @@ angular.module('starter.controllers', [])
   $scope.newChat='';
   $scope.uploadedChatImgs=[];
   $scope.showEdit=true;
+  $scope.showDel=true;
   $scope.isEdit=false;
-  $scope.chatPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerChatEdit()" ng-show="showEdit"><i class="icon ion-edit"></i>  編集</li><li class="item item-icon-left" ng-click="triggerChatDelete()"><i class="icon ion-ios-trash"></i> 削除</li></ul></ion-popover-view>', {
+  $scope.chatPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="downloadImage()" ng-show="!showEdit"><i class="icon ion-ios-download"></i>  Save Image</li><li class="item item-icon-left" ng-click="triggerChatEdit()" ng-show="showEdit && showDelete"><i class="icon ion-edit"></i>  編集</li><li class="item item-icon-left" ng-show="showDel" ng-click="triggerChatDelete()" ><i class="icon ion-ios-trash"></i> 削除</li></ul></ion-popover-view>', {
     scope: $scope
   });
 
@@ -861,7 +882,7 @@ angular.module('starter.controllers', [])
     $scope.uploadedChatImgs=[];
     var options = {
       buttonLabels: ['写真を選択', '写真を撮影'],
-      addCancelButtonWithLabel: 'キャンセル',
+      addCancelButtonWithLabel: 'キャン���ル',
       androidEnableCancelButton : true,
     };
     $cordovaActionSheet.show(options).then(function(btnIndex) {
@@ -996,11 +1017,17 @@ angular.module('starter.controllers', [])
   $scope.processedMessageIndex=null;
   $scope.processedImageIndex=null;
   $scope.processedType=null;
-  $scope.showChatPopover=function($event,x,message_index,image_index=null){
-    if(x=='image')
+  $scope.showChatPopover=function($event,x,messID,message_index,image_index=null){
+    if(x=='image'){
       $scope.showEdit=false;
-    else
-      $scope.showEdit=true;
+    }else{
+        $scope.showEdit=true;
+    }
+    if(messID==$rootScope.user_id){
+      $scope.showDel=true;
+    }else{
+      $scope.showDel=false;
+    }
     $scope.processedType=x;
     $scope.processedMessageIndex=message_index;
     $scope.processedImageIndex=image_index;
@@ -2889,10 +2916,8 @@ $rootScope.changeHeadLike=function(id,index){
     $ionicLoading.show({
       template:'<ion-spinner name="bubbles"></ion-spinner>'
     });
-    ApiService.Post('users/mobilelogin/',{"User":{"loginid":data.loginid,"password":data.password}}).then(function(response){
+    ApiService.Post('users/mobilelogin/',{"User":{"username":data.loginid,"password":data.password}}).then(function(response){
       if(response){
-
-      $ionicLoading.hide();
 
       if(response['user']["User"]){
         $rootScope.user_id=response['user']["User"]['id'];
