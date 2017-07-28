@@ -260,4 +260,37 @@ class UploadsController extends AppController {
 			echo json_encode($urlpath);
 			exit;
 		}
+		public function thumbnail(){
+			App::import("Vendor","Util");
+			$f = $_GET['img'];
+			$ftype = null;
+			$img = null;
+	
+			$w = 200;
+			
+			// $f = substr($f,1);
+			$fullpath = APP.'webroot'.$f;
+			
+			$thumbnail = $fullpath.'.thumb';
+			if(file_exists($fullpath)){
+				if(file_exists($thumbnail)){
+					$ftype = exif_imagetype($thumbnail);
+					$img = file_get_contents($thumbnail);
+					
+				}else{
+					$ftype = exif_imagetype($thumbnail);
+					
+					make_thumb($fullpath,$thumbnail,$w, $ftype);
+					$img = file_get_contents($thumbnail);
+					
+				}
+			}else{
+				exit;
+			}
+			
+			header("Content-Type: image/".($ftype==2?'jpeg':'png'));
+			echo $img;
+			exit;
+		
+		}
 }
