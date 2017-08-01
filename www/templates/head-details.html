@@ -68,11 +68,11 @@
         	   <p style="font-size:16px;cursor:pointer;padding-top:10px" ng-repeat="file in comment.non_image track by $index" ng-click="redirectFile(file.path)">{{file.name}}</p>
         	 </div>
               <div direction="x" ng-show="comment.image.length == 1" prevent-href="true">
-                <img ng-repeat="upload in comment.image track by $index" ng-src="{{upload.loading?upload.path:base_url+upload.path}}" ng-click="showImages({{$index}},'comment',{{$parent.$index}})" class="image-list-thumb" ng-style="{'opacity':upload.loading && typeof(upload.loading) !=='undefined'?'0.3':'1'}"/>
+                <img ng-repeat="upload in comment.image track by $index" ng-src="{{upload.loading?upload.path:base_url+'/uploads/thumbnail/?img='+upload.path}}" ng-click="showImages({{$index}},'comment',{{$parent.$index}})" class="image-list-thumb" ng-style="{'opacity':upload.loading && typeof(upload.loading) !=='undefined'?'0.3':'1'}"/>
                 <ion-spinner icon="ios" ng-show="typeof(upload.loading)!=='undefined' && upload.loading" class="img-spinner"></ion-spinner>
               </div>
               <ion-scroll direction="x" ng-show="comment.image.length > 1" prevent-href="true">
-                <img ng-repeat="upload in comment.image track by $index" ng-src="{{upload.loading?upload.path:base_url+upload.path}}" ng-click="showImages({{$index}},'comment',{{$parent.$index}})" class="image-list-thumb" ng-style="{'opacity':upload.loading && typeof(upload.loading) !=='undefined'?'0.3':'1'}"/>
+                <img ng-repeat="upload in comment.image track by $index" ng-src="{{upload.loading?upload.path:base_url+'/uploads/thumbnail/?img='+upload.path}}" ng-click="showImages({{$index}},'comment',{{$parent.$index}})" class="image-list-thumb" ng-style="{'opacity':upload.loading && typeof(upload.loading) !=='undefined'?'0.3':'1'}"/>
                 <ion-spinner icon="ios" ng-show="typeof(upload.loading)!=='undefined' && upload.loading" class="img-spinner"></ion-spinner>
               </ion-scroll>
             </div>

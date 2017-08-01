@@ -33,7 +33,7 @@
             <p ng-show="message.Message.user_id != $root.user_id" style="font-size:12px;margin:0px 0px 0px 5px;color: rgba(68, 68, 68, 0.74);">{{message.User.username}}</p>
             <div ng-repeat="upload in message.Upload track by $index" ng-class="{other: message.Message.user_id == $root.user_id}" style="margin-bottom: 0px !important;">
               <p class="non-image message" ng-class="{other: message.Message.user_id == $root.user_id}" style="padding-left: 10px;font-size: 16px;" ng-if="!isUriImage(upload.path)"><a href="" style="" ng-click="redirectFile(upload.path)">{{upload.name}}</a></p>
-              <img ng-show="isUriImage(upload.path)" on-hold="showChatPopover($event,'image',message.Message.user_id,{{$parent.$index}},{{$index}})" ng-click="showImages({{$index}},{{$parent.$index}})" ng-src="{{upload.loading?upload.path:base_url+upload.path}}" class="chatimages"/>
+              <img ng-show="isUriImage(upload.path)" on-hold="showChatPopover($event,'image',message.Message.user_id,{{$parent.$index}},{{$index}})" ng-click="showImages({{$index}},{{$parent.$index}})" ng-src="{{upload.loading?upload.path:base_url+'/uploads/thumbnail/?img='+upload.path}}" class="chatimages"/>
             </div>
             <p style="font-size:12px;margin:0px 0px 0px 5px;color: rgba(68, 68, 68, 0.74);">{{message.Message.time}}</p>
         </div>
