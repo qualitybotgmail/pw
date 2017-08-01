@@ -423,24 +423,30 @@ angular.module('starter.services', [])
 
 .factory('Like',function($http,API_URL){
   return{
-    like:function(type,id){
+    like:function(type,id,done){
       $http.get(API_URL+""+type+"/like/"+id,{
         headers:{
           'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
         }
       }).success(function(response){
+        if(typeof(done) != 'undefined'){
+          done(response);
+        }
         if(response.status=='OK')
           return true;
         else
           return false;
       });
     },
-    unlike:function(type,id){
+    unlike:function(type,id,done){
        $http.get(API_URL+""+type+"/unlike/"+id,{
         headers:{
           'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
         }
       }).success(function(response){
+        if(typeof(done)!='undefined'){
+          done(response)
+        }
         if(response.status=='OK')
           return true;
         else

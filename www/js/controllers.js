@@ -1034,7 +1034,7 @@ angular.module('starter.controllers', [])
     $scope.chatPopover.show($event);
   }
 })
-.controller('TimelineCtrl', function($scope,NewModalService, $stateParams,$http,API_URL,$rootScope,$state,BASE_URL,$filter,$ionicLoading) {
+.controller('TimelineCtrl', function($scope,NewModalService,Like,  $stateParams,$http,API_URL,$rootScope,$state,BASE_URL,$filter,$ionicLoading) {
 
      $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
@@ -1046,12 +1046,44 @@ angular.module('starter.controllers', [])
   $scope.closeLikeModal=function(){
     NewModalService.hideModal($scope);
   }
-  $rootScope.withLike=true;
-  $scope.showLikes=function(head){
-    var ind=-1;
-    $scope.timelineVal.map(function(o,k){ if(o.id==head){ind=k};});
-    $rootScope.showLiked=$scope.timelineVal[ind]['likes'];
-    NewModalService.showModal($scope);
+  $rootScope.withLike=true
+  $scope.likeHead = function(id){
+    alert(id);
+    
+  };
+  $scope.gotoHead=function(timeVal){
+    $state.go('tab.head',({'id': timeVal.id}));
+  }
+  $scope.likeTimeline=function(timeVal){
+    
+      
+      if(!timeVal.isUserLiked){
+        
+        Like.like('heads',timeVal.id,function(response){
+
+          if(response.status!='EXISTS'){
+              timeVal.likes_count++;
+          }else{
+            
+            Like.unlike('heads',timeVal.id,function(response){
+              console.log(response.status);
+              if(response.status != 'NOT_EXISTING')
+                timeVal.likes_count--;
+            });     
+          }
+        });
+      }else{
+        
+        Like.unlike('heads',timeVal.id,function(response){
+          timeVal.likes_count--;
+        });        
+      }
+      timeVal.liked = true;
+    
+    // var ind=-1;
+    // $scope.timelineVal.map(function(o,k){ if(o.id==head){ind=k};});
+    // $rootScope.showLiked=$scope.timelineVal[ind]['likes'];
+    // NewModalService.showModal($scope);
   }
 
     //$rootScope.searchGroups.hide();
@@ -2394,7 +2426,9 @@ $scope.selectPictureInComment = function($act) {
       });
   }
 };
-
+$rootScope.timelineHeadLike = function(id){
+  Like.like('heads',id);
+}
 $rootScope.changeHeadLike=function(id,index){
     $scope.likedHead=id;
     $rootScope.thread['Head'][index]['isUserLiked']=!$rootScope.thread['Head'][index]['isUserLiked'];
