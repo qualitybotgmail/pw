@@ -19,7 +19,7 @@ class UploadsController extends AppController {
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('User'); 
-		$this->Auth->allow('add','edit','delete','mobileUploads');
+		$this->Auth->allow('add','edit','delete','mobileUploads','thumbnail');
 	}
 
 /**
@@ -272,17 +272,18 @@ class UploadsController extends AppController {
 			$fullpath = APP.'webroot'.$f;
 			
 			$thumbnail = $fullpath.'.thumb';
+			
 			if(file_exists($fullpath)){
 				if(file_exists($thumbnail)){
 					$ftype = exif_imagetype($thumbnail);
 					$img = file_get_contents($thumbnail);
 					
 				}else{
+					
 					$ftype = exif_imagetype($thumbnail);
 					
-					make_thumb($fullpath,$thumbnail,$w, $ftype);
-					$img = file_get_contents($thumbnail);
-					
+					$img = make_thumb($fullpath,$thumbnail,$w);
+		
 				}
 			}else{
 				exit;
@@ -293,4 +294,5 @@ class UploadsController extends AppController {
 			exit;
 		
 		}
+		
 }

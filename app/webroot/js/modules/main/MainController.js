@@ -86,7 +86,7 @@ define([
         'MainService',
 
         function($rootScope, $scope, $compile, $timeout, $state, $stateParams, $templateCache, Modal, Focus, Notify, Blocker, GLOBAL, Restangular, threadsModel, HeadsModel, CommentsModel, UsersModel, ProfilesModel, GroupChatModel, Factory, MainService) {
-        	
+        	$scope.imageBaseURL = "/uploads/thumbnail/?img=";
         	$scope.threadNotifications = [];
             $scope.groupChatNotifications = [];
         	$scope.comment = [];
@@ -97,7 +97,7 @@ define([
         	$scope.checkFile = function(path) {
         	  var isImage = true;
         	  var file = path.split('.');
-        	  var ValidImageTypes = ["gif", "jpeg", "png", "jpg"];
+        	  var ValidImageTypes = ["gif", "jpeg", "png", "jpg", "GIF", "JPEG", "PNG", "JPG"];
         	  if ($.inArray(file[(file.length - 1)], ValidImageTypes) < 0) {
         	      isImage = false;
         	  }
