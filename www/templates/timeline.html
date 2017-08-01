@@ -19,7 +19,7 @@
              <h6 align="right" ng-hide="timeVal.index===undefined">
              <a href="#" class="subdued" ng-if="timeVal.likes_count < 1">いいね！ {{timeVal.likes_count}}</a>
              <a href="" class="subdued" ng-if="timeVal.likes_count > 0" prevent-href=true><span ng-click="showLikes(timeVal.id)">いいね！ {{timeVal.likes_count}}</span></a>
-             <a href="#" class="subdued">コメント {{timeVal.Comment.length}}</a>
+             <a href="#/tab/head/{{timeVal.head_id}}" class="subdued">コメント {{timeVal.Comment.length}}</a>
              </h6>
          </div>
       </div>
