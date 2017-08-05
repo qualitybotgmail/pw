@@ -82,7 +82,7 @@
                         {{upload.name}}
                       </a>
                       <a fancybox ng-href="{{upload.path}}" ng-if="upload.isFileImage">
-                          <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                          <img ng-src="{{imageBaseURL}}{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
                       </a>
                   </span>
                   <span ng-repeat="upload in selectedHead.Upload.non_image">
@@ -91,7 +91,7 @@
                         {{upload.name}}
                       </a>
                       <a fancybox ng-href="{{upload.path}}" ng-if="upload.isFileImage">
-                          <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                          <img ng-src="{{imageBaseURL}}{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
                       </a>
                   </span>
                 </p>
@@ -135,7 +135,7 @@
                               {{u.Upload.name}}
                             </a>
                             <a fancybox ng-href="{{u.Upload.path}}" ng-if="u.isFileImage">
-                                <img ng-src="{{u.Upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                                <img ng-src="{{imageBaseURL}}{{u.Upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
                             </a>
                         </span>
                     </p>

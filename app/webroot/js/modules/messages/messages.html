@@ -76,7 +76,7 @@
                               {{upload.name}}
                             </a>
                             <a fancybox ng-href="{{upload.path}}" ng-if="upload.isFileImage">
-                                <img ng-src="{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                                <img ng-src="{{imageBaseURL}}{{upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
                             </a>
                         </span>
                     </span>

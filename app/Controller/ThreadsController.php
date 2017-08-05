@@ -1,5 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
+App::import("Vendor","NotifCounts");
 /**
  * Threads Controller
  *
@@ -185,7 +186,12 @@ class ThreadsController extends AppController {
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('User'); 
-		$this->Auth->allow('index','threadTitle','updateThread','testThread','view','updates','edit','delete','notifications','addmember','userstoadd','deletemember','cache');
+		$this->Auth->allow('index','threadTitle','updateThread','testThread','view','updates','edit','delete','notifications','addmember','userstoadd','deletemember','cache','delete_cache');
+	}
+	public function delete_cache(){
+		
+		Cache::clear(false);
+		exit;
 	}
 
 /**
@@ -197,6 +203,8 @@ class ThreadsController extends AppController {
  */
 	public function view($id,$lastid=0,$ajax=false) {
 		//error_reporting(2);
+		$notif = new NotifCounts($this->User->Profile,$this->Auth->user('id'));
+		$notif->clear('thread',$id);
 		$cache = $this->getCache('threads');
 		$viewCached = $cache->get();
 		if($viewCached){
