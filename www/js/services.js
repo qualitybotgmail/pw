@@ -383,7 +383,7 @@ angular.module('starter.services', [])
         }
       });
     },
-    getComments:function(headId,reload=false) {
+    getComments:function(headId,reload=false,clearRemoteCache=false) {
       var threads = CacheFactory.get('threads');
       var deferred=$q.defer();
 
@@ -403,6 +403,14 @@ angular.module('starter.services', [])
       }
 
       return deferred.promise;
+    },
+    clearRemoteCache:function(id,user_id){
+	
+          return $http.get(API_URL+"heads/clearCache/"+id+"/"+user_id,{
+          	headers:{
+            		'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+          	}
+          });    	
     },
     sendComment:function(id,comment){
           return $http.post(API_URL+"heads/comment/"+id,{'Comment':{'body':comment.body}},{

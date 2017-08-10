@@ -1714,11 +1714,11 @@ angular.module('starter.controllers', [])
         $rootScope.thread.Head.push(response.Head);
 
 
-         if($scope.uploadedImgs.length > 0)
+         if($scope.uploadedImgs.length > 0){
             $scope.submitPhoto(response.Head.id,true);
-         else
+         }else{
             $scope.updateCache();
-
+	 }
             $rootScope.showAddHead.hide();
             $scope.resetHeadForm();
             $ionicLoading.hide();
@@ -2052,6 +2052,8 @@ $scope.selectPicture = function($act) {
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
     });
+    window.state=$state;
+    window.scope=$scope;
     $scope.goBack=function() {
          $state.go('tab.group-detail',{id:$rootScope.threadId});
     };
@@ -2064,6 +2066,7 @@ $scope.selectPicture = function($act) {
         $scope.showChosenImage=index;
     }
     $rootScope.showLiked=[];
+    
     $scope.showLikes=function(head,comment,type){
 
       if(type=='head'){
@@ -2202,17 +2205,22 @@ $scope.selectPicture = function($act) {
   };
   $scope.headUploads=[];
   $scope.gethead=function(x=false){
-
+	
       Groups.getComments($scope.headID,x).then(function(response){
+      console.log(JSON.stringify(response));
         $scope.getHeads = response.Head;
         $scope.thread=response.Thread;
+        var user_id = window.localStorage.getItem('user_id');
+        Groups.clearRemoteCache($scope.headID,user_id);
          if(window.localStorage.getItem('uploadingImages') !== null){
-            $scope.stillUploading=true;
-           $scope.headUploads["image"]=[];
-          $scope.headUploads["image"] = JSON.parse(window.localStorage.getItem('uploadingImages'));
+           	 $scope.stillUploading=true;
+          	  console.log("Still uploading");
+        	   $scope.headUploads["image"]=[];
+          	$scope.headUploads["image"] = JSON.parse(window.localStorage.getItem('uploadingImages'));
          }else{
-            $scope.stillUploading=false;
-          $scope.headUploads = response.Upload;
+         	console.log("Stopped uploading");
+            	$scope.stillUploading=false;
+          	$scope.headUploads = response.Upload;
          }
         $scope.comments=response;
         $rootScope.viewedHeadContents=response.Head;
