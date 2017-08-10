@@ -1,4 +1,18 @@
 <style type="text/css">
+    .badge-col {
+        width: 2%;
+    }
+    .head-badge-no {
+        margin-left: -12px;
+    }
+    .head-badge-no,
+    .heads-option-controls {
+        margin-top: 1em;
+    }
+    p.head-body{
+        margin-top: -1em;
+        white-space: pre-line;
+    }
     .modal-width-50 .modal-sm {
         width:20%;
     }
@@ -129,7 +143,7 @@
                 <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">
                   <span class="fa fa-cog"></span>&nbsp;<span class="fa fa-caret-down"></span>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-right">
+                <ul class="dropdown-menu pull-right">
                     <li><a href="" class="clickable" role="button" ng-click="editThread($index, thread)" >編集</a></li>
                     <li><a href="" class="clickable" role="button" ng-click="deleteThread($index, thread.Thread.id)">削除</a></li>
                 </ul> <!-- / .dropdown-menu -->
@@ -154,38 +168,59 @@
                     </script>          
       <li class="list-group-item" ng-repeat="head in thread.Head">
          <!--<a ui-sref="app.head({ id: head.id })">-->
-         <a class="clickable" id="head-{{head.id}}" ng-click="gotoHead(head)">
-            <h5>
-                {{head.body}}
-                <span class="badge badge-info" ng-init="head.notification_count=getNotificationCount(head.id)">{{head.notification_count}}</span>
-            </h5>
-        </a>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="col-md-1 badge-col">
+                    <span class="badge badge-info head-badge-no" ng-init="head.notification_count=getNotificationCount(head.id)">{{head.notification_count}}</span>
+                </div>
+                <div class="col-md-11">
+                    <p class="head-body">
+                        {{head.body}}
+                    </p>
+                    <span style="font-size:11px;">{{head.created}}</span>
+                    <span style="font-size:11px;">by: {{head.Owner.username == loginUser.username ? "あなた": head.Owner.username}}</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel-heading-controls heads-option-controls">
+                    <span>
+                        <a href="javascript:void(0)" class="text-xs" ng-if="head.likes_count > 0 && !head.isUserLiked" ng-click="showUsers(head.likes)">
+                            {{head.likes_count}} 人がいいね！と言っています
+                        </a>
+                        <a href="javascript:void(0)" class="text-xs" ng-if="head.likes_count > 1 && head.isUserLiked" ng-click="showUsers(head.likes)">
+                            あなたと {{head.likes_count - 1}} 人がいいね！と言っています
+                        </a>
+                        <button ng-if="head.Owner.id != loginUser.id" class="btn btn-sm {{(head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="head.processing" ng-click="like($index, head)">
+                            <span class="fa fa-thumbs-o-up"></span>
+                        </button>
+                    </span>
+                    
+                    <div class="btn-group btn-group-sm" ng-if="head.Owner.id == loginUser.id">
+                      <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">
+                          <span class="fa fa-cog"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right">
+                            <li><a href="" class="clickable" role="button" ng-click="editHead($index, head)">編集</a></li>
+                            <li><a href="" class="clickable" role="button" ng-click="deleteHead($index, head.id)">削除</a></li>
+                        </ul> <!-- / .dropdown-menu -->
+                    </div> <!-- / .btn-group -->
+                </div>
+            </div>
+        </div>
         
-        <span style="font-size:11px;">{{head.created}}</span>
-        <span style="font-size:11px;">by: {{head.Owner.username == loginUser.username ? "あなた": head.Owner.username}}</span>
-        <div class="panel-heading-controls">
-            <span>
-                <a href="javascript:void(0)" class="text-xs" ng-if="head.likes_count > 0 && !head.isUserLiked" ng-click="showUsers(head.likes)">
-                    {{head.likes_count}} 人がいいね！と言っています
-                </a>
-                <a href="javascript:void(0)" class="text-xs" ng-if="head.likes_count > 1 && head.isUserLiked" ng-click="showUsers(head.likes)">
-                    あなたと {{head.likes_count - 1}} 人がいいね！と言っています
-                </a>
-                <button ng-if="head.Owner.id != loginUser.id" class="btn btn-sm {{(head.isUserLiked)?'':'btn-outline'}} btn-warning" ng-disabled="head.processing" ng-click="like($index, head)">
-                    <span class="fa fa-thumbs-o-up"></span>
-                </button>
-            </span>
-            
-            <div class="btn-group btn-group-sm" ng-if="head.Owner.id == loginUser.id">
-              <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">
-                  <span class="fa fa-cog"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right" >
-                    <li><a href="" class="clickable" role="button" ng-click="editHead($index, head)">編集</a></li>
-                    <li><a href="" class="clickable" role="button" ng-click="deleteHead($index, head.id)">削除</a></li>
-                </ul> <!-- / .dropdown-menu -->
-            </div> <!-- / .btn-group -->
-        </div> <!-- / .panel-heading-controls -->
+        <!--<a class="clickable" id="head-{{head.id}}" ng-click="gotoHead(head)">-->
+        <!--    <p class="head-body">-->
+        <!--        <span class="badge badge-info" ng-init="head.notification_count=getNotificationCount(head.id)">{{head.notification_count}}</span>-->
+        <!--        &nbsp;-->
+        <!--        {{head.body}}-->
+        <!--    </p>-->
+        <!--</a>-->
+        
+        <!--<span style="font-size:11px;">{{head.created}}</span>-->
+        <!--<span style="font-size:11px;">by: {{head.Owner.username == loginUser.username ? "あなた": head.Owner.username}}</span>-->
+        
+        <!-- options below here-->
+      
       </li>
     </ul>
 </div> <!-- / .panel -->
