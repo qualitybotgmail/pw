@@ -284,20 +284,32 @@ angular.module('starter.controllers', [])
       else
         $scope.showChosenImage=index;
     }
+    
     $scope.downloadImage=function(){
+    $ionicLoading.show({
+          template:'<ion-spinner name="bubbles"></ion-spinner>'
+        });
       var uri =  BASE_URL+''+$scope.chats[$scope.chats.length - parseInt($scope.processedMessageIndex) - 1]['Upload'][$scope.processedImageIndex]['path'];
-      var filename = uri.split("/").pop;
-      var targetPath = window.cordova.file.externalRootDirectory + filename;
+      var filename = uri.split("/").pop();
+      var targetPath = window.cordova.file.cacheDirectory + filename;
+      console.log(targetPath+" is the target path");
       var options = {},trustHosts = true;
-
+	$scope.chatPopover.hide();
     $cordovaFileTransfer.download(uri, targetPath, options, trustHosts)
       .then(
         function(result) {
-          alert('Download success');
-          refreshMedia.refresh(targetPath);
+	  $ionicLoading.hide();
+          window.cordova.plugins.imagesaver.saveImageToGallery(targetPath,function(){
+		          alert("画像を保存しました");          
+		          
+          },function(){
+	          	alert("エラーが発生したため、画像を保存することができませんでした");
+          });
+          //refreshMedia.refresh(targetPath);
         },
         function(err) {
-          alert('Error: ' + JSON.stringify(err));
+        $ionicLoading.hide();
+          alert("エラーが発生したため、画像を保存することができませんでした");
         },
         function(progress) {
           // progressing download...
@@ -2052,6 +2064,7 @@ $scope.selectPicture = function($act) {
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
     });
+    
     window.state=$state;
     window.scope=$scope;
     $scope.goBack=function() {
@@ -2163,6 +2176,9 @@ $scope.selectPicture = function($act) {
   $scope.commentPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerCommentEdit()"><i class="icon ion-edit"></i>  編集</li><li class="item item-icon-left" ng-click="triggerCommentDelete()"><i class="icon ion-ios-trash"></i> 削除</li></ul></ion-popover-view>', {
     scope: $scope
   });
+  $scope.downloadPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerDownloadImage()"><i class="icon ion-edit"></i>  保存</li></ul></ion-popover-view>', {
+    scope: $scope
+  });  
   $scope.likedComment=-1;
   var threads=CacheFactory.get('threads');
  /* $rootScope.threadTitle = $rootScope.thread.Thread.title;
@@ -2673,7 +2689,48 @@ $rootScope.changeHeadLike=function(id,index){
     $scope.commentPopover.show($event);
     $scope.processedCommentIndex=index;
   };
+  $scope.showDownloadPopover=function($event,path){
 
+    $scope.downloadCommentImagePath = BASE_URL + path;
+    $scope.downloadPopover.show($event);
+
+  };
+  $scope.triggerDownloadImage=function(){
+    $scope.downloadPopover.hide();
+    $scope.downloadImage($scope.downloadCommentImagePath);
+  };
+  $scope.downloadImage=function(uri){
+  $ionicLoading.show({
+	  template:'<ion-spinner name="bubbles"></ion-spinner>'
+  });
+
+      var filename = uri.split("/").pop();
+      var targetPath = window.cordova.file.cacheDirectory + filename;
+
+      var options = {},trustHosts = true;
+
+      $cordovaFileTransfer.download(uri, targetPath, options, trustHosts)
+       .then(
+        function(result) {
+	  $ionicLoading.hide();
+	  console.log(uri+"   -   "+targetPath);
+          window.cordova.plugins.imagesaver.saveImageToGallery(targetPath,function(){
+		          alert('画像を保存しました');          
+		          
+          },function(){
+	          	 alert("エラーが発生したため、画像を保存することができませんでした");
+          });
+          //refreshMedia.refresh(targetPath);
+        },
+        function(err) {
+        $ionicLoading.hide();
+          alert("エラーが発生したため、画像を保存することができませんでした");
+        },
+        function(progress) {
+          // progressing download...
+        }
+      );
+    };  
   $scope.triggerCommentEdit=function(){
     $scope.commentPopover.hide();
      $scope.action='edit';
