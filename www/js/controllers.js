@@ -300,16 +300,23 @@ angular.module('starter.controllers', [])
         function(result) {
 	  $ionicLoading.hide();
           window.cordova.plugins.imagesaver.saveImageToGallery(targetPath,function(){
-		          alert("画像を保存しました");          
+
+		　　$ionicPopup.alert({
+		    template:"画像を保存しました"
+		  });     
 		          
           },function(){
-	          	alert("エラーが発生したため、画像を保存することができませんでした");
+	         $ionicPopup.alert({
+		    template:"エラーが発生したため、画像を保存することができませんでした"
+		  });
           });
           //refreshMedia.refresh(targetPath);
         },
         function(err) {
         $ionicLoading.hide();
-          alert("エラーが発生したため、画像を保存することができませんでした");
+          	　 $ionicPopup.alert({
+		    template:"エラーが発生したため、画像を保存することができませんでした"
+		  });
         },
         function(progress) {
           // progressing download...
@@ -2715,16 +2722,25 @@ $rootScope.changeHeadLike=function(id,index){
 	  $ionicLoading.hide();
 	  console.log(uri+"   -   "+targetPath);
           window.cordova.plugins.imagesaver.saveImageToGallery(targetPath,function(){
-		          alert('画像を保存しました');          
+		  $ionicPopup.alert({
+		    template:"画像を保存しました"
+		  });
+        
 		          
           },function(){
-	          	 alert("エラーが発生したため、画像を保存することができませんでした");
+		  $ionicPopup.alert({
+		    template:"エラーが発生したため、画像を保存することができませんでした"
+		  });
+
+	          	 
           });
           //refreshMedia.refresh(targetPath);
         },
         function(err) {
         $ionicLoading.hide();
-          alert("エラーが発生したため、画像を保存することができませんでした");
+		  $ionicPopup.alert({
+		    template:"エラーが発生したため、画像を保存することができませんでした"
+		  });
         },
         function(progress) {
           // progressing download...
