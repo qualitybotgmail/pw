@@ -18,7 +18,7 @@ class HeadsController extends AppController {
 	public function beforeFilter(){
 		parent::beforeFilter();
 		$this->loadModel('User'); 
-		$this->Auth->allow('like','unlike','comment','add','edit','delete','updateHead');
+		$this->Auth->allow('like','clearCache','unlike','comment','add','edit','delete','updateHead');
 	}
 
 /**
@@ -76,8 +76,17 @@ class HeadsController extends AppController {
  * @return void
  */
 
+	public function clearCache($head_id,$user_id=null){
+		$cache = new CacheObj($user_id,'heads');
+		
+		$cache->clear();
+		header("Content-type: application/json");
+		echo "{'status':'ok'}";
+		exit;
+	}	
 	public function view($id = null,$lastid=0,$ajax=false) {
 		$cache = $this->getCache('heads');
+		
 		//$cache->clear();
 		$head = $cache->get();
 
