@@ -21,8 +21,8 @@
     </ion-slide-box>-->
     <div class="card" ng-repeat="head in thread.Head track by $index">
       <div class="item item-avatar " ui-sref="tab.head({id:head.id,index:$index,likes:head.likes})" style="padding-top: 0px;padding-bottom: 5px;">
-         <img ng-if="head.Owner.avatar_img==''||head.Owner.avatar_img=='null'||head.Owner.avatar_img==null" ng-src="img/avatar.png">
-         <img ng-if="head.Owner.avatar_img!=''&&head.Owner.avatar_img!='null'&&head.Owner.avatar_img!=null" ng-src="{{base_url}}{{head.Owner.avatar_img}}">
+         <img style="object-fit: cover;" ng-if="head.Owner.avatar_img==''||head.Owner.avatar_img=='null'||head.Owner.avatar_img==null" ng-src="img/avatar.png">
+         <img style="object-fit: cover;" ng-if="head.Owner.avatar_img!=''&&head.Owner.avatar_img!='null'&&head.Owner.avatar_img!=null" ng-src="{{base_url}}{{head.Owner.avatar_img}}">
          <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</div>
        <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="head.user_id ==$root.user_id">{{$root.user}}</div>
          <!-- <p style="font-size:small;" ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</p>
