@@ -170,16 +170,18 @@
          <!--<a ui-sref="app.head({ id: head.id })">-->
         <div class="row">
             <div class="col-md-8">
-                <div class="col-md-1 badge-col">
-                    <span class="badge badge-info head-badge-no" ng-init="head.notification_count=getNotificationCount(head.id)">{{head.notification_count}}</span>
-                </div>
-                <div class="col-md-11">
-                    <p class="head-body">
-                        {{head.body}}
-                    </p>
-                    <span style="font-size:11px;">{{head.created}}</span>
-                    <span style="font-size:11px;">by: {{head.Owner.username == loginUser.username ? "あなた": head.Owner.username}}</span>
-                </div>
+                <a class="clickable" id="head-{{head.id}}" ng-click="gotoHead(head)">
+                    <div class="col-md-1 badge-col">
+                        <span class="badge badge-info head-badge-no" ng-init="head.notification_count=getNotificationCount(head.id)">{{head.notification_count}}</span>
+                    </div>
+                    <div class="col-md-11">
+                        <p class="head-body">
+                            {{head.body}}
+                        </p>
+                        <span style="font-size:11px;">{{head.created}}</span>
+                        <span style="font-size:11px;">by: {{head.Owner.username == loginUser.username ? "あなた": head.Owner.username}}</span>
+                    </div>
+                </a>
             </div>
             <div class="col-md-4">
                 <div class="panel-heading-controls heads-option-controls">
