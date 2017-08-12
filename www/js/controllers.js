@@ -901,7 +901,7 @@ angular.module('starter.controllers', [])
     $scope.uploadedChatImgs=[];
     var options = {
       buttonLabels: ['写真を選択', '写真を撮影'],
-      addCancelButtonWithLabel: 'キャン���ル',
+      addCancelButtonWithLabel: 'キャンセル',
       androidEnableCancelButton : true,
     };
     $cordovaActionSheet.show(options).then(function(btnIndex) {
@@ -913,7 +913,7 @@ angular.module('starter.controllers', [])
         type = 'takePhoto';
       }
 
-        $scope.selectPictureInChats(type);
+      $scope.selectPictureInChats(type);
 
     });
 
@@ -947,7 +947,13 @@ angular.module('starter.controllers', [])
               currdir = img.substr(0, img.lastIndexOf("/"));
               var xx=filename.split(".");
               var newx = Base64.encode(xx[0]);
-              $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
+              $scope.renameFile(img,filename, currdir, newx+'.'+xx[1]);
+	      //apply since this doesn't seem to update
+	      setTimeout(function(){
+	      	console.log("Applying");
+	      	$scope.$apply();
+	      },500);
+	                    
             },function(error){
               // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
             });
@@ -974,7 +980,11 @@ angular.module('starter.controllers', [])
               var newx = Base64.encode(xx[0]);
               console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
-
+	      //apply since this doesn't seem to update
+	      setTimeout(function(){
+	      	console.log("Applying");
+	      	$scope.$apply();
+	      },500);
             },function(error){
               // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
             });
@@ -1003,6 +1013,11 @@ angular.module('starter.controllers', [])
               console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1])
             }
+	      //apply since this doesn't seem to update
+	      setTimeout(function(){
+	      	console.log("Applying");
+	      	$scope.$apply();
+	      },500);            
         },function(error){
           // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
         });
@@ -2395,7 +2410,11 @@ $scope.selectPictureInComment = function($act) {
               var newx = Base64.encode(xx[0]);
               console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
-
+	      //apply since this doesn't seem to update
+	      setTimeout(function(){
+	      	console.log("Applying");
+	      	$scope.$apply();
+	      },500);
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -2420,6 +2439,11 @@ $scope.selectPictureInComment = function($act) {
               var newx = Base64.encode(xx[0]);
               console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
+	      //apply since this doesn't seem to update
+	      setTimeout(function(){
+	      	console.log("Applying");
+	      	$scope.$apply();
+	      },500);              
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -2445,6 +2469,11 @@ $scope.selectPictureInComment = function($act) {
               var newx = Base64.encode(xx[0]);
               $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1])
           }
+	  //apply since this doesn't seem to update
+	  setTimeout(function(){
+	      	console.log("Applying");
+	      	$scope.$apply();
+	  },500);          
       },function(error){
         // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
       });
