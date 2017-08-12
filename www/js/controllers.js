@@ -1420,6 +1420,7 @@ angular.module('starter.controllers', [])
   delete $scope.groupID;
   $scope.groupID=$stateParams['id'];
   $scope.uploadedType='head';
+  window.scope = $scope;
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
     });
@@ -2056,7 +2057,8 @@ $scope.selectPicture = function($act) {
          $scope.resetHeadForm();
          $scope.uploadedImgs=[];
          $ionicLoading.hide();
-         $ionicScrollDelegate.scrollBottom();
+         console.log(window.location.href);
+         //$ionicScrollDelegate.scrollBottom();
          $scope.updateCache();
 
     }
@@ -2156,15 +2158,6 @@ $scope.selectPicture = function($act) {
   //$rootScope.processedHead=$scope.headIndex;
   $rootScope.viewedHeadContents=null;
 
-  /*$rootScope.$on('updatesforthread',function(event,id){
-
-     if($state.current.name=='tab.head'){
-      var maxComment=Math.max.apply(Math,$scope.comments.Comment.map(function(o){return o.id;}));
-      $scope.updateCache(maxComment);
-       ApiService.setNotified($scope.headID,'head').then(function(response){NotificationService.setNotif(); })
-     }
-
-  });*/
   $rootScope.$watch('threadNotifCount', function() {
         if($state.current.name=='tab.head'){
           if(typeof($rootScope.headNotif[$scope.headID])!=='undefined' && $rootScope.headNotif[$scope.headID] != null){
@@ -2547,10 +2540,14 @@ $rootScope.changeHeadLike=function(id,index){
           $scope.uploadedCommentimgs=[];
           $scope.comments['Comment'].push(response.Comment);
           $ionicScrollDelegate.scrollBottom();
-
-          if(response.Comment.Uploads.length > 0){
+	  if(response.Comment.Uploads.length > 0){
 
             $scope.submitCommentPhoto(response.Comment);
+            //trigger clear cache after a while so that 
+            //image is not empty on screen after upload
+            setTimeout(function(){
+            	$scope.gethead(true);
+            },1000);
           }else{
             $scope.updateCache();
           }
@@ -2594,6 +2591,7 @@ $rootScope.changeHeadLike=function(id,index){
           $scope.img_comment_ctr++;
 
 
+          
         },function(error){
           $ionicPopup.alert({
             template:"写真のアップロードに失敗しました。"
