@@ -1006,18 +1006,23 @@ angular.module('starter.controllers', [])
            var Upload=null;
            var currdir=null;
             for(var i=0;i < results.length;i++){
-              var filename=results[i].split("/")[results[i].split("/").length - 1]
+              var filename=results[i].split("/")[results[i].split("/").length - 1];
               currdir = results[i].substr(0, results[i].lastIndexOf("/"));
               var xx=filename.split(".");
               var newx = Base64.encode(xx[0]);
               console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
-              $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1])
-            }
-	      //apply since this doesn't seem to update
+              $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1]);
+              //apply since this doesn't seem to update
 	      setTimeout(function(){
 	      	console.log("Applying");
 	      	$scope.$apply();
-	      },500);            
+	      },500);
+            }
+            //apply since this doesn't seem to update
+	    setTimeout(function(){
+	      	console.log("Applying");
+	      	$scope.$apply();
+	    },500);            
         },function(error){
           // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
         });
@@ -1949,7 +1954,11 @@ $scope.selectPicture = function($act) {
               console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
 
-
+              //apply since this doesn't seem to update
+	      setTimeout(function(){
+	      	console.log("Applying");
+	      	$scope.$apply();
+	      },500);
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -1972,13 +1981,17 @@ $scope.selectPicture = function($act) {
 
           $cordovaCamera.getPicture(options).then(function(img){
               var currdir=null;
-              var filename=img.split("/")[img.split("/").length - 1]
+              var filename=img.split("/")[img.split("/").length - 1];
               currdir = img.substr(0, img.lastIndexOf("/"));
               var xx=filename.split(".");
               var newx = Base64.encode(xx[0]);
               console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
-              $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
-
+              $scope.renameFile(img,filename, currdir, newx+'.'+xx[1]);
+              //apply since this doesn't seem to update
+	      setTimeout(function(){
+	      	console.log("Applying");
+	      	$scope.$apply();
+	      },500);
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -1998,12 +2011,17 @@ $scope.selectPicture = function($act) {
          var Upload=null;
           for(var i=0;i < results.length;i++){
               var currdir=null;
-              var filename=results[i].split("/")[results[i].split("/").length - 1]
+              var filename=results[i].split("/")[results[i].split("/").length - 1];
               currdir = results[i].substr(0, results[i].lastIndexOf("/"));
               var xx=filename.split(".");
               var newx = Base64.encode(xx[0]);
               console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
-              $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1])
+              $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1]);
+              //apply since this doesn't seem to update
+	      setTimeout(function(){
+	      	console.log("Applying");
+	      	$scope.$apply();
+	      },500);              
           }
       },function(error){
         // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
@@ -2547,6 +2565,7 @@ $rootScope.changeHeadLike=function(id,index){
     if(!comment || !comment.body && $scope.uploadedCommentimgs.length == 0) return;
 
       Groups.sendComment(id,comment).success(function(response){
+   
         if(response.Comment){
           if("Uploads" in response.Comment==false){
             response.Comment["Uploads"]=[];
@@ -2572,11 +2591,7 @@ $rootScope.changeHeadLike=function(id,index){
 	  if(response.Comment.Uploads.length > 0){
 
             $scope.submitCommentPhoto(response.Comment);
-            //trigger clear cache after a while so that 
-            //image is not empty on screen after upload
-            setTimeout(function(){
-            	$scope.gethead(true);
-            },1000);
+
           }else{
             $scope.updateCache();
           }
@@ -2595,7 +2610,7 @@ $rootScope.changeHeadLike=function(id,index){
     var obj={'comment_id':comment.id};
 
       comment.image.forEach(function(i,x) {
-
+ 
      if("loading" in i){
 
        i.path=encodeURI(i.path);
@@ -2619,7 +2634,10 @@ $rootScope.changeHeadLike=function(id,index){
 
           $scope.img_comment_ctr++;
 
-
+		setTimeout(function(){
+		console.log("Getting head from comment photo");
+	    		$scope.gethead(true);
+	    	},500);  
           
         },function(error){
           $ionicPopup.alert({
@@ -2917,7 +2935,14 @@ $rootScope.changeHeadLike=function(id,index){
                   currdir = img.substr(0, img.lastIndexOf("/"));
                   var xx=filename.split(".");
                   var newx = Base64.encode(xx[0]);
-                  $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
+                  $scope.renameFile(img,filename, currdir, newx+'.'+xx[1]);
+	      //apply since this doesn't seem to update
+	      setTimeout(function(){
+	      	console.log("Applying gethead");
+	      	$scope.gethead(true);
+	      	$scope.$apply();
+	      	
+	      },500);            
               },function(error){
 
               });
@@ -2944,7 +2969,13 @@ $rootScope.changeHeadLike=function(id,index){
                   var xx=filename.split(".");
                   var newx = Base64.encode(xx[0]);
                   $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
-
+	      //apply since this doesn't seem to update
+	      setTimeout(function(){
+	      	console.log("Applying gethead");
+	      	$scope.gethead(true);
+	      	$scope.$apply();
+	      	
+	      },500);
               },function(error){
                 // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
               });
@@ -2970,7 +3001,14 @@ $rootScope.changeHeadLike=function(id,index){
                 currdir = results[i].substr(0, results[i].lastIndexOf("/"));
                 var xx=filename.split(".");
                 var newx = Base64.encode(xx[0]);
-                $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1])
+                $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1]);
+	      //apply since this doesn't seem to update
+	      setTimeout(function(){
+	      	console.log("Applying gethead");
+	      	$scope.gethead(true);
+	      	$scope.$apply();
+	      	
+	      },500);             
               }
 
 
