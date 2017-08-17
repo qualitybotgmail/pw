@@ -14,7 +14,7 @@
                 <h6>{{timeVal.modified}}</h6>
            </div>
          <div class="item item-body">
-            <span class="ShingoProL">{{timeVal.title}} {{timeVal.body}}</span>
+            <p style="white-space: pre;" class="ShingoProL">{{timeVal.title}} {{timeVal.body}}</p>
             <img class="full-image"  ng-repeat="uploads in timeVal.Upload" src="{{base_url}}{{uploads.Upload.path}}">
              <h6 align="right" ng-hide="timeVal.index===undefined">
              
