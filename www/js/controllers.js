@@ -93,7 +93,7 @@ angular.module('starter.controllers', [])
    $rootScope.$on('update_groupchat_fromchat',function(event,data){
      $scope.cacheUpdate();
    });
-   
+
   $rootScope.$on('update_groupchat',function(event,id){
     var chatid=id;
     $scope.cacheUpdate();
@@ -284,7 +284,7 @@ angular.module('starter.controllers', [])
       else
         $scope.showChosenImage=index;
     }
-    
+
     $scope.downloadImage=function(){
     $ionicLoading.show({
           template:'<ion-spinner name="bubbles"></ion-spinner>'
@@ -303,8 +303,8 @@ angular.module('starter.controllers', [])
 
 		　　$ionicPopup.alert({
 		    template:"画像を保存しました"
-		  });     
-		          
+		  });
+
           },function(){
 	         $ionicPopup.alert({
 		    template:"エラーが発生したため、画像を保存することができませんでした"
@@ -436,7 +436,7 @@ angular.module('starter.controllers', [])
   $scope.showEdit=true;
   $scope.showDel=true;
   $scope.isEdit=false;
-  $scope.chatPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="downloadImage()" ng-show="!showEdit"><i class="icon ion-ios-download"></i>  Save Image</li><li class="item item-icon-left" ng-click="triggerChatEdit()" ng-show="showEdit && showDelete"><i class="icon ion-edit"></i>  編集</li><li class="item item-icon-left" ng-show="showDel" ng-click="triggerChatDelete()" ><i class="icon ion-ios-trash"></i> 削除</li></ul></ion-popover-view>', {
+  $scope.chatPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="downloadImage()" ng-show="!showEdit"><i class="icon ion-ios-download"></i>  保存</li><li class="item item-icon-left" ng-click="triggerChatEdit()" ng-show="showEdit && showDelete"><i class="icon ion-edit"></i>  編集</li><li class="item item-icon-left" ng-show="showDel" ng-click="triggerChatDelete()" ><i class="icon ion-ios-trash"></i> 削除</li></ul></ion-popover-view>', {
     scope: $scope
   });
 
@@ -641,7 +641,7 @@ angular.module('starter.controllers', [])
     $scope.idss=[];
     Chats.get($stateParams.chatId,$scope.page).then(function(response){
       if(response.messages){
-        
+
         $scope.chats = $scope.chats.concat(response.messages);
         $scope.total=response.total;
         $scope.idss=response.messages.map(function(k){ return k.Message.id }).filter(function(e){return e});
@@ -848,8 +848,7 @@ angular.module('starter.controllers', [])
      $scope.showChosenImage=-1;
     if(($scope.uploadedChatImgs.indexOf(path)!=-1) && (typeof(path)!=='undefined') && path != null){
       var ind=$scope.uploadedChatImgs.indexOf(path);
-      $scope.uploadedChatImgs.splice(index,1);
-      $scope.$apply();
+      $scope.uploadedChatImgs.splice(ind,1);
     }else{
       $scope.uploadedChatImgs.splice(index,1);
     }
@@ -891,7 +890,7 @@ angular.module('starter.controllers', [])
             $scope.updateChatCache($scope.page,0,$scope.chats);
             $rootScope.$emit('update_groupchat_fromchat');
           });
-           
+
         }
       }
     });
@@ -949,11 +948,11 @@ angular.module('starter.controllers', [])
               var newx = Base64.encode(xx[0]);
               $scope.renameFile(img,filename, currdir, newx+'.'+xx[1]);
 	      //apply since this doesn't seem to update
-	      setTimeout(function(){
-	      	console.log("Applying");
-	      	$scope.$apply();
-	      },500);
-	                    
+	      // setTimeout(function(){
+	      // 	console.log("Applying");
+	      // 	$scope.$apply();
+	      // },500);
+
             },function(error){
               // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
             });
@@ -977,14 +976,13 @@ angular.module('starter.controllers', [])
               var filename=img.split("/")[img.split("/").length - 1]
               currdir = img.substr(0, img.lastIndexOf("/"));
               var xx=filename.split(".");
-              var newx = Base64.encode(xx[0]);
-              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              var newx = Base64.encode(xx[0]) + new Date().getTime();
+              // console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
-	      //apply since this doesn't seem to update
-	      setTimeout(function(){
-	      	console.log("Applying");
-	      	$scope.$apply();
-	      },500);
+	            //apply since this doesn't seem to update
+              setTimeout(function(){
+                $scope.$apply();
+              },500);
             },function(error){
               // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
             });
@@ -1009,20 +1007,14 @@ angular.module('starter.controllers', [])
               var filename=results[i].split("/")[results[i].split("/").length - 1];
               currdir = results[i].substr(0, results[i].lastIndexOf("/"));
               var xx=filename.split(".");
-              var newx = Base64.encode(xx[0]);
-              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              var newx = Base64.encode(xx[0]) + new Date().getTime();
+              // console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1]);
-              //apply since this doesn't seem to update
-	      setTimeout(function(){
-	      	console.log("Applying");
-	      	$scope.$apply();
-	      },500);
             }
             //apply since this doesn't seem to update
-	    setTimeout(function(){
-	      	console.log("Applying");
-	      	$scope.$apply();
-	    },500);            
+            setTimeout(function(){
+              $scope.$apply();
+            },500);
         },function(error){
           // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
         });
@@ -1088,37 +1080,37 @@ angular.module('starter.controllers', [])
   $rootScope.withLike=true
   $scope.likeHead = function(id){
     alert(id);
-    
+
   };
   $scope.gotoHead=function(timeVal){
     $state.go('tab.head',({'id': timeVal.id}));
   }
   $scope.likeTimeline=function(timeVal){
-    
-      
+
+
       if(!timeVal.isUserLiked){
-        
+
         Like.like('heads',timeVal.id,function(response){
 
           if(response.status!='EXISTS'){
               timeVal.likes_count++;
           }else{
-            
+
             Like.unlike('heads',timeVal.id,function(response){
               console.log(response.status);
               if(response.status != 'NOT_EXISTING')
                 timeVal.likes_count--;
-            });     
+            });
           }
         });
       }else{
-        
+
         Like.unlike('heads',timeVal.id,function(response){
           timeVal.likes_count--;
-        });        
+        });
       }
       timeVal.liked = true;
-    
+
     // var ind=-1;
     // $scope.timelineVal.map(function(o,k){ if(o.id==head){ind=k};});
     // $rootScope.showLiked=$scope.timelineVal[ind]['likes'];
@@ -1955,10 +1947,9 @@ $scope.selectPicture = function($act) {
               $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
 
               //apply since this doesn't seem to update
-	      setTimeout(function(){
-	      	console.log("Applying");
-	      	$scope.$apply();
-	      },500);
+      	      setTimeout(function(){
+      	      	$scope.$apply();
+      	      },500);
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -1984,14 +1975,13 @@ $scope.selectPicture = function($act) {
               var filename=img.split("/")[img.split("/").length - 1];
               currdir = img.substr(0, img.lastIndexOf("/"));
               var xx=filename.split(".");
-              var newx = Base64.encode(xx[0]);
-              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              var newx = Base64.encode(xx[0]) + new Date().getTime();
+              // console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(img,filename, currdir, newx+'.'+xx[1]);
               //apply since this doesn't seem to update
-	      setTimeout(function(){
-	      	console.log("Applying");
-	      	$scope.$apply();
-	      },500);
+              setTimeout(function(){
+                $scope.$apply();
+              },500);
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -2014,15 +2004,14 @@ $scope.selectPicture = function($act) {
               var filename=results[i].split("/")[results[i].split("/").length - 1];
               currdir = results[i].substr(0, results[i].lastIndexOf("/"));
               var xx=filename.split(".");
-              var newx = Base64.encode(xx[0]);
-              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              var newx = Base64.encode(xx[0]) + new Date().getTime();
+              // console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1]);
-              //apply since this doesn't seem to update
-	      setTimeout(function(){
-	      	console.log("Applying");
-	      	$scope.$apply();
-	      },500);              
           }
+          //apply since this doesn't seem to update
+          setTimeout(function(){
+            $scope.$apply();
+          },500);
       },function(error){
         // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
       });
@@ -2106,7 +2095,7 @@ $scope.selectPicture = function($act) {
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
     });
-    
+
     window.state=$state;
     window.scope=$scope;
     $scope.goBack=function() {
@@ -2121,7 +2110,7 @@ $scope.selectPicture = function($act) {
         $scope.showChosenImage=index;
     }
     $rootScope.showLiked=[];
-    
+
     $scope.showLikes=function(head,comment,type){
 
       if(type=='head'){
@@ -2209,9 +2198,9 @@ $scope.selectPicture = function($act) {
   $scope.commentPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerCommentEdit()"><i class="icon ion-edit"></i>  編集</li><li class="item item-icon-left" ng-click="triggerCommentDelete()"><i class="icon ion-ios-trash"></i> 削除</li></ul></ion-popover-view>', {
     scope: $scope
   });
-  $scope.downloadPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerDownloadImage()"><i class="icon ion-edit"></i>  保存</li></ul></ion-popover-view>', {
+  $scope.downloadPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerDownloadImage()"><i class="icon ion-ios-download"></i>  保存</li></ul></ion-popover-view>', {
     scope: $scope
-  });  
+  });
   $scope.likedComment=-1;
   var threads=CacheFactory.get('threads');
  /* $rootScope.threadTitle = $rootScope.thread.Thread.title;
@@ -2254,7 +2243,7 @@ $scope.selectPicture = function($act) {
   };
   $scope.headUploads=[];
   $scope.gethead=function(x=false){
-	
+
       Groups.getComments($scope.headID,x).then(function(response){
       console.log(JSON.stringify(response));
         $scope.getHeads = response.Head;
@@ -2429,10 +2418,10 @@ $scope.selectPictureInComment = function($act) {
               console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
 	      //apply since this doesn't seem to update
-	      setTimeout(function(){
-	      	console.log("Applying");
-	      	$scope.$apply();
-	      },500);
+	      // setTimeout(function(){
+	      // 	console.log("Applying");
+	      // 	$scope.$apply();
+	      // },500);
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -2454,14 +2443,13 @@ $scope.selectPictureInComment = function($act) {
               var filename=img.split("/")[img.split("/").length - 1]
               currdir = img.substr(0, img.lastIndexOf("/"));
               var xx=filename.split(".");
-              var newx = Base64.encode(xx[0]);
-              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              var newx = Base64.encode(xx[0]) + new Date().getTime();
+              // console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
-	      //apply since this doesn't seem to update
-	      setTimeout(function(){
-	      	console.log("Applying");
-	      	$scope.$apply();
-	      },500);              
+	            //apply since this doesn't seem to update
+              setTimeout(function(){
+                $scope.$apply();
+              },500);
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -2484,14 +2472,13 @@ $scope.selectPictureInComment = function($act) {
               var filename=results[i].split("/")[results[i].split("/").length - 1]
               currdir = results[i].substr(0, results[i].lastIndexOf("/"));
               var xx=filename.split(".");
-              var newx = Base64.encode(xx[0]);
+              var newx = Base64.encode(xx[0]) + new Date().getTime();
               $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1])
           }
-	  //apply since this doesn't seem to update
-	  setTimeout(function(){
-	      	console.log("Applying");
-	      	$scope.$apply();
-	  },500);          
+	        //apply since this doesn't seem to update
+          setTimeout(function(){
+            $scope.$apply();
+          },500);
       },function(error){
         // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
       });
@@ -2565,7 +2552,7 @@ $rootScope.changeHeadLike=function(id,index){
     if(!comment || !comment.body && $scope.uploadedCommentimgs.length == 0) return;
 
       Groups.sendComment(id,comment).success(function(response){
-   
+
         if(response.Comment){
           if("Uploads" in response.Comment==false){
             response.Comment["Uploads"]=[];
@@ -2610,7 +2597,7 @@ $rootScope.changeHeadLike=function(id,index){
     var obj={'comment_id':comment.id};
 
       comment.image.forEach(function(i,x) {
- 
+
      if("loading" in i){
 
        i.path=encodeURI(i.path);
@@ -2637,8 +2624,8 @@ $rootScope.changeHeadLike=function(id,index){
 		setTimeout(function(){
 		console.log("Getting head from comment photo");
 	    		$scope.gethead(true);
-	    	},500);  
-          
+	    	},500);
+
         },function(error){
           $ionicPopup.alert({
             template:"写真のアップロードに失敗しました。"
@@ -2770,14 +2757,14 @@ $rootScope.changeHeadLike=function(id,index){
 		  $ionicPopup.alert({
 		    template:"画像を保存しました"
 		  });
-        
-		          
+
+
           },function(){
 		  $ionicPopup.alert({
 		    template:"エラーが発生したため、画像を保存することができませんでした"
 		  });
 
-	          	 
+
           });
           //refreshMedia.refresh(targetPath);
         },
@@ -2791,7 +2778,7 @@ $rootScope.changeHeadLike=function(id,index){
           // progressing download...
         }
       );
-    };  
+    };
   $scope.triggerCommentEdit=function(){
     $scope.commentPopover.hide();
      $scope.action='edit';
@@ -2819,12 +2806,12 @@ $rootScope.changeHeadLike=function(id,index){
         template:'<ion-spinner name="bubbles"></ion-spinner>'
       });
         ApiService.Delete('comments/'+$scope.comments['Comment'][$scope.processedCommentIndex].id+'.json','').then(function(response){
-          
+
              $scope.comments.Comment.splice($scope.processedCommentIndex,1);
              $scope.updateCache();
             $scope.commentPopover.hide();
             $ionicLoading.hide();
-          
+
         },function(error){
 
         });
@@ -2937,12 +2924,12 @@ $rootScope.changeHeadLike=function(id,index){
                   var newx = Base64.encode(xx[0]);
                   $scope.renameFile(img,filename, currdir, newx+'.'+xx[1]);
 	      //apply since this doesn't seem to update
-	      setTimeout(function(){
-	      	console.log("Applying gethead");
-	      	$scope.gethead(true);
-	      	$scope.$apply();
-	      	
-	      },500);            
+	      // setTimeout(function(){
+	      // 	console.log("Applying gethead");
+	      // 	$scope.gethead(true);
+	      // 	$scope.$apply();
+
+	      // },500);
               },function(error){
 
               });
@@ -2967,15 +2954,13 @@ $rootScope.changeHeadLike=function(id,index){
                   var filename=img.split("/")[img.split("/").length - 1]
                   currdir = img.substr(0, img.lastIndexOf("/"));
                   var xx=filename.split(".");
-                  var newx = Base64.encode(xx[0]);
+                  // var newx = Base64.encode(xx[0]);
+                  var newx = Base64.encode(xx[0]) + new Date().getTime();
                   $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
-	      //apply since this doesn't seem to update
-	      setTimeout(function(){
-	      	console.log("Applying gethead");
-	      	$scope.gethead(true);
-	      	$scope.$apply();
-	      	
-	      },500);
+	                //apply since this doesn't seem to update
+                  setTimeout(function(){
+                    $scope.$apply();
+                  },500);
               },function(error){
                 // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
               });
@@ -3000,18 +2985,13 @@ $rootScope.changeHeadLike=function(id,index){
                 var filename=results[i].split("/")[results[i].split("/").length - 1]
                 currdir = results[i].substr(0, results[i].lastIndexOf("/"));
                 var xx=filename.split(".");
-                var newx = Base64.encode(xx[0]);
+                var newx = Base64.encode(xx[0]) + new Date().getTime();
                 $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1]);
-	      //apply since this doesn't seem to update
-	      setTimeout(function(){
-	      	console.log("Applying gethead");
-	      	$scope.gethead(true);
-	      	$scope.$apply();
-	      	
-	      },500);             
               }
-
-
+              //apply since this doesn't seem to update
+              setTimeout(function(){
+                $scope.$apply();
+              },500);
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
           });
@@ -3096,8 +3076,10 @@ $rootScope.changeHeadLike=function(id,index){
     $ionicLoading.show({
       template:'<ion-spinner name="bubbles"></ion-spinner>'
     });
-    ApiService.Post('users/mobilelogin/',{"User":{"username":data.loginid,"password":data.password}}).then(function(response){
+    ApiService.Post('users/mobilelogin/',{"User":{"loginid":data.loginid,"password":data.password}}).then(function(response){
       if(response){
+
+      $ionicLoading.hide();
 
       if(response['user']["User"]){
         $rootScope.user_id=response['user']["User"]['id'];

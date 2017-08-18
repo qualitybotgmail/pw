@@ -58,8 +58,7 @@
          <img class="avatar" ng-if="comment.User.avatar_img!=''&&comment.User.avatar_img!='null'&&comment.User.avatar_img!=null" ng-src="{{base_url}}{{comment.User.avatar_img}}">
           <div style="font-size:smaller;padding-top:5px;height:30px;margin:0;" ng-show="comment.user_id !=$root.user_id">{{comment.User.username}}</div>
           <div style="font-size:smaller;padding-top:5px;height:30px;margin:0;" ng-show="comment.user_id ==$root.user_id">{{$root.user}}</div>
-          <p class="dateList" style=""><span ng-show="comment.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showCommentPopover($event,$index)"></i></span>
-        </p>
+          <p class="dateList" style=""><span ng-show="comment.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showCommentPopover($event,$index)"></i></span></p>
           <div style="padding: 0 15px 20px 15px;color:#000;word-break:break-word">
             <span class="ShingoProL" style="white-space: pre-line;" content="linkify(comment.body)" check-link></span>
           </div>
@@ -73,7 +72,7 @@
                 <ion-spinner icon="ios" ng-show="typeof(upload.loading)!=='undefined' && upload.loading" class="img-spinner"></ion-spinner>
               </div>
               <ion-scroll direction="x" ng-show="comment.image.length > 1" prevent-href="true">
-                <img ng-repeat="upload in comment.image track by $index" ng-src="{{upload.loading?upload.path:base_url+'/uploads/thumbnail/?img='+upload.path}}" ng-click="showImages({{$index}},'comment',{{$parent.$index}})" class="image-list-thumb" ng-style="{'opacity':upload.loading && typeof(upload.loading) !=='undefined'?'0.3':'1'}"/>
+                <img ng-repeat="upload in comment.image track by $index" ng-src="{{upload.loading?upload.path:base_url+'/uploads/thumbnail/?img='+upload.path}}" ng-click="showImages({{$index}},'comment',{{$parent.$index}})" on-hold="showDownloadPopover($event,upload.path);"  class="image-list-thumb" ng-style="{'opacity':upload.loading && typeof(upload.loading) !=='undefined'?'0.3':'1'}"/>
                 <ion-spinner icon="ios" ng-show="typeof(upload.loading)!=='undefined' && upload.loading" class="img-spinner"></ion-spinner>
               </ion-scroll>
             </div>
