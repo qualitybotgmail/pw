@@ -1,6 +1,7 @@
 <?php
 App::uses('AppController', 'Controller');
 App::import('Vendor','ImageCorrector');
+App::import("Vendor","Util");
 /**
  * Uploads Controller
  *
@@ -8,6 +9,9 @@ App::import('Vendor','ImageCorrector');
  * @property PaginatorComponent $Paginator
  */
 class UploadsController extends AppController {
+
+	public $thumbWidth = 300;
+	public $thumbQuality = 80;
 
 /**
  * Components
@@ -96,6 +100,10 @@ class UploadsController extends AppController {
 				}
 				else{
 					move_uploaded_file($file['tmp_name'],$filepath);
+				}
+				if(exif_imagetype($filepath) !== FALSE){
+					$thumbnail = $filepath.'.thumb';
+					make_thumb($filepath,$thumbnail,$this->thumbWidth,$this->thumbQuality);
 				}
 
 				$urlpath = '/files/' . $this->Auth->user('id') . '/' . $now.$fname;
@@ -211,6 +219,10 @@ class UploadsController extends AppController {
 				else{
 					move_uploaded_file($file['tmp_name'],$filepath);
 				}
+				if(exif_imagetype($filepath) !== FALSE){
+					$thumbnail = $filepath.'.thumb';
+					make_thumb($filepath,$thumbnail,$this->thumbWidth,$this->thumbQuality);
+				}
 
 				$urlpath = '/files/' . $this->Auth->user('id') . '/' . $now.$fname;
 				$data = array('path' => $urlpath,'comment_id' => $comment_id,'user_id' => $this->Auth->user('id'),'message_id' => $message_id,'head_id'=>$head_id ,'name' =>$file['name']);
@@ -261,12 +273,11 @@ class UploadsController extends AppController {
 			exit;
 		}
 		public function thumbnail(){
-			App::import("Vendor","Util");
 			$f = $_GET['img'];
 			$ftype = null;
 			$img = null;
 	
-			$w = 200;
+			// $w = 200;
 			
 			// $f = substr($f,1);
 			$fullpath = APP.'webroot'.$f;
@@ -282,7 +293,9 @@ class UploadsController extends AppController {
 					
 					$ftype = exif_imagetype($thumbnail);
 					
-					$img = make_thumb($fullpath,$thumbnail,$w);
+					// $img = make_thumb($fullpath,$thumbnail,$w);
+					make_thumb($fullpath,$thumbnail,$this->thumbWidth,$this->thumbQuality);
+					$img = file_get_contents($thumbnail);
 		
 				}
 			}else{

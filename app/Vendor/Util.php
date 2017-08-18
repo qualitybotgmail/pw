@@ -200,7 +200,7 @@ function make_thumb($src,$dest,$thumbwidth, $quality = 100, $type = 2)
     // Begin
     $img = new imaging;
     $img->set_img($src);
-    $img->set_quality(80);
+    $img->set_quality($quality);
     
     // Small thumbnail
     $img->set_size($thumbwidth);
