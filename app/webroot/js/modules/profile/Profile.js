@@ -66,13 +66,13 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
                   contentType: false,
                   async:false,
                   success: function(response) {
-                        var avatar_img = response.Success[0].path;
-                        $rootScope.loginUser.avatar_img = avatar_img;
-                        UsersModel.one($rootScope.loginUser.id).customPOST($rootScope.loginUser).then(function(res){
-            	           $("#profile_pic").val('');
-            	           //$scope.user = $rootScope.loginUser;
-            	           $scope.isProcessing = false;
-            	        });
+                    var avatar_img = response.Success[0].path;
+                    $rootScope.loginUser.avatar_img = avatar_img;
+                    UsersModel.one($rootScope.loginUser.id).customPOST($rootScope.loginUser).then(function(res){
+        	           $("#profile_pic").val('');
+        	           //$scope.user = $rootScope.loginUser;
+        	           $scope.isProcessing = false;
+        	        });
             	        
                   },
                   error: function(jqXHR, textStatus, errorMessage) {

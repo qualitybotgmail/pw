@@ -2,8 +2,9 @@
     .user-avatar {
         margin: auto;
         margin-top: 15%;
-        width: 150px;
-        height: 150px;
+        max-width: 150px;
+        max-height: 150px;
+        border: 2px solid #009ecd;
     }
 </style>
 <div class="row">
@@ -21,14 +22,14 @@
             </div>             
             <div class="col-xs-12 col-sm-4 text-center">
                 <figure>
-                    <img src="{{ (loginUser.avatar_img)? loginUser.avatar_img:'/img/avatar.png' }}" alt="{{ (loginUser.id)? loginUser.username:'user' }}" class="img-circle img-responsive user-avatar" >
+                    <img src="{{ (loginUser.avatar_img)? loginUser.avatar_img:'/img/avatar.png' }}" alt="{{ (loginUser.id)? loginUser.username:'user' }}" class="img-thumbnail img-responsive user-avatar">
                 </figure>
                 <div class="form-group">
                   <div style="margin-top:8px;">
-                    <input type="file" id="profile_pic" accept="image/jpeg, image/png, image/jpg">
                     <button type="button" class="btn btn-primary pull-right" ng-click="uploadProfilePic()">
                         Upload
                     </button>
+                    <input type="file" id="profile_pic" class="pull-right" accept="image/jpeg, image/png, image/jpg" style="width:55%;">
                   </div>
                 </div>
             </div>
