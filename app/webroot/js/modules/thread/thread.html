@@ -180,8 +180,10 @@
                         </p>
                         <img ng-repeat="upload in head.Uploads" ng-src="{{upload.Upload.path}}" height="100px" /><br />
                         <span style="font-size:11px;">{{head.created}}</span>
+                        
                         <span style="font-size:11px;">by: {{head.Owner.username == loginUser.username ? "あなた": head.Owner.username}}</span>
                     </div>
+                    
                 </a>
             </div>
             <div class="col-md-4">
@@ -209,6 +211,28 @@
                     </div> <!-- / .btn-group -->
                 </div>
             </div>
+        </div>
+                 <!--<a ui-sref="app.head({ id: head.id })">-->
+        
+        <div class="row" ng-repeat="comment in head.Comment | orderBy: created| limitTo: 3">
+            <div class="col-md-8">
+                <a class="clickable" id="head-{{head.id}}" ng-click="gotoHead(head)">
+                    <div class="col-md-1 badge-col">
+                        <span class="badge badge-info head-badge-no" ng-init="head.notification_count=getNotificationCount(head.id)">{{head.notification_count}}</span>
+                    </div>
+                    <div class="col-md-11">
+                        <p style="color: black" class="head-body">
+                            {{comment.body}}
+                        </p>
+                        
+                        <span style="font-size:11px;">{{head.created}}</span>
+                        
+                        <span style="font-size:11px;">by: {{head.Owner.username == loginUser.username ? "あなた": head.Owner.username}}</span>
+                    </div>
+  
+                </a>
+            </div>
+  
         </div>
         
         <!--<a class="clickable" id="head-{{head.id}}" ng-click="gotoHead(head)">-->
