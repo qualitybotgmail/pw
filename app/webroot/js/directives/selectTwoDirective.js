@@ -271,10 +271,11 @@ define([
 
                         if (attrs.initialValue) {
                             var w = scope.$watch('initialValue', function () {
-                                if (scope.initialValue && scope.url) {
+                                // if (scope.initialValue /*&& scope.url*/) {
                                     element.select2("val", scope.initialValue);
+                                    scope.ngModel = scope.initialValue;
                                     //w();
-                                }
+                                // }
                             });
                         }
                     }

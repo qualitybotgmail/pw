@@ -178,6 +178,7 @@
                         <p class="head-body">
                             {{head.body}}
                         </p>
+                        <img ng-repeat="upload in head.Uploads" ng-src="{{upload.Upload.path}}" height="100px" /><br />
                         <span style="font-size:11px;">{{head.created}}</span>
                         <span style="font-size:11px;">by: {{head.Owner.username == loginUser.username ? "あなた": head.Owner.username}}</span>
                     </div>

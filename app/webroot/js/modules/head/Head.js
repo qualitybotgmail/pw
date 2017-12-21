@@ -88,6 +88,13 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	       $state.go('app.thread', {id:threadId});
         	    });
         	};
+            
+            // delete comment
+        	$scope.deleteComment = function(index, commentId) {
+        	    CommentsModel.one('delete').one(commentId.toString()).post().then(function(res) {
+        	        $scope.selectedHead.Comment.splice(index, 1);
+            	}); 
+        	};
         	
         	// add members
             $scope.editHead = function(head) {
@@ -139,7 +146,12 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                    async: false,
                    success: function(response) {
                        // .. do something
-                       $scope.selectedHead.Comment.push(angular.extend(comment, {'Upload': response.Success}));
+                       comment.Uploads = [];
+                       var tempUpload = JSON.parse(response).Success;
+                       angular.forEach(tempUpload, function(value){
+                           comment.Uploads.push({Upload: value});
+                       });
+                       $scope.selectedHead.Comment.push(comment);
                        $("#attachments").val('');
                        HeadService.scrollDown();
                        $scope.startInterval();
@@ -309,7 +321,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 $scope.stopInterval();
       
         	    // console.log('starting interval');
-        	    pendingQry = $interval($scope.getHead, 7000);    
+        	   // pendingQry = $interval($scope.getHead, 7000);    
         	};
         	
         	$scope.stopInterval = function() {

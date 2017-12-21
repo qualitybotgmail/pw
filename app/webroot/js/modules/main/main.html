@@ -220,9 +220,11 @@
                                                         				<ul class="list-group">
                                                                             <li class="list-item" ng-if="head.Comment.length">
                                                                                 <ul class="list-group commentList commentList-{{threadIndex}}-{{headIndex}}">
-                                                                                    <li class="list-group-item" ng-repeat="(commentIndex,c) in head.Comment" ng-init="$last && fireMessageEvent(threadIndex, headIndex)">
+                                                                                    <li class="list-group-item" ng-repeat="(commentIndex,c) in head.Comment | orderBy: created | limitTo: 3" ng-init="$last && fireMessageEvent(threadIndex, headIndex)">
 						                                                                            <small>{{c.User.id == loginUser.id ? "あなた" : c.User.username }}</small>
-                                                                                        <p class="head-comment">{{c.Comment.body}}</p>
+                                                                                        <p class="head-comment" string-to-link="c.Comment.body">
+                                                                                            <!--{{c.Comment.body}}-->
+                                                                                        </p>
                                                                                         <p>
                                                                                             <span ng-repeat="upload in c.Upload">
                                                                                                 <span ng-init="upload.isFileImage=checkFile(upload.Upload.path)"></span>

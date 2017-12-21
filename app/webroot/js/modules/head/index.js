@@ -20,4 +20,5 @@ define([
 
 	'../../services/modalService',
 	'../../directives/fancyboxDirective',
+	'../../directives/stringToLinkDirective',
 ], function () {});

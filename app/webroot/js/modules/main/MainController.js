@@ -187,7 +187,10 @@ define([
                   async: false,
                   success: function(response) {
                       // .. do something
-                      comment.Upload = response.Success;
+                      var tempUpload = JSON.parse(response).Success;
+                      angular.forEach(tempUpload, function(value){
+                        comment.Upload.push({Upload: value});
+                      });
                       $scope.timeline[threadIndex].Head[headIndex].Comment.push(comment); 
                       $(attachment).val('');
                       MainService.scrollDown(threadIndex, headIndex);

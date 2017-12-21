@@ -15,13 +15,18 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 			function($rootScope, $scope, $state, $timeout, $modalInstance, Modal, Focus, GroupChatModel, Restangular)
 			{
 				$scope.groupchat = {};
-				$scope.groupchat.member_ds = {};
+				$scope.groupchat.member_ids = {};
 				$scope.isSending = false;
+				$scope.tempSelectedMembers = [];
+				$scope.allMembers = [];
+				$scope.showSelectAll = true;
+				$scope.showDeselecAll = false;
 				
 				var usersList = function(users) {
 	        	    var arr = [];
 	        	    
 	        	    angular.forEach(users, function(user, index){
+	        	    	$scope.allMembers.push(user.User.id);
 	        	        arr.push(user.User);
 	        	    });
 	        	    
@@ -41,6 +46,18 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
 					});
 					
 					return arr;
+				};
+				
+				$scope.selectAllMembers = function () {
+					$scope.showSelectAll = false;
+					$scope.showDeselecAll = true;
+					$scope.tempSelectedMembers = $scope.allMembers;
+				};
+				
+				$scope.deselectAllMembers = function () {
+					$scope.showSelectAll = true;
+					$scope.showDeselecAll = false;
+					$scope.tempSelectedMembers = [];
 				};
 	        	
 	        	$scope.getUsers = function(){
@@ -190,7 +207,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                 /* Destroy non-angular objectst */
 				$scope.$on('$destroy', function (event) {
 					$scope.groupchat = {};
-					$scope.groupchat.member_ds = {};
+					$scope.groupchat.member_ids = {};
 					$scope.isSending = false;
 				});
 			}

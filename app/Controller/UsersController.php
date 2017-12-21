@@ -171,26 +171,26 @@ class UsersController extends AppController {
 		return $this->redirect(array('action' => 'index'));
 	}
 	public function mobilelogin(){
+		file_put_contents("/tmp/lastcurlpost",date("g:i:s")."\n".print_r($this->request->data,true),FILE_APPEND);
 		$this->Session->destroy();
 		file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_SERVER,true),FILE_APPEND);
 		$userdetails=array();
 		$session_id=null;
+		
 	    if ($this->request->is('post')) {
 	    	if($this->request->data){
-	    	file_put_contents("/tmp/lastcurl",date("g:i:s")."\n".print_r($_POST,true),FILE_APPEND);
-  
-	        
-		    if($this->Auth->login())
-		    {
-		        
-		        $id = $_SESSION['Auth']['User']['id'];
-				$this->User->recursive = 0;
-		        $userdetails = $this->User->findById($id);
-				$profile = $this->User->Profile->findByUserId($id);
-				$userdetails['Profile'] = $profile['Profile'];
-		        $this->User->addmember_all($id);
-		    }
-		    echo json_encode(array('user'=>$userdetails));
+
+			    if($this->Auth->login())
+			    {
+			        
+			        $id = $_SESSION['Auth']['User']['id'];
+					$this->User->recursive = 0;
+			        $userdetails = $this->User->findById($id);
+					$profile = $this->User->Profile->findByUserId($id);
+					$userdetails['Profile'] = $profile['Profile'];
+			        $this->User->addmember_all($id);
+			    }
+			    echo json_encode(array('user'=>$userdetails));
 	    	}
 	    }
 	     
@@ -276,8 +276,7 @@ class UsersController extends AppController {
 	}	
 	
 	public function me($uid = null){
-		error_reporting(E_ALL);	
-		echo $uid;exit;
+		
 		$this->view = 'view'; 
 		$id = ($uid == null) ? $this->Auth->user('id') : $uid;
 		
@@ -297,21 +296,23 @@ class UsersController extends AppController {
 		// $this->User->Thread->Head->recursive = 4;  
 		
 		$thread = $this->User->Thread->find('all',  
-		 array('conditions' => array('Thread.user_id' => $user_id)), 
-		array('order' =>array('Thread.created' => 'desc')) );   
+			array('conditions' => array('Thread.user_id' => $user_id)), 
+			array('order' =>array('Thread.created' => 'desc')) 
+		);   
 		
 		
 		$head = $this->User->Thread->Head->find('all', 
-		array('conditions' => array('Head.user_id' => $user_id)), 
-		array('order' =>array('Head.created' => 'desc')));  
+			array('conditions' => array('Head.user_id' => $user_id)), 
+			array('order' =>array('Head.created' => 'desc'))
+		);  
 		
 		// $like = $this->User->Like->find('all', 
 		// ['conditions' => ['Like.user_id' => $user_id]], 
 		// ['order' =>['Like.created' => 'desc']]);  
 		
 		$comment = $this->Comment->find('all',
-		array('conditions'=>array('Comment.user_id'=>$user_id)),
-		array('order'=>array('Comment.created'=>'desc'))
+			array('conditions'=>array('Comment.user_id'=>$user_id)),
+			array('order'=>array('Comment.created'=>'desc'))
 		);
 		   
 		// $values = array_merge($thread, $head, $comment); 

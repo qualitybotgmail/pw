@@ -157,7 +157,12 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                    async:false,
                    success: function(response) {
                         // .. do something
-                        $scope.message.Message.push(angular.extend(message, {'Upload': response.Success}));
+                        message.Upload = [];
+                        var tempUpload = JSON.parse(response).Success;
+                        angular.forEach(tempUpload, function(value){
+                           message.Upload.push(value);
+                        });
+                        $scope.message.Message.push(message);
                         $("#attachments").val('');
                         $scope.comment.body = ''; 
                         $scope.comment.message_id = null;

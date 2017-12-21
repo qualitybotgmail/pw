@@ -160,8 +160,9 @@
                         <abbr class="timeago">{{m.created}}</abbr>
                     </span>
                     <div class="message_text">
-                        <p class="message-description" ng-init='m.formattedComment=formatComment(m.body)' >
-                          {{m.formattedComment}}
+                        <!--<p class="message-description" ng-init='m.formattedComment=formatComment(m.body)' >-->
+                        <p class="message-description" string-to-link="m.body" >
+                          <!--{{m.formattedComment}}-->
                         </p>
                         <span ng-repeat="upload in m.Upload">
                             <span ng-init="upload.isFileImage=checkFile(upload.path)"></span>

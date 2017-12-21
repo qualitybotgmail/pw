@@ -34,5 +34,6 @@ define([
 	'../../directives/jwertyDirective',
 	'../../directives/selectTwoDirective',
 	'../../directives/fancyboxDirective',
+	'../../directives/stringToLinkDirective',
 	
 ], function () {});

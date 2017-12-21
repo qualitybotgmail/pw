@@ -407,7 +407,7 @@ class GroupchatsController extends AppController {
 				if(is_numeric($i)){
 					$users[] = $u['id'];
 				}
-			}
+			} 
 			
 			$oldcount = count($users);
 			$users = array_merge($ids,$users);

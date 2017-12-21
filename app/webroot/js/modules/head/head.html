@@ -126,8 +126,20 @@
         <li class="list-item" ng-if="selectedHead.Comment.length">
             <ul class="list-group commentList">
                 <li class="list-group-item" ng-repeat="c in selectedHead.Comment | unique : 'id'" ng-init="$last && fireMessageEvent()">
-                    <small>{{c.User.username == loginUser.username ? "あなた" : c.User.username }}</small>
-                    <p class="head-comment" ng-init='c.formattedComment=formatComment(c.body)' >{{c.formattedComment}}</p>
+                    <p>
+                        {{c.User.username == loginUser.username ? "あなた" : c.User.username }}
+                        
+                        <button title="コメントを削除" ng-if="c.User.id == loginUser.id" class="pull-right btn-danger btn-group-xs" ng-click="deleteComment($index, c.id)">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </p>
+                    
+                    
+            
+                    <!--<p class="head-comment" ng-init='c.formattedComment=formatComment(c.body)' >-->
+                    <p class="head-comment" string-to-link="c.body" >
+                        <!--{{c.formattedComment}}-->
+                    </p>
                     <p>
                         <span ng-repeat="u in c.Uploads">
                             <span ng-init="u.isFileImage=checkFile(u.Upload.name)"></span>

@@ -11,7 +11,18 @@
 				<div class="row" >
 		            <div class="col-xs-12">
 						<div class="form-group">
-		                        <label for="title">メンバー</label>
+		                        <label for="title">
+		                        	メンバー
+		                        	&nbsp;
+		                        	(
+		                        		<span ng-show="showSelectAll">
+			                        		<a class="clickable" role="button" ng-click="selectAllMembers()">全選択</a>
+			                        	</span>
+			                        	<span ng-show="showDeselecAll">
+			                        		<a class="clickable" role="button" ng-click="deselectAllMembers()">全解除</a>
+			                        	</span>
+		                        	)
+		                        </label>
 		                        <select2
 	                                id="member_search"
 	                                data="groupchat.users"
@@ -21,6 +32,7 @@
 	                                search="username"
 	                                selected="selected(val)"
 	                                detailed-selection="1"
+	                                initial-value="tempSelectedMembers"
 	                                allow-clear
 	                                class="width-100"
 	                                multiple="1"
@@ -56,7 +68,7 @@
 					キャンセル
 				</button>
 				<button type="submit" ng-click="saveGroupChat()" class="btn btn-primary btn-sm" id="btn-ok" 
-					ng-disabled="groupchatForm.$invalid || ! groupchatForm.$dirty || isSending">
+					ng-disabled="!groupchat.member_ids.length || groupchatForm.$invalid || ! groupchatForm.$dirty || isSending">
 					<i class="fa fa-save bigger-140"></i> &nbsp;送信
 				</button>
 			</div>

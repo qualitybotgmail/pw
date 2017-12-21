@@ -15,10 +15,15 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
 				$scope.members = {};
 				angular.extend($scope, fromParent);
 				$scope.selectedMembers = [];
+				$scope.tempSelectedMembers = [];
+				$scope.allMembers = [];
+				$scope.showSelectAll = true;
+				$scope.showDeselecAll = false;
 				
 				var $reEvaluateUser = function(users){
 					var $arr = []	;
 					angular.forEach(users, function(user, index){
+						$scope.allMembers.push(user.User.id);
 						$arr.push(user.User);
 					});
 					
@@ -38,6 +43,18 @@ define(['app', 'angular', 'underscore'], function(app, angular, _)
 					});
 					
 					return arr;
+				};
+				
+				$scope.selectAllMembers = function () {
+					$scope.showSelectAll = false;
+					$scope.showDeselecAll = true;
+					$scope.tempSelectedMembers = $scope.allMembers;
+				};
+				
+				$scope.deselectAllMembers = function () {
+					$scope.showSelectAll = true;
+					$scope.showDeselecAll = false;
+					$scope.tempSelectedMembers = [];
 				};
 				
 				$scope.getMembersToAdd = function(){

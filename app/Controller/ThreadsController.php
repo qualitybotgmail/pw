@@ -202,6 +202,7 @@ class ThreadsController extends AppController {
  * @return void
  */
 	public function view($id,$lastid=0,$ajax=false) {
+		
 		//error_reporting(2);
 		$notif = new NotifCounts($this->User->Profile,$this->Auth->user('id'));
 		$notif->clear('thread',$id);
@@ -224,11 +225,21 @@ class ThreadsController extends AppController {
 		$this->Thread->Behaviors->load('Containable');
 		$thread = $this->Thread->find('first',array(
 			'conditions' => array('Thread.id' => $id),
-			'contain' => array('Head'=>array('Like'=>array('User'),'Owner','conditions'=>array('Head.id >'=>$lastid),'order' => array('Head.created DESC')),'User.username','User.avatar_img','User.id','Owner.username','Owner.avatar_img','Owner.id')
+			'contain' => array('Head'=>
+				array(
+					'Like'=> array('User'),
+					'Comment',
+					'Owner',
+					'conditions'=>array('Head.id >'=>$lastid),
+					'order' => array('Head.created DESC')
+				),
+				'User.username','User.avatar_img','User.id','Owner.username','Owner.avatar_img','Owner.id'
+			)
 		));
+		
 		$tid = $id;
 		$uid = $this->Auth->user('id');
-
+		
 		unset($thread['Owner']['password']);
 		
 		$this->loadModel('Upload');
@@ -236,7 +247,10 @@ class ThreadsController extends AppController {
 		foreach($thread['Head'] as $kk => $head){
 			$thread['Head'][$kk]['likes_count'] = count($head['Like']);
 			$thread['Head'][$kk]['likes'] = $head['Like'];
+			$thread['Head'][$kk]['Comment'] = $head['Comment'];
+			
 			$thread['Head'][$kk]['Uploads']=$this->Upload->find('all',array('fields'=>array('name','path'),'conditions'=>array('head_id'=>$thread['Head'][$kk]['id'])));
+			
 			$thread['Head'][$kk]['isUserLiked'] = $this->Thread->Head->isLiked($head['id'],$uid);
 			unset($thread['Head'][$kk]['Owner']['password']);
 			unset($thread['Head'][$kk]['Like']);
@@ -245,16 +259,20 @@ class ThreadsController extends AppController {
 		
 			
 		} 
+		
 		$this->Thread->notified($id,$uid);
 		//set viewed for the user
-	$cache->set($thread);
-	if($ajax){
 		
-		return $thread;
-	}else
-		$this->set('thread',$thread);
+		$cache->set($thread);
+		
+		if($ajax){
+			
+			return $thread;
+		}else{
+			$this->set('thread',$thread);
+		}
 	}
-	
+
 	public function updateThread($id,$lastid=0){
 		
 		$newthreads=$this->view($id,$lastid,true);
