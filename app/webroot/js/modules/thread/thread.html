@@ -214,7 +214,7 @@
         </div>
                  <!--<a ui-sref="app.head({ id: head.id })">-->
         
-        <div class="row" ng-repeat="comment in head.Comment | orderBy: created| limitTo: 3">
+        <div class="row" ng-repeat="comment in head.Comment | orderBy: -created| limitTo: 3">
             <div class="col-md-8">
                 <a class="clickable" id="head-{{head.id}}" ng-click="gotoHead(head)">
                     <div class="col-md-1 badge-col">
@@ -225,9 +225,9 @@
                             {{comment.body}}
                         </p>
                         
-                        <span style="font-size:11px;">{{head.created}}</span>
+                        <span style="font-size:11px;">{{comment.created}}</span>
                         
-                        <span style="font-size:11px;">by: {{head.Owner.username == loginUser.username ? "あなた": head.Owner.username}}</span>
+                        <span style="font-size:11px;">by: {{comment.User.id == loginUser.id ? "あなた": comment.User.username}}</span>
                     </div>
   
                 </a>

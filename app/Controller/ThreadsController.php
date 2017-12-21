@@ -207,7 +207,7 @@ class ThreadsController extends AppController {
 		$notif = new NotifCounts($this->User->Profile,$this->Auth->user('id'));
 		$notif->clear('thread',$id);
 		$cache = $this->getCache('threads');
-		$viewCached = $cache->get();
+		$viewCached = null;//$cache->get();
 		if($viewCached){
 			if($ajax){
 				
@@ -228,7 +228,7 @@ class ThreadsController extends AppController {
 			'contain' => array('Head'=>
 				array(
 					'Like'=> array('User'),
-					'Comment',
+					'Comment' => array('User.username'),
 					'Owner',
 					'conditions'=>array('Head.id >'=>$lastid),
 					'order' => array('Head.created DESC')
