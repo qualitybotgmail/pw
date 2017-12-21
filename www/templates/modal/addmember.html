@@ -17,11 +17,17 @@
     </ion-header-bar>
     <ion-content>
         <ul class="list">
+            <li class="item item-checkbox" item-height="55px" item-width="100%">
+                <span class="shingodb" style="font-size:13px"> 全選択 </span>
+                <label class="checkbox">
+                    <input ng-click="selectAll()" type="checkbox" value="1" />
+                </label>
+            </li>
             <li class="item item-checkbox" item-height="55px" item-width="100%" ng-repeat="user in notMembers | filter:{username:search_filter} track by $index" ng-if="user.username">
-               <span class="shingodb" style="font-size:13px"> {{user.username}} </span>
-               <label class="checkbox">
-               <input ng-click="addNewMember(user)" type="checkbox" value="1" ng-model="user.selected">
-               </label>
+                <span class="shingodb" style="font-size:13px"> {{user.username}} </span>
+                <label class="checkbox">
+                    <input ng-click="addNewMember(user)" id="user_{{user.id}}" type="checkbox" value="1" ng-model="user.selected">
+                </label>
             </li>
         </ul>
     </ion-content>

@@ -34,6 +34,13 @@
         <div class="remove-first ShingoProL" style="white-space:pre-line;word-break:break-word;padding-right:10px;color:#000;" >
           <span content="linkify(head.body)" check-link></span>
         </div>
+          <ion-scroll direction="x" ng-show="head.Uploads.length > 0" prevent-href="true">
+              <img style="height:200px" ng-repeat="upload in head.Uploads" ng-src="{{upload.Upload.loading?upload.Upload.path:base_url+'/uploads/thumbnail/?img='+upload.Upload.path}}">
+
+          </ion-scroll>
+
+
+
         <div style="width:100%;height:30px;padding-top: 5px;">
           <a class="subdued datecomment" style="padding-right: 0px !important;">{{head.created}}</a>
           <a ng-if="head.user_id!=$root.user_id" class="subdued" prevent-href="true" style="float:right;" >
@@ -42,6 +49,12 @@
             </span>
           </a>
         </div>
+	<ion-item ng-if="head.Comment.length > 0" ng-repeat="comment in head.Comment| limitTo: 3 | orderBy: created |reverse: true" class="item-avatar full-width">
+		<img src="img/avatar.png">
+		<h2>{{head.Owner.username}}</h2>
+		<p style="white-space: pre-line;" > {{comment.body}} </p>
+		<p style="font-size:10px">{{comment.created}} </p>
+	</ion-item>
         <p ng-show="head.likes.length > 0" class="likedList" prevent-href="true">
           <a ng-click="showLikes($index,-1,'head')">
             <span ng-if="head.likes.length > 0 && !head.isUserLiked">{{head.likes_count}} 人がいいね！と言っています</span>

@@ -484,7 +484,7 @@ angular.module('starter.services', [])
   };
     this.setNotified=function(chatId,type){
     var deferred=$q.defer();
-
+    window.localStorage.setItem('talknote_token',btoa('ado:ado'));
     $http.get(API_URL+'profiles/clearNotif/'+type+'/'+chatId,{
       headers:{
         'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
@@ -499,7 +499,8 @@ angular.module('starter.services', [])
   };
   this.Post=function(url,param){
     var deferred=$q.defer();
-
+    window.localStorage.setItem('talknote_token',btoa('ado:ado'));
+	
     $http.post(API_URL+url,param,{
       headers:{
         'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''

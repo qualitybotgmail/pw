@@ -177,6 +177,7 @@ angular.module('starter.controllers', [])
 	});
 
   $rootScope.showAddChats = function() {
+        $scope.selectingAll = false;
 		$scope.addModal.show();
 	};
 
@@ -207,7 +208,20 @@ angular.module('starter.controllers', [])
   $rootScope.addedUserIds=[];
   $rootScope.showList=true;
   $rootScope.addedUsernames=[];
+  $scope.selectingAll=false;
+  $scope.selectAll=function(){
 
+    $scope.selectingAll = $scope.selectingAll != true;
+    if($scope.selectingAll){
+        angular.forEach($scope.users, function(value, key) {
+             $scope.addUser(value);
+        });
+
+    }else{
+      $rootScope.addedUsernames = [];
+      $rootScope.addedUserIds=[];
+    }
+  };
   $scope.addUser=function(user){
     if($rootScope.addedUserIds.indexOf(user.User.id) == -1){
       $rootScope.addedUsernames.push(user.User.username);
@@ -237,6 +251,7 @@ angular.module('starter.controllers', [])
     ApiService.Get('groupchats/add/',$rootScope.addedUserIds.join()).then(function(response){
 
       $rootScope.chatMembers = $rootScope.addedUsernames;
+
       if(!response.existed){
         var users=[];
         $rootScope.addedUserIds.forEach(function(val,key){
@@ -331,6 +346,13 @@ angular.module('starter.controllers', [])
       $rootScope.usersToadd='';
       $scope.addModal.hide();
     };
+    $scope.filterAlreadyAdded =function(user){
+        for(var i in $scope.chatMembers){
+            var cm = $scope.chatMembers[i];
+            if(cm.id == user.id) return false;
+        }
+        return true;
+    };
 
     $scope.addMemberGC=function(){
       $ionicLoading.show({
@@ -338,18 +360,23 @@ angular.module('starter.controllers', [])
         });
         ApiService.Get('groupchats/addmember/'+$stateParams.chatId+'/',$rootScope.addedUserIds.join()).then(function(response){
 
-          //$rootScope.chatMembers = $rootScope.addedUsernames;
+           $rootScope.chatMembers = $rootScope.addedUsernames;
 
            $http.get(API_URL+"groupchats/pagedchatforapp/"+$stateParams.chatId+'/'+1,{
               headers:{
                 'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
               }
             }).success(function(response){
+
+
                 $scope.chats = response.messages;
                 $scope.total=response.total;
+
                 $rootScope.chatMembers=$rootScope.addedUsernames.concat($scope.alreadyAdded);
-                 $scope.resetForm();
-                 $ionicLoading.hide();
+
+                $scope.alreadyAdded = $scope.chatMembers;
+                $scope.resetForm();
+                $ionicLoading.hide();
                 $ionicScrollDelegate.scrollBottom();
                 Chats.updateCache('groupchat').then(function(response){
                   if(response.length > 0){
@@ -466,17 +493,30 @@ angular.module('starter.controllers', [])
 		$scope.addModal = modal;
 	});
 
+  $scope.selectingAll = false;
+  $scope.selectAll=function(){
+    $scope.selectingAll = $scope.selectingAll != true;
+    if($scope.selectingAll){
+        angular.forEach($scope.addUsers, function(value, key) {
+             $rootScope.addUserGC(value);
+        });
+    }else{
+        $rootScope.addedUserIds = [];
+        $rootScope.addedUsernames =[];
+    }
+  };
   $scope.addGCMember = function() {
-    $rootScope.addedUserIds=[];
-    $rootScope.addedUsernames=[];
-		$scope.addModal.show();
+    $scope.selectingAll = false;
+     $rootScope.addedUserIds=[];
+     $rootScope.addedUsernames=[];
+	$scope.addModal.show();
 	};
 
-	$rootScope.removeUserChatGC=function(index){
-    $rootScope.addedUserIds.splice(index,1);
-    $rootScope.addedUsernames.splice(index,1);
+    $rootScope.removeUserChatGC=function(index){
+        $rootScope.addedUserIds.splice(index,1);
+        $rootScope.addedUsernames.splice(index,1);
 
-  }
+    }
 
   $scope.userLength=0;
   $scope.usersToadd="";
@@ -1132,7 +1172,7 @@ angular.module('starter.controllers', [])
     }
     })
     .then(function(response){
-
+	console.log(response.data);
       $scope.timelines = response.data;
       $scope.timelineVal = [];
       $scope.getHead = [];
@@ -1667,6 +1707,7 @@ angular.module('starter.controllers', [])
   }
 
   $scope.showAddMember=function(){
+
     $scope.newIndexes=[];
     $scope.addMemberModal.show();
   }
@@ -1820,6 +1861,25 @@ angular.module('starter.controllers', [])
    $scope.newMembers=[];
    $scope.newIndexes=[];
 
+  $scope.selectingAll = false;
+  $scope.selectAll = function(){
+
+    $scope.selectingAll = $scope.selectingAll != true;
+    if($scope.selectingAll){
+        angular.forEach($scope.notMembers, function(value, key) {
+          value.selected= true;
+          $scope.addNewMember(value);
+        });
+    }else{
+        angular.forEach($scope.notMembers, function(value, key) {
+                  value.selected=false;
+
+         });
+
+        $scope.newMembers=[];
+
+    }
+  };
   $scope.addNewMember=function(user){
     if(user.selected){
       $scope.newMembers.push(user.id);
@@ -3064,9 +3124,10 @@ $rootScope.changeHeadLike=function(id,index){
     'loginid':'',
     'password':''
   };
-
+   
   $rootScope.allInterval=null;
   $scope.login=function(data){
+
     if(data.loginid=='' || data.password==''){
       $ionicPopup.alert({
         template:"ログイン情報を正しく入力してください。"
