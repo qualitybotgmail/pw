@@ -9,7 +9,7 @@
   <ion-content>
 
     <ion-list>
-      <ion-item class="item-remove-animate item-avatar item-icon-right" on-hold="chat.owner==$root.user_id?showgcpopover($event,$index):''" ng-repeat="chat in chatsPreview | orderBy:'chat.message.Message.created' | limitTo:numberOfGCToDisplay track by $index" type="item-text-wrap" ng-click="viewChat(chat.id,$index)">
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-show="chat.message.Message.id>0" on-hold="chat.owner==$root.user_id?showgcpopover($event,$index):''" ng-repeat="chat in chatsPreview | orderBy:'chat.message.Message.created' | limitTo:numberOfGCToDisplay track by $index" type="item-text-wrap" ng-click="viewChat(chat.id,$index)">
         <img ng-show="chat.avatar.length == 1" ng-src="{{base_url}}{{chat.avatar[0]}}" >
         <div ng-show="1 < chat.avatar.length && chat.avatar.length < 4" class="avatar-many" >
            <img style="float:left" ng-src="{{base_url}}{{avatar}}" ng-repeat="avatar in chat.avatar track by $index" ng-class="{'two-users':chat.avatar.length+1 <= 3,'four-users':chat.avatar.length+1 < 5 && chat.avatar.length+1 > 3,'more-users':chat.avatar.length+1 >= 5}"></img>
