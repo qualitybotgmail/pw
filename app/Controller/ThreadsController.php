@@ -50,6 +50,7 @@ class ThreadsController extends AppController {
 		$threads = $this->Thread->find('all',array('conditions' => array('Thread.user_id' => $user_id), 'order' => 'Thread.created DESC') ); 
 		$result = array();
 		$this->set('threads', array_merge($threads, $users_threads));
+		
 	}
 
 	public function index($lastid=0) { 
@@ -106,6 +107,7 @@ class ThreadsController extends AppController {
 	
 		$cache->set($result);		
 		$this->set('threads', $result);
+		
 	}
 	
 	public function threadTitle($id){
@@ -207,7 +209,7 @@ class ThreadsController extends AppController {
 		$notif = new NotifCounts($this->User->Profile,$this->Auth->user('id'));
 		$notif->clear('thread',$id);
 		$cache = $this->getCache('threads');
-		$viewCached = null;//$cache->get();
+		$viewCached = $cache->get();
 		if($viewCached){
 			if($ajax){
 				
@@ -626,4 +628,5 @@ class ThreadsController extends AppController {
 		$this->set('threads', $thread_id); 
 		exit;
 	}
+
 }
