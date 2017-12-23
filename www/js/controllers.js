@@ -161,6 +161,7 @@ angular.module('starter.controllers', [])
   }
 
   $scope.viewChat=function(id,index){
+  
     $rootScope.chatMembers=$scope.chatsPreview[index].users.map(function(k){ return k.User.id!=$rootScope.user_id?k.User.username:''; }).filter(function(e){return e});
     $state.go('tab.chat-detail',{chatId:id});
   }
@@ -736,12 +737,18 @@ angular.module('starter.controllers', [])
   $scope.errorSending=false;
   $scope.sendingCount=0;
   $scope.countSent=0;
-
+  $scope.uploadProgress =0;
   $scope.sendChat=function(){
 
     if(!$scope.isEdit){
+      $scope.uploadProgress =0;
+
       if($scope.newChat == '' && $scope.uploadedChatImgs.length == 0) return;
 
+	$ionicLoading.show({
+	  scope:$scope,
+	  template:'<ion-spinner name="bubbles"></ion-spinner><br>{{uploadProgress>0?uploadProgress+"%":""}}'
+	});
         var mess={'Message':{'body':$scope.newChat,'id':-1,'user_id':$rootScope.user_id},'Upload':[]};
         $scope.sendingCount++;
         $ionicScrollDelegate.scrollBottom();
@@ -756,7 +763,7 @@ angular.module('starter.controllers', [])
         $scope.newChat='';
         $scope.uploadedChatImgs=[];
         Chats.add($stateParams.chatId,mess.Message.body).then(function(response){
-
+    		
           if(response.data.Message){
             $scope.countSent++;
             $scope.errorSending=false;
@@ -767,6 +774,7 @@ angular.module('starter.controllers', [])
 
               $scope.uploadChatPhotos($scope.chats[$scope.sendingCount-$scope.countSent]);
             }else{
+	            $ionicLoading.hide();
               if($scope.sendingCount-$scope.countSent==0){
                 $scope.sendingCount=0;
                 $scope.countSent=0;
@@ -783,8 +791,10 @@ angular.module('starter.controllers', [])
                 }
               });
 
-          }
+          }else
+          	$ionicLoading.hide();
         },function(error){
+    		$ionicLoading.hide();        
           $scope.errorSending=true;
         });
     }else{
@@ -845,6 +855,7 @@ angular.module('starter.controllers', [])
         };
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i.path,o,true).then(function(result) {
           //if(result.responseCode!=200 || (JSON.parse(result.response).length==0)){
+          $ionicLoading.hide();
 
             $scope.chats.forEach(function(v,k){
               if(parseInt(v.Message.id)==parseInt(chat.Message.id)){
@@ -863,9 +874,15 @@ angular.module('starter.controllers', [])
           $scope.image_chat_ctr++;
 
         },function(error){
+        $ionicLoading.hide();
           $ionicPopup.alert({
             template:"写真のアップロードに失敗しました。"
           });
+        },function(progress){
+		$timeout(function () {
+        	  $scope.uploadProgress = Math.round((progress.loaded / progress.total) * 100);
+
+        	});
         });
       });
 
@@ -2086,6 +2103,7 @@ $scope.selectPicture = function($act) {
 
   $scope.result=[];
   $scope.img_ctr=0;
+
   $scope.submitPhoto=function(id,isNew){
 
     $scope.img_ctr=0;
@@ -2106,6 +2124,7 @@ $scope.selectPicture = function($act) {
             'Authorization':'Basic '+window.localStorage.getItem("talknote_token")+''
         };
         $scope.Upload={};
+     
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i,o).then(function(result) {
           console.log(result);
           if(typeof(isNew)!=='undefined' && isNew!=null){
@@ -2130,6 +2149,11 @@ $scope.selectPicture = function($act) {
             template:"写真のアップロードに失敗しました。"
           });
 
+        },function(progress){
+        	$timeout(function () {
+        	  $scope.uploadProgress = Math.round((progress.loaded / progress.total) * 100);
+
+        	});
         });
       });
   };
