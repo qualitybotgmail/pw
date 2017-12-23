@@ -189,6 +189,8 @@
                                                         					        {{head.Head.body}}
                                                         					    </a>
                                                         					</h5>
+                                                        					
+                                                     					
                                                         					<div class="post-meta">
                                                         						<div class="asker-meta">
                                                         							<span class="qa-message-what"></span>
@@ -203,6 +205,7 @@
                                                         							</span>
                                                         						</div>
                                                         					</div>
+                                                          					
                                                         					<div class="panel-heading-controls pull-right">
                                                                     <a href="javascript:void(0)" class="text-xs" ng-if="head.Head.likes_count > 0 && !head.Head.isUserLiked" ng-click="showUsers(head.Head.likes)">
                                                                         {{head.Head.likes_count}} 人がいいね！と言っています
@@ -215,6 +218,19 @@
                                                                     </button>
                                                                   </div>
                                                         				</div>
+                                                        				<br />
+                                                                            <p>
+                                                                                <span ng-repeat="upload in head.Upload">
+                                                                                    <span ng-init="upload.isFileImage=checkFile(upload.Upload.path)"></span>
+                                                                                    <a ng-href="{{upload.Upload.path}}" target="_blank" ng-if="!upload.isFileImage">
+                                                                                      {{upload.Upload.name}}
+                                                                                    </a>
+                                                                                    <a fancybox ng-href="{{upload.Upload.path}}" ng-if="upload.isFileImage">
+                                                                                        <img ng-src="{{imageBaseURL}}{{upload.Upload.path}}" class="img-responsive thumbnail" width="150" height="50"></img>
+                                                                                    </a>
+                                                                                </span>
+                                                                                
+                                                                            </p>                                                         				
                                                         			</div>
                                                         			<div class="qa-message-content">
                                                         				<ul class="list-group">
