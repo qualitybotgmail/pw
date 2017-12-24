@@ -32,14 +32,16 @@
           <span style="font-size:80%;">メンバー</span>
         </ion-item>
         <div class="list">
-            <a class="item item-avatar item-icon-right" href="" ng-click="selectAll()">
+            
+            <a ng-show="alreadyAdded.length<addUsers.length" class="item item-avatar item-icon-right" href="" ng-click="selectAll()">
                 <img src="img/avatar.png">
 
-                <span class="shingodb" style="font-size:13px">全選択</span>
+                <span  class="shingodb" style="font-size:13px">全選択</span>
                 <i ng-show="selectingAll" class="icon ion-checkmark-round"></i>
             </a>
-            <a class="item item-avatar item-icon-right" href="" ng-click="$root.addUserGC(user)" ng-repeat="user in addUsers | filter:{User:{username:usersToadd2}} track  by $index" ng-if="user.User.username">
+            <a class="item item-avatar item-icon-right" href="" ng-click="$root.addUserGC(user)" ng-repeat="user in addUsers | filter:{User:{username:usersToadd2}} track  by $index" ng-if="alreadyAdded.indexOf(user.User.username) === -1">
               <img src="img/avatar.png" ng-show="user.User.avatar_img==''||user.User.avatar_img=='null'||user.User.avatar_img==null">
+
               <img class="avatar" ng-src="{{base_url}}{{user.User.avatar_img}}" ng-show="user.User.avatar_img!=''&&user.User.avatar_img!='null'&&user.User.avatar_img!=null">
               <span class="shingodb" style="font-size:13px">{{user.User.username}}</span>
               <i ng-show="$root.addedUserIds.indexOf(user.User.id) > -1" class="icon ion-checkmark-round"></i>
