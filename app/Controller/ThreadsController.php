@@ -206,8 +206,10 @@ class ThreadsController extends AppController {
 	public function view($id,$lastid=0,$ajax=false) {
 		
 		//error_reporting(2);
-		$notif = new NotifCounts($this->User->Profile,$this->Auth->user('id'));
-		$notif->clear('thread',$id);
+		
+		// $notif = new NotifCounts($this->User->Profile,$this->Auth->user('id'));
+		// $notif->clear('thread',$id);
+		
 		$cache = $this->getCache('threads');
 		$viewCached = $cache->get();
 		if($viewCached){
@@ -262,7 +264,7 @@ class ThreadsController extends AppController {
 			
 		} 
 		
-		$this->Thread->notified($id,$uid);
+		// $this->Thread->notified($id,$uid,false);
 		//set viewed for the user
 		
 		$cache->set($thread);

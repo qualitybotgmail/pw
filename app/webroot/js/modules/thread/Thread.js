@@ -41,7 +41,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             $scope.loginUser  = $rootScope.loginUser;
             $scope.noOfUserToView = 10;
             
-            window.notification_count_function();
+            // window.notification_count_function();
             
             //load additional user
         	$scope.loadUser = function(){
@@ -75,10 +75,12 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             };
             
             $scope.gotoHead = function(head) {
-                if(head.notification_count){
-                    $rootScope.notificationCount -= head.notification_count;
-                    head.notification_count = 0;   
-                }
+                // console.log('was called');
+                // $rootScope._getNotificationCount();
+                // if(head.notification_count){
+                //     $rootScope.notificationCount -= head.notification_count;
+                //     head.notification_count = 0;   
+                // }
                 $state.go('app.head', { id: head.id });
             };
             

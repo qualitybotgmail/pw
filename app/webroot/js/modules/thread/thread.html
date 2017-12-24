@@ -218,7 +218,7 @@
             <div class="col-md-8">
                 <a class="clickable" id="head-{{head.id}}" ng-click="gotoHead(head)">
                     <div class="col-md-1 badge-col">
-                        <span class="badge badge-info head-badge-no" ng-init="head.notification_count=getNotificationCount(head.id)">{{head.notification_count}}</span>
+                        
                     </div>
                     <div class="col-md-11">
                         <p style="color: black" class="head-body">
@@ -226,8 +226,7 @@
                         </p>
                         
                         <span style="font-size:11px;">{{comment.created}}</span>
-                        
-                        <span style="font-size:11px;">by: {{comment.User.id == loginUser.id ? "あなた": comment.User.username}}</span>
+             
                     </div>
   
                 </a>

@@ -137,9 +137,14 @@ class Thread extends AppModel {
 	}
 
 	
-	public function notified($tid,$uid){
+	public function notified($tid,$uid, $updateNotification = true){
 	
-		$sql = "SELECT logs.id FROM logs where logs.thread_id = $tid and (logs.type = 'Thread.edit' or logs.type = 'Thread.joined') and logs.id not in (select users_logs.log_id from users_logs where users_logs.user_id = $uid)";
+		$sql = "SELECT logs.id FROM logs 
+			where logs.thread_id = $tid 
+			and (logs.type = 'Thread.edit' or logs.type = 'Thread.joined') 
+			and logs.id not in 
+				(select users_logs.log_id from users_logs 
+				where users_logs.user_id = $uid)";
 		
 		$r = $this->query($sql);
 	
@@ -155,12 +160,16 @@ class Thread extends AppModel {
 			$r = $this->Log->UsersLog->saveAll($lids);
 			
 		}
-		//We clear the number of threads notifications
-		//but we still need the total notifications in the heads
-		$notificationsCount = new NotifCounts($this->User->Profile,$uid);
-		if(count($lids)>0)
-			$notificationsCount->minus('thread',$tid,count($lids));
-		//notificationsCount->clear('thread',$tid);
+		
+		if ($updateNotification) {
+			//We clear the number of threads notifications
+			//but we still need the total notifications in the heads
+			$notificationsCount = new NotifCounts($this->User->Profile,$uid);
+			if(count($lids)>0)
+				$notificationsCount->minus('thread',$tid,count($lids));
+			//notificationsCount->clear('thread',$tid);
+		}
+		
 
 	}
 	

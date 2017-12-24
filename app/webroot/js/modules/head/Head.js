@@ -42,7 +42,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         'Restangular',
         
         function($rootScope, $scope, $timeout, $state, $stateParams, $templateCache, $q, $http, $interval, Modal, HeadService, HeadsModel, HeadFactory, CommentsModel, Restangular) {
-            
+        
             var pendingQry;
             $scope.imageBaseURL = "/uploads/thumbnail/?img=";
             $scope.templates = HeadFactory.templates;
@@ -60,6 +60,9 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
             $scope.comment.body = '';
             $scope.isFetching = false;
             $scope.isFetchingLatestComment = false;
+            
+            // variable 
+            $scope.notificationCountFetched = false;
             
             
             $scope.currentPageNumber = 1;
@@ -198,6 +201,11 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	    HeadsModel.one($scope.selectedHeadId.toString()).get().then(function(thread){
         	        $scope.selectedHead = thread;
         	        $scope.isFetching = false;
+        	        if (!$scope.notificationCountFetched) {
+        	            $rootScope.setThreadNotificationToZero();
+        	            $rootScope._getNotificationCount();
+        	            $scope.notificationCountFetched = true;
+        	        }
         	        $scope.startInterval();
         	    });
         	};

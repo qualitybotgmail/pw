@@ -156,6 +156,12 @@ define([
 				}
     	    });
     	    
+    	    $rootScope.setThreadNotificationToZero = function () {
+    	    	for (var i = 0; i < $rootScope.threads.length; i++)	{
+    	    		$rootScope.threads[i].Thread.notifications = 0;
+    	    	}
+    	    }
+    	    
     	    $rootScope._getNotificationCount = function () {
     	    	
     	    	if (isNotificationUpdating) return;
@@ -248,9 +254,10 @@ define([
     	   	  
     	    window.notification_count_function = function(){
     	    	// queryFirst = true;
+    	    	
     	    	$rootScope._getNotificationCount();
     	    };
-    	    
+    	    window.rootScope = $rootScope;
 			window.enterScope = function(cb){
 				cb($rootScope);
 			}
