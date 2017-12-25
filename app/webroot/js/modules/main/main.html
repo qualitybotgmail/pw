@@ -5,6 +5,8 @@
     p.head-comment,
     a.head-body{
         white-space: pre-line;
+        line-height:1em;
+        word-break: break-all;
     }
 </style>
 <!-- Notifications -->
@@ -185,7 +187,7 @@
                                                         				</div>
                                                         				<div class="user-detail">
                                                         					<h5 class="handle">
-                                                        					    <a ui-sref="app.head({ id: head.Head.id })">
+                                                        					    <a style="word-break:break-all;" ui-sref="app.head({ id: head.Head.id })">
                                                         					        {{head.Head.body}}
                                                         					    </a>
                                                         					</h5>
