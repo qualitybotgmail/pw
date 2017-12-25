@@ -178,6 +178,7 @@ angular.module('starter.controllers', [])
 	});
 
   $rootScope.showAddChats = function() {
+  
         $scope.selectingAll = false;
 		$scope.addModal.show();
 	};
@@ -224,7 +225,7 @@ angular.module('starter.controllers', [])
     }
   };
   $scope.addUser=function(user){
-    if($rootScope.addedUserIds.indexOf(user.User.id) == -1){
+    if($rootScope.addedUserIds.indexOf(user.User.id) == -1 && user.User.id!=0){
       $rootScope.addedUsernames.push(user.User.username);
       $rootScope.showList=false;
       $rootScope.usersToadd='';
@@ -354,8 +355,13 @@ angular.module('starter.controllers', [])
         }
         return true;
     };
-
+    $scope.toadds = 0;
+    $scope.setindex=function(i){
+    	$scope.toadds = i;
+    	return "";
+    };
     $scope.addMemberGC=function(){
+
       $ionicLoading.show({
           template:'<ion-spinner name="bubbles"></ion-spinner>'
         });
@@ -495,11 +501,18 @@ angular.module('starter.controllers', [])
 	});
 
   $scope.selectingAll = false;
+  
+  /* For adding groupchat member selectAll */
   $scope.selectAll=function(){
     $scope.selectingAll = $scope.selectingAll != true;
     if($scope.selectingAll){
+
         angular.forEach($scope.addUsers, function(value, key) {
-             $rootScope.addUserGC(value);
+
+		if($scope.alreadyAdded.indexOf(value.User.username)<0)
+             		$rootScope.addUserGC(value);	
+             
+             
         });
     }else{
         $rootScope.addedUserIds = [];
@@ -507,18 +520,48 @@ angular.module('starter.controllers', [])
     }
   };
   $scope.addGCMember = function() {
-    $scope.selectingAll = false;
+     $scope.showSelectAll=false;
+     $scope.selectingAll = false;
      $rootScope.addedUserIds=[];
      $rootScope.addedUsernames=[];
-	$scope.addModal.show();
-	};
+     $scope.addModal.show();
+   };
 
-    $rootScope.removeUserChatGC=function(index){
+  $rootScope.removeUserChatGC=function(index,username){
+
+
         $rootScope.addedUserIds.splice(index,1);
         $rootScope.addedUsernames.splice(index,1);
 
-    }
 
+  }
+  $scope.showSelectAll=false;
+  $scope.selecteds = {};
+  $scope.canShowSelectAll = function(){
+  	for(var i in $scope.selecteds){
+  		var user = $scope.selecteds[i];
+  		if(user.username!="" && user.username!=null && !user.selected) {
+  			return true;
+  		}
+  	}
+  	return false;
+  };
+  $scope.showableUser=function(user){
+  	//we should also check if user.id == 0.
+  	//we should avoid this user as it is the All user
+  	if(user.User.id==0){
+  		//return false so that it's not shown
+  		return false;
+  	}
+	var yes = $scope.alreadyAdded.indexOf(user.User.username) === -1;
+	
+	if(!$scope.showSelectAll){
+		$scope.showSelectAll=yes;
+	}
+	user.User.selected = yes;
+	$scope.selecteds[user.User.id]=user.User;
+	return yes;
+  };
   $scope.userLength=0;
   $scope.usersToadd="";
 	$scope.ctr=0;
@@ -531,7 +574,8 @@ angular.module('starter.controllers', [])
 
 	    angular.forEach(response.members, function(element) {
         	$scope.alreadyAdded.push(element);
-      });
+        	
+            });
 
 	    $scope.userLength=Math.floor($scope.addUsers.length/10);
 	  });
@@ -544,14 +588,16 @@ angular.module('starter.controllers', [])
     else
       $rootScope.showList=true;
   }
-
+  
   $rootScope.addUserGC=function(user){
-    console.log(user);
-    if($rootScope.addedUserIds.indexOf(user.User.id) == -1){
+
+    if($rootScope.addedUserIds.indexOf(user.User.id) === -1 && user.User.id!=0){
       $rootScope.addedUsernames.push(user.User.username);
       $rootScope.showList=false;
       $rootScope.usersToadd='';
       $rootScope.addedUserIds.push(user.User.id);
+
+      
 
 
     }else{
@@ -564,7 +610,6 @@ angular.module('starter.controllers', [])
       $scope.updateChatCache(1);
       $rootScope.isOffline=false;
   });
-
   $rootScope.$on('isOffline',function(event,data){
       $rootScope.isOffline=true;
   });
@@ -1136,7 +1181,7 @@ angular.module('starter.controllers', [])
   }
   $rootScope.withLike=true
   $scope.likeHead = function(id){
-    alert(id);
+
 
   };
   $scope.gotoHead=function(timeVal){
@@ -1651,6 +1696,7 @@ angular.module('starter.controllers', [])
      }
 
   });*/
+
 
  $scope.uploadedImgs=[];
   $ionicModal.fromTemplateUrl('templates/modal/addmember.html', {
@@ -2179,6 +2225,7 @@ $scope.selectPicture = function($act) {
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
     });
+
 
     window.state=$state;
     window.scope=$scope;
