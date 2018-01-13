@@ -36,10 +36,10 @@
         </a>
         </div>
         <p style="padding-left: 15px;">
-          <a ng-if="getHeads.user_id!=$root.user_id" class="subdued" style="float:right" ng-click="updateLike(getHeads.id,getHeads.likes_count,getHeads.isUserLiked)">
+          <a ng-if="getHeads.user_id!=$root.user_id" class="subdued" style="float: right;padding:20px" ng-click="updateLike(getHeads.id,getHeads.likes_count,getHeads.isUserLiked)">
             <span><i class="icon ion-thumbsup likes" ng-class="{'active':getHeads.isUserLiked}"></i></span>
           </a>
-          <span ng-show="getHeads.likes.length > 0" class="likedList" prevent-href="true" style="padding-top:0px !important;padding-right: 10px !important;">
+          <span ng-show="getHeads.likes.length > 0" class="likedList" prevent-href="true" style="padding-top:24px !important;{{getHeads.user_id==$root.user_id?'padding-right: 10px !important':''}}">
             <a ng-click="showLikes(-1,-1,'head')">
               <span ng-if="getHeads.likes.length > 0 && !getHeads.isUserLiked">{{getHeads.likes_count}} 人がいいね！と言っています</span>
               <span ng-if="getHeads.likes.length > 1 && getHeads.isUserLiked">あなたと {{getHeads.likes_count - 1}} 人がいいね！と言っています</span>
