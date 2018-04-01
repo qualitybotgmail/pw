@@ -3,12 +3,16 @@
   "version": "1.1.1",
   "description": "PlayWork: An Ionic project",
   "dependencies": {
+    "cordova-plugin-compat": "^1.2.0",
+    "cordova-ubuntu": "^4.3.4",
+    "cordova-windows": "^5.0.0",
     "gulp": "^3.5.6",
-    "gulp-sass": "^2.0.4",
     "gulp-concat": "^2.2.0",
     "gulp-minify-css": "^0.3.0",
     "gulp-rename": "^1.2.0",
-    "pinch-zoom-canvas": "^1.0.1"
+    "gulp-sass": "^2.0.4",
+    "pinch-zoom-canvas": "^1.0.1",
+    "cordova-android": "~6.3.0"
   },
   "devDependencies": {
     "bower": "^1.3.3",
@@ -43,5 +47,14 @@
       "locator": "android@6.0.0"
     },
     "ios"
-  ]
+  ],
+  "cordova": {
+    "platforms": [
+      "windows",
+      "android"
+    ],
+    "plugins": {
+      "cordova-plugin-compat": {}
+    }
+  }
 }

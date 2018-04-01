@@ -1,4 +1,4 @@
-<ion-view can-swipe-back="false" >
+<ion-view can-swipe-back="false">
     <ion-nav-title><i class='icon ion-person-stalker'></i> : {{$root.groupTitle}}</ion-nav-title>
   <ion-nav-buttons side="right" ng-show="false">
     <button class="button button-icon button-clear ion-ios-plus-empty" ng-click="triggerAdd()">
@@ -21,18 +21,26 @@
     </ion-slide-box>-->
     <div class="card" ng-repeat="head in thread.Head track by $index">
       <div class="item item-avatar " ui-sref="tab.head({id:head.id,index:$index,likes:head.likes})" style="padding-top: 0px;padding-bottom: 5px;">
-         <img ng-if="head.Owner.avatar_img==''||head.Owner.avatar_img=='null'||head.Owner.avatar_img==null" ng-src="img/avatar.png">
-         <img ng-if="head.Owner.avatar_img!=''&&head.Owner.avatar_img!='null'&&head.Owner.avatar_img!=null" ng-src="{{base_url}}{{head.Owner.avatar_img}}">
+         <img style="object-fit: cover;" ng-if="head.Owner.avatar_img==''||head.Owner.avatar_img=='null'||head.Owner.avatar_img==null" ng-src="img/avatar.png">
+         <img style="object-fit: cover;" ng-if="head.Owner.avatar_img!=''&&head.Owner.avatar_img!='null'&&head.Owner.avatar_img!=null" ng-src="{{base_url}}{{head.Owner.avatar_img}}">
          <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</div>
        <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="head.user_id ==$root.user_id">{{$root.user}}</div>
          <!-- <p style="font-size:small;" ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</p>
          <p style="font-size:small;" ng-show="head.user_id ==$root.user_id">{{$root.user}}</p> -->
-          <span ng-show="$root.headNotif[head.id]" class="badge badge-assertive" show-badge badge-id="{{head.id}}" badge-type="head">{{$root.headNotif[head.id]}}</span>
-         <p class="dateList"><span ng-show="head.user_id==$root.user_id" prevent-href="true"><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showHeadPopover($event,$index)"></i></span></p>
+          <span ng-show="$root.headNotif[head.id]"  class="badge badge-assertive" show-badge badge-id="{{head.id}}" badge-type="head">{{$root.headNotif[head.id]}}</span>
+          
+         <p class="dateList" style="padding-top:15px;"><span ng-show="head.user_id==$root.user_id" prevent-href="true"><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showHeadPopover($event,$index)"></i></span></p>
         <!-- <h2 class="headings"> {{head.body}} </h2> -->
-        <div class="remove-first" style="white-space:pre-line;word-break:break-word;padding-right:10px;color:#000;" >
+        <div class="remove-first ShingoProL" style="white-space:pre-line;word-break:break-word;padding-right:10px;color:#000;" >
           <span content="linkify(head.body)" check-link></span>
         </div>
+          <ion-scroll direction="x" ng-show="head.Uploads.length > 0" prevent-href="true">
+              <img style="height:200px" ng-repeat="upload in head.Uploads" ng-src="{{upload.Upload.loading?upload.Upload.path:base_url+'/uploads/thumbnail/?img='+upload.Upload.path}}">
+
+          </ion-scroll>
+
+
+
         <div style="width:100%;height:30px;padding-top: 5px;">
           <a class="subdued datecomment" style="padding-right: 0px !important;">{{head.created}}</a>
           <a ng-if="head.user_id!=$root.user_id" class="subdued" prevent-href="true" style="float:right;" >
@@ -41,6 +49,12 @@
             </span>
           </a>
         </div>
+	<ion-item ng-if="head.Comment.length > 0" ng-repeat="comment in head.Comment| limitTo: 3 | orderBy: created |reverse: true" class="item-avatar full-width">
+		<img src="img/avatar.png">
+		<h2>{{head.Owner.username}}</h2>
+		<p style="white-space: pre-line;" > {{comment.body}} </p>
+		<p style="font-size:10px">{{comment.created}} </p>
+	</ion-item>
         <p ng-show="head.likes.length > 0" class="likedList" prevent-href="true">
           <a ng-click="showLikes($index,-1,'head')">
             <span ng-if="head.likes.length > 0 && !head.isUserLiked">{{head.likes_count}} 人がいいね！と言っています</span>

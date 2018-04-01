@@ -6,14 +6,24 @@
 	font-family: 'Shingodb';
 	src: url(../font/A-OTF-ShinGoPro-DeBold_4.otf);
 }
+@font-face {
+	font-family: 'ShingoProL';
+	src: url(../font/A-OTF-ShinGoPro-Light_0.otf);
+}
 .smartfont {
 	font-family: Smart;
 }
 .shingodb {
-	font-family: Shingodb;    
+	font-family: Shingodb;
 }
-
+.ShingoProL {
+	font-family: ShingoProL;
+    font-size: 90%;
+}
 /* Empty. Add your own CSS if you like */
+.text-sm {
+    font-size: 80%;
+}
 .members span{
    padding: 4px;
     margin: 5px;
@@ -29,6 +39,7 @@
 .comment-list{
     /*border-top: 1px solid #ccc;*/
      padding-left: 72px;
+     min-height:80px;
 }
 .comment-list .item-avatar{
     width: 100% !important;
@@ -102,6 +113,7 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    object-fit: cover;
 }
 .active{
     color:#0c60ee;
@@ -217,6 +229,7 @@ textarea {
     overflow: hidden;
     border-radius: 50%;
 }
+/*
 .non-image{
     background: #007AFF !important;
     display: inline-block !important;
@@ -227,7 +240,29 @@ textarea {
     max-width: 240px !important;
     margin-left:5px;
 }
-
+*/
+.non-image.other {
+  background: #00b6e3 !important;
+  display: inline-block !important;
+  color: black !important;
+  display: inline-block !important;
+  padding: 5px 10px 8px 10px !important;
+  border-radius: 10px !important;
+  text-align: left !important;
+  max-width: 240px !important;
+}
+.non-image {
+  background-color: #e6e6e5 !important;
+  display: inline-block !important;
+  color: black !important;
+  padding: 5px 10px !important;
+  border-radius: 10px !important;
+  text-align: left !important;
+  max-width: 240px !important;
+}
+.non-image.other > a{
+  color:#11228f;
+}
 .image {
     width: 100%;
     background-size: contain;
@@ -335,13 +370,17 @@ textarea {
 }
 
 .messages.other span {
-    color: black !important;
-    background-color: #C7C7CC !important;
-    display: inline-block !important;
-  padding: 5px 10px !important;
+  background: #00b6e3 !important;
+  display: inline-block !important;
+  color: black !important;
+  display: inline-block !important;
+  padding: 5px 10px 8px 10px !important;
   border-radius: 10px !important;
   text-align: left !important;
   max-width: 240px !important;
+}
+.messages.other span > a{
+  color:#11228f;
 }
 .messages.other .message {
     -webkit-transform: translate3d(0, 0, 0) !important;
@@ -356,17 +395,17 @@ textarea {
     transform: translate3d(120px, 0, 0) !important;
   }
 .messages span{
-  background: #007AFF !important;
+  background-color: #e6e6e5 !important;
   display: inline-block !important;
-  color: white !important;
+  color: black !important;
   padding: 5px 10px !important;
   border-radius: 10px !important;
   text-align: left !important;
   max-width: 240px !important;
 }
-.messages:not(.other) .message span > a{
+/*.messages:not(.other) .message span > a{
   color:white !important;
-}
+}*/
  .message .item-avatar{
      padding-left: 0px !important;
  }
@@ -395,10 +434,10 @@ textarea {
 
 .summary-header {
   position:relative;
-  width:90%;
+  width:100%;
   /*background:#13348B;*/
   padding: 6px 0px;
-  margin: 8px auto;
+  margin: 8px 0px;
 }
 .summary-title {
   margin: 20px auto;
@@ -438,6 +477,7 @@ textarea {
 .incentive-parent {
   position:relative;
   width:90%;
+  height: 60px;
   padding: 12px 15px;
   margin:0 auto;
   margin-bottom: 8px;
@@ -534,30 +574,31 @@ background-position: center;
     width: 30px;
 }
 .bar.bar-stable {
-	font-family: Smart;      
+	font-family: Smart;
     color: #fff !important;
   background-color:#2a3d4e !important;
-  border-bottom: 3px solid #faed00;    
+  /*border-bottom: 3px solid #faed00;*/
+  border-bottom: 3px solid #00b6e3;
        }
 .bar.bar-stable .title {
     color: #fff !important;
-}       
+}
 .item-input {
   border-radius:7px !important; }
 
 .button-left{
-	font-family: Smart;      
+	font-family: Smart;
     font-size:11pt;
     color: #fff;
     background-color: #32485c !important;
     border-radius: 3px;
 }
 .button-right{
-	font-family: Smart;      
+	font-family: Smart;
     font-size:11pt;
     color: #fff;
     background-color: #2a3d4e !important;
-     border-radius: 3px;   
+     border-radius: 3px;
 }
 .button-bar-side{
 font-family: Smart;
@@ -573,17 +614,32 @@ font-family: Smart;
 }
 .button-mordal{
     text-align: center !important;
-    width: 100px;
+    width: 110px;
     min-height: 35px !important;
     line-height: 30px !important;
+    font-size:13px;
 }
 span.fontperf1 {
-	font-family: Smart; 
-    font-size:23px;
+	font-family: Smart;
+    font-size:20px;
     color: #2a3d4e !important;
 }
 span.fontperf2 {
-	font-family: Smart; 
-    font-size:40px;
+	font-family: Smart;
+    font-size:35px;
     color: #009fe8 !important;
+}
+ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-color-active-positive .tab-item.active, ion-tabs.tabs-color-active-positive .tab-item.activated {
+    color: #2a3d4e !important;
+}
+.active {
+    color: #2a3d4e !important;
+}
+.searchinput {
+    /*height: 100% !important;*/
+    width: 100%;
+    padding-left: 15px !important;
+}
+input[type="search"] {
+    padding-top: 0 !important;
 }

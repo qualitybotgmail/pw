@@ -14,15 +14,22 @@
                 <h6>{{timeVal.modified}}</h6>
            </div>
          <div class="item item-body">
-            <p>{{timeVal.title}} {{timeVal.body}}</p>
-            <img style="margin-top:10px;" class="full-image"  ng-repeat="uploads in timeVal.Upload" src=" {{base_url}}{{uploads.Upload.path}}">
+            <p style="white-space: pre-line;" class="ShingoProL"> {{timeVal.title}}{{timeVal.body}}</p>
+            <img class="full-image"  ng-repeat="uploads in timeVal.Upload" ng-src="{{base_url+'/uploads/thumbnail/?img='+uploads.Upload.path}}">
              <h6 align="right" ng-hide="timeVal.index===undefined">
-             <a href="#" class="subdued" ng-if="timeVal.likes_count < 1">いいね！ {{timeVal.likes_count}}</a>
-             <a href="" class="subdued" ng-if="timeVal.likes_count > 0" prevent-href=true><span ng-click="showLikes(timeVal.id)">いいね！ {{timeVal.likes_count}}</span></a>
-             <a href="#" class="subdued">コメント {{timeVal.Comment.length}}</a>
+
+             <a href="" class="subdued" prevent-href=true><span ng-click="likeTimeline(timeVal)">いいね！ {{timeVal.likes_count}}</span></a>
+             <a href="" class="subdued" prevent-href=true><span ng-click="gotoHead(timeVal)">コメント {{timeVal.Comment.length}}</span></a>
              </h6>
          </div>
+	<ion-item ng-if="timeVal.Comment.length > 0" ng-repeat="comment in timeVal.Comment| limitTo: 3 | orderBy: -created |reverse: true" class="item-avatar">
+		<img src="img/avatar.png">
+		<h2>{{comment.User.username}}</h2>
+		<p style="white-space: pre-line;" > {{comment.Comment.body}} </p>
+		<p style="font-size:10px">{{comment.Comment.created}} </p>
+	</ion-item>
       </div>
+      
 
   </ion-content>
 </ion-view>

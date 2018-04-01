@@ -1,0 +1,15 @@
+{
+  "name": "playwork",
+  "app_id": "",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic1",
+  "watchPatterns": [
+    "scss/**/*",
+    "www/**/*",
+    "!www/lib/**/*",
+    "!www/**/*.map"
+  ],
+  "proxies": [{"path":"/api/","proxyUrl":"http://pw.blobby.xyz"}]
+}

@@ -89,7 +89,10 @@ angular.module('starter.controllers', [])
 
       }
     });
-  }
+  };
+   $rootScope.$on('update_groupchat_fromchat',function(event,data){
+     $scope.cacheUpdate();
+   });
 
   $rootScope.$on('update_groupchat',function(event,id){
     var chatid=id;
@@ -158,6 +161,7 @@ angular.module('starter.controllers', [])
   }
 
   $scope.viewChat=function(id,index){
+  
     $rootScope.chatMembers=$scope.chatsPreview[index].users.map(function(k){ return k.User.id!=$rootScope.user_id?k.User.username:''; }).filter(function(e){return e});
     $state.go('tab.chat-detail',{chatId:id});
   }
@@ -174,6 +178,8 @@ angular.module('starter.controllers', [])
 	});
 
   $rootScope.showAddChats = function() {
+  
+        $scope.selectingAll = false;
 		$scope.addModal.show();
 	};
 
@@ -204,9 +210,22 @@ angular.module('starter.controllers', [])
   $rootScope.addedUserIds=[];
   $rootScope.showList=true;
   $rootScope.addedUsernames=[];
+  $scope.selectingAll=false;
+  $scope.selectAll=function(){
 
+    $scope.selectingAll = $scope.selectingAll != true;
+    if($scope.selectingAll){
+        angular.forEach($scope.users, function(value, key) {
+             $scope.addUser(value);
+        });
+
+    }else{
+      $rootScope.addedUsernames = [];
+      $rootScope.addedUserIds=[];
+    }
+  };
   $scope.addUser=function(user){
-    if($rootScope.addedUserIds.indexOf(user.User.id) == -1){
+    if($rootScope.addedUserIds.indexOf(user.User.id) == -1 && user.User.id!=0){
       $rootScope.addedUsernames.push(user.User.username);
       $rootScope.showList=false;
       $rootScope.usersToadd='';
@@ -234,6 +253,7 @@ angular.module('starter.controllers', [])
     ApiService.Get('groupchats/add/',$rootScope.addedUserIds.join()).then(function(response){
 
       $rootScope.chatMembers = $rootScope.addedUsernames;
+
       if(!response.existed){
         var users=[];
         $rootScope.addedUserIds.forEach(function(val,key){
@@ -282,6 +302,45 @@ angular.module('starter.controllers', [])
         $scope.showChosenImage=index;
     }
 
+    $scope.downloadImage=function(){
+    $ionicLoading.show({
+          template:'<ion-spinner name="bubbles"></ion-spinner>'
+        });
+      var uri =  BASE_URL+''+$scope.chats[$scope.chats.length - parseInt($scope.processedMessageIndex) - 1]['Upload'][$scope.processedImageIndex]['path'];
+      var filename = uri.split("/").pop();
+      var targetPath = window.cordova.file.cacheDirectory + filename;
+      console.log(targetPath+" is the target path");
+      var options = {},trustHosts = true;
+	$scope.chatPopover.hide();
+    $cordovaFileTransfer.download(uri, targetPath, options, trustHosts)
+      .then(
+        function(result) {
+	  $ionicLoading.hide();
+          window.cordova.plugins.imagesaver.saveImageToGallery(targetPath,function(){
+
+		　　$ionicPopup.alert({
+		    template:"画像を保存しました"
+		  });
+
+          },function(){
+	         $ionicPopup.alert({
+		    template:"エラーが発生したため、画像を保存することができませんでした"
+		  });
+          });
+          //refreshMedia.refresh(targetPath);
+        },
+        function(err) {
+        $ionicLoading.hide();
+          	　 $ionicPopup.alert({
+		    template:"エラーが発生したため、画像を保存することができませんでした"
+		  });
+        },
+        function(progress) {
+          // progressing download...
+        }
+      );
+    }
+
      $scope.resetForm=function(){
       $rootScope.addedUsernames=[];
       $rootScope.showList=true;
@@ -289,25 +348,37 @@ angular.module('starter.controllers', [])
       $rootScope.usersToadd='';
       $scope.addModal.hide();
     };
-
+    $scope.filterAlreadyAdded =function(user){
+        for(var i in $scope.chatMembers){
+            var cm = $scope.chatMembers[i];
+            if(cm.id == user.id) return false;
+        }
+        return true;
+    };
     $scope.addMemberGC=function(){
+
       $ionicLoading.show({
           template:'<ion-spinner name="bubbles"></ion-spinner>'
         });
         ApiService.Get('groupchats/addmember/'+$stateParams.chatId+'/',$rootScope.addedUserIds.join()).then(function(response){
 
-          //$rootScope.chatMembers = $rootScope.addedUsernames;
+           $rootScope.chatMembers = $rootScope.addedUsernames;
 
            $http.get(API_URL+"groupchats/pagedchatforapp/"+$stateParams.chatId+'/'+1,{
               headers:{
                 'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
               }
             }).success(function(response){
+
+
                 $scope.chats = response.messages;
                 $scope.total=response.total;
+
                 $rootScope.chatMembers=$rootScope.addedUsernames.concat($scope.alreadyAdded);
-                 $scope.resetForm();
-                 $ionicLoading.hide();
+
+                $scope.alreadyAdded = $scope.chatMembers;
+                $scope.resetForm();
+                $ionicLoading.hide();
                 $ionicScrollDelegate.scrollBottom();
                 Chats.updateCache('groupchat').then(function(response){
                   if(response.length > 0){
@@ -392,8 +463,9 @@ angular.module('starter.controllers', [])
   $scope.newChat='';
   $scope.uploadedChatImgs=[];
   $scope.showEdit=true;
+  $scope.showDel=true;
   $scope.isEdit=false;
-  $scope.chatPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerChatEdit()" ng-show="showEdit"><i class="icon ion-edit"></i>  編集</li><li class="item item-icon-left" ng-click="triggerChatDelete()"><i class="icon ion-ios-trash"></i> 削除</li></ul></ion-popover-view>', {
+  $scope.chatPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="downloadImage()" ng-show="!showEdit"><i class="icon ion-ios-download"></i>  保存</li><li class="item item-icon-left" ng-click="triggerChatEdit()" ng-show="showEdit && showDelete"><i class="icon ion-edit"></i>  編集</li><li class="item item-icon-left" ng-show="showDel" ng-click="triggerChatDelete()" ><i class="icon ion-ios-trash"></i> 削除</li></ul></ion-popover-view>', {
     scope: $scope
   });
 
@@ -403,21 +475,16 @@ angular.module('starter.controllers', [])
 
   }
 
-  $scope.updateChatCache=function(page=1,lastid=0){
-    Chats.updateMessageCache('groupchats/pagedchatforapp/'+$stateParams.chatId+'/'+page+'',$stateParams.chatId,page,lastid).then(function(response){
+  $scope.updateChatCache=function(page=1,lastid=0,chats=null){
+    Chats.updateMessageCache('groupchats/pagedchatforapp/'+$stateParams.chatId+'/'+page+'',$stateParams.chatId,page,lastid,chats).then(function(response){
       if(response.messages){
-      if(response.messages.length > 0)
         if(lastid > 0){
            $scope.chats = response.messages.concat($scope.chats);
         }else{
           $scope.chats = response.messages;
 
         }
-
-
-
-        }
-
+      }
     });
   }
 
@@ -428,18 +495,56 @@ angular.module('starter.controllers', [])
 		$scope.addModal = modal;
 	});
 
-  $scope.addGCMember = function() {
-    $rootScope.addedUserIds=[];
-    $rootScope.addedUsernames=[];
-		$scope.addModal.show();
-	};
+  $scope.selectingAll = false;
+  
+  /* For adding groupchat member selectAll */
+  $scope.selectAll=function(){
+    $scope.selectingAll = $scope.selectingAll != true;
+    if($scope.selectingAll){
 
-	$rootScope.removeUserChatGC=function(index){
-    $rootScope.addedUserIds.splice(index,1);
-    $rootScope.addedUsernames.splice(index,1);
+        angular.forEach($scope.addUsers, function(value, key) {
+
+		if($scope.alreadyAdded.indexOf(value.User.username)<0)
+             		$rootScope.addUserGC(value);	
+             
+             
+        });
+    }else{
+        $rootScope.addedUserIds = [];
+        $rootScope.addedUsernames =[];
+    }
+  };
+  $scope.addGCMember = function() {
+     $scope.showSelectAll=false;
+     $scope.selectingAll = false;
+     $rootScope.addedUserIds=[];
+     $rootScope.addedUsernames=[];
+     $scope.addModal.show();
+   };
+
+  $rootScope.removeUserChatGC=function(index,username){
+
+
+        $rootScope.addedUserIds.splice(index,1);
+        $rootScope.addedUsernames.splice(index,1);
+
 
   }
-
+  $scope.showSelectAll=false;
+  $scope.showableUser=function(user){
+  	//we should also check if user.id == 0.
+  	//we should avoid this user as it is the All user
+  	if(user.User.id==0){
+  		//return false so that it's not shown
+  		return false;
+  	}
+	var yes = $scope.alreadyAdded.indexOf(user.User.username) === -1;
+	
+	if(!$scope.showSelectAll){
+		$scope.showSelectAll=yes;
+	}
+	return yes;
+  };
   $scope.userLength=0;
   $scope.usersToadd="";
 	$scope.ctr=0;
@@ -452,7 +557,8 @@ angular.module('starter.controllers', [])
 
 	    angular.forEach(response.members, function(element) {
         	$scope.alreadyAdded.push(element);
-      });
+        	
+            });
 
 	    $scope.userLength=Math.floor($scope.addUsers.length/10);
 	  });
@@ -465,14 +571,16 @@ angular.module('starter.controllers', [])
     else
       $rootScope.showList=true;
   }
-
+  
   $rootScope.addUserGC=function(user){
-    console.log(user);
-    if($rootScope.addedUserIds.indexOf(user.User.id) == -1){
+
+    if($rootScope.addedUserIds.indexOf(user.User.id) === -1 && user.User.id!=0){
       $rootScope.addedUsernames.push(user.User.username);
       $rootScope.showList=false;
       $rootScope.usersToadd='';
       $rootScope.addedUserIds.push(user.User.id);
+
+      
 
 
     }else{
@@ -485,7 +593,6 @@ angular.module('starter.controllers', [])
       $scope.updateChatCache(1);
       $rootScope.isOffline=false;
   });
-
   $rootScope.$on('isOffline',function(event,data){
       $rootScope.isOffline=true;
   });
@@ -603,6 +710,7 @@ angular.module('starter.controllers', [])
     $scope.idss=[];
     Chats.get($stateParams.chatId,$scope.page).then(function(response){
       if(response.messages){
+
         $scope.chats = $scope.chats.concat(response.messages);
         $scope.total=response.total;
         $scope.idss=response.messages.map(function(k){ return k.Message.id }).filter(function(e){return e});
@@ -657,12 +765,18 @@ angular.module('starter.controllers', [])
   $scope.errorSending=false;
   $scope.sendingCount=0;
   $scope.countSent=0;
-
+  $scope.uploadProgress =0;
   $scope.sendChat=function(){
 
     if(!$scope.isEdit){
+      $scope.uploadProgress =0;
+
       if($scope.newChat == '' && $scope.uploadedChatImgs.length == 0) return;
 
+	$ionicLoading.show({
+	  scope:$scope,
+	  template:'<ion-spinner name="bubbles"></ion-spinner><br>{{uploadProgress>0?uploadProgress+"%":""}}'
+	});
         var mess={'Message':{'body':$scope.newChat,'id':-1,'user_id':$rootScope.user_id},'Upload':[]};
         $scope.sendingCount++;
         $ionicScrollDelegate.scrollBottom();
@@ -677,7 +791,7 @@ angular.module('starter.controllers', [])
         $scope.newChat='';
         $scope.uploadedChatImgs=[];
         Chats.add($stateParams.chatId,mess.Message.body).then(function(response){
-
+    		
           if(response.data.Message){
             $scope.countSent++;
             $scope.errorSending=false;
@@ -688,6 +802,7 @@ angular.module('starter.controllers', [])
 
               $scope.uploadChatPhotos($scope.chats[$scope.sendingCount-$scope.countSent]);
             }else{
+	            $ionicLoading.hide();
               if($scope.sendingCount-$scope.countSent==0){
                 $scope.sendingCount=0;
                 $scope.countSent=0;
@@ -704,8 +819,10 @@ angular.module('starter.controllers', [])
                 }
               });
 
-          }
+          }else
+          	$ionicLoading.hide();
         },function(error){
+    		$ionicLoading.hide();        
           $scope.errorSending=true;
         });
     }else{
@@ -766,6 +883,7 @@ angular.module('starter.controllers', [])
         };
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i.path,o,true).then(function(result) {
           //if(result.responseCode!=200 || (JSON.parse(result.response).length==0)){
+          $ionicLoading.hide();
 
             $scope.chats.forEach(function(v,k){
               if(parseInt(v.Message.id)==parseInt(chat.Message.id)){
@@ -784,9 +902,15 @@ angular.module('starter.controllers', [])
           $scope.image_chat_ctr++;
 
         },function(error){
+        $ionicLoading.hide();
           $ionicPopup.alert({
             template:"写真のアップロードに失敗しました。"
           });
+        },function(progress){
+		$timeout(function () {
+        	  $scope.uploadProgress = Math.round((progress.loaded / progress.total) * 100);
+
+        	});
         });
       });
 
@@ -809,8 +933,7 @@ angular.module('starter.controllers', [])
      $scope.showChosenImage=-1;
     if(($scope.uploadedChatImgs.indexOf(path)!=-1) && (typeof(path)!=='undefined') && path != null){
       var ind=$scope.uploadedChatImgs.indexOf(path);
-      $scope.uploadedChatImgs.splice(index,1);
-      $scope.$apply();
+      $scope.uploadedChatImgs.splice(ind,1);
     }else{
       $scope.uploadedChatImgs.splice(index,1);
     }
@@ -840,14 +963,19 @@ angular.module('starter.controllers', [])
            $scope.processedMessageIndex=null;
            $scope.processedImageIndex=null;
            $scope.processedType=null;
-
+           $scope.updateChatCache($scope.page,0,$scope.chats);
+           $rootScope.$emit('update_groupchat_fromchat');
           });
         }else{
-          ApiService.Delete('messages/delete/'+$scope.chats[$scope.chats.length - parseInt($scope.processedMessageIndex) - 1]['Message']['id'],'').then(function(response){});
+          ApiService.Delete('messages/delete/'+$scope.chats[$scope.chats.length - parseInt($scope.processedMessageIndex) - 1]['Message']['id'],'').then(function(response){
             $scope.chats.splice($scope.chats.length - parseInt($scope.processedMessageIndex) - 1,1);
             $scope.processedMessageIndex=null;
             $scope.processedImageIndex=null;
             $scope.processedType=null;
+            $scope.updateChatCache($scope.page,0,$scope.chats);
+            $rootScope.$emit('update_groupchat_fromchat');
+          });
+
         }
       }
     });
@@ -869,7 +997,7 @@ angular.module('starter.controllers', [])
         type = 'takePhoto';
       }
 
-        $scope.selectPictureInChats(type);
+      $scope.selectPictureInChats(type);
 
     });
 
@@ -903,7 +1031,13 @@ angular.module('starter.controllers', [])
               currdir = img.substr(0, img.lastIndexOf("/"));
               var xx=filename.split(".");
               var newx = Base64.encode(xx[0]);
-              $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
+              $scope.renameFile(img,filename, currdir, newx+'.'+xx[1]);
+	      //apply since this doesn't seem to update
+	      // setTimeout(function(){
+	      // 	console.log("Applying");
+	      // 	$scope.$apply();
+	      // },500);
+
             },function(error){
               // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
             });
@@ -927,10 +1061,13 @@ angular.module('starter.controllers', [])
               var filename=img.split("/")[img.split("/").length - 1]
               currdir = img.substr(0, img.lastIndexOf("/"));
               var xx=filename.split(".");
-              var newx = Base64.encode(xx[0]);
-              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              var newx = Base64.encode(xx[0]) + new Date().getTime();
+              // console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
-
+	            //apply since this doesn't seem to update
+              setTimeout(function(){
+                $scope.$apply();
+              },500);
             },function(error){
               // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
             });
@@ -952,13 +1089,17 @@ angular.module('starter.controllers', [])
            var Upload=null;
            var currdir=null;
             for(var i=0;i < results.length;i++){
-              var filename=results[i].split("/")[results[i].split("/").length - 1]
+              var filename=results[i].split("/")[results[i].split("/").length - 1];
               currdir = results[i].substr(0, results[i].lastIndexOf("/"));
               var xx=filename.split(".");
-              var newx = Base64.encode(xx[0]);
-              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
-              $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1])
+              var newx = Base64.encode(xx[0]) + new Date().getTime();
+              // console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1]);
             }
+            //apply since this doesn't seem to update
+            setTimeout(function(){
+              $scope.$apply();
+            },500);
         },function(error){
           // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
         });
@@ -992,18 +1133,24 @@ angular.module('starter.controllers', [])
   $scope.processedMessageIndex=null;
   $scope.processedImageIndex=null;
   $scope.processedType=null;
-  $scope.showChatPopover=function($event,x,message_index,image_index=null){
-    if(x=='image')
+  $scope.showChatPopover=function($event,x,messID,message_index,image_index=null){
+    if(x=='image'){
       $scope.showEdit=false;
-    else
-      $scope.showEdit=true;
+    }else{
+        $scope.showEdit=true;
+    }
+    if(messID==$rootScope.user_id){
+      $scope.showDel=true;
+    }else{
+      $scope.showDel=false;
+    }
     $scope.processedType=x;
     $scope.processedMessageIndex=message_index;
     $scope.processedImageIndex=image_index;
     $scope.chatPopover.show($event);
   }
 })
-.controller('TimelineCtrl', function($scope,NewModalService, $stateParams,$http,API_URL,$rootScope,$state,BASE_URL,$filter,$ionicLoading) {
+.controller('TimelineCtrl', function($scope,NewModalService,Like,  $stateParams,$http,API_URL,$rootScope,$state,BASE_URL,$filter,$ionicLoading) {
 
      $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
@@ -1015,12 +1162,44 @@ angular.module('starter.controllers', [])
   $scope.closeLikeModal=function(){
     NewModalService.hideModal($scope);
   }
-  $rootScope.withLike=true;
-  $scope.showLikes=function(head){
-    var ind=-1;
-    $scope.timelineVal.map(function(o,k){ if(o.id==head){ind=k};});
-    $rootScope.showLiked=$scope.timelineVal[ind]['likes'];
-    NewModalService.showModal($scope);
+  $rootScope.withLike=true
+  $scope.likeHead = function(id){
+
+
+  };
+  $scope.gotoHead=function(timeVal){
+    $state.go('tab.head',({'id': timeVal.id}));
+  }
+  $scope.likeTimeline=function(timeVal){
+
+
+      if(!timeVal.isUserLiked){
+
+        Like.like('heads',timeVal.id,function(response){
+
+          if(response.status!='EXISTS'){
+              timeVal.likes_count++;
+          }else{
+
+            Like.unlike('heads',timeVal.id,function(response){
+              console.log(response.status);
+              if(response.status != 'NOT_EXISTING')
+                timeVal.likes_count--;
+            });
+          }
+        });
+      }else{
+
+        Like.unlike('heads',timeVal.id,function(response){
+          timeVal.likes_count--;
+        });
+      }
+      timeVal.liked = true;
+
+    // var ind=-1;
+    // $scope.timelineVal.map(function(o,k){ if(o.id==head){ind=k};});
+    // $rootScope.showLiked=$scope.timelineVal[ind]['likes'];
+    // NewModalService.showModal($scope);
   }
 
     //$rootScope.searchGroups.hide();
@@ -1038,7 +1217,7 @@ angular.module('starter.controllers', [])
     }
     })
     .then(function(response){
-
+	console.log(response.data);
       $scope.timelines = response.data;
       $scope.timelineVal = [];
       $scope.getHead = [];
@@ -1338,6 +1517,7 @@ angular.module('starter.controllers', [])
   delete $scope.groupID;
   $scope.groupID=$stateParams['id'];
   $scope.uploadedType='head';
+  window.scope = $scope;
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
     });
@@ -1500,6 +1680,7 @@ angular.module('starter.controllers', [])
 
   });*/
 
+
  $scope.uploadedImgs=[];
   $ionicModal.fromTemplateUrl('templates/modal/addmember.html', {
     scope: $scope,
@@ -1572,6 +1753,7 @@ angular.module('starter.controllers', [])
   }
 
   $scope.showAddMember=function(){
+
     $scope.newIndexes=[];
     $scope.addMemberModal.show();
   }
@@ -1586,10 +1768,12 @@ angular.module('starter.controllers', [])
   $scope.updateCache=function($lastid=0){
 
     Groups.updateHeadCache($stateParams['id'],'threads/'+$stateParams['id'],'head').then(function(response){
-      //console.log(response);
-      if("Head" in response && (response.Head.length > 0)){
+      if("Head" in response){
             $rootScope.thread = response;
 
+      }else{
+        if("User" in response)
+          $rootScope.thread.User = response.User;
       }
     });
   };
@@ -1649,11 +1833,11 @@ angular.module('starter.controllers', [])
         $rootScope.thread.Head.push(response.Head);
 
 
-         if($scope.uploadedImgs.length > 0)
+         if($scope.uploadedImgs.length > 0){
             $scope.submitPhoto(response.Head.id,true);
-         else
+         }else{
             $scope.updateCache();
-
+	 }
             $rootScope.showAddHead.hide();
             $scope.resetHeadForm();
             $ionicLoading.hide();
@@ -1692,10 +1876,10 @@ angular.module('starter.controllers', [])
           if(response.status=='OK'){
 
             $rootScope.thread.Head.splice($scope.processedHead,1);
+            $scope.updateCache();
             $rootScope.showAddHead.hide();
             $scope.resetHeadForm();
             $rootScope.headPopover.hide();
-            $scope.updateCache();
             $ionicLoading.hide();
           }
         },function(error){
@@ -1723,6 +1907,25 @@ angular.module('starter.controllers', [])
    $scope.newMembers=[];
    $scope.newIndexes=[];
 
+  $scope.selectingAll = false;
+  $scope.selectAll = function(){
+
+    $scope.selectingAll = $scope.selectingAll != true;
+    if($scope.selectingAll){
+        angular.forEach($scope.notMembers, function(value, key) {
+          value.selected= true;
+          $scope.addNewMember(value);
+        });
+    }else{
+        angular.forEach($scope.notMembers, function(value, key) {
+                  value.selected=false;
+
+         });
+
+        $scope.newMembers=[];
+
+    }
+  };
   $scope.addNewMember=function(user){
     if(user.selected){
       $scope.newMembers.push(user.id);
@@ -1734,12 +1937,6 @@ angular.module('starter.controllers', [])
   $scope.processAddMember=function(){
     if($scope.newMembers.length > 0){
 
-      // angular.forEach($scope.notMembers,function(val,key){
-      //   if($scope.newMembers.indexOf(val.id) > -1){
-      //     val.selected=false;
-      //     $rootScope.thread.User.push(val);
-      //     $scope.notMembers.splice(key,1);
-      // })
       for (var i = $scope.notMembers.length - 1; i >= 0; i--) {
         if(!$scope.notMembers[i]) continue;
         if($scope.newMembers.indexOf($scope.notMembers[i].id) > -1){
@@ -1755,6 +1952,7 @@ angular.module('starter.controllers', [])
           $scope.newIndexes=[];
           $scope.search_filter='';
           $scope.addMemberModal.hide();
+           $scope.updateCache();
       },function(error){
 
       });
@@ -1783,6 +1981,7 @@ angular.module('starter.controllers', [])
             $scope.notMembers.push($scope.x);
 
             $rootScope.thread.User.splice(index,1);
+            $scope.updateCache();
         },function(error){
 
         });
@@ -1853,7 +2052,10 @@ $scope.selectPicture = function($act) {
               console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
 
-
+              //apply since this doesn't seem to update
+      	      setTimeout(function(){
+      	      	$scope.$apply();
+      	      },500);
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -1876,13 +2078,16 @@ $scope.selectPicture = function($act) {
 
           $cordovaCamera.getPicture(options).then(function(img){
               var currdir=null;
-              var filename=img.split("/")[img.split("/").length - 1]
+              var filename=img.split("/")[img.split("/").length - 1];
               currdir = img.substr(0, img.lastIndexOf("/"));
               var xx=filename.split(".");
-              var newx = Base64.encode(xx[0]);
-              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
-              $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
-
+              var newx = Base64.encode(xx[0]) + new Date().getTime();
+              // console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              $scope.renameFile(img,filename, currdir, newx+'.'+xx[1]);
+              //apply since this doesn't seem to update
+              setTimeout(function(){
+                $scope.$apply();
+              },500);
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -1902,13 +2107,17 @@ $scope.selectPicture = function($act) {
          var Upload=null;
           for(var i=0;i < results.length;i++){
               var currdir=null;
-              var filename=results[i].split("/")[results[i].split("/").length - 1]
+              var filename=results[i].split("/")[results[i].split("/").length - 1];
               currdir = results[i].substr(0, results[i].lastIndexOf("/"));
               var xx=filename.split(".");
-              var newx = Base64.encode(xx[0]);
-              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
-              $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1])
+              var newx = Base64.encode(xx[0]) + new Date().getTime();
+              // console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1]);
           }
+          //apply since this doesn't seem to update
+          setTimeout(function(){
+            $scope.$apply();
+          },500);
       },function(error){
         // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
       });
@@ -1923,6 +2132,7 @@ $scope.selectPicture = function($act) {
 
   $scope.result=[];
   $scope.img_ctr=0;
+
   $scope.submitPhoto=function(id,isNew){
 
     $scope.img_ctr=0;
@@ -1943,6 +2153,7 @@ $scope.selectPicture = function($act) {
             'Authorization':'Basic '+window.localStorage.getItem("talknote_token")+''
         };
         $scope.Upload={};
+     
         $cordovaFileTransfer.upload(API_URL+'uploads/mobileUploads',i,o).then(function(result) {
           console.log(result);
           if(typeof(isNew)!=='undefined' && isNew!=null){
@@ -1967,6 +2178,11 @@ $scope.selectPicture = function($act) {
             template:"写真のアップロードに失敗しました。"
           });
 
+        },function(progress){
+        	$timeout(function () {
+        	  $scope.uploadProgress = Math.round((progress.loaded / progress.total) * 100);
+
+        	});
         });
       });
   };
@@ -1976,7 +2192,8 @@ $scope.selectPicture = function($act) {
          $scope.resetHeadForm();
          $scope.uploadedImgs=[];
          $ionicLoading.hide();
-         $ionicScrollDelegate.scrollBottom();
+         console.log(window.location.href);
+         //$ionicScrollDelegate.scrollBottom();
          $scope.updateCache();
 
     }
@@ -1991,6 +2208,10 @@ $scope.selectPicture = function($act) {
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
     });
+
+
+    window.state=$state;
+    window.scope=$scope;
     $scope.goBack=function() {
          $state.go('tab.group-detail',{id:$rootScope.threadId});
     };
@@ -2003,6 +2224,7 @@ $scope.selectPicture = function($act) {
         $scope.showChosenImage=index;
     }
     $rootScope.showLiked=[];
+
     $scope.showLikes=function(head,comment,type){
 
       if(type=='head'){
@@ -2072,15 +2294,6 @@ $scope.selectPicture = function($act) {
   //$rootScope.processedHead=$scope.headIndex;
   $rootScope.viewedHeadContents=null;
 
-  /*$rootScope.$on('updatesforthread',function(event,id){
-
-     if($state.current.name=='tab.head'){
-      var maxComment=Math.max.apply(Math,$scope.comments.Comment.map(function(o){return o.id;}));
-      $scope.updateCache(maxComment);
-       ApiService.setNotified($scope.headID,'head').then(function(response){NotificationService.setNotif(); })
-     }
-
-  });*/
   $rootScope.$watch('threadNotifCount', function() {
         if($state.current.name=='tab.head'){
           if(typeof($rootScope.headNotif[$scope.headID])!=='undefined' && $rootScope.headNotif[$scope.headID] != null){
@@ -2097,6 +2310,9 @@ $scope.selectPicture = function($act) {
   $scope.uploadedCommentimgs=[];
   $scope.numberOfItemsToDisplay = 5; // number of item to load each time
   $scope.commentPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerCommentEdit()"><i class="icon ion-edit"></i>  編集</li><li class="item item-icon-left" ng-click="triggerCommentDelete()"><i class="icon ion-ios-trash"></i> 削除</li></ul></ion-popover-view>', {
+    scope: $scope
+  });
+  $scope.downloadPopover = $ionicPopover.fromTemplate('<ion-popover-view style="height: auto;"><ul class="list settingComment"><li class="item item-icon-left" ng-click="triggerDownloadImage()"><i class="icon ion-ios-download"></i>  保存</li></ul></ion-popover-view>', {
     scope: $scope
   });
   $scope.likedComment=-1;
@@ -2130,7 +2346,7 @@ $scope.selectPicture = function($act) {
         }else{
           $scope.gethead();
         }
-      if("Comment" in response && (response.Comment.length > 0)){
+      if("Comment" in response){
         if(lastid > 0)
           $scope.comments.Comment = $scope.comments.Comment.concat(response.Comment);
         else
@@ -2143,15 +2359,20 @@ $scope.selectPicture = function($act) {
   $scope.gethead=function(x=false){
 
       Groups.getComments($scope.headID,x).then(function(response){
+      console.log(JSON.stringify(response));
         $scope.getHeads = response.Head;
         $scope.thread=response.Thread;
+        var user_id = window.localStorage.getItem('user_id');
+        Groups.clearRemoteCache($scope.headID,user_id);
          if(window.localStorage.getItem('uploadingImages') !== null){
-            $scope.stillUploading=true;
-           $scope.headUploads["image"]=[];
-          $scope.headUploads["image"] = JSON.parse(window.localStorage.getItem('uploadingImages'));
+           	 $scope.stillUploading=true;
+          	  console.log("Still uploading");
+        	   $scope.headUploads["image"]=[];
+          	$scope.headUploads["image"] = JSON.parse(window.localStorage.getItem('uploadingImages'));
          }else{
-            $scope.stillUploading=false;
-          $scope.headUploads = response.Upload;
+         	console.log("Stopped uploading");
+            	$scope.stillUploading=false;
+          	$scope.headUploads = response.Upload;
          }
         $scope.comments=response;
         $rootScope.viewedHeadContents=response.Head;
@@ -2310,7 +2531,11 @@ $scope.selectPictureInComment = function($act) {
               var newx = Base64.encode(xx[0]);
               console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
-
+	      //apply since this doesn't seem to update
+	      // setTimeout(function(){
+	      // 	console.log("Applying");
+	      // 	$scope.$apply();
+	      // },500);
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -2332,9 +2557,13 @@ $scope.selectPictureInComment = function($act) {
               var filename=img.split("/")[img.split("/").length - 1]
               currdir = img.substr(0, img.lastIndexOf("/"));
               var xx=filename.split(".");
-              var newx = Base64.encode(xx[0]);
-              console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
+              var newx = Base64.encode(xx[0]) + new Date().getTime();
+              // console.log(filename+'-'+currdir+'-'+newx+'-'+xx[1]);
               $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
+	            //apply since this doesn't seem to update
+              setTimeout(function(){
+                $scope.$apply();
+              },500);
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
           });
@@ -2357,15 +2586,21 @@ $scope.selectPictureInComment = function($act) {
               var filename=results[i].split("/")[results[i].split("/").length - 1]
               currdir = results[i].substr(0, results[i].lastIndexOf("/"));
               var xx=filename.split(".");
-              var newx = Base64.encode(xx[0]);
+              var newx = Base64.encode(xx[0]) + new Date().getTime();
               $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1])
           }
+	        //apply since this doesn't seem to update
+          setTimeout(function(){
+            $scope.$apply();
+          },500);
       },function(error){
         // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
       });
   }
 };
-
+$rootScope.timelineHeadLike = function(id){
+  Like.like('heads',id);
+}
 $rootScope.changeHeadLike=function(id,index){
     $scope.likedHead=id;
     $rootScope.thread['Head'][index]['isUserLiked']=!$rootScope.thread['Head'][index]['isUserLiked'];
@@ -2431,6 +2666,7 @@ $rootScope.changeHeadLike=function(id,index){
     if(!comment || !comment.body && $scope.uploadedCommentimgs.length == 0) return;
 
       Groups.sendComment(id,comment).success(function(response){
+
         if(response.Comment){
           if("Uploads" in response.Comment==false){
             response.Comment["Uploads"]=[];
@@ -2453,10 +2689,10 @@ $rootScope.changeHeadLike=function(id,index){
           $scope.uploadedCommentimgs=[];
           $scope.comments['Comment'].push(response.Comment);
           $ionicScrollDelegate.scrollBottom();
-
-          if(response.Comment.Uploads.length > 0){
+	  if(response.Comment.Uploads.length > 0){
 
             $scope.submitCommentPhoto(response.Comment);
+
           }else{
             $scope.updateCache();
           }
@@ -2499,6 +2735,10 @@ $rootScope.changeHeadLike=function(id,index){
 
           $scope.img_comment_ctr++;
 
+		setTimeout(function(){
+		console.log("Getting head from comment photo");
+	    		$scope.gethead(true);
+	    	},500);
 
         },function(error){
           $ionicPopup.alert({
@@ -2602,7 +2842,57 @@ $rootScope.changeHeadLike=function(id,index){
     $scope.commentPopover.show($event);
     $scope.processedCommentIndex=index;
   };
+  $scope.showDownloadPopover=function($event,path){
 
+    $scope.downloadCommentImagePath = BASE_URL + path;
+    $scope.downloadPopover.show($event);
+
+  };
+  $scope.triggerDownloadImage=function(){
+    $scope.downloadPopover.hide();
+    $scope.downloadImage($scope.downloadCommentImagePath);
+  };
+  $scope.downloadImage=function(uri){
+  $ionicLoading.show({
+	  template:'<ion-spinner name="bubbles"></ion-spinner>'
+  });
+
+      var filename = uri.split("/").pop();
+      var targetPath = window.cordova.file.cacheDirectory + filename;
+
+      var options = {},trustHosts = true;
+
+      $cordovaFileTransfer.download(uri, targetPath, options, trustHosts)
+       .then(
+        function(result) {
+	  $ionicLoading.hide();
+	  console.log(uri+"   -   "+targetPath);
+          window.cordova.plugins.imagesaver.saveImageToGallery(targetPath,function(){
+		  $ionicPopup.alert({
+		    template:"画像を保存しました"
+		  });
+
+
+          },function(){
+		  $ionicPopup.alert({
+		    template:"エラーが発生したため、画像を保存することができませんでした"
+		  });
+
+
+          });
+          //refreshMedia.refresh(targetPath);
+        },
+        function(err) {
+        $ionicLoading.hide();
+		  $ionicPopup.alert({
+		    template:"エラーが発生したため、画像を保存することができませんでした"
+		  });
+        },
+        function(progress) {
+          // progressing download...
+        }
+      );
+    };
   $scope.triggerCommentEdit=function(){
     $scope.commentPopover.hide();
      $scope.action='edit';
@@ -2630,12 +2920,12 @@ $rootScope.changeHeadLike=function(id,index){
         template:'<ion-spinner name="bubbles"></ion-spinner>'
       });
         ApiService.Delete('comments/'+$scope.comments['Comment'][$scope.processedCommentIndex].id+'.json','').then(function(response){
-          if(response.status=='OK'){
+
              $scope.comments.Comment.splice($scope.processedCommentIndex,1);
              $scope.updateCache();
             $scope.commentPopover.hide();
             $ionicLoading.hide();
-          }
+
         },function(error){
 
         });
@@ -2746,7 +3036,14 @@ $rootScope.changeHeadLike=function(id,index){
                   currdir = img.substr(0, img.lastIndexOf("/"));
                   var xx=filename.split(".");
                   var newx = Base64.encode(xx[0]);
-                  $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
+                  $scope.renameFile(img,filename, currdir, newx+'.'+xx[1]);
+	      //apply since this doesn't seem to update
+	      // setTimeout(function(){
+	      // 	console.log("Applying gethead");
+	      // 	$scope.gethead(true);
+	      // 	$scope.$apply();
+
+	      // },500);
               },function(error){
 
               });
@@ -2771,9 +3068,13 @@ $rootScope.changeHeadLike=function(id,index){
                   var filename=img.split("/")[img.split("/").length - 1]
                   currdir = img.substr(0, img.lastIndexOf("/"));
                   var xx=filename.split(".");
-                  var newx = Base64.encode(xx[0]);
+                  // var newx = Base64.encode(xx[0]);
+                  var newx = Base64.encode(xx[0]) + new Date().getTime();
                   $scope.renameFile(img,filename, currdir, newx+'.'+xx[1])
-
+	                //apply since this doesn't seem to update
+                  setTimeout(function(){
+                    $scope.$apply();
+                  },500);
               },function(error){
                 // $ionicPopup.alert({title:"Error",template:"Error in camera.try again."});
               });
@@ -2798,11 +3099,13 @@ $rootScope.changeHeadLike=function(id,index){
                 var filename=results[i].split("/")[results[i].split("/").length - 1]
                 currdir = results[i].substr(0, results[i].lastIndexOf("/"));
                 var xx=filename.split(".");
-                var newx = Base64.encode(xx[0]);
-                $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1])
+                var newx = Base64.encode(xx[0]) + new Date().getTime();
+                $scope.renameFile(results[i],filename, currdir, newx+'.'+xx[1]);
               }
-
-
+              //apply since this doesn't seem to update
+              setTimeout(function(){
+                $scope.$apply();
+              },500);
           },function(error){
             // $ionicPopup.alert({title:"Error",template:"Error getting photos.try again."});
           });
@@ -2875,9 +3178,10 @@ $rootScope.changeHeadLike=function(id,index){
     'loginid':'',
     'password':''
   };
-
+   
   $rootScope.allInterval=null;
   $scope.login=function(data){
+
     if(data.loginid=='' || data.password==''){
       $ionicPopup.alert({
         template:"ログイン情報を正しく入力してください。"

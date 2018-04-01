@@ -187,6 +187,7 @@ angular.module('starter', ['ionic','angular-cache','ngCordova', 'starter.control
   });
 
   $rootScope.gotoChats = function(){
+
     $state.go('tab.chats');
   };
 })

@@ -21,8 +21,10 @@ apply plugin: 'com.android.application'
 
 buildscript {
     repositories {
-        mavenCentral()
         jcenter()
+        maven {
+            url "https://maven.google.com"
+        }
     }
 
     // Switch the Android Gradle plugin version requirement depending on the
@@ -30,15 +32,17 @@ buildscript {
     // http://tools.android.com/tech-docs/new-build-system/version-compatibility
     // and https://issues.apache.org/jira/browse/CB-8143
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:2.2.3'
     }
 }
 
 // Allow plugins to declare Maven dependencies via build-extras.gradle.
 allprojects {
     repositories {
-        mavenCentral();
         jcenter()
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
 
@@ -90,6 +94,7 @@ ext {
 // PLUGIN GRADLE EXTENSIONS START
 apply from: "cordova-plugin-badge/android-badge.gradle"
 apply from: "cordova-plugin-crosswalk-webview/android-xwalk.gradle"
+apply from: "cordova-plugin-fcm/android-FCMPlugin.gradle"
 apply from: "cordova-plugin-firebase/android-build.gradle"
 // PLUGIN GRADLE EXTENSIONS END
 
@@ -177,7 +182,6 @@ android {
 
     lintOptions {
       abortOnError false;
-      disable 'MissingTranslation'
     }
 
     compileSdkVersion cdvCompileSdkVersion
@@ -253,11 +257,11 @@ dependencies {
     // SUB-PROJECT DEPENDENCIES START
     debugCompile(project(path: "CordovaLib", configuration: "debug"))
     releaseCompile(project(path: "CordovaLib", configuration: "release"))
+    compile "com.android.support:support-v4:24.1.1+"
     compile "com.google.firebase:firebase-core:+"
     compile "com.google.firebase:firebase-messaging:+"
     compile "com.google.firebase:firebase-crash:+"
     compile "com.google.firebase:firebase-config:+"
-    compile "com.android.support:support-v4:24.1.1+"
     // SUB-PROJECT DEPENDENCIES END
 }
 
@@ -275,7 +279,7 @@ def promptForReleaseKeyPassword() {
 
 gradle.taskGraph.whenReady { taskGraph ->
     taskGraph.getAllTasks().each() { task ->
-        if (task.name == 'validateReleaseSigning') {
+        if (task.name == 'validateReleaseSigning' || task.name == 'validateSigningRelease') {
             promptForReleaseKeyPassword()
         }
     }

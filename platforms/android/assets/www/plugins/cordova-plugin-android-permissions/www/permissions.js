@@ -1,4 +1,5 @@
-cordova.define("cordova-plugin-android-permissions.Permissions", function(require, exports, module) { var permissionsName = 'Permissions';
+cordova.define("cordova-plugin-android-permissions.Permissions", function(require, exports, module) {
+var permissionsName = 'Permissions';
 
 function Permissions() {
 

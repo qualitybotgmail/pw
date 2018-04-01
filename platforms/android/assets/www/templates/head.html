@@ -1,94 +1,63 @@
-<ion-view view-title="{{$root.threadTitle}}: {{$root.headOwner}}" cache-view="false">
-  <ion-content class="padding has-footer" style="padding-left: 0px;padding-right: 0px;">
-    <div class="list" style="margin-bottom:0px">
-    
-      <div class="item item-avatar" style="border-top:0px">
-        <img src="img/avatar.png">
-        <h2 ng-show="$root.thread.Head[headIndex].user_id !=$root.user_id">{{comments.Owner.username}}</h2>
-        <h2 ng-show="$root.thread.Head[headIndex].user_id ==$root.user_id">{{$root.user}}</h2>
-       <!-- <p class="dateList"><span ng-show="$root.thread.Head[headIndex].user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showHeadPopover($event,headIndex)"></i></span></p>-->
-        <p>{{$root.thread.Head[headIndex].created}}</p>
-      </div>
-    
-      <div class="item item-body" style="padding: 0px;">
-        <p style="padding: 15px;">
-         {{$root.thread.Head[headIndex].body}}
-        </p>
-          <div class="item" ng-show="$root.thread.Head[headIndex].Uploads.length > 0" prevent-href="true" style="padding-left: 0px;padding-right: 0px;">
-         <a class="item-list-detail" style="padding: 0px;border: 0px;">
-        	<ion-scroll direction="x" >
-        		<img ng-repeat="upload in $root.thread.Head[headIndex].Uploads track by $index" ng-src="{{base_url}}{{upload.Upload.path}}" ng-click="showImages({{headIndex}},{{$index}},'head')" class="full-image" style="height: 350px;"/>
-                
-        	</ion-scroll>
-        </a>
-        </div>
-       
-      </div>
-     <p style="padding-left: 15px;padding-top: 10px;margin-bottom: 0px;">
-          <a href="#" class="subdued"><span ng-click="$root.changeHeadLike($root.thread.Head[headIndex].id,headIndex)"><i class="icon ion-thumbsup" ng-class="{'active':$root.thread.Head[headIndex].isUserLiked}" style="font-size:25px;"></i> {{$root.thread.Head[headIndex].likes}}</span></a>
-        </p>
-    </div>
-    <ion-list>
-    <ion-item ng-repeat="comment in comments.Comment | limitTo:numberOfItemsToDisplay track by $index" style="padding: 0px;" ng-style="{'padding-bottom':$last?'20px':'0px'}">
-       <div class="comment-list">
-            
-          <img class="avatar" ng-src="img/avatar.png">
-          <h2 ng-show="comment.user_id !=$root.user_id">{{comment.User.username}}</h2>
-           <h2 ng-show="comment.user_id ==$root.user_id">{{$root.user}}</h2>
-          <p class="dateList"><span ng-show="comment.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showCommentPopover($event,$index)"></i></span></p>
-          <div class = "row" style="font-size: 14px;">
-    
-          {{comment.body}}
-       
-         
-      </div>
-      <div ng-show="comment.Uploads.length > 0" prevent-href="true">
-     <a class="item item-list-detail" style="padding: 0px;border: 0px;">
-    	<ion-scroll direction="x" >
-    		<img ng-repeat="upload in comment.Uploads track by $index" ng-src="{{upload.Upload.loading?upload.Upload.path:base_url+upload.Upload.path}}" ng-click="showImages({{$parent.$index}},{{$index}},'comment')" class="image-list-thumb" ng-style="{'opacity':upload.Upload.loading && typeof(upload.Upload.loading) !=='undefined'?'0.3':'1'}"/>
-            <ion-spinner icon="ios" ng-show="typeof(upload.Upload.loading)!=='undefined' && upload.Upload.loading" class="img-spinner"></ion-spinner>	
-    	</ion-scroll>
-    </a>
-    </div>
-      <div style="width:100%;height:30px;padding-right:10px"><a class="subdued datecomment">{{comment.created}}</a><a class="subdued" style="float:right" ng-click="changeLike(comment.id,$index)"> <span><i class="icon ion-thumbsup likes" ng-class="{'active':comment.isUserLiked}"></i> {{comment.likes}}</span></a></div>
-    </div>
-    
-    </ion-item>
+<ion-modal-view>
+   <ion-header-bar class="bar bar-stable">
+     <div class="buttons">
+         <button class="button button-center button-outline button-bar" ng-click="resetHeadForm();$root.showAddHead.hide();$root.headPopover.hide();"><span class="fixbuttontext">閉じる</span></button>
+     </div>
+      <h1 class="title">スレッドの作成</h1>
+    </ion-header-bar>
+    <ion-content>
+    <div class="row">
+      <h4 class="smartfont">本文:</h4>
 
-      </ion-list>
-       <ion-infinite-scroll ng-if="numberOfItemsToDisplay < comments.Comment.length" on-infinite="loadMore()" distance="1%"></ion-infinite-scroll>
-  </ion-content>
-       
-  <ion-footer-bar align-title="left" style="padding: 0px;height:auto" keyboard-attach>
-    <div class="list" style="width:100%">
-    <div class="item item-input-inset">
-        <i class="icon ion-ios-camera" style="font-size: 35px;left:0px;color: rgba(68, 68, 68, 0.76);" ng-click="loadImage()"></i>
-      <label class="item-input-wrapper item-icon-left" style="padding-left:5px;padding-right:0px;background-color: white;">
-        
-        <textarea rows="1" auto-grow ng-model="newComment.body" ng-Required="true" placeholder="Type your comment.." name="content" style="width:100%;padding: 10px;border-radius: 5px;background-color: #e5e5e5;height:auto !important;"></textarea>
-      </label>
-       
-      <button ng-show="action=='add' || action==''" class="button button-basic" ng-click="sendComment(comments.Head.id)">
-        Send
-      </button>
-      <button style="position: relative !important;" ng-show="action=='edit'" class="button button-basic" ng-click="editComment(comments.Head.id)">
-        Edit
-      </button>
+        <i ng-show="$root.headAction=='add'" class="icon ion-image img" ng-click="selectPicture('upload')"></i>
+        <i ng-show="$root.headAction=='add'" class="icon ion-ios-camera cam" ng-click="selectPicture('takePhoto')"></i>
+
+    </div>
+    <div class="row">
+      <div class="col">
+        <label class="item item-input text">
+          <textarea rows="10" ng-model="$root.headContent.body" id="headBody" ng-Required="true" name="content" data-tap-disabled="true"></textarea>
+        </label>
+
       </div>
-      <div class="item" ng-show="newComment.Uploads.length > 0 && action=='edit'" style="padding: 0px;border-top: 0px;">
-        <a class="item-thumbnail" ng-repeat="im in newComment.Uploads track by $index">
-                 <i ng-click="removeEditedComments($index)" class="icon ion-ios-close" style="font-size: 20px;position: absolute;margin-left: 30px;"></i>
-                 <img ng-show="im.Upload.name" ng-src="{{base_url}}{{im.Upload.path}}" style="width:45px;height:45px">
-                 <img ng-show="!im.Upload.name" ng-src="{{im.Upload.path}}" style="width:45px;height:45px">
+    </div>
+    <div class="row" ng-show="uploadedImgs.length > 0 && $root.headAction=='edit'" >
+      <div class="col">
+        <ion-scroll direction="x" class="item" style="padding: 0px;height:120px !important;border:0px">
+          <a ng-repeat="im in uploadedImgs track by $index" style="height:120px;display:inline-block;text-align:center;margin-right:4px;">
+            <img ng-show="im.Upload.name" ng-src="{{base_url}}{{im.Upload.path}}" style="width:auto;max-height:120px;" />
+            <img ng-show="!im.Upload.name" ng-src="{{im.Upload.path}}" style="width:auto;max-height:120px;" />
+          </a>
+        </ion-scroll>
+      <!-- <span >
+      <a class="item-thumbnail" ng-repeat="i in $root.headContent.Uploads track by $index">
+        <!-- <i ng-click="removeUploads($index)" class="icon ion-ios-close" style="font-size: 30px;position: absolute;margin-left: 45px;"></i> -->
+         <!-- <img ng-show="i.Upload.name" ng-src="{{base_url}}{{i.Upload.path}}">
+         <img ng-show="!i.Upload.name" ng-src="{{i.Upload.path}}"> -->
+      <!-- </a> -->
+      <!-- </span> -->
+      </div>
+    </div>
+  <div class="row" ng-show="uploadedImgs.length > 0 && $root.headAction=='add'">
+    <div class="col">
+      <ion-scroll direction="x" class="item" style="padding: 0px;height:120px !important;border:0px">
+        <a ng-repeat="im in uploadedImgs track by $index" style="height:120px;display:inline-block;text-align:center;margin-right:4px;">
+          <img ng-src="{{im}}" ng-click="setChosenImg($index);showImages({{$index}});$scope.showChosenImage=-1;" style="width:auto;max-height:120px;" />
         </a>
-      </div>
-       <div class="item" ng-show="uploadedCommentimgs.length > 0 && (action=='add' || action=='')" style="padding: 0px;border-top: 0px;">
-        <a class="item-thumbnail" ng-repeat="im in uploadedCommentimgs track by $index">
-              <i ng-click="removeUploadedImg($index)" class="icon ion-ios-close" style="font-size: 20px;position: absolute;margin-left: 30px;"></i>
-               <img ng-src="{{im}}" style="width:45px;height:45px">
-        </a>
-      </div>
-      </div>
-    </ion-footer-bar>
-   
-</ion-view>
+      </ion-scroll>
+    </div>
+  </div>
+<div style="text-align:center">
+
+<button ng-show="headAction=='edit'" class="button button-center button-left button-mordal" ng-class="{'disabled':!$root.headContent.body}" ng-click="$root.processEditingHead()">
+  更新
+</button>
+<button ng-show="headAction=='add'" class="button button-center button-left button-mordal" ng-class="{'disabled':!$root.headContent.body}" ng-click="processAddingHead()">
+  作成
+</button>
+<button class="button button-center button-right button-mordal" ng-click="resetHeadForm();$root.showAddHead.hide();$root.headPopover.hide();" style="margin-left:10px;">
+  キャンセル
+</button>
+</div>
+ </ion-content>
+  </ion-modal-view>

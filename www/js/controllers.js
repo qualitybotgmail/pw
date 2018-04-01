@@ -355,11 +355,6 @@ angular.module('starter.controllers', [])
         }
         return true;
     };
-    $scope.toadds = 0;
-    $scope.setindex=function(i){
-    	$scope.toadds = i;
-    	return "";
-    };
     $scope.addMemberGC=function(){
 
       $ionicLoading.show({
@@ -402,8 +397,9 @@ angular.module('starter.controllers', [])
       var parts = uri.split('.');
       var extension = parts[parts.length-1];
       var imageTypes = ['jpg','jpeg','tiff','png','gif','bmp'];
+      
       //check if the extension matches anything in the list.
-      if(imageTypes.indexOf(extension) !== -1) {
+      if(imageTypes.indexOf(extension.toLowerCase()) !== -1) {
           return true;
       }else{
         return false;
@@ -536,16 +532,6 @@ angular.module('starter.controllers', [])
 
   }
   $scope.showSelectAll=false;
-  $scope.selecteds = {};
-  $scope.canShowSelectAll = function(){
-  	for(var i in $scope.selecteds){
-  		var user = $scope.selecteds[i];
-  		if(user.username!="" && user.username!=null && !user.selected) {
-  			return true;
-  		}
-  	}
-  	return false;
-  };
   $scope.showableUser=function(user){
   	//we should also check if user.id == 0.
   	//we should avoid this user as it is the All user
@@ -558,8 +544,6 @@ angular.module('starter.controllers', [])
 	if(!$scope.showSelectAll){
 		$scope.showSelectAll=yes;
 	}
-	user.User.selected = yes;
-	$scope.selecteds[user.User.id]=user.User;
 	return yes;
   };
   $scope.userLength=0;

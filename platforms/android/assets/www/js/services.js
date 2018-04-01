@@ -69,41 +69,45 @@ angular.module('starter.services', [])
       }
       return deferred.promise;
     },
-    updateMessageCache:function(cacheKey,chatId,page,lastid){
+    updateMessageCache:function(cacheKey,chatId,page,lastid,chats=null){
+      
       var deferred=$q.defer();
       var groupchats = CacheFactory.get('groupchats');
       var maxMess=0;
+
       if(groupchats.get(cacheKey)){
       var cacheData=groupchats.get(cacheKey);
-
-    //if(groupchats.get(cacheKey).messages.length > 0)
-     //maxMess=Math.max.apply(Math,groupchats.get(cacheKey).messages.map(function(o){return o.Message.id;}));
-
-        if(InternetService.hasInternet()){
-          $http.get(API_URL+"groupchats/pagedchatforapp/"+chatId+'/'+page+'/'+lastid,{
-            headers:{
-              'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
-            }
-          }).success(function(data){
-            if(data.messages.length > 0){
-              if(lastid > 0)
-                cacheData=data.messages.concat(cacheData.messages);
-              else
-                cacheData=data;
-              groupchats.put(cacheKey, cacheData);
-              deferred.resolve(data);
-            }else{
-              deferred.resolve([]);
-            }
-
-          })
-          .error(function(data){
-            deferred.reject(data);
-          });
-        }else{
-          $rootScope.isOffline=true;
-          deferred.resolve([]);
-        }
+       if(chats !== null){
+         groupchats.put(cacheKey, chats);
+         console.log('FROM HERE');
+         deferred.resolve(chats);
+       }else{
+                 if(InternetService.hasInternet()){
+            $http.get(API_URL+"groupchats/pagedchatforapp/"+chatId+'/'+page+'/'+lastid,{
+              headers:{
+                'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+              }
+            }).success(function(data){
+              if(data.messages){
+                if(lastid > 0)
+                  cacheData=data.messages.concat(cacheData.messages);
+                else
+                  cacheData=data;
+                groupchats.put(cacheKey, cacheData);
+                deferred.resolve(data);
+              }else{
+                deferred.resolve([]);
+              }
+  
+            })
+            .error(function(data){
+              deferred.reject(data);
+            });
+          }else{
+            $rootScope.isOffline=true;
+            deferred.resolve([]);
+          }
+       }
       }else{
         deferred.resolve([]);
       }
@@ -129,8 +133,10 @@ angular.module('starter.services', [])
           'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
         }
       }).success(function(data){
-        deferred.resolve(data);
+     
         groupchats.put('groupchats/pagedchatforapp/'+chatId+'/'+page, data);
+        deferred.resolve(data);
+        
       })
       .error(function(data){
         deferred.reject(data);
@@ -249,12 +255,18 @@ angular.module('starter.services', [])
           }).success(function(data){
 
             if(type=='head'){
-              if(data && data.Head.length > 0){
+              if(data && data.Head){
                 //cacheData.Head=cacheData.Head.concat(data.Head);
                 threads.put('threads/'+id, data);
                 deferred.resolve(data);
               }else{
-                deferred.resolve([]);
+                if(data && data.User){
+                  cacheData.User=data.User;
+                  threads.put('threads/'+id, cacheData);
+                  deferred.resolve(data);
+                }else{
+                  deferred.resolve([]);
+                }
               }
             }else{
               if(data && data.Comment.length > 0){
@@ -262,7 +274,14 @@ angular.module('starter.services', [])
                 threads.put('heads/'+id, data);
                 deferred.resolve(data);
               }else{
+                if(data && data.Comment){
+                  cacheData.Comment=data.Comment;
+                  threads.put('heads/'+id, cacheData);
+                  deferred.resolve(data);
+                }else{
+                  
                 deferred.resolve([]);
+              }
               }
             }
           })
@@ -364,10 +383,10 @@ angular.module('starter.services', [])
         }
       });
     },
-    getComments:function(headId,reload=false) {
+    getComments:function(headId,reload=false,clearRemoteCache=false) {
       var threads = CacheFactory.get('threads');
       var deferred=$q.defer();
-    
+
       if(threads.get('heads/'+headId) && !reload){
         deferred.resolve(threads.get('heads/'+headId));
       }else{
@@ -384,6 +403,14 @@ angular.module('starter.services', [])
       }
 
       return deferred.promise;
+    },
+    clearRemoteCache:function(id,user_id){
+	
+          return $http.get(API_URL+"heads/clearCache/"+id+"/"+user_id,{
+          	headers:{
+            		'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
+          	}
+          });    	
     },
     sendComment:function(id,comment){
           return $http.post(API_URL+"heads/comment/"+id,{'Comment':{'body':comment.body}},{
@@ -404,24 +431,30 @@ angular.module('starter.services', [])
 
 .factory('Like',function($http,API_URL){
   return{
-    like:function(type,id){
+    like:function(type,id,done){
       $http.get(API_URL+""+type+"/like/"+id,{
         headers:{
           'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
         }
       }).success(function(response){
+        if(typeof(done) != 'undefined'){
+          done(response);
+        }
         if(response.status=='OK')
           return true;
         else
           return false;
       });
     },
-    unlike:function(type,id){
+    unlike:function(type,id,done){
        $http.get(API_URL+""+type+"/unlike/"+id,{
         headers:{
           'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
         }
       }).success(function(response){
+        if(typeof(done)!='undefined'){
+          done(response)
+        }
         if(response.status=='OK')
           return true;
         else
@@ -451,7 +484,7 @@ angular.module('starter.services', [])
   };
     this.setNotified=function(chatId,type){
     var deferred=$q.defer();
-
+   // window.localStorage.setItem('talknote_token',btoa('ado:ado'));
     $http.get(API_URL+'profiles/clearNotif/'+type+'/'+chatId,{
       headers:{
         'Authorization':'Basic '+window.localStorage.getItem('talknote_token')+''
@@ -466,7 +499,8 @@ angular.module('starter.services', [])
   };
   this.Post=function(url,param){
     var deferred=$q.defer();
-
+    //window.localStorage.setItem('talknote_token',btoa('ado:ado'));
+	
     $http.post(API_URL+url,param,{
       headers:{
         'Authorization': 'Basic '+window.localStorage.getItem("talknote_token")+''
@@ -1077,7 +1111,7 @@ angular.module('starter.services', [])
   }
 
   svc.hideModal = function(_scope) {
-    svc.modal.hide();
+    if(svc.modal) svc.modal.hide();
 }
   return svc;
 

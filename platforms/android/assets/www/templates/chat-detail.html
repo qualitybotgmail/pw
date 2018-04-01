@@ -10,7 +10,7 @@
       <i class="icon ion-ios-plus-empty"></i>
     </button>
   </ion-nav-buttons>
-  
+
   <ion-content class="padding has-footer has-tabs has-header" style="bottom: 100px !important;">
     <ion-refresher on-refresh="doRefresh()" pulling-icon="ios-arrow-down" spinner="bubbles" on-pulling="disabledScroll()">
     </ion-refresher>
@@ -21,7 +21,7 @@
         <div ng-class="{other: message.Message.user_id == $root.user_id}" class="messages" style="margin-bottom: 0px !important;">
           <div class="message" ng-show="message.Message.body!=''" ng-class="{'slide-right': hideTime, '': !hideTime}" style="padding: 5px !important;">
             <p ng-show="message.Message.user_id != $root.user_id" style="font-size:12px;margin:0px;color: rgba(68, 68, 68, 0.74);">{{message.User.username}}</p>
-            <span style="white-space:pre-line;word-break:break-word;" on-hold="message.Message.user_id == $root.user_id?showChatPopover($event,'chat',{{$index}}):''" ng-style="{opacity:errorSending && (message.Message.id==-1)?'0.4':'1'}" content="linkify(message.Message.body)" check-link></span>
+            <span class="ShingoProL" style="white-space:pre-line;word-break:break-word;" on-hold="message.Message.user_id == $root.user_id?showChatPopover($event,'chat',message.Message.user_id,{{$index}}):''" ng-style="{opacity:errorSending && (message.Message.id==-1)?'0.4':'1'}" content="linkify(message.Message.body)" check-link></span>
 
              <p style="font-size:12px;margin:0px;color: rgba(68, 68, 68, 0.74);">{{message.Message.time}}</p>
 
@@ -32,8 +32,8 @@
         <div ng-style="{'text-align':message.Message.user_id == $root.user_id?'right':'left'}" ng-show="message.Upload.length > 0">
             <p ng-show="message.Message.user_id != $root.user_id" style="font-size:12px;margin:0px 0px 0px 5px;color: rgba(68, 68, 68, 0.74);">{{message.User.username}}</p>
             <div ng-repeat="upload in message.Upload track by $index" ng-class="{other: message.Message.user_id == $root.user_id}" style="margin-bottom: 0px !important;">
-              <p class="non-image" style="padding-left: 10px;font-size: 16px;" ng-show="!isUriImage(upload.path)"><a href="" style="color: white;" ng-click="redirectFile(upload.path)">{{upload.name}}</a></p>
-              <img ng-show="isUriImage(upload.path)" on-hold="showChatPopover($event,'image',{{$parent.$index}},{{$index}})" ng-click="showImages({{$index}},{{$parent.$index}})" ng-src="{{upload.loading?upload.path:base_url+upload.path}}" class="chatimages"/>
+              <p class="non-image message" ng-class="{other: message.Message.user_id == $root.user_id}" style="padding-left: 10px;font-size: 16px;" ng-if="!isUriImage(upload.path)"><a href="" style="" ng-click="redirectFile(upload.path)">{{upload.name}}</a></p>
+              <img ng-show="isUriImage(upload.path)" on-hold="showChatPopover($event,'image',message.Message.user_id,{{$parent.$index}},{{$index}})" ng-click="showImages({{$index}},{{$parent.$index}})" ng-src="{{upload.loading?upload.path:base_url+'/uploads/thumbnail/?img='+upload.path}}" class="chatimages"/>
             </div>
             <p style="font-size:12px;margin:0px 0px 0px 5px;color: rgba(68, 68, 68, 0.74);">{{message.Message.time}}</p>
         </div>
@@ -44,7 +44,7 @@
   <ion-footer-bar align-title="left" style="padding: 0px;height:auto;border-bottom:1px solid #ddd;" keyboard-attach>
 
     <div style="width:100%">
-      <div class="item offline" ng-show="$root.isOffline"><i class="icon ion-android-alert"></i> No internet connection</div>
+      <div class="item offline" ng-show="$root.isOffline"><i class="icon ion-android-alert"></i>ネットワークに接続されていません</div>
     <div class="item item-input-inset" style="padding:0px">
         <i ng-show="!isEdit" class="icon ion-ios-camera" style="font-size: 35px;padding-left: 5px;color: rgba(68, 68, 68, 0.76);" ng-click="loadImage()"></i>
       <label class="item-input-wrapper item-icon-left" style="padding-left:5px;padding-right:0px;background-color: white;">
