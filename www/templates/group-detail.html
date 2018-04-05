@@ -34,23 +34,23 @@
         <div class="remove-first ShingoProL" style="white-space:pre-line;word-break:break-word;padding-right:10px;color:#000;" >
           <span content="linkify(head.body)" check-link></span>
         </div>
-        <ion-scroll direction="x" ng-show="head.Uploads.length > 0" prevent-href="true">
+        <ion-scroll direction="x" ng-show="head.Uploads.length > 0">
           <img style="height:200px" ng-repeat="upload in head.Uploads" ng-src="{{upload.Upload.loading?upload.Upload.path:base_url+'/uploads/thumbnail/?img='+upload.Upload.path}}">
         </ion-scroll>
-
 
         <div style="width:100%;padding-top:10px;min-height:40px;">
           <a class="subdued datecomment" style="padding-right: 0px !important;">{{head.created}}</a>
           <a ng-if="head.user_id!=$root.user_id" class="subdued" prevent-href="true" style="float:right;" >
-            <span style="font-size:15px" ng-click="changeHeadLike(head.id,$index)">
+            <span style="font-size:15px;padding:22px;" ng-click="changeHeadLike(head.id,$index)">
               <i class="icon ion-thumbsup likes" ng-class="{'active':head.isUserLiked}"></i>
             </span>
           </a>
         </div>
-        <div ng-show="head.likes.length > 0 && !head.isUserLiked || head.likes.length > 1 && head.isUserLiked" class="likedList" prevent-href="true" style="width:100%;padding:10px 0px;text-align:right;">
+        <div ng-show="head.likes.length > 0" class="likedList" prevent-href="true" style="width:100%;padding:10px 0px;text-align:right;">
           <a ng-click="showLikes($index,-1,'head')">
             <span ng-if="head.likes.length > 0 && !head.isUserLiked">{{head.likes_count}} 人がいいね！と言っています</span>
             <span ng-if="head.likes.length > 1 && head.isUserLiked">あなたと {{head.likes_count - 1}} 人がいいね！と言っています</span>
+            <span ng-if="head.likes.length == 1 && head.isUserLiked">あなたがいいね！と言っています</span>
           </a>
         </div>
 

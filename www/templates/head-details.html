@@ -36,13 +36,14 @@
         </a>
         </div>
         <p style="padding-left: 15px;">
-          <a ng-if="getHeads.user_id!=$root.user_id" class="subdued" style="float:right" ng-click="updateLike(getHeads.id,getHeads.likes_count,getHeads.isUserLiked)">
+          <a ng-if="getHeads.user_id!=$root.user_id" class="subdued" style="float: right;padding:20px" ng-click="updateLike(getHeads.id,getHeads.likes_count,getHeads.isUserLiked)">
             <span><i class="icon ion-thumbsup likes" ng-class="{'active':getHeads.isUserLiked}"></i></span>
           </a>
-          <span ng-show="getHeads.likes.length > 0 && !getHeads.isUserLiked || getHeads.likes.length > 1 && getHeads.isUserLiked" class="likedList" prevent-href="true" style="padding-top:24px !important;{{getHeads.user_id==$root.user_id?'padding-right: 10px !important':''}}">
+          <span ng-show="getHeads.likes.length > 0" class="likedList" prevent-href="true" style="padding-top:24px !important;{{getHeads.user_id==$root.user_id?'padding-right: 10px !important':''}}">
             <a ng-click="showLikes(-1,-1,'head')">
               <span ng-if="getHeads.likes.length > 0 && !getHeads.isUserLiked">{{getHeads.likes_count}} 人がいいね！と言っています</span>
               <span ng-if="getHeads.likes.length > 1 && getHeads.isUserLiked">あなたと {{getHeads.likes_count - 1}} 人がいいね！と言っています</span>
+              <span ng-if="getHeads.likes.length == 1 && getHeads.isUserLiked">あなたがいいね！と言っています</span>
             </a>
           </span>
           <!--<a class="subdued" ng-click="updateLike(headLikes, getHeads.isUserLiked)" ><span><i class="icon ion-thumbsup" ng-class="{'active':getHeads.isUserLiked}" style="font-size:25px;"></i> {{headLikes}}</span></a>-->
@@ -87,6 +88,7 @@
               <a ng-click="showLikes(-1,$index,'comment')">
                 <span ng-if="comment.likes.length > 0 && !comment.isUserLiked">{{comment.likes_count}} 人がいいね！と言っています</span>
                 <span ng-if="comment.likes.length > 1 && comment.isUserLiked">あなたと {{comment.likes_count - 1}} 人がいいね！と言っています</span>
+                <span ng-if="comment.likes.length == 1 && comment.isUserLiked">あなたがいいね！と言っています</span>
               </a>
           </p>
         </div>

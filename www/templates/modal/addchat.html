@@ -15,6 +15,14 @@
              placeholder="メンバーを検索" class="full-width chatsearch searchinput">
     </ion-header-bar>
     <ion-content class="has-subheader">
+      <div ng-if="$root.usersToadd==''">
+        <a class="item item-avatar item-icon-right do_selectall" href="" ng-click="selectAll()">
+          <img src="img/avatar.png">
+          <span ng-if="!selectingAll" class="shingodb" style="font-size:13px">全選択</span>
+          <span ng-if="selectingAll" class="shingodb" style="font-size:13px">全解除</span>
+          <i ng-show="selectingAll" class="icon ion-checkmark-round"></i>
+        </a>
+      </div>
       <ion-item style="padding:0px;padding-left:8px;background:#f0f0f0;">
         <span style="font-size:80%;">選択したメンバー</span>
       </ion-item>
@@ -28,13 +36,6 @@
           <span style="font-size:80%;">メンバー</span>
         </ion-item>
         <div class="list">
-            <a class="item item-avatar item-icon-right do_selectall" href="" ng-click="selectAll()">
-                <img src="img/avatar.png">
-
-                <span ng-if="!selectingAll" class="shingodb" style="font-size:13px">全選択</span>
-                <span ng-if="selectingAll" class="shingodb" style="font-size:13px">全解除</span>
-                <i ng-show="selectingAll" class="icon ion-checkmark-round"></i>
-            </a>
             <a class="item item-avatar item-icon-right" href="" ng-click="addUser(user)" ng-repeat="user in users | filter:{User:{username:$root.usersToadd}} track by $index" ng-if="user.User.id!=0">
               <img src="img/avatar.png" ng-show="user.User.avatar_img==''||user.User.avatar_img=='null'||user.User.avatar_img==null">
               <img class="avatar" ng-src="{{base_url}}{{user.User.avatar_img}}" ng-show="user.User.avatar_img!=''&&user.User.avatar_img!='null'&&user.User.avatar_img!=null">
