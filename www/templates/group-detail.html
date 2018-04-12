@@ -23,8 +23,8 @@
       <div class="item item-avatar " ui-sref="tab.head({id:head.id,index:$index,likes:head.likes})" style="padding-top: 0px;padding-bottom: 5px;">
         <img style="object-fit: cover;" ng-if="head.Owner.avatar_img==''||head.Owner.avatar_img=='null'||head.Owner.avatar_img==null" ng-src="img/avatar.png">
         <img style="object-fit: cover;" ng-if="head.Owner.avatar_img!=''&&head.Owner.avatar_img!='null'&&head.Owner.avatar_img!=null" ng-src="{{base_url}}{{head.Owner.avatar_img}}">
-        <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</div>
-        <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="head.user_id ==$root.user_id">{{$root.user}}</div>
+        <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="head.user_id !=$root.user_id">{{head.Owner.username==null || head.Owner.username=="null"?"名無しさん":head.Owner.username}}</div>
+        <div style="font-size:smaller;padding-top:15px;margin:0;" ng-show="head.user_id ==$root.user_id">{{$root.user==null || $root.user=="null"?"名無しさん":$root.user}}</div>
         <!-- <p style="font-size:small;" ng-show="head.user_id !=$root.user_id">{{head.Owner.username}}</p>
         <p style="font-size:small;" ng-show="head.user_id ==$root.user_id">{{$root.user}}</p> -->
         <span ng-show="$root.headNotif[head.id]"  class="badge badge-assertive" show-badge badge-id="{{head.id}}" badge-type="head">{{$root.headNotif[head.id]}}</span>
@@ -56,7 +56,7 @@
 
         <ion-item ng-if="head.Comment.length > 0" ng-repeat="comment in head.Comment| limitTo: 3 | orderBy: created |reverse: true" class="item-avatar full-width">
           <img src="img/avatar.png">
-          <h2>{{head.Owner.username}}</h2>
+          <h2>{{comment.User.username}}</h2>
           <p style="white-space: pre-line;" > {{comment.body}} </p>
           <p style="font-size:10px">{{comment.created}} </p>
         </ion-item>
