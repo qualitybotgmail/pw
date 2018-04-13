@@ -204,12 +204,27 @@ class ThreadsController extends AppController {
  * @return void
  */
 	public function view($id,$lastid=0,$ajax=false) {
+		$heads = $this->Thread->Head->find('list',array(
+			'conditions' => array('thread_id' => $id)
+		));
 		
-		//error_reporting(2);
+		$notif = new NotifCounts($this->User->Profile,$this->Auth->user('id'));
+		$n = $notif->getNotif();
+		$head_notifs = array();
+		if(isset($n['Heads'])){
+		 	$head_notifs = $n['Heads'];
+		}
+		$clearIt = true;
+		foreach($heads as $hid){
+			if($head_notifs[$hid] >0){
+				$clearIt = false;
+				break;
+			}
+		}
 		
-		// $notif = new NotifCounts($this->User->Profile,$this->Auth->user('id'));
-		// $notif->clear('thread',$id);
-		
+		if($clearIt){
+			$notif->clear('thread',$id);
+		}
 		$cache = $this->getCache('threads');
 		$viewCached = $cache->get();
 		if($viewCached){
@@ -232,7 +247,9 @@ class ThreadsController extends AppController {
 			'contain' => array('Head'=>
 				array(
 					'Like'=> array('User'),
-					'Comment' => array('User.username'),
+					'Comment' => array(
+						'User.username' => array('Profile.name')
+					),
 					'Owner',
 					'conditions'=>array('Head.id >'=>$lastid),
 					'order' => array('Head.created DESC')
@@ -264,7 +281,7 @@ class ThreadsController extends AppController {
 			
 		} 
 		
-		// $this->Thread->notified($id,$uid,false);
+		$this->Thread->notified($id,$uid,false);
 		//set viewed for the user
 		
 		$cache->set($thread);
