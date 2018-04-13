@@ -1,5 +1,5 @@
 <ion-view>
-  <ion-nav-title>{{threadTitle}} : {{(headOwner==null || headOwner == "" || headOwner == "null")?"名無し":headOwner}}</ion-nav-title>
+  <ion-nav-title>{{threadTitle}} : {{(headOwner==null || headOwner == "" || headOwner == "null")?"名無し": (headOwner=="admin" ? "管理者":headOwner)}}</ion-nav-title>
   <!-- <ion-nav-buttons side="left">
     <button class="button back-button buttons button-clear header-item" ng-click="goBack()">
       <i class="icon ion-ios-arrow-back"></i>
@@ -11,7 +11,7 @@
       <div class="item item-avatar" style="border-bottom:none;">
           <img class="avatar" ng-if="headAvatar==''||headAvatar=='null'||headAvatar==null" ng-src="img/avatar.png">
          <img class="avatar" ng-if="headAvatar!=''&&headAvatar!='null'&&headAvatar!=null" ng-src="{{base_url}}{{headAvatar}}">
-        <h3>{{headOwner}}</h3>
+        <h3>{{(headUserName=="admin" ? "管理者":headOwner)}}</h3>
         <p style="font-size:small;">{{getHeads.created}}</p>
       </div>
 
@@ -41,9 +41,9 @@
           </a>
           <span ng-show="getHeads.likes.length > 0" class="likedList" prevent-href="true" style="padding-top:24px !important;{{getHeads.user_id==$root.user_id?'padding-right: 10px !important':''}}">
             <a ng-click="showLikes(-1,-1,'head')">
-              <span ng-if="getHeads.likes.length > 0 && !getHeads.isUserLiked">{{getHeads.likes_count}} 人がいいね！と言っています</span>
-              <span ng-if="getHeads.likes.length > 1 && getHeads.isUserLiked">あなたと {{getHeads.likes_count - 1}} 人がいいね！と言っています</span>
-              <span ng-if="getHeads.likes.length == 1 && getHeads.isUserLiked">あなたがいいね！と言っています</span>
+              <span ng-if="getHeads.likes_count > 0 && !getHeads.isUserLiked">{{getHeads.likes_count}} 人がいいね！と言っています</span>
+              <span ng-if="getHeads.likes_count > 1 && getHeads.isUserLiked">あなたと {{getHeads.likes_count - 1}} 人がいいね！と言っています</span>
+              <span ng-if="getHeads.likes_count == 1 && getHeads.isUserLiked">あなたがいいね！と言っています</span>
             </a>
           </span>
           <!--<a class="subdued" ng-click="updateLike(headLikes, getHeads.isUserLiked)" ><span><i class="icon ion-thumbsup" ng-class="{'active':getHeads.isUserLiked}" style="font-size:25px;"></i> {{headLikes}}</span></a>-->
@@ -57,7 +57,7 @@
 
            <img class="avatar" ng-if="comment.User.avatar_img==''||comment.User.avatar_img=='null'||comment.User.avatar_img==null" ng-src="img/avatar.png">
          <img class="avatar" ng-if="comment.User.avatar_img!=''&&comment.User.avatar_img!='null'&&comment.User.avatar_img!=null" ng-src="{{base_url}}{{comment.User.avatar_img}}">
-          <div style="font-size:smaller;padding-top:5px;height:30px;margin:0;" ng-show="comment.user_id !=$root.user_id">{{(comment.User.username == null || comment.User.username == "" || comment.User.username == "null") ?  "名無しさん" : comment.User.username}}</div>
+          <div style="font-size:smaller;padding-top:5px;height:30px;margin:0;" ng-show="comment.user_id != $root.user_id">{{(comment.User.username == null || comment.User.username == "" || comment.User.username == "null") ?  "名無しさん" : (comment.User.username=="admin" ? "管理者" : comment.User.username)}}</div>
           <div style="font-size:smaller;padding-top:5px;height:30px;margin:0;" ng-show="comment.user_id ==$root.user_id">{{($root.user==null || $root.user == "null" || $root.user=="") ? "名無しさん" : $root.user}}</div>
           <p class="dateList" style=""><span ng-show="comment.user_id==$root.user_id" prevent-href="true" style=""><i class="icon ion-chevron-down" style="font-size: 15px;color:#444;padding: 10px;" ng-click="showCommentPopover($event,$index)"></i></span></p>
           <div style="padding: 0 15px 20px 15px;color:#000;word-break:break-word">
