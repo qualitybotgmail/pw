@@ -247,7 +247,9 @@ class ThreadsController extends AppController {
 			'contain' => array('Head'=>
 				array(
 					'Like'=> array('User'),
-					'Comment' => array('User.username'),
+					'Comment' => array(
+						'User.username' => array('Profile.name')
+					),
 					'Owner',
 					'conditions'=>array('Head.id >'=>$lastid),
 					'order' => array('Head.created DESC')
