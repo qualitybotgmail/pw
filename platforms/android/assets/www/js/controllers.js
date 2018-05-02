@@ -397,8 +397,9 @@ angular.module('starter.controllers', [])
       var parts = uri.split('.');
       var extension = parts[parts.length-1];
       var imageTypes = ['jpg','jpeg','tiff','png','gif','bmp'];
+      
       //check if the extension matches anything in the list.
-      if(imageTypes.indexOf(extension) !== -1) {
+      if(imageTypes.indexOf(extension.toLowerCase()) !== -1) {
           return true;
       }else{
         return false;
@@ -1515,8 +1516,22 @@ angular.module('starter.controllers', [])
 
 .controller('GroupDetailCtrl', function($cordovaInAppBrowser,Base64,$scope,CacheFactory,$timeout,NotificationService,backButtonOverride,$state,AuthService,HeadService,Like,$ionicSlideBoxDelegate,BASE_URL,$cordovaDevice,$cordovaImagePicker,$cordovaCamera,$ionicLoading,$cordovaFileTransfer,$ionicPopup,$ionicPopover,Groups,$http,ApiService,$rootScope,$stateParams,$ionicModal,$ionicScrollDelegate,API_URL,NewModalService) {
   delete $scope.groupID;
+  
   $scope.groupID=$stateParams['id'];
   $scope.uploadedType='head';
+ $rootScope.getHead = function(id){
+ 	console.log("GET THIS "+id);
+	for(var i in $rootScope.thread.Head){
+		var h = $rootScope.thread.Head[i];
+		if(h.id == id){
+			return h;
+		}
+		
+	}
+	return null;
+ };  
+ window.Groups=Groups;
+ window.root = $rootScope;
   window.scope = $scope;
     $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         viewData.enableBack = true;
@@ -2210,6 +2225,8 @@ $scope.selectPicture = function($act) {
     });
 
 
+    window.Groups = Groups;
+    window.root=$rootScope;
     window.state=$state;
     window.scope=$scope;
     $scope.goBack=function() {
@@ -2339,6 +2356,7 @@ $scope.selectPicture = function($act) {
           $rootScope.threadTitle = response.Thread.title;
           $rootScope.headOwner = response.Owner.username;
           $scope.thread=response.Thread;
+          console.log(response.head);
           $scope.getHeads=response.Head;
           $scope.headUploads = response.Upload;
           $rootScope.viewedHeadContents=response.Head;
@@ -2605,10 +2623,10 @@ $rootScope.changeHeadLike=function(id,index){
     $scope.likedHead=id;
     $rootScope.thread['Head'][index]['isUserLiked']=!$rootScope.thread['Head'][index]['isUserLiked'];
     if($rootScope.thread['Head'][index]['isUserLiked']){
-       $rootScope.thread['Head'][index]['likes']=parseInt($rootScope.thread['Head'][index]['likes']) + 1;
+       $rootScope.thread['Head'][index]['likes_count']=parseInt($rootScope.thread['Head'][index]['likes_count']) + 1;
        Like.like('heads',id);
     }else{
-      $rootScope.thread['Head'][index]['likes']=parseInt($rootScope.thread['Head'][index]['likes']) - 1;
+      $rootScope.thread['Head'][index]['likes_count']=parseInt($rootScope.thread['Head'][index]['likes_count']) - 1;
        if(Like.unlike('heads',id))
         $scope.likedHead=-1;
     }
@@ -2617,12 +2635,16 @@ $rootScope.changeHeadLike=function(id,index){
 
  $scope.updateLike = function(id,likes,isUserLiked){
     $scope.likedHead=id;
+    var threadHead = $rootScope.getHead(id);
     console.log("ID = "+ id+ " isUserLiked ="+ isUserLiked+ " LIKES " + likes);
     if(isUserLiked!=true){
         $scope.getHeads.likes_count=parseInt(likes) + 1;
         $scope.getHeads.isUserLiked =true;
         var data={'User':{'id':$rootScope.user_id,'username':$rootScope.user,'avatar_img':$rootScope.avatar_img},'user_id':$rootScope.user_id,'id':-1,'head_id':$scope.getHeads.id};
         $scope.getHeads.likes.push(data);
+        threadHead.likes_count=$scope.getHeads.likes_count;
+        threadHead.likes=$scope.getHeads.likes;        
+        threadHead.isUserLiked=$scope.getHeads.isUserLiked;        
         Like.like('heads',id);
 
     }else{
@@ -2631,6 +2653,9 @@ $rootScope.changeHeadLike=function(id,index){
         var index=$scope.getHeads.likes.map(function(o,k){ if(o.user_id==$rootScope.user_id){return k};});
         $scope.getHeads.likes.splice(index,1);
         $scope.getHeads.isUserLiked =false;
+        threadHead.likes_count=$scope.getHeads.likes_count;
+        threadHead.likes=$scope.getHeads.likes;        
+        threadHead.isUserLiked=$scope.getHeads.isUserLiked;                
         if(Like.unlike('heads',id))
          $scope.likedHead=-1;
 
@@ -3174,10 +3199,7 @@ $rootScope.changeHeadLike=function(id,index){
  })
 
 .controller('LoginCtrl',function($scope,$rootScope,GalleryService,NotificationService,$ionicPopup,$ionicLoading,$state,ApiService,AuthService,Base64,$http,$ionicHistory){
-  $scope.data={
-    'loginid':'',
-    'password':''
-  };
+
    
   $rootScope.allInterval=null;
   $scope.login=function(data){

@@ -1,0 +1,14 @@
+#!/bin/bash
+cd /home/sat/pw/playwork/
+dv=`adb devices|wc -l`
+if [[ $dv == 2 ]]
+then
+
+	echo "No devices detected?"
+	adb devices
+	exit
+fi
+notify-send "Playwork" "Started building apk"
+ionic cordova run android
+notify-send "Playwork" "Installed new apk to mobile phone"
+

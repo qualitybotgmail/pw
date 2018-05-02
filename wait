@@ -1,0 +1,16 @@
+#!/bin/bash
+if [[ $1 == "" ]]
+then
+	echo "Invalid argument"
+	exit
+fi
+
+directory=$1
+watchp(){
+	inotifywait -e modify /home/sat/pw/playwork/www/$directory
+	$*
+}
+while true
+do
+	watchp ./run
+done

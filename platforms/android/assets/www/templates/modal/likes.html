@@ -7,10 +7,10 @@
     </ion-header-bar>
     <ion-content>
         <div class="list">
-            <a class="item item-avatar item-icon-right" href="" ng-repeat="like in $root.showLiked track by $index" ng-if="like.User.username">
+            <a class="item item-avatar item-icon-right" href="" ng-repeat="like in $root.showLiked track by $index">
               <img ng-src="img/avatar.png" ng-show="like.User.avatar_img==''||like.User.avatar_img=='null'||like.User.avatar_img==null">
               <img class="avatar" ng-src="{{base_url}}{{like.User.avatar_img}}" ng-show="like.User.avatar_img!=''&&like.User.avatar_img!='null'&&like.User.avatar_img!=null">
-              <h2 style="padding-top: 8px;">{{like.User.username}}</h2>
+              <h2 style="padding-top: 8px;">{{(like.User.username=="" || like.User.username == null || like.User.username == "null")? "名無しさん":like.User.username}}</h2>
             </a>
         </div>
     </ion-content>
