@@ -78,15 +78,12 @@ class HeadsController extends AppController {
 
 	public function clearCache($head_id,$user_id=null){
 		$cache = new CacheObj($user_id,'heads');
-		
+
 		$cache->clear();
-		header("Content-type: application/json");
-		echo "{'status':'ok'}";
-		exit;
+
 	}	
 	public function view($id = null,$lastid=0,$ajax=false) {
 		$cache = $this->getCache('heads');
-		
 		//$cache->clear();
 		$head = $cache->get();
 
@@ -316,6 +313,7 @@ class HeadsController extends AppController {
 	
 	
 	public function like($id = null) {
+		
 		$this->Head->id = $id;
 		if (!$this->Head->exists()) {
 			throw new NotFoundException(__('Invalid thread'));
@@ -324,6 +322,8 @@ class HeadsController extends AppController {
 		$like = array(
 			'Like' => array('user_id' => $user_id,'head_id' => $id)
 		);
+		
+		$this->clearCache($id,$user_id);
 		
 		if(!$this->Head->Like->headLikeExists($id,$user_id)){
 			$ret = $this->Head->Like->save($like);
@@ -346,26 +346,16 @@ class HeadsController extends AppController {
 			throw new NotFoundException(__('Invalid thread'));
 		}
 		$user_id = $this->Auth->user('id');		
-		$head = $this->Head->findById($id);
-		$this->loadModel("Log");
+		$this->clearCache($id,$user_id);
+		
 		if($this->Head->Like->headLikeExists($id,$user_id)){
 			$ret = $this->Head->Like->headLike($id,$user_id);
 			$this->Head->Like->id  = $ret['Like']['id'];
 			if($this->Head->Like->delete()){
-				$r = $this->Log->save(array(
-					'like_id' => 0,
-					'user_id' => 	$user_id,
-					'thread_id' => $head['Head']['thread_id'],
-					'head_id' => $id,
-					'comment_id' => 0,
-					'type' => 'Head.unlike'
-				));		
-				
 				echo json_encode(array('status' => 'OK'));
 			} else {
 				echo json_encode(array('status' => 'FAILED'));
 			}
-			
 			exit;
 		}else{
 			echo json_encode(array('status' => 'NOT_EXISTING'));

@@ -341,6 +341,12 @@ public $actsAs = array('Containable');
 				
 				foreach($thread['User'] as $u){
 					
+					//Notify using SSE
+					
+					//Add one to time() to avoid cache issue. if time is same, 
+					//sse wont be triggered.
+					save_mem(json_encode(["notifType"=>["GroupDetailCtrl","GroupsCtrl","HeadCtrl"],"time"=>time()+1]),$u['id']);
+					
 					if(in_array($u['id'],$ignored_users)){
 						continue;
 					}
@@ -416,7 +422,7 @@ public $actsAs = array('Containable');
 						array_push($fcmids,$f);
 					}
 						
-					}
+				}
 				
 				$f = @$g['Owner']['Profile'][0]['fcm_id'];
 				$uids[] = $g['Owner']['id'];
@@ -430,7 +436,7 @@ public $actsAs = array('Containable');
 					}	
 			}
 						
-			file_put_contents("/tmp/dadacurl",date("g:i:s")."\n".print_r($notifdata,true));
+			
 			$this->push($fcmids,$notifdata);
 			//here you
 		
@@ -438,6 +444,7 @@ public $actsAs = array('Containable');
 			$uids[] = $uid;
 			
 			foreach($uids as $uid){
+				
 				//Delete caches
 				
 				foreach(array("threads","heads","groupchats") as $n){
@@ -467,7 +474,7 @@ public $actsAs = array('Containable');
 				}
 				
 			}
-			//exit;
+			
 
 	}
 
@@ -652,4 +659,5 @@ public $actsAs = array('Containable');
 		return $notifications;
 		
 	}
+
 }

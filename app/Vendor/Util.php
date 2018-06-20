@@ -210,3 +210,39 @@ function make_thumb($src,$dest,$thumbwidth, $quality = 100, $type = 2)
     $img->clear_cache();
          
 } 
+
+//SSE related functions
+//Use shared memory cache to communicate 
+//to an sse instance
+function save_mem($data, $name) {
+   
+    delete_mem($name);
+    // get id for name of cache
+    $id=shmop_open($name, "c", 0644, strlen(serialize($data)));
+    
+    // return int for data size or boolean false for fail
+    if ($id) {
+        return shmop_write($id, serialize($data), 0);
+    }
+    else return false;
+}
+function delete_mem($name){
+     // delete cache
+    $id=shmop_open($name, "a", 0, 0);
+    shmop_delete($id);
+    shmop_close($id); 
+}
+
+function get_mem($name) {
+  $id=shmop_open($name, "a", 0, 0);
+
+  if ($id) $data=unserialize(shmop_read($id, 0, shmop_size($id)));
+  else return false;          // failed to load data
+
+  if ($data) {                // array retrieved
+      shmop_close();
+      return $data;
+  }
+  else return false;          // failed to load data
+
+}
