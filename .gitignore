@@ -8,9 +8,8 @@
 /build
 /dist
 /tags
-/app/webroot/files*
 *.mo
-.c9
+
 # IDE and editor specific files #
 #################################
 /nbproject
@@ -29,3 +28,4 @@
 Icon?
 ehthumbs.db
 Thumbs.db
+.c9

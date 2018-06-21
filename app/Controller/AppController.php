@@ -77,22 +77,22 @@ class AppController extends Controller {
 	public function beforeFilter(){
 		error_reporting(0);
 		parent::beforeFilter();
-			$this->response->header('Access-Control-Allow-Origin', '*');
-			if($this->request->method() == 'OPTIONS'){
-				$method = $this->request->header('Access-Control-Request-Method');
-        		$headers = $this->request->header('Access-Control-Request-Headers');
-				$this->response->header('Access-Control-Allow-Headers', $headers);
-            	$this->response->header('Access-Control-Allow-Methods', empty($method) ? 'GET, POST, PUT, DELETE' : $method);
-            	$this->response->header('Access-Control-Allow-Credentials', 'true');
-			}
-				$this->Auth->authenticate = array('Form' => array(
-                    'passwordHasher' => 'Blowfish',
-                    'userModel' => 'User',
-                    'fields' => array(
-                                'username' => 'loginid',
-                                'password'=>'password'
-                        )
-                ));
+		$this->response->header('Access-Control-Allow-Origin', '*');
+		if($this->request->method() == 'OPTIONS'){
+			$method = $this->request->header('Access-Control-Request-Method');
+			$headers = $this->request->header('Access-Control-Request-Headers');
+			$this->response->header('Access-Control-Allow-Headers', $headers);
+			$this->response->header('Access-Control-Allow-Methods', empty($method) ? 'GET, POST, PUT, DELETE' : $method);
+			$this->response->header('Access-Control-Allow-Credentials', 'true');
+		}
+		$this->Auth->authenticate = array('Form' => array(
+		    'passwordHasher' => 'Blowfish',
+		    'userModel' => 'User',
+		    'fields' => array(
+		                'username' => 'loginid',
+		                'password'=>'password'
+		        )
+		));
                 
         if(isset($_COOKIE['hash']) && $_COOKIE['hash']!='' && $_COOKIE['hash']){
 			$this->loadModel("User");
@@ -195,4 +195,5 @@ class AppController extends Controller {
 		}
 		return $tmp;
 	}
+	
 }

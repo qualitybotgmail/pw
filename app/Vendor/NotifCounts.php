@@ -122,7 +122,6 @@ class NotifCounts{
 		}else{
 			return 0;
 		}
-
 	}	
 	
 }

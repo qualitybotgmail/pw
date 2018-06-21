@@ -204,6 +204,9 @@ class ProfilesController extends AppController {
 		echo json_encode("OK");
 		exit;
 	}
+	public function getnotif_sse($uid){
+		
+	}
 	public function getnotif(){
 
 		error_reporting(0);

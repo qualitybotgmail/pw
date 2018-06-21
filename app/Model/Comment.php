@@ -114,7 +114,7 @@ class Comment extends AppModel {
 			'comment_id' => $this->data['Comment']['id'],
 			'type' => 'Comment.'. ($created? 'add' : 'edit')
 		));
-	
+		
 
 	}		
 	public function beforeDelete($cascade = true)

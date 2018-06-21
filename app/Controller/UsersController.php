@@ -1,6 +1,8 @@
 <?php
 App::uses('AppController', 'Controller');
 App::import("Controller","Profiles");
+App::import('Vendor','Util');
+
 /**
  * Users Controller
  *
@@ -27,22 +29,13 @@ class UsersController extends AppController {
 	}
 	public function beforeFilter(){
 		parent::beforeFilter();
-	
-		
 		$this->Auth->allow('me','edit','dd','notifications','mobilelogin','test');
 	}
 	
 	
-	public function notifications(){
-		header('Content-Type: text/event-stream');
-		header('Cache-Control: no-cache');
+	public function notifications($uid){
 
-		$i = 0;
-		echo "data: " . $i . "\n\n";
-		flush();
-
-		//	sleep(3);
-		
+		exit;
 	}
 
 /**
@@ -203,8 +196,7 @@ class UsersController extends AppController {
 		exit;
 	}
 	public function login() {
-	
-		
+		error_reporting(E_ALL);
 		
 	    if ($this->request->is('post')) {
 	        if ($this->Auth->login()) {

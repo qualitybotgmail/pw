@@ -181,6 +181,32 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                     }
                 };
             };
+            
+            // update sidebar notification count
+            $scope.updateThreadNofiticationCount = function(thread) {
+                var totalCount = 0;
+                
+                if (!thread.Head.length) {
+                    $rootScope.notificationCount -= 1;
+                    $rootScope.threads[i].Thread.notifications = 0;
+                    return;
+                }
+                
+                angular.forEach(thread.Head, function(head) {
+                   totalCount += head.notification_count;
+                });
+                
+                // if total count is zero (0)
+                if (!totalCount) {
+                    for (var i = 0; i < $rootScope.threads.length; i++)	{
+                        var tempCount = $rootScope.threads[i].Thread.notifications;
+                        if ($scope.selectedThreadId == $rootScope.threads[i].Thread.id) {
+                            $rootScope.notificationCount -= tempCount;
+                            $rootScope.threads[i].Thread.notifications = 0;
+                        }
+                    }
+                }
+            };
         	
         	// get thread information
         	$scope.getThread = function() {
@@ -190,6 +216,7 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
         	        $scope.thread = thread;
         	        $scope.noOfUserToView = ($scope.thread.User.length > 10)?10:$scope.thread.User.length;
         	        $scope.checkNotificationSetting(thread);
+        	        $scope.updateThreadNofiticationCount(thread);
         	    });
         	};
         	

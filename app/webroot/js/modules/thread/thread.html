@@ -12,8 +12,6 @@
     p.head-body{
         margin-top: -1em;
         white-space: pre-line;
-        line-height:1em;
-        word-break: break-all;
     }
     .modal-width-50 .modal-sm {
         width:20%;
@@ -228,8 +226,7 @@
                         </p>
                         
                         <span style="font-size:11px;">{{comment.created}}</span>
-
-                        <span style="font-size:11px;">by: {{comment.User.id == loginUser.id ? "あなた" : comment.User.username}}</span>
+             
                     </div>
   
                 </a>

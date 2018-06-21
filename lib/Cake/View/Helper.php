@@ -1,17 +1,17 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @link          https://cakephp.org CakePHP(tm) Project
  * @package       Cake.View
  * @since         CakePHP(tm) v 0.2.9
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('Router', 'Routing');
@@ -24,7 +24,7 @@ App::uses('Inflector', 'Utility');
  *
  * @package       Cake.View
  */
-class Helper extends Object {
+class Helper extends CakeObject {
 
 /**
  * Settings for this helper.
@@ -145,9 +145,48 @@ class Helper extends Object {
  * @var array
  */
 	protected $_minimizedAttributes = array(
-		'compact', 'checked', 'declare', 'readonly', 'disabled', 'selected',
-		'defer', 'ismap', 'nohref', 'noshade', 'nowrap', 'multiple', 'noresize',
-		'autoplay', 'controls', 'loop', 'muted', 'required', 'novalidate', 'formnovalidate'
+		'allowfullscreen',
+		'async',
+		'autofocus',
+		'autoplay',
+		'checked',
+		'compact',
+		'controls',
+		'declare',
+		'default',
+		'defaultchecked',
+		'defaultmuted',
+		'defaultselected',
+		'defer',
+		'disabled',
+		'enabled',
+		'formnovalidate',
+		'hidden',
+		'indeterminate',
+		'inert',
+		'ismap',
+		'itemscope',
+		'loop',
+		'multiple',
+		'muted',
+		'nohref',
+		'noresize',
+		'noshade',
+		'novalidate',
+		'nowrap',
+		'open',
+		'pauseonexit',
+		'readonly',
+		'required',
+		'reversed',
+		'scoped',
+		'seamless',
+		'selected',
+		'sortable',
+		'spellcheck',
+		'truespeed',
+		'typemustmatch',
+		'visible'
 	);
 
 /**
@@ -253,7 +292,7 @@ class Helper extends Object {
  *    the reverse routing features of CakePHP.
  * @param bool $full If true, the full base URL will be prepended to the result
  * @return string Full translated URL with base path.
- * @link http://book.cakephp.org/2.0/en/views/helpers.html
+ * @link https://book.cakephp.org/2.0/en/views/helpers.html
  */
 	public function url($url = null, $full = false) {
 		return h(Router::url($url, $full));
@@ -507,7 +546,7 @@ class Helper extends Object {
  *
  * @param string $message Message to be displayed
  * @param string $okCode Code to be executed after user chose 'OK'
- * @param string $cancelCode Code to be executed after user chose 'Cancel'
+ * @param string $cancelCode Code to be executed after user chose 'Cancel', also executed when okCode doesn't return
  * @param array $options Array of options
  * @return string onclick JS code
  */
