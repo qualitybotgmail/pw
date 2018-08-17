@@ -246,3 +246,71 @@ function get_mem($name) {
   else return false;          // failed to load data
 
 }
+function bg_fcm($fcmids = null,$notifdata=null,$fcmkey){
+    $data = array($fcmids,$notifdata,$fcmkey);
+    $ser = serialize($data);
+    // file_put_contents("/tmp/lastpush.txt","/usr/bin/php ".__FILE__." '$ser' > /dev/null 2>&1 &");
+    exec("/usr/bin/php ".__FILE__." '$ser' > /dev/null 2>&1 &");
+
+}
+$isshell = false;
+$arg = [];
+if(isset($argv)){
+    $arg = $argv;
+}
+$count = count($arg);
+
+if($count>0){
+    $isshell = true;
+}
+
+if($isshell){
+    $uns = unserialize($arg[1]);
+    $fcmids = $uns[0];
+    $notifdata = $uns[1];
+    $FCM_KEY = $uns[2];
+ 	
+ 	$title='PlayWork';
+	$body='Notification';
+	$data=array();
+	if($fcmids != null){
+		if(is_array($fcmids)){
+			$fcmids = array_unique($fcmids);
+		}
+		if($notifdata!=null){
+			$title=$notifdata['title'];
+			$body=$notifdata['body'];
+			$data=$notifdata['data'];
+		}
+	}
+	
+	$ch = curl_init();
+	
+	curl_setopt($ch, CURLOPT_URL,"https://fcm.googleapis.com/fcm/send");
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array( 
+		'Authorization: key='.$FCM_KEY,
+		"Content-Type: application/json",
+	));
+	curl_setopt($ch, CURLOPT_POSTFIELDS,
+	            json_encode(array(
+	            		'notification' => array(
+	            			'title' => $title,
+	            			'body' => $body,
+	            			 'sound'=>'default',
+				             'icon'=>'fcm_push_icon'
+	            		),
+	            	  'data'=>$data,
+	            	'registration_ids' => $fcmids,
+	            	'priority'=>'high'
+					)
+	            ));
+	
+
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	
+	$one = time();
+	$server_output = curl_exec ($ch);
+// 	file_put_contents('/tmp/ado.txt',"DONE NA ".(time()-$one));
+	curl_close ($ch);
+}

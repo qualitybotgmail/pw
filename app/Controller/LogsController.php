@@ -123,4 +123,25 @@ class LogsController extends AppController {
 		}
 		return $this->redirect(array('action' => 'index'));
 	}
+	
+	public function savelater(){
+		
+		// $u = unserialize($_GET['q']);
+		$a = array(
+			'user_id' => 	222,
+			'message_id' => 1,
+			'groupchat_id' => 334,
+			'type' => 'Message.add'
+		);
+		$one = time();
+		$saved = $this->Log->save($a);
+		$saved['Log']['taken'] = time() - $one;
+		header('Content-type: application/json');
+		echo json_encode($saved);
+		exit;
+	}
+	public function beforeFilter(){
+		parent::beforeFilter();
+		$this->Auth->allow('savelater');
+	}
 }

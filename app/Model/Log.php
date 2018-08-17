@@ -202,51 +202,9 @@ public $actsAs = array('Containable');
 		}
 	}	
 	public function push($fcmids = null,$notifdata=null){
+		//裏で実行する	
+		bg_fcm($fcmids,$notifdata,'AIzaSyDlevTKpf3-ouSprb4a_fhTk43Iw0hvuyA');
 	
-		
-		$title='PlayWork';
-		$body='Notification';
-		$data=array();
-		if($fcmids != null){
-			if(is_array($fcmids)){
-				$fcmids = array_unique($fcmids);
-			}
-			if($notifdata!=null){
-				$title=$notifdata['title'];
-				$body=$notifdata['body'];
-				$data=$notifdata['data'];
-			}
-			
-			$ch = curl_init();
-			
-			curl_setopt($ch, CURLOPT_URL,"https://fcm.googleapis.com/fcm/send");
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array( 
-				'Authorization: key=AIzaSyDlevTKpf3-ouSprb4a_fhTk43Iw0hvuyA',
-				"Content-Type: application/json",
-			));
-			curl_setopt($ch, CURLOPT_POSTFIELDS,
-			            json_encode(array(
-			            		'notification' => array(
-			            			'title' => $title,
-			            			'body' => $body,
-			            			 'sound'=>'default',
-						             'icon'=>'fcm_push_icon'
-			            		),
-			            	  'data'=>$data,
-			            	'registration_ids' => $fcmids,
-			            	'priority'=>'high'
-        					)
-			            ));
-			
-	
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			//file_put_contents("/tmp/lastcurl",date("g:i")." [Exec]\n".print_r($fcmids,true),FILE_APPEND);
-			$server_output = curl_exec ($ch);
-			file_put_contents("/tmp/dadacurl",date("g:i:s")."\n".print_r(array('Output'=>$fcmids),true));
-			curl_close ($ch);
-			
-		}
 	}
 	public function afterSave($created, $options = array()){
 		
@@ -400,6 +358,7 @@ public $actsAs = array('Containable');
 				));
 				App::uses('Message', 'Model');
 				$this->Message->recursive=-1;
+				
 				$message=$this->Message->find('first',array(
 					'conditions'=>array('Message.id'=>$log['message_id'])
 				));
@@ -433,9 +392,10 @@ public $actsAs = array('Containable');
 					
 				}else{
 						array_push($fcmids,$f);
-					}	
+				}	
 			}
 						
+			
 			
 			$this->push($fcmids,$notifdata);
 			//here you
