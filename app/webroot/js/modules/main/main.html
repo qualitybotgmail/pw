@@ -119,10 +119,15 @@
                             <li class>
                           <a class="list-group-item clickable message-lists" id="message-{{groupchat.Groupchat.id}}" ng-if="groupchat.Groupchat" ng-click="goto.message(groupchat.Groupchat)" ng-repeat="(groupChatIndex,groupchat) in createdGroupChats" ng-init="$last && fireMessageActiveEvent()">
                             <span class="badge badge-info" ng-if="groupchat.Groupchat.notifications">{{groupchat.Groupchat.notifications}}</span>
-                            <span ng-repeat="u in groupchat.User">
+                            <span ng-if="groupchat.Owner.username != loginUser.username">
+                                {{groupchat.Owner.username}}
+                            </span>   
+                            <span ng-repeat="u in groupchat.User" ng-if="u.username != loginUser.username">
+                                {{groupchat.Owner.username != loginUser.username ? ', ':''}}
                                 {{u.username}}
-                                {{$last ? '' : ', '}}
+                                
                             </span>
+                         
                             
                           </a>
                             </li>
@@ -151,11 +156,11 @@
                                             		<div class="message-inner">
                                             			<div class="message-head clearfix">
                                             				<div class="avatar pull-left">
-																											<img src="{{ (head.Head.Owner.User.avatar_img)? imageBaseURL+''+head.Head.Owner.User.avatar_img:'/img/avatar.png' }}" class="timeline-img">
+																<img ng-src="{{(head.Head.Owner.User.avatar_img)? imageBaseURL+''+head.Head.Owner.User.avatar_img:'/img/avatar.png'}}" class="timeline-img">
                                             				</div>
                                             				<div class="user-detail">
                                             					<h5 class="handle">
-																													<a class="head-body" ui-sref="app.head({ id: head.Head.id })">
+																	<a class="head-body" ui-sref="app.head({ id: head.Head.id })">
                                             					        {{thread.Thread.title}}
                                             					    </a>
                                             					</h5>
@@ -181,7 +186,7 @@
                                                         		<div class="message-inner">
                                                         			<div class="message-head clearfix">
                                                         				<div class="avatar pull-left">
-                                                        					<img src="/img/avatar.png" class="timeline-img">
+                                                        					<img ng-src="{{ (head.Head.Owner.User.avatar_img) ? head.Head.Owner.User.avatar_img : '/img/avatar.png'}}" class="timeline-img">
                                                         				</div>
                                                         				<div class="user-detail">
                                                         					<h5 class="handle">
