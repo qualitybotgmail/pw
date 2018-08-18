@@ -157,16 +157,27 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                    async:false,
                    success: function(response) {
                         // .. do something
+                        $scope.isSending = false;
                         message.Upload = [];
-                        var tempUpload = JSON.parse(response).Success;
+                        
+                        //Here we should be checking if string or not
+                        //this was the error of not being able to send
+                        //upload image
+                        var tempUpload = null;
+                        if(typeof(response)=="string")
+                            tempUpload = JSON.parse(response).Success;
+                        else
+                            tempUpload = response.Success;
+                            
                         angular.forEach(tempUpload, function(value){
                            message.Upload.push(value);
                         });
                         $scope.message.Message.push(message);
+                        
                         $("#attachments").val('');
                         $scope.comment.body = ''; 
                         $scope.comment.message_id = null;
-                        $scope.isSending = false;
+                        
                         $scope.startInterval();
                         $scope.$apply();
                    },

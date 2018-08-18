@@ -150,7 +150,15 @@ define(['jquery', 'app', 'angular', 'underscore'], function($, app, angular, _)
                    success: function(response) {
                        // .. do something
                        comment.Uploads = [];
-                       var tempUpload = JSON.parse(response).Success;
+                        //Here we should be checking if string or not
+                        //this was the error of not being able to send
+                        //upload image
+                        var tempUpload = null;
+                        if(typeof(response)=="string")
+                            tempUpload = JSON.parse(response).Success;
+                        else
+                            tempUpload = response.Success;
+                            
                        angular.forEach(tempUpload, function(value){
                            comment.Uploads.push({Upload: value});
                        });
